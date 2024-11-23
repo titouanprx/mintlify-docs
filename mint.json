@@ -25,6 +25,8 @@
     "name": "Dashboard",
     "url": "https://dashboard.mintlify.com"
   },
+  
+  "source": "openapi.json", 
   "tabs": [
     {
       "name": "API Reference",
