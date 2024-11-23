@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "LinkUp API",
-    "description": "LinkedIn Automation API - Endpoints Linkup uniquement",
+    "description": "LinkedIn Automation API",
     "version": "1.0.0"
   },
   "paths": {
@@ -11,6 +11,7 @@
         "tags": ["linkup"],
         "summary": "Login",
         "description": "Authentification LinkedIn",
+        "operationId": "login_v1_linkup_auth_login_post",
         "parameters": [
           {
             "name": "x-api-key",
@@ -59,6 +60,7 @@
         "tags": ["linkup"],
         "summary": "Verify Code",
         "description": "Vérification du code",
+        "operationId": "verify_code_v1_linkup_auth_verify_post",
         "parameters": [
           {
             "name": "x-api-key",
@@ -107,6 +109,7 @@
         "tags": ["linkup"],
         "summary": "Extract Contact",
         "description": "Extraire les informations de contact",
+        "operationId": "extract_contact_v1_linkup_profile_extract_contact_post",
         "parameters": [
           {
             "name": "x-api-key",
@@ -155,6 +158,7 @@
         "tags": ["linkup"],
         "summary": "Extract Posts",
         "description": "Extraire les posts",
+        "operationId": "extract_posts_v1_linkup_posts_extract_post",
         "parameters": [
           {
             "name": "x-api-key",
@@ -197,39 +201,461 @@
           }
         }
       }
+    },
+    "/v1/linkup/people/search": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Search People",
+        "description": "Rechercher des personnes",
+        "operationId": "search_people_v1_linkup_people_search_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_search_people_v1_linkup_people_search_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/companies/search": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Search Companies",
+        "description": "Rechercher des entreprises",
+        "operationId": "search_companies_v1_linkup_companies_search_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_search_companies_v1_linkup_companies_search_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/create": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Create Post",
+        "operationId": "create_post_v1_linkup_create_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_post_v1_linkup_create_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/comment": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Comment Post",
+        "operationId": "comment_post_v1_linkup_comment_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_comment_post_v1_linkup_comment_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/like": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Like Post",
+        "operationId": "like_post_v1_linkup_like_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_like_post_v1_linkup_like_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/repost": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Repost",
+        "operationId": "repost_v1_linkup_repost_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_repost_v1_linkup_repost_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/network/connect": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Connect To Profile",
+        "description": "Se connecter à un profil",
+        "operationId": "connect_to_profile_v1_linkup_network_connect_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_connect_to_profile_v1_linkup_network_connect_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/network/connections": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Get Connections",
+        "description": "Extraire les connexions",
+        "operationId": "get_connections_v1_linkup_network_connections_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_get_connections_v1_linkup_network_connections_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "Body_login_v1_linkup_auth_login_post": {
+      "Body_comment_post_v1_linkup_comment_post": {
         "properties": {
-          "email": {
+          "post_url": {
             "type": "string",
-            "title": "Email"
+            "title": "Post Url"
           },
-          "password": {
+          "message": {
             "type": "string",
-            "title": "Password"
+            "title": "Message"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
           }
         },
         "type": "object",
-        "required": ["email", "password"],
-        "title": "Body_login_v1_linkup_auth_login_post"
+        "required": [
+          "post_url",
+          "message",
+          "login_cookie"
+        ],
+        "title": "Body_comment_post_v1_linkup_comment_post"
       },
-      "Body_verify_code_v1_linkup_auth_verify_post": {
+      "Body_connect_to_profile_v1_linkup_network_connect_post": {
         "properties": {
-          "code": {
+          "linkedin_url": {
             "type": "string",
-            "title": "Code"
+            "title": "Linkedin Url"
           },
-          "email": {
+          "message": {
             "type": "string",
-            "title": "Email"
+            "title": "Message",
+            "default": ""
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
           }
         },
         "type": "object",
-        "required": ["code", "email"],
-        "title": "Body_verify_code_v1_linkup_auth_verify_post"
+        "required": [
+          "linkedin_url",
+          "login_cookie"
+        ],
+        "title": "Body_connect_to_profile_v1_linkup_network_connect_post"
+      },
+      "Body_create_post_v1_linkup_create_post": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "login_cookie"
+        ],
+        "title": "Body_create_post_v1_linkup_create_post"
       },
       "Body_extract_contact_v1_linkup_profile_extract_contact_post": {
         "properties": {
@@ -243,7 +669,10 @@
           }
         },
         "type": "object",
-        "required": ["linkedin_url", "login_token"],
+        "required": [
+          "linkedin_url",
+          "login_token"
+        ],
         "title": "Body_extract_contact_v1_linkup_profile_extract_contact_post"
       },
       "Body_extract_posts_v1_linkup_posts_extract_post": {
@@ -284,16 +713,128 @@
           }
         },
         "type": "object",
-        "required": ["login_cookie"],
+        "required": [
+          "login_cookie"
+        ],
         "title": "Body_extract_posts_v1_linkup_posts_extract_post"
+      },
+      "Body_get_connections_v1_linkup_network_connections_post": {
+        "properties": {
+          "total_results": {
+            "type": "integer",
+            "title": "Total Results",
+            "default": 10
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "login_cookie"
+        ],
+        "title": "Body_get_connections_v1_linkup_network_connections_post"
+      },
+      "Body_like_post_v1_linkup_like_post": {
+        "properties": {
+          "post_url": {
+            "type": "string",
+            "title": "Post Url"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_url",
+          "login_cookie"
+        ],
+        "title": "Body_like_post_v1_linkup_like_post"
+      },
+      "Body_login_v1_linkup_auth_login_post": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "Body_login_v1_linkup_auth_login_post"
+      },
+      "Body_repost_v1_linkup_repost_post": {
+        "properties": {
+          "post_url": {
+            "type": "string",
+            "title": "Post Url"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_url",
+          "login_cookie"
+        ],
+        "title": "Body_repost_v1_linkup_repost_post"
+      },
+      "Body_search_companies_v1_linkup_companies_search_post": {
+        "properties": {
+          "location": {
+            "type": "string",
+            "title": "Location",
+            "default": ""
+          },
+          "sector": {
+            "type": "string",
+            "title": "Sector",
+            "default": ""
+          },
+          "keyword": {
+            "type": "string",
+            "title": "Keyword",
+            "default": ""
+          },
+          "company_size": {
+            "type": "string",
+            "title": "Company Size",
+            "default": ""
+          },
+          "total_results": {
+            "type": "integer",
+            "title": "Total Results",
+            "default": 5
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "login_cookie"
+        ],
+        "title": "Body_search_companies_v1_linkup_companies_search_post"
       },
       "HTTPValidationError": {
         "properties": {
           "detail": {
-            "type": "array",
             "items": {
               "$ref": "#/components/schemas/ValidationError"
             },
+            "type": "array",
             "title": "Detail"
           }
         },
@@ -303,10 +844,17 @@
       "ValidationError": {
         "properties": {
           "loc": {
-            "type": "array",
             "items": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
             },
+            "type": "array",
             "title": "Location"
           },
           "msg": {
@@ -319,7 +867,11 @@
           }
         },
         "type": "object",
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError"
       }
     }
