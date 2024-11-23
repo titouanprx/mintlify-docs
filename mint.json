@@ -11,7 +11,15 @@
     "light": "#07C983",
     "dark": "#0D9373"
   },
-  "source": "openapi.json",
+  "openapi": ["openapi.json"],
+  "api": {
+    "baseUrl": "https://api.linkup.com",
+    "auth": {
+      "method": "key",
+      "name": "x-api-key",
+      "inputPrefix": "Bearer"
+    }
+  },
   "topbarLinks": [
     {
       "name": "Support",
@@ -22,13 +30,6 @@
     "name": "Dashboard",
     "url": "https://dashboard.linkup.com"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "/api-reference",
-      "openapi": "/openapi.json"
-    }
-  ],
   "anchors": [
     {
       "name": "Documentation",
@@ -51,49 +52,44 @@
       "group": "Get Started",
       "pages": [
         "introduction",
-        "quickstart"
+        "quickstart",
+        "authentication"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "API Reference",
       "pages": [
-        "api-reference/introduction",
+        "api-reference/introduction"
+      ]
+    },
+    {
+      "group": "Endpoints",
+      "pages": [
         {
           "group": "Authentication",
-          "pages": [
-            "api-reference/linkup/auth/login",
-            "api-reference/linkup/auth/verify"
-          ]
+          "pages": ["api/auth/login", "api/auth/verify"]
         },
         {
           "group": "Profile",
-          "pages": [
-            "api-reference/linkup/profile/extract-contact"
-          ]
+          "pages": ["api/profile/extract-contact"]
         },
         {
           "group": "Posts",
           "pages": [
-            "api-reference/linkup/posts/extract",
-            "api-reference/linkup/create",
-            "api-reference/linkup/comment",
-            "api-reference/linkup/like",
-            "api-reference/linkup/repost"
+            "api/posts/extract",
+            "api/posts/create",
+            "api/posts/comment",
+            "api/posts/like",
+            "api/posts/repost"
           ]
         },
         {
           "group": "Search",
-          "pages": [
-            "api-reference/linkup/people/search",
-            "api-reference/linkup/companies/search"
-          ]
+          "pages": ["api/search/people", "api/search/companies"]
         },
         {
           "group": "Network",
-          "pages": [
-            "api-reference/linkup/network/connect",
-            "api-reference/linkup/network/connections"
-          ]
+          "pages": ["api/network/connect", "api/network/connections"]
         }
       ]
     }

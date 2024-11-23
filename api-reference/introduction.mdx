@@ -1,33 +1,81 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Bienvenue dans la documentation de LinkUp API'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# LinkUp API
 
-## Welcome
+LinkUp API est une solution puissante pour automatiser vos interactions LinkedIn. Notre API vous permet d'effectuer diverses opérations LinkedIn de manière programmatique, en toute sécurité.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Authentification
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+Toutes les requêtes à l'API nécessitent une clé API qui doit être incluse dans l'en-tête `x-api-key`. Pour obtenir votre clé API, connectez-vous à votre [dashboard](https://dashboard.linkup.com).
 
-## Authentication
-
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
-
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```bash
+curl -H "x-api-key: votre-clé-api" https://api.linkup.com/v1/...
 ```
+
+## Fonctionnalités principales
+
+L'API LinkUp offre plusieurs catégories de fonctionnalités :
+
+### Authentification LinkedIn
+- Connexion à LinkedIn
+- Vérification du code de sécurité
+
+### Gestion des Profils
+- Extraction des informations de contact
+- Analyse des profils
+
+### Gestion des Posts
+- Création de posts
+- Extraction de posts
+- Interactions (Like, Comment, Repost)
+
+### Recherche
+- Recherche de personnes
+- Recherche d'entreprises
+
+### Gestion du Réseau
+- Envoi de demandes de connexion
+- Extraction des connexions
+
+## Rate Limiting
+
+- 100 requêtes par minute par clé API
+- 1000 requêtes par jour par clé API
+- Les limites peuvent être augmentées selon votre plan
+
+## Format des réponses
+
+Toutes les réponses sont au format JSON et incluent au minimum :
+- Un code de statut HTTP
+- Un corps de réponse avec les données ou un message d'erreur
+
+### Exemple de réponse réussie
+```json
+{
+  "status": "success",
+  "data": {
+    // Les données spécifiques à l'endpoint
+  }
+}
+```
+
+### Exemple d'erreur
+```json
+{
+  "status": "error",
+  "error": {
+    "code": "error_code",
+    "message": "Description détaillée de l'erreur"
+  }
+}
+```
+
+## Support
+
+Si vous rencontrez des problèmes ou avez des questions :
+- Email: support@linkup.com
+- Documentation: https://docs.linkup.com
+- Status API: https://status.linkup.com
