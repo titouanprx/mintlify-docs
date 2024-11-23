@@ -1,57 +1,59 @@
 ---
 title: 'Extract Posts'
 api: 'POST /v1/linkup/posts/extract'
-description: 'Extraire les posts LinkedIn'
+description: 'Extract LinkedIn posts'
 ---
+
+Extract posts from LinkedIn profiles or feeds.
 
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API
+  Your API key
 </ParamField>
 
 ### Body Parameters
 
 <ParamField body="post_type" type="string">
-  Type de post à extraire
+  Type of posts to extract
 </ParamField>
 
 <ParamField body="sort_by" type="string" default="date_posted">
-  Critère de tri
+  Sort criteria for the posts
 </ParamField>
 
 <ParamField body="keyword" type="string">
-  Mot-clé pour filtrer les posts
+  Keyword to filter posts
 </ParamField>
 
 <ParamField body="post_date" type="string">
-  Date de publication
+  Filter posts by date
 </ParamField>
 
 <ParamField body="linkedin_url" type="string">
-  URL LinkedIn pour filtrer les posts d'un profil spécifique
+  LinkedIn URL to extract posts from
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Nombre de résultats à retourner
+  Number of posts to return
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
-  Cookie de session LinkedIn
+  LinkedIn session cookie
 </ParamField>
 
 ### Response
 
 <ResponseField name="posts" type="array">
-  Liste des posts extraits
+  List of extracted posts
 </ResponseField>
 
 <RequestExample>
 ```bash
 curl -X POST 'https://api.example.com/v1/linkup/posts/extract' \
--H 'x-api-key: votre-api-key' \
+-H 'x-api-key: your-api-key' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
--d 'login_cookie=votre-cookie' \
+-d 'login_cookie=your-cookie' \
 -d 'total_results=10'
 ```
 </RequestExample>
@@ -62,7 +64,7 @@ curl -X POST 'https://api.example.com/v1/linkup/posts/extract' \
   "posts": [
     {
       "id": "post123",
-      "content": "Contenu du post",
+      "content": "Post content",
       "date": "2024-01-01",
       "likes": 42,
       "comments": 5

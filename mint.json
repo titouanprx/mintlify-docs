@@ -21,24 +21,6 @@
     "name": "Dashboard",
     "url": "https://dashboard.linkup.com"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "docs"
-    },
-    {
-      "name": "API Reference",
-      "icon": "square-terminal",
-      "url": "api-reference"
-    }
-  ],
   "navigation": [
     {
       "group": "API Reference",
@@ -47,45 +29,39 @@
       ]
     },
     {
-      "group": "LinkedIn Authentication",
+      "group": "Login",
       "pages": [
-        "api-reference/linkup/auth/login",
-        "api-reference/linkup/auth/verify"
+        "api-reference/linkup/Login/login",
+        "api-reference/linkup/Login/verify"
       ]
     },
     {
-      "group": "Profile Management",
+      "group": "Companies",
       "pages": [
-        "api-reference/linkup/profile/extract-contact"
+        "api-reference/linkup/Companies/search"
       ]
     },
     {
-      "group": "Post Management",
+      "group": "People",
       "pages": [
+        "api-reference/linkup/People/connect",
+        "api-reference/linkup/People/connections",
+        "api-reference/linkup/People/extract-contact"
+      ]
+    },
+    {
+      "group": "Posts",
+      "pages": [
+        "api-reference/linkup/posts/comment",
+        "api-reference/linkup/posts/create",
         "api-reference/linkup/posts/extract",
-        "api-reference/linkup/create",
-        "api-reference/linkup/comment",
-        "api-reference/linkup/like",
-        "api-reference/linkup/repost"
-      ]
-    },
-    {
-      "group": "Search",
-      "pages": [
-        "api-reference/linkup/people/search",
-        "api-reference/linkup/companies/search"
-      ]
-    },
-    {
-      "group": "Network",
-      "pages": [
-        "api-reference/linkup/network/connect",
-        "api-reference/linkup/network/connections"
+        "api-reference/linkup/posts/like",
+        "api-reference/linkup/posts/repost"
       ]
     }
   ],
   "footerSocials": {
-    "x": "https://twitter.com/linkupapi",
+    "twitter": "https://twitter.com/linkupapi",
     "github": "https://github.com/linkupapi",
     "linkedin": "https://linkedin.com/company/linkupapi"
   }
