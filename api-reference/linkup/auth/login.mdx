@@ -1,0 +1,46 @@
+---
+title: 'Login'
+api: 'POST /v1/linkup/auth/login'
+description: 'Authentification LinkedIn'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="email" type="string" required>
+  Email du compte LinkedIn
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  Mot de passe du compte LinkedIn
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Statut de l'authentification
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/auth/login' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'email=user@example.com' \
+-d 'password=votrepassword'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "session": "votre-session-linkedin"
+}
+```
+</ResponseExample>

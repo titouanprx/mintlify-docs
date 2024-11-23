@@ -1,0 +1,73 @@
+---
+title: 'Extract Posts'
+api: 'POST /v1/linkup/posts/extract'
+description: 'Extraire les posts LinkedIn'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_type" type="string">
+  Type de post à extraire
+</ParamField>
+
+<ParamField body="sort_by" type="string" default="date_posted">
+  Critère de tri
+</ParamField>
+
+<ParamField body="keyword" type="string">
+  Mot-clé pour filtrer les posts
+</ParamField>
+
+<ParamField body="post_date" type="string">
+  Date de publication
+</ParamField>
+
+<ParamField body="linkedin_url" type="string">
+  URL LinkedIn pour filtrer les posts d'un profil spécifique
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Nombre de résultats à retourner
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  Cookie de session LinkedIn
+</ParamField>
+
+### Response
+
+<ResponseField name="posts" type="array">
+  Liste des posts extraits
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/posts/extract' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'login_cookie=votre-cookie' \
+-d 'total_results=10'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "posts": [
+    {
+      "id": "post123",
+      "content": "Contenu du post",
+      "date": "2024-01-01",
+      "likes": 42,
+      "comments": 5
+    }
+  ]
+}
+```
+</ResponseExample>

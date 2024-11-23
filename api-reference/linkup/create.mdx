@@ -1,0 +1,50 @@
+---
+title: 'Create Post'
+api: 'POST /v1/linkup/create'
+description: 'Créer un nouveau post LinkedIn'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="message" type="string" required>
+  Contenu du post
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  Cookie de session LinkedIn
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Statut de la création du post
+</ResponseField>
+
+<ResponseField name="post_id" type="string">
+  ID du post créé
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/create' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'message=Contenu du post' \
+-d 'login_cookie=votre-cookie'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "post_id": "post123"
+}
+```
+</ResponseExample>

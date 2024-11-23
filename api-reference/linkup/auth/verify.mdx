@@ -1,0 +1,46 @@
+---
+title: 'Verify Code'
+api: 'POST /v1/linkup/auth/verify'
+description: 'Vérification du code LinkedIn'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="code" type="string" required>
+  Code de vérification reçu
+</ParamField>
+
+<ParamField body="email" type="string" required>
+  Email associé au compte
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Statut de la vérification
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/auth/verify' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'code=123456' \
+-d 'email=user@example.com'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "verified": true
+}
+```
+</ResponseExample>
