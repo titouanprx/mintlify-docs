@@ -1,0 +1,45 @@
+---
+title: 'Like Post'
+api: 'POST /v1/linkup/like'
+description: 'Liker un post LinkedIn'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL du post à liker
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  Cookie de session LinkedIn
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Statut de l'action
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/like' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'post_url=https://linkedin.com/post/123' \
+-d 'login_cookie=votre-cookie'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "status": "success"
+}
+```
+</ResponseExample>

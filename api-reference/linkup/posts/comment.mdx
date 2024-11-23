@@ -1,0 +1,55 @@
+---
+title: 'Comment Post'
+api: 'POST /v1/linkup/comment'
+description: 'Commenter un post LinkedIn'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL du post à commenter
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Contenu du commentaire
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  Cookie de session LinkedIn
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Statut de l'action
+</ResponseField>
+
+<ResponseField name="comment_id" type="string">
+  ID du commentaire créé
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/comment' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'post_url=https://linkedin.com/post/123' \
+-d 'message=Super article !' \
+-d 'login_cookie=votre-cookie'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "comment_id": "comment123"
+}
+```
+</ResponseExample>

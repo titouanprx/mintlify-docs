@@ -1,0 +1,54 @@
+---
+title: 'Get Connections'
+api: 'POST /v1/linkup/network/connections'
+description: 'Récupérer la liste des connexions'
+---
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="total_results" type="integer" default="10">
+  Nombre de connexions à retourner
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  Cookie de session LinkedIn
+</ParamField>
+
+### Response
+
+<ResponseField name="connections" type="array">
+  Liste des connexions
+</ResponseField>
+
+<RequestExample>
+```bash
+curl -X POST 'https://api.example.com/v1/linkup/network/connections' \
+-H 'x-api-key: votre-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'total_results=10' \
+-d 'login_cookie=votre-cookie'
+```
+</RequestExample>
+
+<ResponseExample>
+```json
+{
+  "connections": [
+    {
+      "name": "John Doe",
+      "position": "Developer",
+      "company": "TechCorp",
+      "connected_at": "2024-01-01",
+      "profile_url": "https://linkedin.com/in/johndoe"
+    }
+  ],
+  "total": 1
+}
+```
+</ResponseExample>
