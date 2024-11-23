@@ -11,15 +11,6 @@
     "light": "#07C983",
     "dark": "#0D9373"
   },
-  "openapi": ["openapi.json"],
-  "api": {
-    "baseUrl": "https://api.linkup.com",
-    "auth": {
-      "method": "key",
-      "name": "x-api-key",
-      "inputPrefix": "Bearer"
-    }
-  },
   "topbarLinks": [
     {
       "name": "Support",
@@ -30,32 +21,25 @@
     "name": "Dashboard",
     "url": "https://dashboard.linkup.com"
   },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
   "anchors": [
     {
       "name": "Documentation",
       "icon": "book-open-cover",
-      "url": "/docs"
+      "url": "docs"
     },
     {
       "name": "API Reference",
       "icon": "square-terminal",
-      "url": "/api-reference"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "/blog"
+      "url": "api-reference"
     }
   ],
   "navigation": [
-    {
-      "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "authentication"
-      ]
-    },
     {
       "group": "API Reference",
       "pages": [
@@ -63,34 +47,40 @@
       ]
     },
     {
-      "group": "Endpoints",
+      "group": "LinkedIn Authentication",
       "pages": [
-        {
-          "group": "Authentication",
-          "pages": ["api/auth/login", "api/auth/verify"]
-        },
-        {
-          "group": "Profile",
-          "pages": ["api/profile/extract-contact"]
-        },
-        {
-          "group": "Posts",
-          "pages": [
-            "api/posts/extract",
-            "api/posts/create",
-            "api/posts/comment",
-            "api/posts/like",
-            "api/posts/repost"
-          ]
-        },
-        {
-          "group": "Search",
-          "pages": ["api/search/people", "api/search/companies"]
-        },
-        {
-          "group": "Network",
-          "pages": ["api/network/connect", "api/network/connections"]
-        }
+        "api-reference/linkup/auth/login",
+        "api-reference/linkup/auth/verify"
+      ]
+    },
+    {
+      "group": "Profile Management",
+      "pages": [
+        "api-reference/linkup/profile/extract-contact"
+      ]
+    },
+    {
+      "group": "Post Management",
+      "pages": [
+        "api-reference/linkup/posts/extract",
+        "api-reference/linkup/create",
+        "api-reference/linkup/comment",
+        "api-reference/linkup/like",
+        "api-reference/linkup/repost"
+      ]
+    },
+    {
+      "group": "Search",
+      "pages": [
+        "api-reference/linkup/people/search",
+        "api-reference/linkup/companies/search"
+      ]
+    },
+    {
+      "group": "Network",
+      "pages": [
+        "api-reference/linkup/network/connect",
+        "api-reference/linkup/network/connections"
       ]
     }
   ],
