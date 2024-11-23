@@ -1,81 +1,81 @@
 ---
 title: 'Introduction'
-description: 'Bienvenue dans la documentation de LinkUp API'
+description: 'Welcome to the LinkUp API documentation'
 ---
 
 # LinkUp API
 
-LinkUp API est une solution puissante pour automatiser vos interactions LinkedIn. Notre API vous permet d'effectuer diverses opérations LinkedIn de manière programmatique, en toute sécurité.
+LinkUp API is a powerful solution for automating your LinkedIn interactions. Our API allows you to programmatically perform various LinkedIn operations securely and efficiently.
 
-## Authentification
+## Authentication
 
-Toutes les requêtes à l'API nécessitent une clé API qui doit être incluse dans l'en-tête `x-api-key`. Pour obtenir votre clé API, connectez-vous à votre [dashboard](https://dashboard.linkup.com).
+All API requests require an API key that must be included in the `x-api-key` header. To obtain your API key, log in to your [dashboard](https://dashboard.linkup.com).
 
 ```bash
-curl -H "x-api-key: votre-clé-api" https://api.linkup.com/v1/...
+curl -H "x-api-key: your-api-key" https://api.linkup.com/v1/...
 ```
 
-## Fonctionnalités principales
+## Core Features
 
-L'API LinkUp offre plusieurs catégories de fonctionnalités :
+LinkUp API offers several categories of features:
 
-### Authentification LinkedIn
-- Connexion à LinkedIn
-- Vérification du code de sécurité
+### LinkedIn Authentication
+- Login to LinkedIn
+- Security code verification
 
-### Gestion des Profils
-- Extraction des informations de contact
-- Analyse des profils
+### Profile Management
+- Contact information extraction
+- Profile analysis
 
-### Gestion des Posts
-- Création de posts
-- Extraction de posts
+### Post Management
+- Create posts
+- Extract posts
 - Interactions (Like, Comment, Repost)
 
-### Recherche
-- Recherche de personnes
-- Recherche d'entreprises
+### Search
+- People search
+- Company search
 
-### Gestion du Réseau
-- Envoi de demandes de connexion
-- Extraction des connexions
+### Network Management
+- Send connection requests
+- Extract connections
 
 ## Rate Limiting
 
-- 100 requêtes par minute par clé API
-- 1000 requêtes par jour par clé API
-- Les limites peuvent être augmentées selon votre plan
+- 100 requests per minute per API key
+- 1000 requests per day per API key
+- Limits can be increased based on your plan
 
-## Format des réponses
+## Response Format
 
-Toutes les réponses sont au format JSON et incluent au minimum :
-- Un code de statut HTTP
-- Un corps de réponse avec les données ou un message d'erreur
+All responses are in JSON format and include at minimum:
+- An HTTP status code
+- A response body with data or error message
 
-### Exemple de réponse réussie
+### Successful Response Example
 ```json
 {
   "status": "success",
   "data": {
-    // Les données spécifiques à l'endpoint
+    // Endpoint-specific data
   }
 }
 ```
 
-### Exemple d'erreur
+### Error Response Example
 ```json
 {
   "status": "error",
   "error": {
     "code": "error_code",
-    "message": "Description détaillée de l'erreur"
+    "message": "Detailed error description"
   }
 }
 ```
 
 ## Support
 
-Si vous rencontrez des problèmes ou avez des questions :
+If you encounter any issues or have questions:
 - Email: support@linkup.com
 - Documentation: https://docs.linkup.com
-- Status API: https://status.linkup.com
+- API Status: https://status.linkup.com
