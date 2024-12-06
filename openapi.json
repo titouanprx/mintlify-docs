@@ -1,1 +1,879 @@
-{"openapi":"3.1.0","info":{"title":"LinkedIn API","description":"LinkedIn Automation API","version":"1.0.0"},"paths":{"/v1/linkedin/linkedin-stats":{"get":{"tags":["linkedin"],"summary":"Get Linkedin Usage Statistics","description":"Get LinkedIn usage statistics by function","operationId":"get_linkedin_usage_statistics_v1_linkedin_linkedin_stats_get","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/auth/login":{"post":{"tags":["linkedin"],"summary":"Login","description":"LinkedIn authentication endpoint\n\nParameters:\n- email: User's LinkedIn email\n- password: User's LinkedIn password\n- api_key: API authentication key\n\nReturns:\n- JSONResponse with authentication status and result","operationId":"login_v1_linkedin_auth_login_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_login_v1_linkedin_auth_login_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/auth/verify":{"post":{"tags":["linkedin"],"summary":"Verify Code","description":"Verify LinkedIn authentication code\n\nParameters:\n- code: Verification code received via email\n- email: User's LinkedIn email\n- api_key: API authentication key\n\nReturns:\n- JSONResponse with verification status and result","operationId":"verify_code_v1_linkedin_auth_verify_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_verify_code_v1_linkedin_auth_verify_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/profile/me":{"get":{"tags":["linkedin"],"summary":"Get My Profile","description":"Get current user's LinkedIn profile information","operationId":"get_my_profile_v1_linkedin_profile_me_get","parameters":[{"name":"linkedin-cookie","in":"header","required":true,"schema":{"type":"string","title":"Linkedin-Cookie"}},{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/profile/extract-info":{"post":{"tags":["linkedin"],"summary":"Extract Profile","operationId":"extract_profile_v1_linkedin_profile_extract_info_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_extract_profile_v1_linkedin_profile_extract_info_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/profile/extract-contact":{"post":{"tags":["linkedin"],"summary":"Extract Contact","operationId":"extract_contact_v1_linkedin_profile_extract_contact_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_extract_contact_v1_linkedin_profile_extract_contact_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/posts/extract":{"post":{"tags":["linkedin"],"summary":"Extract Posts","description":"Extract LinkedIn posts based on various filters","operationId":"extract_posts_v1_linkedin_posts_extract_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_extract_posts_v1_linkedin_posts_extract_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/people/search":{"post":{"tags":["linkedin"],"summary":"Search People","operationId":"search_people_v1_linkedin_people_search_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_search_people_v1_linkedin_people_search_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/companies/info":{"post":{"tags":["linkedin"],"summary":"Get Company Info","description":"Get detailed information about a LinkedIn company\n\nArgs:\n    company_url: LinkedIn company profile URL\n    login_cookie: LinkedIn authentication cookie\n    api_key: API authentication key\n    \nReturns:\n    JSONResponse: Company information","operationId":"get_company_info_v1_linkedin_companies_info_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_company_info_v1_linkedin_companies_info_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/companies/search":{"post":{"tags":["linkedin"],"summary":"Search Companies","operationId":"search_companies_v1_linkedin_companies_search_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_search_companies_v1_linkedin_companies_search_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/posts/create":{"post":{"tags":["linkedin"],"summary":"Create Post","description":"Create a LinkedIn post with optional media","operationId":"create_post_v1_linkedin_posts_create_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_create_post_v1_linkedin_posts_create_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedinposts/comment":{"post":{"tags":["linkedin"],"summary":"Comment Post","description":"Add a comment to a LinkedIn post","operationId":"comment_post_v1_linkedinposts_comment_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_comment_post_v1_linkedinposts_comment_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedinposts/like":{"post":{"tags":["linkedin"],"summary":"Like Post","description":"Like a LinkedIn post","operationId":"like_post_v1_linkedinposts_like_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_like_post_v1_linkedinposts_like_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedinposts/repost":{"post":{"tags":["linkedin"],"summary":"Repost","description":"Repost a LinkedIn post","operationId":"repost_v1_linkedinposts_repost_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_repost_v1_linkedinposts_repost_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/network/accept-invitation":{"post":{"tags":["linkedin"],"summary":"Accept Invitation","description":"Accept a LinkedIn invitation","operationId":"accept_invitation_v1_linkedin_network_accept_invitation_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_accept_invitation_v1_linkedin_network_accept_invitation_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/network/connect":{"post":{"tags":["linkedin"],"summary":"Connect To Profile","description":"Se connecter à un profil","operationId":"connect_to_profile_v1_linkedin_network_connect_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_connect_to_profile_v1_linkedin_network_connect_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/network/connections":{"post":{"tags":["linkedin"],"summary":"Get Connections","operationId":"get_connections_v1_linkedin_network_connections_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_connections_v1_linkedin_network_connections_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/people/send-message":{"post":{"tags":["linkedin"],"summary":"Send Linkedin Message","description":"Send a message to a LinkedIn user\n\nParameters:\n- login_cookie: LinkedIn authentication cookie\n- message_text: Content of the message to send\n- LinkedinURL: URL of the LinkedIn profile to message\n- api_key: API authentication key\n\nReturns:\n- JSONResponse with status and result data","operationId":"send_linkedin_message_v1_linkedin_people_send_message_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_send_linkedin_message_v1_linkedin_people_send_message_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/posts/reactions":{"post":{"tags":["linkedin"],"summary":"Get Post Reactions","operationId":"get_post_reactions_v1_linkedin_posts_reactions_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_post_reactions_v1_linkedin_posts_reactions_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/posts/comments":{"post":{"tags":["linkedin"],"summary":"Get Post Comments","operationId":"get_post_comments_v1_linkedin_posts_comments_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_post_comments_v1_linkedin_posts_comments_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/network/invitations":{"post":{"tags":["linkedin"],"summary":"Get Invitations","operationId":"get_invitations_v1_linkedin_network_invitations_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_invitations_v1_linkedin_network_invitations_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/messages/inbox":{"post":{"tags":["linkedin"],"summary":"Get Inbox Messages","operationId":"get_inbox_messages_v1_linkedin_messages_inbox_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_inbox_messages_v1_linkedin_messages_inbox_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/v1/linkedin/messages/conversation":{"post":{"tags":["linkedin"],"summary":"Get Conversation Details","operationId":"get_conversation_details_v1_linkedin_messages_conversation_post","parameters":[{"name":"x-api-key","in":"header","required":true,"schema":{"type":"string","title":"X-Api-Key"}}],"requestBody":{"required":true,"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_get_conversation_details_v1_linkedin_messages_conversation_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}}},"components":{"schemas":{"Body_accept_invitation_v1_linkedin_network_accept_invitation_post":{"properties":{"shared_secret":{"type":"string","title":"Shared Secret"},"entity_urn":{"type":"string","title":"Entity Urn"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["shared_secret","entity_urn","login_cookie"],"title":"Body_accept_invitation_v1_linkedin_network_accept_invitation_post"},"Body_comment_post_v1_linkedinposts_comment_post":{"properties":{"post_url":{"type":"string","title":"Post Url"},"message":{"type":"string","title":"Message"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["post_url","message","login_cookie"],"title":"Body_comment_post_v1_linkedinposts_comment_post"},"Body_connect_to_profile_v1_linkedin_network_connect_post":{"properties":{"linkedin_url":{"type":"string","title":"Linkedin Url"},"message":{"type":"string","title":"Message","default":""},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["linkedin_url","login_cookie"],"title":"Body_connect_to_profile_v1_linkedin_network_connect_post"},"Body_create_post_v1_linkedin_posts_create_post":{"properties":{"message":{"type":"string","title":"Message"},"login_cookie":{"type":"string","title":"Login Cookie"},"file":{"anyOf":[{"type":"string","format":"binary"},{"type":"null"}],"title":"File"}},"type":"object","required":["message","login_cookie"],"title":"Body_create_post_v1_linkedin_posts_create_post"},"Body_extract_contact_v1_linkedin_profile_extract_contact_post":{"properties":{"linkedin_url":{"type":"string","title":"Linkedin Url"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["linkedin_url","login_cookie"],"title":"Body_extract_contact_v1_linkedin_profile_extract_contact_post"},"Body_extract_posts_v1_linkedin_posts_extract_post":{"properties":{"post_type":{"type":"string","title":"Post Type","default":""},"sort_by":{"type":"string","title":"Sort By","default":"date_posted"},"keyword":{"type":"string","title":"Keyword","default":""},"post_date":{"type":"string","title":"Post Date","default":""},"linkedin_url":{"type":"string","title":"Linkedin Url","default":""},"total_results":{"type":"integer","title":"Total Results","default":10},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["login_cookie"],"title":"Body_extract_posts_v1_linkedin_posts_extract_post"},"Body_extract_profile_v1_linkedin_profile_extract_info_post":{"properties":{"linkedin_url":{"type":"string","title":"Linkedin Url"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["linkedin_url","login_cookie"],"title":"Body_extract_profile_v1_linkedin_profile_extract_info_post"},"Body_get_company_info_v1_linkedin_companies_info_post":{"properties":{"company_url":{"type":"string","title":"Company Url"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["company_url","login_cookie"],"title":"Body_get_company_info_v1_linkedin_companies_info_post"},"Body_get_connections_v1_linkedin_network_connections_post":{"properties":{"total_results":{"type":"integer","title":"Total Results","default":10},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["login_cookie"],"title":"Body_get_connections_v1_linkedin_network_connections_post"},"Body_get_conversation_details_v1_linkedin_messages_conversation_post":{"properties":{"conversation_id":{"type":"string","title":"Conversation Id"},"login_cookie":{"type":"string","title":"Login Cookie"},"message_count":{"type":"integer","title":"Message Count","default":10}},"type":"object","required":["conversation_id","login_cookie"],"title":"Body_get_conversation_details_v1_linkedin_messages_conversation_post"},"Body_get_inbox_messages_v1_linkedin_messages_inbox_post":{"properties":{"login_cookie":{"type":"string","title":"Login Cookie"},"count":{"type":"integer","title":"Count","default":10}},"type":"object","required":["login_cookie"],"title":"Body_get_inbox_messages_v1_linkedin_messages_inbox_post"},"Body_get_invitations_v1_linkedin_network_invitations_post":{"properties":{"total_results":{"type":"integer","title":"Total Results","default":10},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["login_cookie"],"title":"Body_get_invitations_v1_linkedin_network_invitations_post"},"Body_get_post_comments_v1_linkedin_posts_comments_post":{"properties":{"post_url":{"type":"string","title":"Post Url"},"login_cookie":{"type":"string","title":"Login Cookie"},"total_comments":{"type":"integer","title":"Total Comments","default":10}},"type":"object","required":["post_url","login_cookie"],"title":"Body_get_post_comments_v1_linkedin_posts_comments_post"},"Body_get_post_reactions_v1_linkedin_posts_reactions_post":{"properties":{"post_url":{"type":"string","title":"Post Url"},"login_cookie":{"type":"string","title":"Login Cookie"},"total_results":{"type":"integer","title":"Total Results","default":10}},"type":"object","required":["post_url","login_cookie"],"title":"Body_get_post_reactions_v1_linkedin_posts_reactions_post"},"Body_like_post_v1_linkedinposts_like_post":{"properties":{"post_url":{"type":"string","title":"Post Url"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["post_url","login_cookie"],"title":"Body_like_post_v1_linkedinposts_like_post"},"Body_login_v1_linkedin_auth_login_post":{"properties":{"email":{"type":"string","title":"Email"},"password":{"type":"string","title":"Password"}},"type":"object","required":["email","password"],"title":"Body_login_v1_linkedin_auth_login_post"},"Body_repost_v1_linkedinposts_repost_post":{"properties":{"post_url":{"type":"string","title":"Post Url"},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["post_url","login_cookie"],"title":"Body_repost_v1_linkedinposts_repost_post"},"Body_search_companies_v1_linkedin_companies_search_post":{"properties":{"location":{"type":"string","title":"Location","default":""},"sector":{"type":"string","title":"Sector","default":""},"keyword":{"type":"string","title":"Keyword","default":""},"company_size":{"type":"string","title":"Company Size","default":""},"total_results":{"type":"integer","title":"Total Results","default":10},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["login_cookie"],"title":"Body_search_companies_v1_linkedin_companies_search_post"},"Body_search_people_v1_linkedin_people_search_post":{"properties":{"company_url":{"type":"string","title":"Company Url","default":""},"location":{"type":"string","title":"Location","default":""},"school_url":{"type":"string","title":"School Url","default":""},"network":{"type":"string","title":"Network","default":""},"keyword":{"type":"string","title":"Keyword","default":""},"total_results":{"type":"integer","title":"Total Results","default":10},"login_cookie":{"type":"string","title":"Login Cookie"}},"type":"object","required":["login_cookie"],"title":"Body_search_people_v1_linkedin_people_search_post"},"Body_send_linkedin_message_v1_linkedin_people_send_message_post":{"properties":{"login_cookie":{"type":"string","title":"Login Cookie"},"message_text":{"type":"string","title":"Message Text"},"LinkedinURL":{"type":"string","title":"Linkedinurl"}},"type":"object","required":["login_cookie","message_text","LinkedinURL"],"title":"Body_send_linkedin_message_v1_linkedin_people_send_message_post"},"Body_verify_code_v1_linkedin_auth_verify_post":{"properties":{"code":{"type":"string","title":"Code"},"email":{"type":"string","title":"Email"}},"type":"object","required":["code","email"],"title":"Body_verify_code_v1_linkedin_auth_verify_post"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LinkUp API",
+    "description": "LinkedIn Automation API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/linkup/auth/login": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Login",
+        "description": "Authentification LinkedIn",
+        "operationId": "login_v1_linkup_auth_login_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_v1_linkup_auth_login_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/auth/verify": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Verify Code",
+        "description": "Vérification du code",
+        "operationId": "verify_code_v1_linkup_auth_verify_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_verify_code_v1_linkup_auth_verify_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/profile/extract-contact": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Extract Contact",
+        "description": "Extraire les informations de contact",
+        "operationId": "extract_contact_v1_linkup_profile_extract_contact_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_extract_contact_v1_linkup_profile_extract_contact_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/posts/extract": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Extract Posts",
+        "description": "Extraire les posts",
+        "operationId": "extract_posts_v1_linkup_posts_extract_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_extract_posts_v1_linkup_posts_extract_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/people/search": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Search People",
+        "description": "Rechercher des personnes",
+        "operationId": "search_people_v1_linkup_people_search_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_search_people_v1_linkup_people_search_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/companies/search": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Search Companies",
+        "description": "Rechercher des entreprises",
+        "operationId": "search_companies_v1_linkup_companies_search_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_search_companies_v1_linkup_companies_search_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/create": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Create Post",
+        "operationId": "create_post_v1_linkup_create_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_post_v1_linkup_create_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/comment": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Comment Post",
+        "operationId": "comment_post_v1_linkup_comment_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_comment_post_v1_linkup_comment_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/like": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Like Post",
+        "operationId": "like_post_v1_linkup_like_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_like_post_v1_linkup_like_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/repost": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Repost",
+        "operationId": "repost_v1_linkup_repost_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_repost_v1_linkup_repost_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/network/connect": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Connect To Profile",
+        "description": "Se connecter à un profil",
+        "operationId": "connect_to_profile_v1_linkup_network_connect_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_connect_to_profile_v1_linkup_network_connect_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/linkup/network/connections": {
+      "post": {
+        "tags": ["linkup"],
+        "summary": "Get Connections",
+        "description": "Extraire les connexions",
+        "operationId": "get_connections_v1_linkup_network_connections_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_get_connections_v1_linkup_network_connections_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_comment_post_v1_linkup_comment_post": {
+        "properties": {
+          "post_url": {
+            "type": "string",
+            "title": "Post Url"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_url",
+          "message",
+          "login_cookie"
+        ],
+        "title": "Body_comment_post_v1_linkup_comment_post"
+      },
+      "Body_connect_to_profile_v1_linkup_network_connect_post": {
+        "properties": {
+          "linkedin_url": {
+            "type": "string",
+            "title": "Linkedin Url"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": ""
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "linkedin_url",
+          "login_cookie"
+        ],
+        "title": "Body_connect_to_profile_v1_linkup_network_connect_post"
+      },
+      "Body_create_post_v1_linkup_create_post": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message",
+          "login_cookie"
+        ],
+        "title": "Body_create_post_v1_linkup_create_post"
+      },
+      "Body_extract_contact_v1_linkup_profile_extract_contact_post": {
+        "properties": {
+          "linkedin_url": {
+            "type": "string",
+            "title": "Linkedin Url"
+          },
+          "login_token": {
+            "type": "string",
+            "title": "Login Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "linkedin_url",
+          "login_token"
+        ],
+        "title": "Body_extract_contact_v1_linkup_profile_extract_contact_post"
+      },
+      "Body_extract_posts_v1_linkup_posts_extract_post": {
+        "properties": {
+          "post_type": {
+            "type": "string",
+            "title": "Post Type",
+            "default": ""
+          },
+          "sort_by": {
+            "type": "string",
+            "title": "Sort By",
+            "default": "date_posted"
+          },
+          "keyword": {
+            "type": "string",
+            "title": "Keyword",
+            "default": ""
+          },
+          "post_date": {
+            "type": "string",
+            "title": "Post Date",
+            "default": ""
+          },
+          "linkedin_url": {
+            "type": "string",
+            "title": "Linkedin Url",
+            "default": ""
+          },
+          "total_results": {
+            "type": "integer",
+            "title": "Total Results",
+            "default": 10
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "login_cookie"
+        ],
+        "title": "Body_extract_posts_v1_linkup_posts_extract_post"
+      },
+      "Body_get_connections_v1_linkup_network_connections_post": {
+        "properties": {
+          "total_results": {
+            "type": "integer",
+            "title": "Total Results",
+            "default": 10
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "login_cookie"
+        ],
+        "title": "Body_get_connections_v1_linkup_network_connections_post"
+      },
+      "Body_like_post_v1_linkup_like_post": {
+        "properties": {
+          "post_url": {
+            "type": "string",
+            "title": "Post Url"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_url",
+          "login_cookie"
+        ],
+        "title": "Body_like_post_v1_linkup_like_post"
+      },
+      "Body_login_v1_linkup_auth_login_post": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "password": {
+            "type": "string",
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "Body_login_v1_linkup_auth_login_post"
+      },
+      "Body_repost_v1_linkup_repost_post": {
+        "properties": {
+          "post_url": {
+            "type": "string",
+            "title": "Post Url"
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "post_url",
+          "login_cookie"
+        ],
+        "title": "Body_repost_v1_linkup_repost_post"
+      },
+      "Body_search_companies_v1_linkup_companies_search_post": {
+        "properties": {
+          "location": {
+            "type": "string",
+            "title": "Location",
+            "default": ""
+          },
+          "sector": {
+            "type": "string",
+            "title": "Sector",
+            "default": ""
+          },
+          "keyword": {
+            "type": "string",
+            "title": "Keyword",
+            "default": ""
+          },
+          "company_size": {
+            "type": "string",
+            "title": "Company Size",
+            "default": ""
+          },
+          "total_results": {
+            "type": "integer",
+            "title": "Total Results",
+            "default": 5
+          },
+          "login_cookie": {
+            "type": "string",
+            "title": "Login Cookie"
+          }
+        },
+        "type": "object",
+        "required": [
+          "login_cookie"
+        ],
+        "title": "Body_search_companies_v1_linkup_companies_search_post"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
