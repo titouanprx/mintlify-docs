@@ -1,52 +1,102 @@
 ---
-title: 'LinkedIn Login'
-api: 'POST /v1/linkup/auth/login'
+title: 'Login'
 description: 'Authenticate with LinkedIn credentials'
+api: 'POST /v1/linkedin/auth/login'
 ---
 
-Connect to LinkedIn using email and password.
+## Overview
 
-### Header Parameters
+This endpoint allows you to authenticate with LinkedIn using email and password credentials. It handles the initial authentication process and will trigger LinkedIn's security verification if needed.
 
-<ParamField header="x-api-key" type="string" required>
-  Your API key
-</ParamField>
+## Authentication
 
-### Body Parameters
+All endpoints require the `x-api-key` header. You need to include your API key with each request.
 
-<ParamField body="email" type="string" required>
-  LinkedIn account email
-</ParamField>
-
-<ParamField body="password" type="string" required>
-  LinkedIn account password
-</ParamField>
-
-### Response
-
-<ResponseField name="status" type="string">
-  Authentication status
-</ResponseField>
-
-<ResponseField name="session" type="string">
-  LinkedIn session token
-</ResponseField>
-
-<RequestExample>
 ```bash
-curl -X POST 'https://api.linkup.com/v1/linkup/auth/login' \
--H 'x-api-key: your-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'email=user@example.com' \
--d 'password=yourpassword'
+x-api-key: your_api_key_here
 ```
-</RequestExample>
 
-<ResponseExample>
+## Required Parameters
+
+| Parameter | Type     | Description                                                           |
+|-----------|----------|-----------------------------------------------------------------------|
+| `email`   | string   | Your LinkedIn account email address                                    |
+| `password`| string   | Your LinkedIn account password                                         |
+
+## Code Examples
+
+### Python
+
+```python
+import requests
+
+url = "https://api.linkupapi.com/v1/linkedin/auth/login"
+
+headers = {
+    "x-api-key": "your_api_key_here",
+    "Content-Type": "application/x-www-form-urlencoded"
+}
+
+data = {
+    "email": "your.email@example.com",
+    "password": "your_password"
+}
+
+response = requests.post(url, headers=headers, data=data)
+print(response.text)
+```
+
+### cURL
+
+```bash
+curl -X POST https://api.linkupapi.com/v1/linkedin/auth/login \
+  -H 'x-api-key: your_api_key_here' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'email=your.email@example.com' \
+  -d 'password=your_password'
+```
+
+## Response
+
+### Successful Response (No Verification Required)
+
 ```json
 {
   "status": "success",
-  "session": "your-linkedin-session"
+  "message": "Authentication successful",
+  "data": {
+    "cookie": "li_at=XXXXXXX",
+    "requires_verification": false
+  }
 }
 ```
-</ResponseExample>
+
+### Response (Verification Required)
+
+```json
+{
+  "status": "pending",
+  "message": "Verification required",
+  "data": {
+    "requires_verification": true,
+    "verification_method": "email",
+    "email": "e***@example.com"
+  }
+}
+```
+
+## Error Codes
+
+| Status Code | Description                                                  |
+|------------|--------------------------------------------------------------|
+| 400        | Invalid request parameters                                    |
+| 401        | Invalid credentials                                          |
+| 403        | x-api-key is missing or invalid                              |
+| 429        | Too many login attempts                                      |
+| 500        | Internal server error                                        |
+
+## Notes
+
+- The x-api-key header is required for all API calls
+- The returned LinkedIn cookie should be stored securely and used for subsequent API calls
+- Login attempts are rate-limited to prevent abuse

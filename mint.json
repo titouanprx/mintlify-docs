@@ -66,6 +66,12 @@
       ]
     },
     {
+      "group": "Statistiques",
+      "pages": [
+        "api-reference/linkup/Stats/linkedin-stats"
+      ]
+    },
+    {
       "group": "Authentication",
       "pages": [
         "api-reference/linkup/Login/login",
@@ -73,27 +79,47 @@
       ]
     },
     {
+      "group": "Profile",
+      "pages": [
+        "api-reference/linkup/Profile/me",
+        "api-reference/linkup/Profile/extract-info",
+        "api-reference/linkup/Profile/extract-contact"
+      ]
+    },
+    {
       "group": "Companies",
       "pages": [
+        "api-reference/linkup/Companies/info",
         "api-reference/linkup/Companies/search"
       ]
     },
     {
-      "group": "People",
+      "group": "Network",
       "pages": [
-        "api-reference/linkup/People/connect",
-        "api-reference/linkup/People/connections",
-        "api-reference/linkup/People/extract-contact"
+        "api-reference/linkup/Network/connect",
+        "api-reference/linkup/Network/connections",
+        "api-reference/linkup/Network/invitations",
+        "api-reference/linkup/Network/accept-invitation"
+      ]
+    },
+    {
+      "group": "Messages",
+      "pages": [
+        "api-reference/linkup/Messages/send",
+        "api-reference/linkup/Messages/inbox",
+        "api-reference/linkup/Messages/conversation"
       ]
     },
     {
       "group": "Posts",
       "pages": [
-        "api-reference/linkup/posts/comment",
-        "api-reference/linkup/posts/create",
-        "api-reference/linkup/posts/extract",
-        "api-reference/linkup/posts/like",
-        "api-reference/linkup/posts/repost"
+        "api-reference/linkup/Posts/create",
+        "api-reference/linkup/Posts/extract",
+        "api-reference/linkup/Posts/like",
+        "api-reference/linkup/Posts/comment",
+        "api-reference/linkup/Posts/comments",
+        "api-reference/linkup/Posts/repost",
+        "api-reference/linkup/Posts/reactions"
       ]
     }
   ],
