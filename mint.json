@@ -25,6 +25,10 @@
     },
     "playground": {
       "mode": "show"
+    },
+    "codeSamples": {
+      "enabled": true,
+      "languages": ["curl", "python", "node", "php", "ruby", "go"]
     }
   },
   "topbarLinks": [
