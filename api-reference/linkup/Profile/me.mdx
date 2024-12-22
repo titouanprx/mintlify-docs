@@ -1,10 +1,10 @@
 ---
 title: 'Get My Profile'
-api: 'GET /v1/linkedin/profile/me'
-description: 'Retrieve current user LinkedIn profile information'
+api: 'POST /v1/profile/me'
+description: 'Get current user\'s LinkedIn profile information'
 ---
 
-This endpoint retrieves the complete profile information for the authenticated LinkedIn user. It provides detailed information about your own LinkedIn profile, including professional experience, education, skills, and other profile sections.
+Get current user's LinkedIn profile information. This endpoint retrieves detailed information about your own LinkedIn profile.
 
 ### Header Parameters
 
@@ -12,54 +12,57 @@ This endpoint retrieves the complete profile information for the authenticated L
   Your API key
 </ParamField>
 
-<ParamField header="linkedin-cookie" type="string" required>
-  LinkedIn authentication cookie obtained from login/verify process
+### Body Parameters
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
 ### Response
 
 <ResponseField name="profile" type="object">
-  Object containing all profile information
+  <Expandable title="Toggle Profile Object">
+    <ResponseField name="basic_info" type="object">
+      <Expandable title="Toggle Basic Info">
+        <ResponseField name="full_name" type="string">Full name of the user</ResponseField>
+        <ResponseField name="headline" type="string">Professional headline</ResponseField>
+        <ResponseField name="location" type="string">Location information</ResponseField>
+        <ResponseField name="profile_picture" type="string">URL of the profile picture</ResponseField>
+        <ResponseField name="connection_count" type="integer">Number of connections</ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="experience" type="array">
+      <Expandable title="Toggle Experience">
+        <ResponseField name="title" type="string">Job title</ResponseField>
+        <ResponseField name="company" type="string">Company name</ResponseField>
+        <ResponseField name="location" type="string">Job location</ResponseField>
+        <ResponseField name="start_date" type="string">Start date of position</ResponseField>
+        <ResponseField name="end_date" type="string">End date of position (null if current)</ResponseField>
+        <ResponseField name="description" type="string">Job description</ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="education" type="array">
+      <Expandable title="Toggle Education">
+        <ResponseField name="school" type="string">School name</ResponseField>
+        <ResponseField name="degree" type="string">Degree obtained</ResponseField>
+        <ResponseField name="field" type="string">Field of study</ResponseField>
+        <ResponseField name="start_year" type="integer">Start year</ResponseField>
+        <ResponseField name="end_year" type="integer">End year</ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="skills" type="array">
+      Array of professional skills
+    </ResponseField>
+  </Expandable>
 </ResponseField>
-
-<ResponseField name="profile.basic_info" type="object">
-  Basic profile information
-</ResponseField>
-
-<ResponseField name="profile.experience" type="array">
-  Array of professional experiences
-</ResponseField>
-
-<ResponseField name="profile.education" type="array">
-  Array of educational background
-</ResponseField>
-
-<ResponseField name="profile.skills" type="array">
-  Array of professional skills
-</ResponseField>
-
-<ResponseField name="profile.certifications" type="array">
-  Array of professional certifications
-</ResponseField>
-
-### Error Responses
-
-- `401`: Invalid or expired authentication cookie
-- `403`: Invalid API key
-- `404`: Profile not found
-- `500`: Server error
-
-<RequestExample>
-```bash
-curl -X GET 'https://api.linkup.com/v1/linkedin/profile/me' \
--H 'x-api-key: your-api-key' \
--H 'linkedin-cookie: li_at=XXXXXX'
-```
-</RequestExample>
 
 <ResponseExample>
-```json Success Response
+```json
 {
+  "status": "success",
   "profile": {
     "basic_info": {
       "full_name": "John Doe",
@@ -92,23 +95,8 @@ curl -X GET 'https://api.linkup.com/v1/linkedin/profile/me' \
       "Python",
       "React",
       "Node.js"
-    ],
-    "certifications": [
-      {
-        "name": "AWS Certified Solutions Architect",
-        "issuing_organization": "Amazon Web Services",
-        "issue_date": "2021-06",
-        "expiration_date": "2024-06"
-      }
     ]
   }
-}
-```
-
-```json Error Response
-{
-  "error": "Unauthorized",
-  "message": "Invalid or expired authentication cookie"
 }
 ```
 </ResponseExample>
