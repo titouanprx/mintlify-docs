@@ -1,7 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "LinkUp API",
-  "baseUrl": "https://docs.linkupapi.com",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -16,7 +15,7 @@
       "to": "#07C983"
     }
   },
-  "openapi": "./openapi.json",
+  "openapi": "openapi.json",
   "api": {
     "baseUrl": "https://api.linkupapi.com",
     "auth": {
@@ -27,6 +26,7 @@
     "playground": {
       "mode": "show"
     }
+    
   },
   "topbarLinks": [
     {
@@ -38,31 +38,10 @@
     "name": "Dashboard",
     "url": "https://dashboard.linkup.com"
   },
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference"
-    }
-  ],
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": [
-        "introduction",
-        "quickstart"
-      ]
-    },
-    {
-      "group": "API Reference",
-      "pages": [
-        "api-reference/introduction"
-      ]
-    },
-    {
-      "group": "Statistiques",
-      "pages": [
-        "api-reference/linkup/Stats/linkedin-stats"
-      ]
+      "pages": ["api-reference/introduction"]
     },
     {
       "group": "Authentication",
@@ -82,8 +61,8 @@
     {
       "group": "Companies",
       "pages": [
-        "api-reference/linkup/Companies/info",
-        "api-reference/linkup/Companies/search"
+        "api-reference/linkup/Companies/search",
+        "api-reference/linkup/Companies/company-info"
       ]
     },
     {
@@ -116,7 +95,6 @@
       ]
     }
   ],
-  
   "footerSocials": {
     "twitter": "https://twitter.com/linkupapi",
     "github": "https://github.com/linkupapi",
