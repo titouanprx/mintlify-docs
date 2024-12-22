@@ -15,7 +15,7 @@
       "to": "#07C983"
     }
   },
-  "openapi": "./openapi.json",
+  "openapi": "openapi.json",
   "api": {
     "baseUrl": "https://api.linkupapi.com",
     "auth": {
@@ -25,11 +25,8 @@
     },
     "playground": {
       "mode": "show"
-    },
-    "codeSamples": {
-      "enabled": true,
-      "languages": ["curl", "python", "node", "php", "ruby", "go"]
     }
+    
   },
   "topbarLinks": [
     {
