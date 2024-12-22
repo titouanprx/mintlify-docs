@@ -18,11 +18,6 @@
   "openapi": "openapi.json",
   "api": {
     "baseUrl": "https://api.linkupapi.com",
-    "auth": {
-      "method": "key",
-      "name": "x-api-key",
-      "inputPrefix": ""
-    },
     "playground": {
       "mode": "show"
     }
