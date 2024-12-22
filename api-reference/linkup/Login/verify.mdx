@@ -32,16 +32,6 @@ Verify the security code sent to your email during the LinkedIn authentication p
   LinkedIn authentication cookie (on successful verification)
 </ResponseField>
 
-<RequestExample>
-```bash
-curl -X POST 'https://api.linkup.com/v1/linkup/auth/verify' \
--H 'x-api-key: your-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'code=123456' \
--d 'email=user@example.com'
-```
-</RequestExample>
-
 <ResponseExample>
 ```json Success Response
 {
