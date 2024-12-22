@@ -1,54 +1,53 @@
 ---
 title: 'Get Connections'
-api: 'POST /v1/linkup/network/connections'
-description: 'Récupérer la liste des connexions'
+api: 'POST /v1/linkedin/network/connections'
+description: 'Retrieve your LinkedIn connections'
 ---
+
+Get a list of your LinkedIn connections with their basic information.
 
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API
+  Your API key
 </ParamField>
 
 ### Body Parameters
 
-<ParamField body="total_results" type="integer" default="10">
-  Nombre de connexions à retourner
-</ParamField>
-
 <ParamField body="login_cookie" type="string" required>
-  Cookie de session LinkedIn
+  LinkedIn authentication cookie
 </ParamField>
 
-### Response
-
-<ResponseField name="connections" type="array">
-  Liste des connexions
-</ResponseField>
+<ParamField body="total_results" type="integer" default="10">
+  Number of connections to retrieve
+</ParamField>
 
 <RequestExample>
 ```bash
-curl -X POST 'https://api.example.com/v1/linkup/network/connections' \
--H 'x-api-key: votre-api-key' \
+curl -X POST 'https://api.linkupapi.com/v1/linkedin/network/connections' \
+-H 'x-api-key: your-api-key' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
--d 'total_results=10' \
--d 'login_cookie=votre-cookie'
+-d 'login_cookie=your-cookie' \
+-d 'total_results=10'
 ```
 </RequestExample>
 
 <ResponseExample>
 ```json
 {
-  "connections": [
-    {
-      "name": "John Doe",
-      "position": "Developer",
-      "company": "TechCorp",
-      "connected_at": "2024-01-01",
-      "profile_url": "https://linkedin.com/in/johndoe"
-    }
-  ],
-  "total": 1
+  "status": "success",
+  "data": {
+    "total": 500,
+    "connections": [
+      {
+        "firstName": "John",
+        "lastName": "Doe",
+        "headline": "Software Engineer",
+        "profileUrl": "https://linkedin.com/in/johndoe",
+        "connectionDegree": "1st"
+      }
+    ]
+  }
 }
 ```
 </ResponseExample>

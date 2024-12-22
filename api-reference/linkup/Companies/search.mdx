@@ -1,70 +1,57 @@
----
 title: 'Search Companies'
-api: 'POST /v1/linkup/companies/search'
-description: 'Rechercher des entreprises sur LinkedIn'
----
-
-### Header Parameters
-
+api: 'POST /v1/linkedin/companies/search'
+description: 'Search for companies on LinkedIn'
+Search for companies using various filters and criteria.
+Header Parameters
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API
+  Your API key
 </ParamField>
-
-### Body Parameters
-
-<ParamField body="location" type="string">
-  Localisation de l'entreprise
-</ParamField>
-
-<ParamField body="sector" type="string">
-  Secteur d'activité
-</ParamField>
-
-<ParamField body="keyword" type="string">
-  Mot-clé pour la recherche
-</ParamField>
-
-<ParamField body="company_size" type="string">
-  Taille de l'entreprise
-</ParamField>
-
-<ParamField body="total_results" type="integer" default="5">
-  Nombre de résultats à retourner
-</ParamField>
-
+Body Parameters
 <ParamField body="login_cookie" type="string" required>
-  Cookie de session LinkedIn
+  LinkedIn authentication cookie
 </ParamField>
-
-### Response
-
-<ResponseField name="companies" type="array">
-  Liste des entreprises trouvées
-</ResponseField>
-
+<ParamField body="keyword" type="string">
+  Search keyword
+</ParamField>
+<ParamField body="location" type="string">
+  Company location
+</ParamField>
+<ParamField body="sector" type="string">
+  Industry sector
+</ParamField>
+<ParamField body="company_size" type="string">
+  Size of the company
+</ParamField>
+<ParamField body="total_results" type="integer" default="10">
+  Number of results to return
+</ParamField>
 <RequestExample>
 ```bash
-curl -X POST 'https://api.example.com/v1/linkup/companies/search' \
--H 'x-api-key: votre-api-key' \
+curl -X POST 'https://api.linkupapi.com/v1/linkedin/companies/search' \
+-H 'x-api-key: your-api-key' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
--d 'keyword=tech' \
--d 'location=Paris' \
--d 'login_cookie=votre-cookie'
+-d 'keyword=technology' \
+-d 'location=London' \
+-d 'sector=Software' \
+-d 'login_cookie=your-cookie'
 ```
 </RequestExample>
-
 <ResponseExample>
 ```json
 {
-  "companies": [
-    {
-      "name": "TechCorp",
-      "industry": "Technology",
-      "size": "1001-5000",
-      "location": "Paris, France",
-      "company_url": "https://linkedin.com/company/techcorp"
-    }
-  ]
+  "status": "success",
+  "data": {
+    "total": 125,
+    "companies": [
+      {
+        "name": "Tech Solutions Ltd",
+        "url": "https://linkedin.com/company/tech-solutions",
+        "industry": "Software",
+        "location": "London, UK",
+        "size": "51-200 employees"
+      }
+    ]
+  }
 }
 ```
 </ResponseExample>

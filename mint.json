@@ -20,7 +20,12 @@
   "api": {
     "baseUrl": "https://api.linkupapi.com",
     "auth": {
-      "method": "bearer"
+      "method": "key",
+      "name": "x-api-key",
+      "inputPrefix": ""
+    },
+    "playground": {
+      "mode": "show"
     }
   },
   "topbarLinks": [
@@ -37,18 +42,6 @@
     {
       "name": "API Reference",
       "url": "api-reference"
-    }
-  ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://docs.linkupapi.com"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://linkupapi.com/community"
     }
   ],
   "navigation": [
@@ -82,8 +75,8 @@
       "group": "Profile",
       "pages": [
         "api-reference/linkup/Profile/me",
-        "api-reference/linkup/Profile/extract-info",
-        "api-reference/linkup/Profile/extract-contact"
+        "api-reference/linkup/Profile/info",
+        "api-reference/linkup/Profile/contact"
       ]
     },
     {
@@ -123,6 +116,7 @@
       ]
     }
   ],
+  
   "footerSocials": {
     "twitter": "https://twitter.com/linkupapi",
     "github": "https://github.com/linkupapi",

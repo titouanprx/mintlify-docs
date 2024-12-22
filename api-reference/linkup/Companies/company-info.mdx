@@ -1,0 +1,40 @@
+title: 'Get Company Info'
+api: 'POST /v1/linkedin/companies/info'
+description: 'Get detailed information about a LinkedIn company'
+Extract comprehensive information about a company from its LinkedIn page.
+Header Parameters
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+Body Parameters
+<ParamField body="company_url" type="string" required>
+  LinkedIn company profile URL
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie
+</ParamField>
+<RequestExample>
+```bash
+curl -X POST 'https://api.linkupapi.com/v1/linkedin/companies/info' \
+-H 'x-api-key: your-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'company_url=https://linkedin.com/company/example' \
+-d 'login_cookie=your-cookie'
+```
+</RequestExample>
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "data": {
+    "name": "Example Corp",
+    "industry": "Technology",
+    "size": "1001-5000 employees",
+    "headquarters": "San Francisco, CA",
+    "website": "https://example.com",
+    "founded": 2010,
+    "specialties": ["Software", "AI", "Cloud Computing"]
+  }
+}
+```
+</ResponseExample>

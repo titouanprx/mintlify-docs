@@ -1,10 +1,10 @@
 ---
-title: 'Verify Security Code'
+title: 'Verify Code'
 api: 'POST /v1/linkup/auth/verify'
-description: 'Verify LinkedIn security code'
+description: 'Verify security code for LinkedIn authentication'
 ---
 
-Verify the security code received after login attempt.
+Verify the security code sent to your email during the LinkedIn authentication process. This endpoint should be called after receiving the verification code from the login endpoint.
 
 ### Header Parameters
 
@@ -15,17 +15,21 @@ Verify the security code received after login attempt.
 ### Body Parameters
 
 <ParamField body="code" type="string" required>
-  Security code received
+  The verification code received via email
 </ParamField>
 
 <ParamField body="email" type="string" required>
-  Email used for login
+  The email address used for LinkedIn login
 </ParamField>
 
 ### Response
 
 <ResponseField name="status" type="string">
   Verification status
+</ResponseField>
+
+<ResponseField name="cookie" type="string">
+  LinkedIn authentication cookie (on successful verification)
 </ResponseField>
 
 <RequestExample>
@@ -39,10 +43,17 @@ curl -X POST 'https://api.linkup.com/v1/linkup/auth/verify' \
 </RequestExample>
 
 <ResponseExample>
-```json
+```json Success Response
 {
   "status": "success",
-  "verified": true
+  "cookie": "li_at=XXXXXX"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Invalid verification code"
 }
 ```
 </ResponseExample>

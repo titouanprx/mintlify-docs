@@ -1,27 +1,18 @@
----
 title: 'Extract Contact'
 api: 'POST /v1/linkedin/profile/extract-contact'
 description: 'Extract contact information from a LinkedIn profile'
----
-
-Extract available contact information from a LinkedIn profile.
-
-### Header Parameters
-
+Get contact details from a LinkedIn profile when available.
+Header Parameters
 <ParamField header="x-api-key" type="string" required>
   Your API key
 </ParamField>
-
-### Body Parameters
-
+Body Parameters
 <ParamField body="linkedin_url" type="string" required>
   URL of the LinkedIn profile
 </ParamField>
-
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie
 </ParamField>
-
 <RequestExample>
 ```bash
 curl -X POST 'https://api.linkupapi.com/v1/linkedin/profile/extract-contact' \
@@ -31,7 +22,6 @@ curl -X POST 'https://api.linkupapi.com/v1/linkedin/profile/extract-contact' \
 -d 'login_cookie=your-cookie'
 ```
 </RequestExample>
-
 <ResponseExample>
 ```json
 {

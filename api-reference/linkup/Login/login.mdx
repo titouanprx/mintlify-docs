@@ -1,102 +1,65 @@
 ---
 title: 'Login'
+api: 'POST /v1/linkup/auth/login'
 description: 'Authenticate with LinkedIn credentials'
-api: 'POST /v1/linkedin/auth/login'
 ---
 
-## Overview
+Authenticate with your LinkedIn account. If verification is required, a security code will be sent to your email.
 
-This endpoint allows you to authenticate with LinkedIn using email and password credentials. It handles the initial authentication process and will trigger LinkedIn's security verification if needed.
+### Header Parameters
 
-## Authentication
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
 
-All endpoints require the `x-api-key` header. You need to include your API key with each request.
+### Body Parameters
 
+<ParamField body="email" type="string" required>
+  Your LinkedIn email address
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  Your LinkedIn password
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Authentication status
+</ResponseField>
+
+<ResponseField name="requires_verification" type="boolean">
+  Whether security code verification is needed
+</ResponseField>
+
+<ResponseField name="cookie" type="string">
+  LinkedIn authentication cookie (if no verification required)
+</ResponseField>
+
+<RequestExample>
 ```bash
-x-api-key: your_api_key_here
+curl -X POST 'https://api.linkup.com/v1/linkup/auth/login' \
+-H 'x-api-key: your-api-key' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'email=user@example.com' \
+-d 'password=your-password'
 ```
+</RequestExample>
 
-## Required Parameters
-
-| Parameter | Type     | Description                                                           |
-|-----------|----------|-----------------------------------------------------------------------|
-| `email`   | string   | Your LinkedIn account email address                                    |
-| `password`| string   | Your LinkedIn account password                                         |
-
-## Code Examples
-
-### Python
-
-```python
-import requests
-
-url = "https://api.linkupapi.com/v1/linkedin/auth/login"
-
-headers = {
-    "x-api-key": "your_api_key_here",
-    "Content-Type": "application/x-www-form-urlencoded"
-}
-
-data = {
-    "email": "your.email@example.com",
-    "password": "your_password"
-}
-
-response = requests.post(url, headers=headers, data=data)
-print(response.text)
-```
-
-### cURL
-
-```bash
-curl -X POST https://api.linkupapi.com/v1/linkedin/auth/login \
-  -H 'x-api-key: your_api_key_here' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -d 'email=your.email@example.com' \
-  -d 'password=your_password'
-```
-
-## Response
-
-### Successful Response (No Verification Required)
-
-```json
-{
-  "status": "success",
-  "message": "Authentication successful",
-  "data": {
-    "cookie": "li_at=XXXXXXX",
-    "requires_verification": false
-  }
-}
-```
-
-### Response (Verification Required)
-
-```json
+<ResponseExample>
+```json Response with Verification Required
 {
   "status": "pending",
-  "message": "Verification required",
-  "data": {
-    "requires_verification": true,
-    "verification_method": "email",
-    "email": "e***@example.com"
-  }
+  "requires_verification": true,
+  "email": "u***@example.com"
 }
 ```
 
-## Error Codes
-
-| Status Code | Description                                                  |
-|------------|--------------------------------------------------------------|
-| 400        | Invalid request parameters                                    |
-| 401        | Invalid credentials                                          |
-| 403        | x-api-key is missing or invalid                              |
-| 429        | Too many login attempts                                      |
-| 500        | Internal server error                                        |
-
-## Notes
-
-- The x-api-key header is required for all API calls
-- The returned LinkedIn cookie should be stored securely and used for subsequent API calls
-- Login attempts are rate-limited to prevent abuse
+```json Response without Verification
+{
+  "status": "success",
+  "requires_verification": false,
+  "cookie": "li_at=XXXXXX"
+}
+```
+</ResponseExample>

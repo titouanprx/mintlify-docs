@@ -1,43 +1,39 @@
 ---
-title: 'Connect To Profile'
-api: 'POST /v1/linkup/network/connect'
-description: 'Envoyer une invitation de connexion'
+title: 'Connect to Profile'
+api: 'POST /v1/linkedin/network/connect'
+description: 'Send a connection request to a LinkedIn profile'
 ---
+
+Send a connection request to a LinkedIn user with an optional message.
 
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API
+  Your API key
 </ParamField>
 
 ### Body Parameters
 
 <ParamField body="linkedin_url" type="string" required>
-  URL du profil à contacter
+  URL of the LinkedIn profile you want to connect with
 </ParamField>
 
 <ParamField body="message" type="string">
-  Message personnalisé de connexion
+  Optional connection message
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
-  Cookie de session LinkedIn
+  LinkedIn authentication cookie
 </ParamField>
-
-### Response
-
-<ResponseField name="status" type="string">
-  Statut de l'invitation
-</ResponseField>
 
 <RequestExample>
 ```bash
-curl -X POST 'https://api.example.com/v1/linkup/network/connect' \
--H 'x-api-key: votre-api-key' \
+curl -X POST 'https://api.linkupapi.com/v1/linkedin/network/connect' \
+-H 'x-api-key: your-api-key' \
 -H 'Content-Type: application/x-www-form-urlencoded' \
--d 'linkedin_url=https://linkedin.com/in/contact' \
--d 'message=Bonjour, je souhaite rejoindre votre réseau' \
--d 'login_cookie=votre-cookie'
+-d 'linkedin_url=https://linkedin.com/in/username' \
+-d 'message=Hi, I would like to connect with you' \
+-d 'login_cookie=your-cookie'
 ```
 </RequestExample>
 
@@ -45,7 +41,7 @@ curl -X POST 'https://api.example.com/v1/linkup/network/connect' \
 ```json
 {
   "status": "success",
-  "invitation_sent": true
+  "message": "Connection request sent successfully"
 }
 ```
 </ResponseExample>

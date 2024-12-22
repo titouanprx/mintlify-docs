@@ -1,0 +1,114 @@
+---
+title: 'Get My Profile'
+api: 'GET /v1/linkedin/profile/me'
+description: 'Retrieve current user LinkedIn profile information'
+---
+
+This endpoint retrieves the complete profile information for the authenticated LinkedIn user. It provides detailed information about your own LinkedIn profile, including professional experience, education, skills, and other profile sections.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+<ParamField header="linkedin-cookie" type="string" required>
+  LinkedIn authentication cookie obtained from login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="profile" type="object">
+  Object containing all profile information
+</ResponseField>
+
+<ResponseField name="profile.basic_info" type="object">
+  Basic profile information
+</ResponseField>
+
+<ResponseField name="profile.experience" type="array">
+  Array of professional experiences
+</ResponseField>
+
+<ResponseField name="profile.education" type="array">
+  Array of educational background
+</ResponseField>
+
+<ResponseField name="profile.skills" type="array">
+  Array of professional skills
+</ResponseField>
+
+<ResponseField name="profile.certifications" type="array">
+  Array of professional certifications
+</ResponseField>
+
+### Error Responses
+
+- `401`: Invalid or expired authentication cookie
+- `403`: Invalid API key
+- `404`: Profile not found
+- `500`: Server error
+
+<RequestExample>
+```bash
+curl -X GET 'https://api.linkup.com/v1/linkedin/profile/me' \
+-H 'x-api-key: your-api-key' \
+-H 'linkedin-cookie: li_at=XXXXXX'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "profile": {
+    "basic_info": {
+      "full_name": "John Doe",
+      "headline": "Software Engineer at Tech Company",
+      "location": "San Francisco Bay Area",
+      "profile_picture": "https://...",
+      "connection_count": 500
+    },
+    "experience": [
+      {
+        "title": "Software Engineer",
+        "company": "Tech Company",
+        "location": "San Francisco, CA",
+        "start_date": "2020-01",
+        "end_date": null,
+        "description": "Leading development of..."
+      }
+    ],
+    "education": [
+      {
+        "school": "University of California, Berkeley",
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "start_year": 2016,
+        "end_year": 2020
+      }
+    ],
+    "skills": [
+      "JavaScript",
+      "Python",
+      "React",
+      "Node.js"
+    ],
+    "certifications": [
+      {
+        "name": "AWS Certified Solutions Architect",
+        "issuing_organization": "Amazon Web Services",
+        "issue_date": "2021-06",
+        "expiration_date": "2024-06"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired authentication cookie"
+}
+```
+</ResponseExample>
