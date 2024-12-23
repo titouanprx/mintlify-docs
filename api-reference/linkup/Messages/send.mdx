@@ -1,0 +1,86 @@
+---
+title: 'Send Message'
+api: 'POST /v1/messages/send-message'
+description: 'Send a message to a LinkedIn user'
+---
+
+Send a direct message to any LinkedIn user. The message can be sent to either a new conversation or an existing one.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  LinkedIn profile URL of the recipient (e.g., "https://www.linkedin.com/in/username")
+</ParamField>
+
+<ParamField body="message_text" type="string" required>
+  Content of the message to send
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="message" type="string">
+      Status message of the operation
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "message": "Message sent successfully"
+  }
+}
+```
+
+```json Error Response New Conversation
+{
+  "status": "error",
+  "error": {
+    "code": "send_message_error",
+    "message": "Failed to create new conversation"
+  }
+}
+```
+
+```json Error Response Existing Conversation
+{
+  "status": "error",
+  "error": {
+    "code": "send_message_error",
+    "message": "Failed to send message to existing conversation"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The API automatically determines if there's an existing conversation with the recipient
+- For new conversations, a new thread is created automatically
+- For existing conversations, the message is added to the existing thread
+- The API includes a typing indicator for existing conversations
+- Messages are sent with push notification enabled for the recipient
+- The recipient profile must be accessible with your login cookie
+- Each message gets a unique tracking ID and origin token
+- The following errors can occur:
+  - Invalid profile URL format
+  - Unable to retrieve recipient's profile URN
+  - Network or permission errors
+  - Rate limiting from LinkedIn

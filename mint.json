@@ -74,7 +74,7 @@
       "group": "Messages",
       "pages": [
         "api-reference/linkup/Messages/send",
-        "api-reference/linkup/Messages/inbox",
+        "api-reference/linkup/Messages/inbox-conversations",
         "api-reference/linkup/Messages/conversation"
       ]
     },
