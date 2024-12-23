@@ -1,10 +1,10 @@
 ---
-title: "Get My Profile"
-api: "POST /v1/profile/me"
-description: "Get current user's LinkedIn profile information"
+title: 'Get My Profile'
+api: 'POST /v1/profile/me'
+description: 'Retrieve your own LinkedIn profile information'
 ---
 
-Get current user's LinkedIn profile information. This endpoint retrieves detailed information about your own LinkedIn profile.
+Get basic information about your own LinkedIn profile using your authentication cookie.
 
 ### Header Parameters
 
@@ -20,82 +20,69 @@ Get current user's LinkedIn profile information. This endpoint retrieves detaile
 
 ### Response
 
-<ResponseField name="profile" type="object">
-  <Expandable title="Toggle Profile Object">
-    <ResponseField name="basic_info" type="object">
-      <Expandable title="Toggle Basic Info">
-        <ResponseField name="full_name" type="string">Full name of the user</ResponseField>
-        <ResponseField name="headline" type="string">Professional headline</ResponseField>
-        <ResponseField name="location" type="string">Location information</ResponseField>
-        <ResponseField name="profile_picture" type="string">URL of the profile picture</ResponseField>
-        <ResponseField name="connection_count" type="integer">Number of connections</ResponseField>
-      </Expandable>
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="plainId" type="integer">
+      Internal LinkedIn profile ID
     </ResponseField>
     
-    <ResponseField name="experience" type="array">
-      <Expandable title="Toggle Experience">
-        <ResponseField name="title" type="string">Job title</ResponseField>
-        <ResponseField name="company" type="string">Company name</ResponseField>
-        <ResponseField name="location" type="string">Job location</ResponseField>
-        <ResponseField name="start_date" type="string">Start date of position</ResponseField>
-        <ResponseField name="end_date" type="string">End date of position (null if current)</ResponseField>
-        <ResponseField name="description" type="string">Job description</ResponseField>
-      </Expandable>
+    <ResponseField name="firstName" type="string">
+      First name
     </ResponseField>
     
-    <ResponseField name="education" type="array">
-      <Expandable title="Toggle Education">
-        <ResponseField name="school" type="string">School name</ResponseField>
-        <ResponseField name="degree" type="string">Degree obtained</ResponseField>
-        <ResponseField name="field" type="string">Field of study</ResponseField>
-        <ResponseField name="start_year" type="integer">Start year</ResponseField>
-        <ResponseField name="end_year" type="integer">End year</ResponseField>
-      </Expandable>
+    <ResponseField name="lastName" type="string">
+      Last name
     </ResponseField>
     
-    <ResponseField name="skills" type="array">
-      Array of professional skills
+    <ResponseField name="occupation" type="string">
+      Current professional occupation
+    </ResponseField>
+    
+    <ResponseField name="publicIdentifier" type="string">
+      Public LinkedIn profile identifier
+    </ResponseField>
+    
+    <ResponseField name="entityUrn" type="string">
+      LinkedIn internal URN identifier
+    </ResponseField>
+    
+    <ResponseField name="publicContactInfo" type="object">
+      Public contact information (if available)
+    </ResponseField>
+    
+    <ResponseField name="premiumSubscriber" type="boolean">
+      Whether the profile has a premium subscription
     </ResponseField>
   </Expandable>
 </ResponseField>
 
 <ResponseExample>
-```json
+```json Success Response
 {
   "status": "success",
-  "profile": {
-    "basic_info": {
-      "full_name": "John Doe",
-      "headline": "Software Engineer at Tech Company",
-      "location": "San Francisco Bay Area",
-      "profile_picture": "https://...",
-      "connection_count": 500
-    },
-    "experience": [
-      {
-        "title": "Software Engineer",
-        "company": "Tech Company",
-        "location": "San Francisco, CA",
-        "start_date": "2020-01",
-        "end_date": null,
-        "description": "Leading development of..."
-      }
-    ],
-    "education": [
-      {
-        "school": "University of California, Berkeley",
-        "degree": "Bachelor of Science",
-        "field": "Computer Science",
-        "start_year": 2016,
-        "end_year": 2020
-      }
-    ],
-    "skills": [
-      "JavaScript",
-      "Python",
-      "React",
-      "Node.js"
-    ]
+  "data": {
+    "plainId": 1374179736,
+    "firstName": "Ales",
+    "lastName": "Prw",
+    "occupation": "growth hacker",
+    "publicIdentifier": "ales-prw-aa0262324",
+    "entityUrn": "urn:li:fs_miniProfile:ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ",
+    "publicContactInfo": {},
+    "premiumSubscriber": false
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "profile_fetch_error",
+    "message": "Error description"
   }
 }
 ```
