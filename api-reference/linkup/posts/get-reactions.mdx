@@ -1,0 +1,101 @@
+---
+title: 'Get Post Reactions'
+api: 'POST /v1/posts/reactions'
+description: 'Retrieve reactions on a LinkedIn post'
+---
+
+Get a list of reactions (likes, etc.) on a specific LinkedIn post, including information about who reacted and the type of reaction.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post (supports both feed/update and /posts/ formats)
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of reactions to retrieve
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="reactions" type="array">
+      <Expandable title="Reaction Object">
+        <ResponseField name="type" type="string">
+          Type of reaction (e.g., LIKE, PRAISE, etc.)
+        </ResponseField>
+
+        <ResponseField name="name" type="string">
+          Name of the person who reacted
+        </ResponseField>
+
+        <ResponseField name="subtitle" type="string">
+          Professional headline or description of the reactor
+        </ResponseField>
+
+        <ResponseField name="profile_url" type="string">
+          LinkedIn profile URL of the reactor
+        </ResponseField>
+
+        <ResponseField name="actor_urn" type="string">
+          LinkedIn URN identifier of the reactor
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "reactions": [
+      {
+        "type": "LIKE",
+        "name": "John Doe",
+        "subtitle": "Software Engineer at Tech Company",
+        "profile_url": "https://www.linkedin.com/in/johndoe/",
+        "actor_urn": "urn:li:fsd_profile:abc123"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "reactions_fetch_error",
+    "message": "Failed to retrieve post reactions"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- Supports both post URL formats:
+  - `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - `https://www.linkedin.com/posts/user_activity-...`
+- Results are returned in batches of 10 reactions per request
+- Duplicate reactions from the same user are automatically filtered out
+- Special characters in names and subtitles are normalized to ASCII
+- The response includes unique reactions only (one per user)
+- Both regular posts and shared posts are supported
+- The total_results parameter determines the maximum number of reactions to retrieve

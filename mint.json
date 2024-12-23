@@ -79,7 +79,7 @@
       ]
     },
     {
-      "group": "Posts",
+      "group": "posts",
       "pages": [
         "api-reference/linkup/Posts/create",
         "api-reference/linkup/Posts/extract",
