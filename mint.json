@@ -79,13 +79,13 @@
       ]
     },
     {
-      "group": "posts",
+      "group": "Posts",
       "pages": [
         "api-reference/linkup/Posts/create",
         "api-reference/linkup/Posts/like",
         "api-reference/linkup/Posts/repost",
         "api-reference/linkup/Posts/comment",
-        "api-reference/linkup/Posts/extract",
+        "api-reference/linkup/Posts/search",
         "api-reference/linkup/Posts/get-comment",
         "api-reference/linkup/Posts/get-reactions"
       ]
