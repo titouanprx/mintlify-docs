@@ -1,10 +1,10 @@
 ---
 title: 'Extract Posts'
-api: 'POST /v1/linkup/posts/extract'
-description: 'Extract LinkedIn posts'
+api: 'POST /v1/posts/extract'
+description: 'Extract and search LinkedIn posts with various filters'
 ---
 
-Extract posts from LinkedIn profiles or feeds.
+Search and extract LinkedIn posts with advanced filtering options including post type, sorting, keywords, and date filters.
 
 ### Header Parameters
 
@@ -15,15 +15,15 @@ Extract posts from LinkedIn profiles or feeds.
 ### Body Parameters
 
 <ParamField body="post_type" type="string">
-  Type of posts to extract
+  Type of posts to search for
 </ParamField>
 
 <ParamField body="sort_by" type="string" default="date_posted">
-  Sort criteria for the posts
+  How to sort the results
 </ParamField>
 
 <ParamField body="keyword" type="string">
-  Keyword to filter posts
+  Search keyword for posts
 </ParamField>
 
 <ParamField body="post_date" type="string">
@@ -31,45 +31,130 @@ Extract posts from LinkedIn profiles or feeds.
 </ParamField>
 
 <ParamField body="linkedin_url" type="string">
-  LinkedIn URL to extract posts from
+  LinkedIn profile URL to extract posts from
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of posts to return
+  Number of posts to retrieve
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
-  LinkedIn session cookie
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
 ### Response
 
-<ResponseField name="posts" type="array">
-  List of extracted posts
+<ResponseField name="status" type="string">
+  Request status (success/error)
 </ResponseField>
 
-<RequestExample>
-```bash
-curl -X POST 'https://api.example.com/v1/linkup/posts/extract' \
--H 'x-api-key: your-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'login_cookie=your-cookie' \
--d 'total_results=10'
-```
-</RequestExample>
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_posts" type="integer">
+      Number of posts returned
+    </ResponseField>
+
+    <ResponseField name="posts" type="array">
+      <Expandable title="Post Object">
+        <ResponseField name="shareAudience" type="string">
+          Visibility of the post (e.g., "PUBLIC")
+        </ResponseField>
+
+        <ResponseField name="shareUrl" type="string">
+          URL of the post
+        </ResponseField>
+
+        <ResponseField name="text" type="string">
+          Content of the post
+        </ResponseField>
+
+        <ResponseField name="numLikes" type="integer">
+          Number of likes on the post
+        </ResponseField>
+
+        <ResponseField name="numComments" type="integer">
+          Number of comments on the post
+        </ResponseField>
+
+        <ResponseField name="numShares" type="integer">
+          Number of shares of the post
+        </ResponseField>
+
+        <ResponseField name="actor_name" type="string">
+          Name of the post author
+        </ResponseField>
+
+        <ResponseField name="actor_description" type="string">
+          Description/headline of the post author
+        </ResponseField>
+
+        <ResponseField name="actor_image" type="string">
+          Profile image URL of the post author
+        </ResponseField>
+
+        <ResponseField name="actor_profile_url" type="string">
+          LinkedIn profile URL of the post author
+        </ResponseField>
+
+        <ResponseField name="post_images" type="array">
+          Array of image URLs included in the post
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
 
 <ResponseExample>
-```json
+```json Success Response
 {
-  "posts": [
-    {
-      "id": "post123",
-      "content": "Post content",
-      "date": "2024-01-01",
-      "likes": 42,
-      "comments": 5
-    }
-  ]
+  "status": "success",
+  "data": {
+    "total_posts": 1,
+    "posts": [
+      {
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/user_post-activity-123",
+        "text": "Example post content",
+        "numLikes": 50,
+        "numComments": 10,
+        "numShares": 5,
+        "actor_name": "John Doe",
+        "actor_description": "Software Engineer at Tech Company",
+        "actor_image": "https://media.licdn.com/dms/image/profile.jpg",
+        "actor_profile_url": "https://www.linkedin.com/in/johndoe",
+        "post_images": [
+          "https://media.licdn.com/dms/image/post1.jpg"
+        ]
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "extraction_failed",
+    "message": "Failed to extract posts"
+  }
 }
 ```
 </ResponseExample>
+
+### Notes
+- Results are returned in batches of up to 50 posts
+- Images URLs are direct links to LinkedIn's media servers
+- Text content has special characters normalized
+- Social metrics (likes, comments, shares) are included when available
+- Post visibility information is included
+- The API supports:
+  - Multiple filtering options
+  - Custom sort orders
+  - Keyword search
+  - Date-based filtering
+  - Profile-specific post extraction
+- Post content may be limited based on:
+  - Privacy settings
+  - Network connection level
+  - Content visibility settings

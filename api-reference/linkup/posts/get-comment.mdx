@@ -1,0 +1,117 @@
+---
+title: 'Get Post Comments'
+api: 'POST /v1/posts/comments'
+description: 'Retrieve comments on a LinkedIn post'
+---
+
+Get a list of comments on a specific LinkedIn post, including the comment text and commenter information.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post (supports both feed/update and /posts/ formats)
+</ParamField>
+
+<ParamField body="total_comments" type="integer" default="10">
+  Number of comments to retrieve
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_comments" type="integer">
+      Number of comments returned
+    </ResponseField>
+
+    <ResponseField name="comments" type="array">
+      <Expandable title="Comment Object">
+        <ResponseField name="comment_urn" type="string">
+          Unique identifier of the comment
+        </ResponseField>
+
+        <ResponseField name="comment_text" type="string">
+          Content of the comment
+        </ResponseField>
+
+        <ResponseField name="created_time" type="integer">
+          Timestamp when the comment was created
+        </ResponseField>
+
+        <ResponseField name="commenter" type="object">
+          <Expandable title="Commenter Properties">
+            <ResponseField name="name" type="string">
+              Name of the person who wrote the comment
+            </ResponseField>
+
+            <ResponseField name="linkedin_url" type="string">
+              LinkedIn profile URL of the commenter
+            </ResponseField>
+
+            <ResponseField name="occupation" type="string">
+              Professional headline or occupation of the commenter
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_comments": 1,
+    "comments": [
+      {
+        "comment_urn": "urn:li:comment:(activity:123456,123456)",
+        "comment_text": "Great post! Thanks for sharing.",
+        "created_time": 1679529600000,
+        "commenter": {
+          "name": "John Doe",
+          "linkedin_url": "https://www.linkedin.com/in/johndoe/",
+          "occupation": "Software Engineer at Tech Company"
+        }
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "comments_fetch_error",
+    "message": "Error retrieving post comments"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- Supports two post URL formats:
+  - `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - `https://www.linkedin.com/posts/user_activity-...`
+- Comments are retrieved in batches of 10
+- Comments are sorted by relevance (LinkedIn's default sorting)
+- Special characters in names and comments are normalized to ASCII
+- The `created_time` is in milliseconds since epoch
+- The maximum number of comments that can be retrieved is limited by LinkedIn's API
+- Some comments might be hidden due to privacy settings or moderation

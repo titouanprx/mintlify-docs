@@ -1,45 +1,71 @@
 ---
 title: 'Like Post'
-api: 'POST /v1/linkup/like'
-description: 'Liker un post LinkedIn'
+api: 'POST /v1/posts/like'
+description: 'Add a like reaction to a LinkedIn post'
 ---
+
+Add a like reaction to any LinkedIn post using the post URL.
 
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API
+  Your API key
 </ParamField>
 
 ### Body Parameters
 
 <ParamField body="post_url" type="string" required>
-  URL du post à liker
+  URL of the LinkedIn post to like (supports multiple formats)
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
-  Cookie de session LinkedIn
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
 ### Response
 
 <ResponseField name="status" type="string">
-  Statut de l'action
+  Request status (success/error)
 </ResponseField>
 
-<RequestExample>
-```bash
-curl -X POST 'https://api.example.com/v1/linkup/like' \
--H 'x-api-key: votre-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'post_url=https://linkedin.com/post/123' \
--d 'login_cookie=votre-cookie'
-```
-</RequestExample>
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="message" type="string">
+      Response message from the like operation
+    </ResponseField>
+  </Expandable>
+</ResponseField>
 
 <ResponseExample>
-```json
+```json Success Response
 {
-  "status": "success"
+  "status": "success",
+  "data": {
+    "message": "Post liked successfully"
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "like_failed",
+    "message": "Failed to like post: Invalid post URL"
+  }
 }
 ```
 </ResponseExample>
+
+### Notes
+- Supports multiple post URL formats:
+  - Feed updates: `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - Profile posts: `https://www.linkedin.com/posts/user-activity-...`
+  - Group posts: `https://www.linkedin.com/feed/update/urn:li:groupPost:...`
+- The post must be accessible with the provided login cookie
+- A post can only be liked once by the same user
+- LinkedIn's rate limits apply to like operations
+- The like action is performed with the identity associated with the login cookie
+- Some posts may have reactions disabled by their authors
+- Posts from private groups or connections may not be accessible
+- The API automatically detects the post type (share, article, etc.)

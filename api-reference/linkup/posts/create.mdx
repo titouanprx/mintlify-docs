@@ -1,50 +1,87 @@
 ---
 title: 'Create Post'
-api: 'POST /v1/linkup/create'
-description: 'Créer un nouveau post LinkedIn'
+api: 'POST /v1/posts/create'
+description: 'Create a new LinkedIn post with optional image attachment'
 ---
+
+Create a new post on LinkedIn with text content and an optional image attachment.
 
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API
+  Your API key
 </ParamField>
 
 ### Body Parameters
 
 <ParamField body="message" type="string" required>
-  Contenu du post
+  Text content of the post
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
-  Cookie de session LinkedIn
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="file" type="file">
+  Optional image file to attach to the post
 </ParamField>
 
 ### Response
 
 <ResponseField name="status" type="string">
-  Statut de la création du post
+  Request status (success/error)
 </ResponseField>
 
-<ResponseField name="post_id" type="string">
-  ID du post créé
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="message" type="string">
+      Status message of the post creation
+    </ResponseField>
+  </Expandable>
 </ResponseField>
-
-<RequestExample>
-```bash
-curl -X POST 'https://api.example.com/v1/linkup/create' \
--H 'x-api-key: votre-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'message=Contenu du post' \
--d 'login_cookie=votre-cookie'
-```
-</RequestExample>
 
 <ResponseExample>
-```json
+```json Success Response
 {
   "status": "success",
-  "post_id": "post123"
+  "data": {
+    "message": "Post created successfully"
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "post_creation_failed",
+    "message": "Failed to create post"
+  }
 }
 ```
 </ResponseExample>
+
+### Notes
+- Default post visibility is set to "ANYONE" (public)
+- Comments are enabled for all users by default
+- Supported image formats:
+  - PNG
+  - JPEG/JPG
+  - Other LinkedIn-supported image formats
+- Image size restrictions:
+  - Files must not exceed LinkedIn's maximum file size limit
+  - Images should meet LinkedIn's dimension requirements
+- Post features:
+  - Text content with no formatting
+  - Single image attachment support
+  - Public visibility settings
+  - Comments enabled by default
+  - No paid endorsement by default
+- The API automatically:
+  - Handles image upload process
+  - Creates post metadata
+  - Sets visibility and sharing options
+- Rate limits and content guidelines:
+  - Subject to LinkedIn's posting frequency limits
+  - Must comply with LinkedIn's content policies
+  - Media upload size and format restrictions apply
