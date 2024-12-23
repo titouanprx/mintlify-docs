@@ -1,79 +1,22 @@
----
 title: "Extract Profile Information"
 api: "POST /v1/profile/extract-info"
 description: "Extract detailed information from a LinkedIn profile"
----
-
 Get detailed information from any LinkedIn profile. This endpoint extracts comprehensive profile data including personal information, experience, education, and skills.
-
-### Header Parameters
-
+Header Parameters
 <ParamField header="x-api-key" type="string" required>
   Your API key
 </ParamField>
-
-### Body Parameters
-
+Body Parameters
 <ParamField body="linkedin_url" type="string" required>
   URL of the LinkedIn profile to extract information from
 </ParamField>
-
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
-
-### Response
-
+Response
 <ResponseField name="data" type="object">
-  <Expandable title="Toggle Profile Data">
-    <ResponseField name="public_id" type="string">
-      Public identifier of the LinkedIn profile
-    </ResponseField>
-
-    <ResponseField name="first_name" type="string">
-      First name of the profile owner
-    </ResponseField>
-
-    <ResponseField name="last_name" type="string">
-      Last name of the profile owner
-    </ResponseField>
-
-    <ResponseField name="headline" type="string">
-      Professional headline/title
-    </ResponseField>
-
-    <ResponseField name="location" type="string">
-      Geographic location
-    </ResponseField>
-
-    <ResponseField name="summary" type="string">
-      Detailed profile summary/about section
-    </ResponseField>
-
-    <ResponseField name="industry" type="string">
-      Industry sector
-    </ResponseField>
-
-    <ResponseField name="experience" type="array">
-      <Expandable title="Toggle Experience Object">
-        <ResponseField name="company" type="string">Company name</ResponseField>
-        <ResponseField name="title" type="string">Job title</ResponseField>
-        <ResponseField name="description" type="string">Position description</ResponseField>
-        <ResponseField name="start_date" type="string">Start date of position</ResponseField>
-        <ResponseField name="end_date" type="string">End date of position</ResponseField>
-      </Expandable>
-    </ResponseField>
-
-    <ResponseField name="education" type="array">
-      Array of education entries (if available)
-    </ResponseField>
-
-    <ResponseField name="skills" type="array">
-      Array of professional skills
-    </ResponseField>
-  </Expandable>
+  The response contains the following profile information:
 </ResponseField>
-
 <ResponseExample>
 ```json
 {
@@ -84,6 +27,7 @@ Get detailed information from any LinkedIn profile. This endpoint extracts compr
     "last_name": "Bourbon",
     "headline": "Founder & CEO at Blast. Club",
     "location": "France",
+    "summary": "Jure investisseur Qui Veut Etre Mon Associe, M6\n\nFondateur et CEO du Blast. Club www.Blast.club\n\nInvestissez a mes cotes dans les startups de demain, a partir de 1 000 par projet...",
     "industry": "Gestion des investissements",
     "experience": [
       {
@@ -104,10 +48,10 @@ Get detailed information from any LinkedIn profile. This endpoint extracts compr
   }
 }
 ```
+</ResponseExample>
+Notes
 
-### Notes
-
-- The profile must be accessible with the provided login cookie
-- Some fields might be empty or missing depending on the profile's privacy settings and available information
-- The experience array is sorted with the most recent positions first
-- Dates might be empty strings if not specified in the profile
+The profile must be accessible with the provided login cookie
+Some fields might be empty or missing depending on the profile's privacy settings and available information
+The experience array is sorted with the most recent positions first
+Dates might be empty strings if not specified in the profile
