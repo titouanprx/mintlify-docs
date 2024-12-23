@@ -65,7 +65,7 @@
       "group": "Network",
       "pages": [
         "api-reference/linkup/Network/connect",
-        "api-reference/linkup/Network/connections",
+        "api-reference/linkup/Network/get-connections",
         "api-reference/linkup/Network/invitations",
         "api-reference/linkup/Network/accept-invitation"
       ]

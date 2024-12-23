@@ -1,10 +1,10 @@
 ---
-title: 'Connect to Profile'
-api: 'POST /v1/linkedin/network/connect'
+title: 'Send Connection Request'
+api: 'POST /v1/network/connect'
 description: 'Send a connection request to a LinkedIn profile'
 ---
 
-Send a connection request to a LinkedIn user with an optional message.
+Send a connection request to any LinkedIn profile with an optional custom message.
 
 ### Header Parameters
 
@@ -15,33 +15,67 @@ Send a connection request to a LinkedIn user with an optional message.
 ### Body Parameters
 
 <ParamField body="linkedin_url" type="string" required>
-  URL of the LinkedIn profile you want to connect with
+  URL of the LinkedIn profile to connect with (e.g., https://www.linkedin.com/in/username)
 </ParamField>
 
 <ParamField body="message" type="string">
-  Optional connection message
+  Custom message to send with the connection request
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
-  LinkedIn authentication cookie
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
-<RequestExample>
-```bash
-curl -X POST 'https://api.linkupapi.com/v1/linkedin/network/connect' \
--H 'x-api-key: your-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'linkedin_url=https://linkedin.com/in/username' \
--d 'message=Hi, I would like to connect with you' \
--d 'login_cookie=your-cookie'
-```
-</RequestExample>
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the connection request
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Additional data about the connection request
+</ResponseField>
 
 <ResponseExample>
-```json
+```json Success Response
 {
   "status": "success",
-  "message": "Connection request sent successfully"
+  "message": "Connection request sent successfully",
+  "data": {
+    "profile_url": "https://www.linkedin.com/in/username"
+  }
+}
+```
+
+```json Already Connected Response
+{
+  "status": "success",
+  "message": "Connection request sent successfully (CANT_RESEND_YET)",
+  "data": {
+    "profile_url": "https://www.linkedin.com/in/username"
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "connection_failed",
+    "message": "Failed to send connection request"
+  }
 }
 ```
 </ResponseExample>
+
+### Notes
+- The profile must be accessible with the provided login cookie
+- Connection requests are subject to LinkedIn's daily and weekly limits
+- Messages are optional but can increase acceptance rate
+- Some profiles may have restricted connection settings
+- The same connection request cannot be sent multiple times to the same profile
+- The URL must be a valid LinkedIn profile URL in the format https://www.linkedin.com/in/[username]
