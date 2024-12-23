@@ -1,23 +1,30 @@
-title: "Extract Profile Information"
-api: "POST /v1/profile/extract-info"
-description: "Extract detailed information from a LinkedIn profile"
-Get detailed information from any LinkedIn profile. This endpoint extracts comprehensive profile data including personal information, experience, education, and skills.
-Header Parameters
-<ParamField header="x-api-key" type="string" required>
-  Your API key
-</ParamField>
-Body Parameters
-<ParamField body="linkedin_url" type="string" required>
-  URL of the LinkedIn profile to extract information from
-</ParamField>
-<ParamField body="login_cookie" type="string" required>
-  LinkedIn authentication cookie obtained from the login/verify process
-</ParamField>
-Response
-<ResponseField name="data" type="object">
-  The response contains the following profile information:
-</ResponseField>
-<ResponseExample>
+# Extract Profile Information
+
+## Endpoint
+
+```
+POST /v1/profile/extract-info
+```
+
+## Description
+Extract detailed information from a LinkedIn profile including personal information, experience, education, and skills.
+
+## Headers
+- **x-api-key** (required): Your API key
+
+## Body Parameters
+- **linkedin_url** (required): URL of the LinkedIn profile to extract information from
+- **login_cookie** (required): LinkedIn authentication cookie obtained from the login/verify process
+
+## Example Request
+```bash
+curl -X POST 'https://api.linkupapi.com/v1/profile/extract-info' \
+-H 'x-api-key: YOUR_API_KEY' \
+-d 'linkedin_url=https://www.linkedin.com/in/anthony-bourbon' \
+-d 'login_cookie=YOUR_LOGIN_COOKIE'
+```
+
+## Example Response
 ```json
 {
   "status": "success",
@@ -48,10 +55,20 @@ Response
   }
 }
 ```
-</ResponseExample>
-Notes
 
-The profile must be accessible with the provided login cookie
-Some fields might be empty or missing depending on the profile's privacy settings and available information
-The experience array is sorted with the most recent positions first
-Dates might be empty strings if not specified in the profile
+## Error Response
+```json
+{
+  "status": "error",
+  "error": {
+    "code": "profile_extraction_error",
+    "message": "Error description"
+  }
+}
+```
+
+## Notes
+- The profile must be accessible with the provided login cookie
+- Some fields might be empty or missing depending on the profile's privacy settings and available information
+- The experience array is sorted with the most recent positions first
+- Dates might be empty strings if not specified in the profile
