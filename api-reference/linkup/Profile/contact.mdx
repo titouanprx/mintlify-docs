@@ -1,37 +1,88 @@
-title: 'Extract Contact'
-api: 'POST /v1/linkedin/profile/extract-contact'
+---
+title: 'Extract Profile Contact Information'
+api: 'POST /v1/profile/extract-contact'
 description: 'Extract contact information from a LinkedIn profile'
-Get contact details from a LinkedIn profile when available.
-Header Parameters
+---
+
+Get detailed contact information from a LinkedIn profile including email, phone number, and other contact details when available.
+
+### Header Parameters
+
 <ParamField header="x-api-key" type="string" required>
   Your API key
 </ParamField>
-Body Parameters
+
+### Body Parameters
+
 <ParamField body="linkedin_url" type="string" required>
-  URL of the LinkedIn profile
+  URL of the LinkedIn profile to extract contact information from
 </ParamField>
+
 <ParamField body="login_cookie" type="string" required>
-  LinkedIn authentication cookie
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
-<RequestExample>
-```bash
-curl -X POST 'https://api.linkupapi.com/v1/linkedin/profile/extract-contact' \
--H 'x-api-key: your-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'linkedin_url=https://linkedin.com/in/username' \
--d 'login_cookie=your-cookie'
-```
-</RequestExample>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="Name" type="string">
+      Full name of the profile owner
+    </ResponseField>
+    
+    <ResponseField name="Headline" type="string">
+      Professional headline
+    </ResponseField>
+    
+    <ResponseField name="Email" type="string">
+      Email address (if available)
+    </ResponseField>
+    
+    <ResponseField name="Téléphone" type="string">
+      Phone number (if available)
+    </ResponseField>
+    
+    <ResponseField name="Public Identifier" type="string">
+      LinkedIn public profile identifier
+    </ResponseField>
+    
+    <ResponseField name="Relation" type="string">
+      Connection status with the profile
+    </ResponseField>
+    
+    <ResponseField name="connexion date" type="string">
+      Date when the connection was established (if connected)
+    </ResponseField>
+    
+    <ResponseField name="Site web" type="string">
+      Website URL (if available)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
 <ResponseExample>
-```json
+```json Success Response
 {
   "status": "success",
   "data": {
-    "email": "contact@example.com",
-    "phone": "+1234567890",
-    "twitter": "@username",
-    "websites": ["https://example.com"]
+    "Name": "John Doe",
+    "Headline": "Software Engineer at Tech Company",
+    "Email": "john.doe@example.com",
+    "Téléphone": "+1234567890",
+    "Public Identifier": "john-doe-123abc456",
+    "Relation": "Connected",
+    "connexion date": "2024-01-15 09:30:00",
+    "Site web": "https://johndoe.com"
   }
 }
 ```
-</ResponseExample>
+
+### Notes
+- Contact information availability depends on privacy settings and connection status
+- Some fields may be empty if the information is not publicly available
+- Email and phone number are only visible for direct connections
+- Connection date is only available for connected profiles
