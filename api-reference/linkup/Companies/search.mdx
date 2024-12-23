@@ -1,57 +1,122 @@
+---
 title: 'Search Companies'
-api: 'POST /v1/linkedin/companies/search'
-description: 'Search for companies on LinkedIn'
-Search for companies using various filters and criteria.
-Header Parameters
+api: 'POST /v1/companies/search'
+description: 'Search for companies on LinkedIn using various filters'
+---
+
+Search and retrieve information about companies on LinkedIn using filters like location, sector, keywords, and company size.
+
+### Header Parameters
+
 <ParamField header="x-api-key" type="string" required>
   Your API key
 </ParamField>
-Body Parameters
-<ParamField body="login_cookie" type="string" required>
-  LinkedIn authentication cookie
-</ParamField>
-<ParamField body="keyword" type="string">
-  Search keyword
-</ParamField>
+
+### Body Parameters
+
 <ParamField body="location" type="string">
-  Company location
+  Geographic location for company search (e.g., "Paris", "France", "Europe")
 </ParamField>
+
 <ParamField body="sector" type="string">
-  Industry sector
+  Industry sector or vertical (e.g., "Technology", "Finance", "Healthcare")
 </ParamField>
+
+<ParamField body="keyword" type="string">
+  Search keyword or company name
+</ParamField>
+
 <ParamField body="company_size" type="string">
-  Size of the company
+  Employee count range:
+  - B: 1-10 employees
+  - C: 11-50 employees
+  - D: 51-200 employees
+  - E: 201-500 employees
+  - F: 501-1000 employees
+  - G: 1001-5000 employees
+  - H: 5001-10000 employees
+  - I: 10001+ employees
 </ParamField>
+
 <ParamField body="total_results" type="integer" default="10">
-  Number of results to return
+  Number of companies to return (max 100)
 </ParamField>
-<RequestExample>
-```bash
-curl -X POST 'https://api.linkupapi.com/v1/linkedin/companies/search' \
--H 'x-api-key: your-api-key' \
--H 'Content-Type: application/x-www-form-urlencoded' \
--d 'keyword=technology' \
--d 'location=London' \
--d 'sector=Software' \
--d 'login_cookie=your-cookie'
-```
-</RequestExample>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="companies" type="array">
+      <Expandable title="Company Object">
+        <ResponseField name="company_name" type="string">
+          Name of the company
+        </ResponseField>
+
+        <ResponseField name="company_url" type="string">
+          LinkedIn URL of the company
+        </ResponseField>
+
+        <ResponseField name="job_offers" type="string">
+          Current job openings information
+        </ResponseField>
+
+        <ResponseField name="subscribers" type="string">
+          Number of LinkedIn followers
+        </ResponseField>
+
+        <ResponseField name="location" type="string">
+          Company's primary location
+        </ResponseField>
+
+        <ResponseField name="logo_url" type="string">
+          URL of company logo (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
 <ResponseExample>
-```json
+```json Success Response
 {
   "status": "success",
   "data": {
-    "total": 125,
     "companies": [
       {
-        "name": "Tech Solutions Ltd",
-        "url": "https://linkedin.com/company/tech-solutions",
-        "industry": "Software",
-        "location": "London, UK",
-        "size": "51-200 employees"
+        "company_name": "Example Tech",
+        "company_url": "https://www.linkedin.com/company/example-tech",
+        "job_offers": "50 job offers",
+        "subscribers": "10,000 followers",
+        "location": "Paris, France",
+        "logo_url": "https://media.licdn.com/dms/image/example.png"
       }
     ]
   }
 }
 ```
+
+```json Error Response
+{
+  "status": "error",
+  "error": {
+    "code": "search_failed",
+    "message": "Error description"
+  }
+}
+```
 </ResponseExample>
+
+### Notes
+- All filter parameters are optional but at least one should be provided for meaningful results
+- The total_results parameter is capped at 100 companies per request
+- Results are paginated with a maximum of 50 companies per page
+- Company size filter uses LinkedIn's standard employee count ranges
+- Location and sector IDs are automatically resolved from provided strings
