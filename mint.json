@@ -50,7 +50,8 @@
       "pages": [
         "api-reference/linkup/Profile/me",
         "api-reference/linkup/Profile/info",
-        "api-reference/linkup/Profile/contact"
+        "api-reference/linkup/Profile/contact",
+        "api-reference/linkup/Profile/profile-info"
       ]
     },
     {
