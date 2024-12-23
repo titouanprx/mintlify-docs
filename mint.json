@@ -66,8 +66,8 @@
       "pages": [
         "api-reference/linkup/Network/connect",
         "api-reference/linkup/Network/get-connections",
-        "api-reference/linkup/Network/invitations",
-        "api-reference/linkup/Network/accept-invitation"
+        "api-reference/linkup/Network/accept-invitations",
+        "api-reference/linkup/Network/get-invitations"
       ]
     },
     {
