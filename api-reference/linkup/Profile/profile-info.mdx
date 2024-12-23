@@ -1,31 +1,79 @@
-# Extract Profile Information
+---
+title: 'Extract Profile Information'
+api: 'POST /v1/profile/extract-info'
+description: 'Extract detailed information from a LinkedIn profile'
+---
 
-## Endpoint
+Extract comprehensive information from any LinkedIn profile, including personal details, experience, education, and professional skills.
 
-```
-POST /v1/profile/extract-info
-```
+### Header Parameters
 
-## Description
-Extract detailed information from a LinkedIn profile including personal information, experience, education, and skills.
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
 
-## Headers
-- **x-api-key** (required): Your API key
+### Body Parameters
 
-## Body Parameters
-- **linkedin_url** (required): URL of the LinkedIn profile to extract information from
-- **login_cookie** (required): LinkedIn authentication cookie obtained from the login/verify process
+<ParamField body="linkedin_url" type="string" required>
+  URL of the LinkedIn profile to extract information from
+</ParamField>
 
-## Example Request
-```bash
-curl -X POST 'https://api.linkupapi.com/v1/profile/extract-info' \
--H 'x-api-key: YOUR_API_KEY' \
--d 'linkedin_url=https://www.linkedin.com/in/anthony-bourbon' \
--d 'login_cookie=YOUR_LOGIN_COOKIE'
-```
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
 
-## Example Response
-```json
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="public_id" type="string">
+      Public identifier of the LinkedIn profile
+    </ResponseField>
+    
+    <ResponseField name="first_name" type="string">
+      First name of the profile owner
+    </ResponseField>
+    
+    <ResponseField name="last_name" type="string">
+      Last name of the profile owner
+    </ResponseField>
+    
+    <ResponseField name="headline" type="string">
+      Professional headline/title
+    </ResponseField>
+    
+    <ResponseField name="location" type="string">
+      Geographic location
+    </ResponseField>
+    
+    <ResponseField name="summary" type="string">
+      Profile summary/about section
+    </ResponseField>
+    
+    <ResponseField name="industry" type="string">
+      Industry sector
+    </ResponseField>
+    
+    <ResponseField name="experience" type="array">
+      Array of professional experiences
+    </ResponseField>
+    
+    <ResponseField name="education" type="array">
+      Array of education entries
+    </ResponseField>
+    
+    <ResponseField name="skills" type="array">
+      Array of professional skills
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
 {
   "status": "success",
   "data": {
@@ -34,7 +82,7 @@ curl -X POST 'https://api.linkupapi.com/v1/profile/extract-info' \
     "last_name": "Bourbon",
     "headline": "Founder & CEO at Blast. Club",
     "location": "France",
-    "summary": "Jure investisseur Qui Veut Etre Mon Associe, M6\n\nFondateur et CEO du Blast. Club www.Blast.club\n\nInvestissez a mes cotes dans les startups de demain, a partir de 1 000 par projet...",
+    "summary": "Jure investisseur Qui Veut Etre Mon Associe, M6\n\nFondateur et CEO du Blast. Club www.Blast.club",
     "industry": "Gestion des investissements",
     "experience": [
       {
@@ -56,8 +104,7 @@ curl -X POST 'https://api.linkupapi.com/v1/profile/extract-info' \
 }
 ```
 
-## Error Response
-```json
+```json Error Response
 {
   "status": "error",
   "error": {
@@ -66,9 +113,4 @@ curl -X POST 'https://api.linkupapi.com/v1/profile/extract-info' \
   }
 }
 ```
-
-## Notes
-- The profile must be accessible with the provided login cookie
-- Some fields might be empty or missing depending on the profile's privacy settings and available information
-- The experience array is sorted with the most recent positions first
-- Dates might be empty strings if not specified in the profile
+</ResponseExample>
