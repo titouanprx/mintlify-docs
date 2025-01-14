@@ -41,6 +41,7 @@
     {
       "group": "Authentication",
       "pages": [
+        "api-reference/linkup/getting-linkedin-cookie",
         "api-reference/linkup/Login/login",
         "api-reference/linkup/Login/verify"
       ]
