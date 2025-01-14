@@ -1,6 +1,6 @@
 ---
 title: 'Search Profile'
-api: 'POST /v1/Profile/search'
+api: 'POST /v1/profile/search'
 description: 'Search for LinkedIn profiles with advanced filters'
 ---
 
@@ -109,10 +109,7 @@ Search for LinkedIn profiles using multiple filters including company, location,
 ```json Error Response
 {
   "status": "error",
-  "error": {
-    "code": "search_failed",
-    "message": "Failed to search profiles"
-  }
+  "message": "message error"
 }
 ```
 </ResponseExample>
