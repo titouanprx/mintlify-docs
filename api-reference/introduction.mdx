@@ -1,81 +1,108 @@
 ---
 title: 'Introduction'
-description: 'Welcome to the LinkUp API documentation'
+description: 'Welcome to the LinkUp API'
 ---
 
 # LinkUp API
 
-LinkUp API is a powerful solution for automating your LinkedIn interactions. Our API allows you to programmatically perform various LinkedIn operations securely and efficiently.
+The LinkUp API lets you automate your LinkedIn interactions programmatically. Our API provides comprehensive access to LinkedIn features including profile management, messaging, networking, and post interactions.
 
 ## Authentication
 
-All API requests require an API key that must be included in the `x-api-key` header. To obtain your API key, log in to your [dashboard](https://dashboard.linkup.com).
+All API requests require an API key that must be included in the `x-api-key` header:
 
 ```bash
-curl -H "x-api-key: your-api-key" https://api.linkup.com/v1/...
+curl -H "x-api-key: your_api_key" https://api.linkupapi.com/v1/...
 ```
+
+### LinkedIn Authentication
+
+**Important**: All endpoints except the authentication endpoints (`/v1/auth/login` and `/v1/auth/verify`) require a valid LinkedIn authentication cookie (`li_at`). This cookie is obtained after successfully logging in through our authentication endpoints.
+
+Include the `li_at` cookie in your requests using the `login_cookie` parameter:
+
+```bash
+curl -X POST https://api.linkupapi.com/v1/profile/me \
+  -H "x-api-key: your_api_key" \
+  -d "login_cookie=your_li_at_cookie"
+```
+
+## Common Parameters
+
+Most endpoints require these parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| x-api-key | header | Yes | Your API authentication key |
+| login_cookie | body | Yes* | LinkedIn authentication cookie (li_at) |
+| country | body | No | Proxy country code (default: "FR") |
+
+*Not required for authentication endpoints
 
 ## Core Features
 
-LinkUp API offers several categories of features:
-
-### LinkedIn Authentication
-- Login to LinkedIn
-- Security code verification
-
-### Profile Management
-- Contact information extraction
-- Profile analysis
-
-### Post Management
-- Create posts
-- Extract posts
-- Interactions (Like, Comment, Repost)
-
-### Search
-- People search
-- Company search
-
-### Network Management
-- Send connection requests
-- Extract connections
+<CardGroup cols={2}>
+  <Card title="Profile Management" icon="user">
+    Access and manage LinkedIn profiles
+  </Card>
+  <Card title="Post Interactions" icon="share-nodes">
+    Create posts and interact with content
+  </Card>
+  <Card title="Networking" icon="network-wired">
+    Manage connections and invitations
+  </Card>
+  <Card title="Messaging" icon="message">
+    Send and receive LinkedIn messages
+  </Card>
+</CardGroup>
 
 ## Rate Limiting
 
 - 100 requests per minute per API key
 - 1000 requests per day per API key
-- Limits can be increased based on your plan
 
 ## Response Format
 
-All responses are in JSON format and include at minimum:
-- An HTTP status code
-- A response body with data or error message
+All responses are returned in JSON format:
 
-### Successful Response Example
 ```json
 {
   "status": "success",
   "data": {
-    // Endpoint-specific data
+    // Response data
   }
 }
 ```
 
-### Error Response Example
+## Error Handling
+
+Error responses follow this format:
+
 ```json
 {
   "status": "error",
   "error": {
-    "code": "error_code",
-    "message": "Detailed error description"
+    "code": "ERROR_CODE",
+    "message": "Error description"
   }
 }
 ```
 
+Common status codes:
+- `400` Bad Request
+- `401` Unauthorized (invalid API key)
+- `403` Forbidden (invalid or expired LinkedIn cookie)
+- `429` Rate Limit Exceeded
+- `500` Internal Server Error
+
 ## Support
 
-If you encounter any issues or have questions:
-- Email: support@linkup.com
-- Documentation: https://docs.linkup.com
-- API Status: https://status.linkup.com
+Need help? Email us at [support@linkup.com](mailto:support@linkup.com)
+
+## Best Practices
+
+1. Always store and reuse the LinkedIn authentication cookie (li_at) until it expires
+2. Implement proper error handling for rate limits and cookie expiration
+3. Use appropriate country codes when needed for geolocation-specific requests
+4. Keep your API key secure and never expose it in client-side code
+5. Monitor rate limits through response headers
