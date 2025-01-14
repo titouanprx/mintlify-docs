@@ -21,7 +21,9 @@ Authenticate with your LinkedIn account. If verification is required, a security
 <ParamField body="password" type="string" required>
   Your LinkedIn password
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 ### Response
 
 <ResponseField name="status" type="string">
@@ -39,17 +41,17 @@ Authenticate with your LinkedIn account. If verification is required, a security
 <ResponseExample>
 ```json Response with Verification Required
 {
-  "status": "pending",
-  "requires_verification": true,
-  "email": "u***@example.com"
+  "status": "verification_code_required",
+  "message": "Check your email for verification code",
+  "email": "user@example.com"
 }
 ```
 
 ```json Response without Verification
 {
   "status": "success",
-  "requires_verification": false,
-  "cookie": "li_at=XXXXXX"
+  "li_at": "XXXX...",
+  "message": "Login successful"
 }
 ```
 </ResponseExample>

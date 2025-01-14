@@ -21,7 +21,9 @@ Get a list of comments on a specific LinkedIn post, including the comment text a
 <ParamField body="total_comments" type="integer" default="10">
   Number of comments to retrieve
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

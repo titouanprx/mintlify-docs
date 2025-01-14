@@ -17,7 +17,9 @@ Add a like reaction to any LinkedIn post using the post URL.
 <ParamField body="post_url" type="string" required>
   URL of the LinkedIn post to like (supports multiple formats)
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -40,9 +42,7 @@ Add a like reaction to any LinkedIn post using the post URL.
 ```json Success Response
 {
   "status": "success",
-  "data": {
-    "message": "Post liked successfully"
-  }
+  "message": "Post liked successfully"
 }
 ```
 

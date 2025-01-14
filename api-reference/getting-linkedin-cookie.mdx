@@ -20,38 +20,20 @@ The login endpoint should be used sparingly. Once you obtain a valid li_at cooki
 
 ### Advantages:
 
-1. **Long-lasting Cookie**
-   - Cookie valid for 365 days
-   - No need for frequent re-authentication
-   - Stable and reliable access
 
-2. **Automatic IP Handling**
+1. **Automatic IP Handling**
    - Cookie is automatically configured to work with our proxy network
    - No need to worry about IP matching
    - Works seamlessly with all API endpoints
 
-3. **Security Management**
+2. **Security Management**
    - Handles LinkedIn security challenges automatically
    - Manages verification codes when required
    - Reduces risk of account restrictions
 
 ### How to Use:
 
-1. **Initial Login Request** (only needed once)
-```bash
-curl -X POST https://api.linkupapi.com/v1/auth/login \
-  -H "x-api-key: your_api_key" \
-  -d "email=your_linkedin_email" \
-  -d "password=your_linkedin_password"
-```
-
-2. **Handle Verification (if required)**
-```bash
-curl -X POST https://api.linkupapi.com/v1/auth/verify \
-  -H "x-api-key: your_api_key" \
-  -d "code=verification_code" \
-  -d "email=your_linkedin_email"
-```
+Read the Authentication part.
 
 ### Response Example:
 

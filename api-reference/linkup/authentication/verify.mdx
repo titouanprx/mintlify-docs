@@ -22,6 +22,9 @@ Verify the security code sent to your email during the LinkedIn authentication p
   The email address used for LinkedIn login
 </ParamField>
 
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 ### Response
 
 <ResponseField name="status" type="string">
@@ -36,7 +39,8 @@ Verify the security code sent to your email during the LinkedIn authentication p
 ```json Success Response
 {
   "status": "success",
-  "cookie": "li_at=XXXXXX"
+  "message": "Login successful",
+  "li_at": "XXXX..."
 }
 ```
 

@@ -21,7 +21,9 @@ Send a connection request to any LinkedIn profile with an optional custom messag
 <ParamField body="message" type="string">
   Custom message to send with the connection request
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

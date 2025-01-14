@@ -13,7 +13,9 @@ Get basic information about your own LinkedIn profile using your authentication 
 </ParamField>
 
 ### Body Parameters
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

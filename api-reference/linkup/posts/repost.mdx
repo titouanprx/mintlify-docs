@@ -17,7 +17,9 @@ Repost (share) any LinkedIn post on your own profile.
 <ParamField body="post_url" type="string" required>
   URL of the LinkedIn post to repost (supports multiple formats)
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

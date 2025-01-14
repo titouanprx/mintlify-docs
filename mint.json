@@ -43,8 +43,8 @@
     {
       "group": "Authentication",
       "pages": [
-        "api-reference/linkup/Login/login",
-        "api-reference/linkup/Login/verify"
+        "api-reference/linkup/authentication/login",
+        "api-reference/linkup/authentication/verify"
       ]
     },
     {

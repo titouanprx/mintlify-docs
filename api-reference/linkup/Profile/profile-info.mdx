@@ -17,7 +17,9 @@ Extract comprehensive information from any LinkedIn profile, including personal 
 <ParamField body="linkedin_url" type="string" required>
   URL of the LinkedIn profile to extract information from
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

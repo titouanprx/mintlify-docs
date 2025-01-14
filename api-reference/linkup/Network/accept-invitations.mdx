@@ -21,7 +21,9 @@ Accept a pending connection invitation using the invitation's shared secret and 
 <ParamField body="entity_urn" type="string" required>
   Entity URN of the invitation
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

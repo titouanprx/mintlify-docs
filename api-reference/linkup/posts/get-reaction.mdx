@@ -21,7 +21,9 @@ Get a list of reactions (likes, etc.) on a specific LinkedIn post, including inf
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="total_results" type="integer" default="10">
   Number of reactions to retrieve
 </ParamField>

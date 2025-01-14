@@ -21,7 +21,9 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 <ParamField body="message_text" type="string" required>
   Content of the message to send
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

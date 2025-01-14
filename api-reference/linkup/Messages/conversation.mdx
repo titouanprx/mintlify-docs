@@ -21,7 +21,9 @@ Get detailed messages from a specific LinkedIn conversation, including message c
 <ParamField body="message_count" type="integer" default="10">
   Number of messages to retrieve
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

@@ -41,7 +41,9 @@ Search and retrieve information about companies on LinkedIn using filters like l
 <ParamField body="total_results" type="integer" default="10">
   Number of companies to return (max 100)
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>

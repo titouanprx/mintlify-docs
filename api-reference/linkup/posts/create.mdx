@@ -21,7 +21,9 @@ Create a new post on LinkedIn with text content and an optional image attachment
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
-
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
 <ParamField body="file" type="file">
   Optional image file to attach to the post
 </ParamField>
@@ -44,9 +46,7 @@ Create a new post on LinkedIn with text content and an optional image attachment
 ```json Success Response
 {
   "status": "success",
-  "data": {
-    "message": "Post created successfully"
-  }
+  "message": "Post created successfully"
 }
 ```
 
