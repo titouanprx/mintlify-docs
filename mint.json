@@ -36,12 +36,13 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["api-reference/introduction"]
+      "pages": ["api-reference/introduction",
+                "api-reference/getting-linkedin-cookie"
+    ]
     },
     {
       "group": "Authentication",
       "pages": [
-        "api-reference/linkup/getting-linkedin-cookie",
         "api-reference/linkup/Login/login",
         "api-reference/linkup/Login/verify"
       ]
