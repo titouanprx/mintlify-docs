@@ -39,7 +39,7 @@ Search and retrieve information about companies on LinkedIn using filters like l
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of companies to return (max 100)
+  Number of companies to return
 </ParamField>
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection
@@ -118,7 +118,5 @@ Search and retrieve information about companies on LinkedIn using filters like l
 
 ### Notes
 - All filter parameters are optional but at least one should be provided for meaningful results
-- The total_results parameter is capped at 100 companies per request
 - Results are paginated with a maximum of 50 companies per page
-- Company size filter uses LinkedIn's standard employee count ranges
 - Location and sector IDs are automatically resolved from provided strings
