@@ -47,29 +47,15 @@ Send a connection request to any LinkedIn profile with an optional custom messag
 {
   "status": "success",
   "message": "Connection request sent successfully",
-  "data": {
-    "profile_url": "https://www.linkedin.com/in/username"
-  }
 }
 ```
 
-```json Already Connected Response
-{
-  "status": "success",
-  "message": "Connection request sent successfully (CANT_RESEND_YET)",
-  "data": {
-    "profile_url": "https://www.linkedin.com/in/username"
-  }
-}
-```
 
 ```json Error Response
 {
   "status": "error",
-  "error": {
-    "code": "connection_failed",
-    "message": "Failed to send connection request"
-  }
+  "message": "Error description"
+
 }
 ```
 </ResponseExample>
