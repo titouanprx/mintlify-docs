@@ -33,21 +33,16 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 <ResponseField name="status" type="string">
   Request status (success/error)
 </ResponseField>
-
-<ResponseField name="data" type="object">
-  <Expandable title="Properties">
-    <ResponseField name="message" type="string">
-      Status message of the operation
-    </ResponseField>
-  </Expandable>
+<ResponseField name="message" type="string">
+  Detailed message about the message status
 </ResponseField>
+
 
 <ResponseExample>
 ```json Success Response
 {
   "status": "success",
   "message": "Message sent successfully"
-  
 }
 ```
 
@@ -67,6 +62,5 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 - The recipient profile must be accessible with your login cookie
 - The following errors can occur:
   - Invalid profile URL format
-  - Unable to retrieve recipient's profile URN
   - Network or permission errors
   - Rate limiting from LinkedIn
