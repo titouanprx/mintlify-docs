@@ -85,17 +85,11 @@ Get a list of your LinkedIn connections with their basic information including n
 ```json Error Response
 {
   "status": "error",
-  "error": {
-    "code": "fetch_connections_error",
-    "message": "Error retrieving connections"
-  }
+  "message": "Error description"
 }
 ```
 </ResponseExample>
 
 ### Notes
-- Results are returned in batches of up to 50 connections per request
 - The profile picture URL may be 'N/A' if not available or if the connection has no profile picture
 - The job title may be 'N/A' if the connection hasn't specified their current position
-- The maximum number of connections that can be retrieved in a single request is limited by LinkedIn's API
-- Connection data is retrieved from your direct connections only (1st degree connections)
