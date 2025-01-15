@@ -46,41 +46,25 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 ```json Success Response
 {
   "status": "success",
-  "data": {
-    "message": "Message sent successfully"
-  }
+  "message": "Message sent successfully"
+  
 }
 ```
 
-```json Error Response New Conversation
+```json Error Response
 {
   "status": "error",
-  "error": {
-    "code": "send_message_error",
-    "message": "Failed to create new conversation"
-  }
+  "message": "Error description"
 }
 ```
 
-```json Error Response Existing Conversation
-{
-  "status": "error",
-  "error": {
-    "code": "send_message_error",
-    "message": "Failed to send message to existing conversation"
-  }
-}
-```
 </ResponseExample>
 
 ### Notes
 - The API automatically determines if there's an existing conversation with the recipient
-- For new conversations, a new thread is created automatically
-- For existing conversations, the message is added to the existing thread
 - The API includes a typing indicator for existing conversations
 - Messages are sent with push notification enabled for the recipient
 - The recipient profile must be accessible with your login cookie
-- Each message gets a unique tracking ID and origin token
 - The following errors can occur:
   - Invalid profile URL format
   - Unable to retrieve recipient's profile URN
