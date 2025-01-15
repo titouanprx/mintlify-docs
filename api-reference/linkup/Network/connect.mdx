@@ -38,9 +38,6 @@ Send a connection request to any LinkedIn profile with an optional custom messag
   Detailed status message about the connection request
 </ResponseField>
 
-<ResponseField name="data" type="object">
-  Additional data about the connection request
-</ResponseField>
 
 <ResponseExample>
 ```json Success Response
@@ -64,6 +61,4 @@ Send a connection request to any LinkedIn profile with an optional custom messag
 - The profile must be accessible with the provided login cookie
 - Connection requests are subject to LinkedIn's daily and weekly limits
 - Messages are optional but can increase acceptance rate
-- Some profiles may have restricted connection settings
-- The same connection request cannot be sent multiple times to the same profile
 - The URL must be a valid LinkedIn profile URL in the format https://www.linkedin.com/in/[username]
