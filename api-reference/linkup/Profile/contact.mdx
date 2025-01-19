@@ -1,0 +1,92 @@
+---
+title: 'Extract Profile Contact Information'
+api: 'POST /v1/profile/extract-contact'
+description: 'Extract contact information from a LinkedIn profile'
+---
+
+Get detailed contact information from a LinkedIn profile including email, phone number, and other contact details when available.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  URL of the LinkedIn profile to extract contact information from
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="Name" type="string">
+      Full name of the profile owner
+    </ResponseField>
+    
+    <ResponseField name="Headline" type="string">
+      Professional headline
+    </ResponseField>
+    
+    <ResponseField name="Email" type="string">
+      Email address (if available)
+    </ResponseField>
+    
+    <ResponseField name="Téléphone" type="string">
+      Phone number (if available)
+    </ResponseField>
+    
+    <ResponseField name="Public Identifier" type="string">
+      LinkedIn public profile identifier
+    </ResponseField>
+    
+    <ResponseField name="Relation" type="string">
+      Connection status with the profile
+    </ResponseField>
+    
+    <ResponseField name="connexion date" type="string">
+      Date when the connection was established (if connected)
+    </ResponseField>
+    
+    <ResponseField name="Site web" type="string">
+      Website URL (if available)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+    "status": "success",
+    "data": {
+        "name": "John Doe",
+        "headline": "Software Engineer at Tech Company",
+        "email": "john.doe@example.com",
+        "phone": "+1234567890",
+        "publicIdentifier": "john-doe-123abc456", 
+        "relationship": "1st degree",
+        "connectionDate": "2024-01-15 09:30:00",
+        "website": "https://johndoe.com"
+    }
+}
+```
+
+</ResponseExample>
+
+### Notes
+- Contact information availability depends on privacy settings and connection status
+- Some fields may be empty if the information is not publicly available

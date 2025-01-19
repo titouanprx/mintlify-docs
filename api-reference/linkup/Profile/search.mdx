@@ -1,0 +1,138 @@
+---
+title: 'Search Profile'
+api: 'POST /v1/profile/search'
+description: 'Search for LinkedIn profiles with advanced filters'
+---
+
+Search for LinkedIn profiles using multiple filters including company, location, school, network, and keywords.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="company_url" type="string">
+  LinkedIn company URL or identifier to filter by current company
+</ParamField>
+
+<ParamField body="location" type="string">
+  Geographic location to filter profiles
+</ParamField>
+
+<ParamField body="school_url" type="string">
+  LinkedIn school URL or identifier to filter by education
+</ParamField>
+
+<ParamField body="network" type="string">
+  Network connection level to filter by
+</ParamField>
+
+<ParamField body="keyword" type="string">
+  Search keyword to find relevant profiles
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of profiles to retrieve
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_results" type="integer">
+      Number of profiles returned
+    </ResponseField>
+
+    <ResponseField name="profiles" type="array">
+      <Expandable title="Profile Object">
+        <ResponseField name="name" type="string">
+          Full name of the person
+        </ResponseField>
+
+        <ResponseField name="job_title" type="string">
+          Current job title or headline
+        </ResponseField>
+
+        <ResponseField name="connection_level" type="string">
+          LinkedIn connection degree (e.g., "1st", "2nd", "3rd")
+        </ResponseField>
+
+        <ResponseField name="location" type="string">
+          Geographic location
+        </ResponseField>
+
+        <ResponseField name="profile_url" type="string">
+          LinkedIn profile URL
+        </ResponseField>
+
+        <ResponseField name="profile_picture" type="string">
+          URL of the profile picture (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_results": 1,
+    "profiles": [
+      {
+        "name": "John Doe",
+        "job_title": "Software Engineer at Tech Company",
+        "connection_level": "2nd",
+        "location": "San Francisco Bay Area",
+        "profile_url": "https://www.linkedin.com/in/johndoe/",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "message error"
+}
+```
+</ResponseExample>
+
+### Notes
+- Company and school identifiers can be either:
+  - Full LinkedIn URLs (https://www.linkedin.com/company/...)
+  - Company/school names or identifiers
+- Location search supports:
+  - Cities
+  - Regions
+  - Countries
+  - Market areas
+- Profile pictures are direct links to LinkedIn's media servers
+- Missing information is marked as 'N/A'
+- Search results may be limited by:
+  - LinkedIn's visibility settings
+  - Your network connection level
+  - Profile privacy settings
+- Search restrictions:
+  - Rate limits apply

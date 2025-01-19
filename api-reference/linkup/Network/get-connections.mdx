@@ -1,0 +1,97 @@
+---
+title: 'Get Connections'
+api: 'POST /v1/network/connections'
+description: 'Retrieve your LinkedIn connections list'
+---
+
+Get a list of your LinkedIn connections with their basic information including name, job title, profile URL, and profile picture.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of connections to retrieve
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_connections" type="integer">
+      Number of connections returned
+    </ResponseField>
+
+    <ResponseField name="connections" type="array">
+      <Expandable title="Connection Object">
+        <ResponseField name="name" type="string">
+          Full name of the connection
+        </ResponseField>
+
+        <ResponseField name="job_title" type="string">
+          Current job title or professional headline
+        </ResponseField>
+
+        <ResponseField name="profile_url" type="string">
+          LinkedIn profile URL of the connection
+        </ResponseField>
+
+        <ResponseField name="profile_picture" type="string">
+          URL of the connection's profile picture (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_connections": 2,
+    "connections": [
+      {
+        "name": "John Doe",
+        "job_title": "Software Engineer at Tech Company",
+        "profile_url": "https://www.linkedin.com/in/johndoe/",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg"
+      },
+      {
+        "name": "Jane Smith",
+        "job_title": "Product Manager at Startup",
+        "profile_url": "https://www.linkedin.com/in/janesmith/",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/example2.jpg"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- The profile picture URL may be 'N/A' if not available or if the connection has no profile picture
+- The job title may be 'N/A' if the connection hasn't specified their current position

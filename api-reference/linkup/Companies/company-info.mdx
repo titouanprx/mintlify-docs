@@ -1,0 +1,144 @@
+---
+title: 'Get Company Information'
+api: 'POST /v1/companies/info'
+description: 'Extract detailed information about a company from LinkedIn'
+---
+
+Get comprehensive information about a company including description, size, locations, and other business details.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="company_url" type="string" required>
+  LinkedIn company URL (e.g., https://www.linkedin.com/company/stripe/)
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="name" type="string">
+      Company name
+    </ResponseField>
+
+    <ResponseField name="universalName" type="string">
+      Company URL identifier
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Company description
+    </ResponseField>
+
+    <ResponseField name="websiteUrl" type="string">
+      Company website URL
+    </ResponseField>
+
+    <ResponseField name="employeeCount" type="integer">
+      Total number of employees
+    </ResponseField>
+
+    <ResponseField name="employeeCountRange" type="object">
+      <Expandable title="Range Properties">
+        <ResponseField name="start" type="integer">Minimum range</ResponseField>
+        <ResponseField name="end" type="integer">Maximum range</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="headquarter" type="object">
+      <Expandable title="Address Properties">
+        <ResponseField name="country" type="string">Country code</ResponseField>
+        <ResponseField name="geographicArea" type="string">State/Region</ResponseField>
+        <ResponseField name="city" type="string">City</ResponseField>
+        <ResponseField name="line1" type="string">Street address</ResponseField>
+        <ResponseField name="postalCode" type="string">Postal code</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="locations" type="array">
+      Array of company office locations
+    </ResponseField>
+
+    <ResponseField name="organizationType" type="string">
+      Type of organization
+    </ResponseField>
+
+    <ResponseField name="followersCount" type="integer">
+      Number of LinkedIn followers
+    </ResponseField>
+
+    <ResponseField name="verified" type="boolean">
+      Whether the company page is verified
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "name": "Stripe",
+    "universalName": "stripe",
+    "description": "Stripe is a financial infrastructure platform for businesses. Millions of companies—from the world's largest enterprises to the most ambitious startups—use Stripe to accept payments, grow their revenue, and accelerate new business opportunities.",
+    "websiteUrl": "https://stripe.com",
+    "employeeCount": 10685,
+    "employeeCountRange": {
+      "start": 1001,
+      "end": 5000
+    },
+    "headquarter": {
+      "country": "US",
+      "geographicArea": "California",
+      "city": "South San Francisco",
+      "line1": "354 Oyster Point Blvd",
+      "postalCode": "94080"
+    },
+    "locations": [
+      {
+        "description": "Headquarters",
+        "address": {
+          "country": "US",
+          "geographicArea": "California",
+          "city": "South San Francisco",
+          "line1": "354 Oyster Point Blvd",
+          "postalCode": "94080"
+        },
+        "headquarter": true
+      }
+    ],
+    "organizationType": "Société privée",
+    "followersCount": 947330,
+    "verified": true
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "message error"
+}
+```
+</ResponseExample>
+
+
+### Notes
+- The company URL must be a valid LinkedIn company page URL
+- Some fields may be null or missing depending on the company's public information

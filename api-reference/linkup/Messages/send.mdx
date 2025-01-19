@@ -1,0 +1,68 @@
+---
+title: 'Send Message'
+api: 'POST /v1/messages/send-message'
+description: 'Send a message to a LinkedIn user'
+---
+
+Send a direct message to any LinkedIn user. The message can be sent to either a new conversation or an existing one.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  LinkedIn profile URL of the recipient (e.g., "https://www.linkedin.com/in/username")
+</ParamField>
+
+<ParamField body="message_text" type="string" required>
+  Content of the message to send
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+<ResponseField name="message" type="string">
+  Detailed message about the message status
+</ResponseField>
+
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Message sent successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+
+</ResponseExample>
+
+### Notes
+- The API automatically determines if there's an existing conversation with the recipient
+- The API includes a typing indicator for existing conversations
+- Messages are sent with push notification enabled for the recipient
+- The recipient profile must be accessible with your login cookie
+- The following errors can occur:
+  - Invalid profile URL format
+  - Network or permission errors
+  - Rate limiting from LinkedIn

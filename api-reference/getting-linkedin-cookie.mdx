@@ -1,0 +1,108 @@
+---
+title: 'Getting LinkedIn Cookie'
+description: 'How to obtain the LinkedIn authentication cookie (li_at)'
+---
+
+# Getting LinkedIn Authentication Cookie
+
+To use most endpoints of the LinkUp API, you need a valid LinkedIn authentication cookie (li_at). There are two methods to obtain this cookie, with our authentication API being the recommended approach.
+
+## Method 1: Using LinkUp Authentication API (Recommended)
+
+Our authentication API provides the most reliable and secure way to obtain the LinkedIn cookie. This method automatically handles IP matching and security challenges.
+
+### Important Note ⚠️
+
+The login endpoint should be used sparingly. Once you obtain a valid li_at cookie, it remains valid for 365 days. You should:
+- Store the cookie securely after first authentication
+- Reuse the same cookie for all subsequent requests
+- Only re-authenticate if the cookie becomes invalid
+
+### Advantages:
+
+
+1. **Automatic IP Handling**
+   - Cookie is automatically configured to work with our proxy network
+   - No need to worry about IP matching
+   - Works seamlessly with all API endpoints
+
+2. **Security Management**
+   - Handles LinkedIn security challenges automatically
+   - Manages verification codes when required
+   - Reduces risk of account restrictions
+
+### How to Use:
+
+Read the Authentication part.
+
+### Response Example:
+
+```json
+{
+  "status": "success",
+  "message": "Login successful",
+  "login_cookie": "XXXX..."  // Your LinkedIn cookie - valid for 365 days
+}
+```
+
+## Method 2: Manual Extraction (Alternative Method)
+
+If needed, you can manually extract the cookie from your browser. However, this method requires careful attention to IP addresses and is generally less reliable.
+
+### Steps:
+
+1. **Install Cookie Editor Extension**
+   - For Chrome: Install [EditThisCookie](https://chrome.google.com/webstore/detail/editthiscookie/fngmhnnpilhplaeedifhccceomclgfbg)
+   - For Firefox: Install [Cookie Editor](https://addons.mozilla.org/en-US/firefox/addon/edit-cookie/)
+
+2. **Login to LinkedIn**
+   - Go to [LinkedIn.com](https://www.linkedin.com)
+   - Login with your account credentials
+   - Complete any security verifications if prompted
+
+3. **Extract the Cookie**
+   - Click on the EditThisCookie extension icon
+   - Look for the cookie named "li_at"
+   - Copy its value - it should be a long string of characters
+
+### ⚠️ Important Considerations
+
+When using manual extraction, be aware of these critical points:
+
+1. **IP Address Matching**
+   - The IP address/location you use to log in MUST match the one you'll use with our API
+   - Using different IPs can trigger LinkedIn's security measures
+   - This can lead to cookie invalidation or account security checks
+
+2. **Security Risks**
+   - Never share your li_at cookie
+   - It provides full access to your LinkedIn account
+   - Store it securely like any other authentication token
+
+## Best Practices
+
+1. **Cookie Storage**
+   - Store the cookie securely in your environment variables or secure storage
+   - Never expose it in client-side code or version control
+   - Implement proper access controls
+
+2. **Usage Pattern**
+   - Get the cookie once through our API
+   - Store it securely
+   - Reuse it for all requests until it expires (365 days)
+   - Only re-authenticate if you get a 403 error
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Cookie Invalid**
+   - Check if the cookie has expired (after 365 days)
+   - Verify cookie format is correct
+   - Use the authentication API to get a new cookie
+
+2. **Rate Limiting**
+   - Avoid making login requests if you already have a valid cookie
+   - Store and reuse the cookie instead of authenticating repeatedly
+
+Need more help? Contact our support at support@linkupapi.com

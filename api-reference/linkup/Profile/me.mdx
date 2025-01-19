@@ -1,0 +1,90 @@
+---
+title: 'Get My Profile'
+api: 'POST /v1/profile/me'
+description: 'Retrieve your own LinkedIn profile information'
+---
+
+Get basic information about your own LinkedIn profile using your authentication cookie.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="plainId" type="integer">
+      Internal LinkedIn profile ID
+    </ResponseField>
+    
+    <ResponseField name="firstName" type="string">
+      First name
+    </ResponseField>
+    
+    <ResponseField name="lastName" type="string">
+      Last name
+    </ResponseField>
+    
+    <ResponseField name="occupation" type="string">
+      Current professional occupation
+    </ResponseField>
+    
+    <ResponseField name="publicIdentifier" type="string">
+      Public LinkedIn profile identifier
+    </ResponseField>
+    
+    <ResponseField name="entityUrn" type="string">
+      LinkedIn internal URN identifier
+    </ResponseField>
+    
+    <ResponseField name="publicContactInfo" type="object">
+      Public contact information (if available)
+    </ResponseField>
+    
+    <ResponseField name="premiumSubscriber" type="boolean">
+      Whether the profile has a premium subscription
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "plainId": 1374179736,
+    "firstName": "Ales",
+    "lastName": "Prw",
+    "occupation": "growth hacker",
+    "publicIdentifier": "ales-prw-aa0262324",
+    "entityUrn": "urn:li:fs_miniProfile:ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ",
+    "publicContactInfo": {},
+    "premiumSubscriber": false
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "data": "LinkedIn cookie invalid or expired"
+}
+```
+</ResponseExample>

@@ -1,0 +1,126 @@
+---
+title: 'Search Companies'
+api: 'POST /v1/companies/search'
+description: 'Search for companies on LinkedIn using various filters'
+---
+
+Search and retrieve information about companies on LinkedIn using filters like location, sector, keywords, and company size.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="location" type="string">
+  Geographic location for company search (e.g., "Paris", "France", "Europe")
+</ParamField>
+
+<ParamField body="sector" type="string">
+  Industry sector or vertical (e.g., "Technology", "Finance", "Healthcare")
+</ParamField>
+
+<ParamField body="keyword" type="string">
+  Search keyword or company name
+</ParamField>
+
+<ParamField body="company_size" type="string">
+  Employee count range:
+  - B: 1-10 employees
+  - C: 11-50 employees
+  - D: 51-200 employees
+  - E: 201-500 employees
+  - F: 501-1000 employees
+  - G: 1001-5000 employees
+  - H: 5001-10000 employees
+  - I: 10001+ employees
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of companies to return
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="companies" type="array">
+      <Expandable title="Company Object">
+        <ResponseField name="company_name" type="string">
+          Name of the company
+        </ResponseField>
+
+        <ResponseField name="company_url" type="string">
+          LinkedIn URL of the company
+        </ResponseField>
+
+        <ResponseField name="job_offers" type="string">
+          Current job openings information
+        </ResponseField>
+
+        <ResponseField name="subscribers" type="string">
+          Number of LinkedIn followers
+        </ResponseField>
+
+        <ResponseField name="location" type="string">
+          Company's primary location
+        </ResponseField>
+
+        <ResponseField name="logo_url" type="string">
+          URL of company logo (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "companies": [
+      {
+        "company_name": "Example Tech",
+        "company_url": "https://www.linkedin.com/company/example-tech",
+        "job_offers": "50 job offers",
+        "subscribers": "10,000 followers",
+        "location": "Paris, France",
+        "logo_url": "https://media.licdn.com/dms/image/example.png"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "message error"
+}
+
+```
+</ResponseExample>
+
+### Notes
+- All filter parameters are optional but at least one should be provided for meaningful results
+- Results are paginated with a maximum of 50 companies per page
+- Location and sector IDs are automatically resolved from provided strings

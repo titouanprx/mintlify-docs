@@ -1,0 +1,162 @@
+---
+title: 'Search Posts'
+api: 'POST /v1/posts/search'
+description: 'Extract and search LinkedIn posts with various filters'
+---
+
+Search and extract LinkedIn posts with advanced filtering options including post type, sorting, keywords, and date filters.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_type" type="string" >
+  Type of posts to search for: "photos" or "jobs" or "videos"
+</ParamField>
+
+<ParamField body="sort_by" type="string" default="date_posted">
+  How to sort the results: "date_posted" or "relevance"
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="keyword" type="string">
+  Search keyword for posts
+</ParamField>
+
+<ParamField body="post_date" type="string">
+  Filter posts by date: "past-24h" or "past-week" or "past-month"
+</ParamField>
+
+<ParamField body="linkedin_url" type="string">
+  LinkedIn profile URL to extract posts from
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of posts to retrieve
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_posts" type="integer">
+      Number of posts returned
+    </ResponseField>
+
+    <ResponseField name="posts" type="array">
+      <Expandable title="Post Object">
+        <ResponseField name="shareAudience" type="string">
+          Visibility of the post (e.g., "PUBLIC")
+        </ResponseField>
+
+        <ResponseField name="shareUrl" type="string">
+          URL of the post
+        </ResponseField>
+
+        <ResponseField name="text" type="string">
+          Content of the post
+        </ResponseField>
+
+        <ResponseField name="numLikes" type="integer">
+          Number of likes on the post
+        </ResponseField>
+
+        <ResponseField name="numComments" type="integer">
+          Number of comments on the post
+        </ResponseField>
+
+        <ResponseField name="numShares" type="integer">
+          Number of shares of the post
+        </ResponseField>
+
+        <ResponseField name="actor_name" type="string">
+          Name of the post author
+        </ResponseField>
+
+        <ResponseField name="actor_description" type="string">
+          Description/headline of the post author
+        </ResponseField>
+
+        <ResponseField name="actor_image" type="string">
+          Profile image URL of the post author
+        </ResponseField>
+
+        <ResponseField name="actor_profile_url" type="string">
+          LinkedIn profile URL of the post author
+        </ResponseField>
+
+        <ResponseField name="post_images" type="array">
+          Array of image URLs included in the post
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_posts": 1,
+    "posts": [
+      {
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/user_post-activity-123",
+        "text": "Example post content",
+        "numLikes": 50,
+        "numComments": 10,
+        "numShares": 5,
+        "actor_name": "John Doe",
+        "actor_description": "Software Engineer at Tech Company",
+        "actor_image": "https://media.licdn.com/dms/image/profile.jpg",
+        "actor_profile_url": "https://www.linkedin.com/in/johndoe",
+        "post_images": [
+          "https://media.licdn.com/dms/image/post1.jpg"
+        ]
+      }
+    ]
+  }
+}
+```
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- Images URLs are direct links to LinkedIn's media servers
+- Text content has special characters normalized
+- Social metrics (likes, comments, shares) are included when available
+- Post visibility information is included
+- The API supports:
+  - Multiple filtering options
+  - Custom sort orders
+  - Keyword search
+  - Date-based filtering
+  - Profile-specific post extraction
+- Post content may be limited based on:
+  - Privacy settings
+  - Network connection level
+  - Content visibility settings

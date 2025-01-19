@@ -1,0 +1,57 @@
+---
+title: 'Verify Code'
+api: 'POST /v1/auth/verify'
+description: 'Verify security code for LinkedIn authentication'
+---
+
+Verify the security code sent to your email during the LinkedIn authentication process. This endpoint should be called after receiving the verification code from the login endpoint.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="code" type="string" required>
+  The verification code received via email
+</ParamField>
+
+<ParamField body="email" type="string" required>
+  The email address used for LinkedIn login
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+### Response
+
+<ResponseField name="status" type="string">
+  Verification status
+</ResponseField>
+
+<ResponseField name="cookie" type="string">
+  LinkedIn authentication cookie (on successful verification)
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Login successful",
+  "login_cookie": "XXXX..."
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Verification failed"
+}
+```
+</ResponseExample>

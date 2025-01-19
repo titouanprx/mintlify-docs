@@ -1,0 +1,134 @@
+---
+title: 'Get Message Inbox'
+api: 'POST /v1/messages/inbox'
+description: 'Retrieve LinkedIn messaging conversations'
+---
+
+Get a list of messaging conversations from your LinkedIn inbox, including information about participants and latest messages.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+### Header Parameters
+
+<ParamField 
+  header="x-api-key" 
+  name="x-api-key" 
+  type="string" 
+  required
+>
+  Your API key
+</ParamField>
+### Body Parameters
+
+<ParamField body="count" type="integer" default="10">
+  Number of conversations to retrieve
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_conversations" type="integer">
+      Number of conversations returned
+    </ResponseField>
+
+    <ResponseField name="conversations" type="array">
+      <Expandable title="Conversation Object">
+        <ResponseField name="conversation_id" type="string">
+          Unique identifier for the conversation
+        </ResponseField>
+
+        <ResponseField name="participant" type="object">
+          <Expandable title="Participant Properties">
+            <ResponseField name="name" type="string">
+              Full name of the other participant
+            </ResponseField>
+            
+            <ResponseField name="headline" type="string">
+              Professional headline of the participant
+            </ResponseField>
+            
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the participant
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="last_message" type="object">
+          <Expandable title="Message Properties">
+            <ResponseField name="text" type="string">
+              Content of the last message
+            </ResponseField>
+            
+            <ResponseField name="time" type="integer">
+              Timestamp of when the message was delivered
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="unread" type="integer">
+          Number of unread messages in the conversation
+        </ResponseField>
+
+        <ResponseField name="type" type="string">
+          Type of conversation (e.g., "normal")
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_conversations": 2,
+    "conversations": [
+      {
+        "conversation_id": "urn:li:conversation:123456789",
+        "participant": {
+          "name": "John Doe",
+          "headline": "Software Engineer at Tech Company",
+          "profile_url": "https://www.linkedin.com/in/johndoe/"
+        },
+        "last_message": {
+          "text": "Thanks for connecting!",
+          "time": 1679529600000
+        },
+        "unread": 1,
+        "type": "normal"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- Conversations are sorted by most recent messages first
+- The timestamp in `last_message.time` is in milliseconds since epoch
+- The `unread` count indicates how many messages in the conversation haven't been read
+- Each conversation includes details about the other participant only (not yourself)
+- The `type` field indicates if it's a normal conversation or a special type
+- The maximum number of conversations that can be retrieved in a single request is limited

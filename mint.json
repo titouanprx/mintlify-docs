@@ -1,0 +1,114 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "LinkUp API",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373",
+    "anchors": {
+      "from": "#0D9373",
+      "to": "#07C983"
+    }
+  },
+  "openapi": "openapi.json",
+  "api": {
+    "baseUrl": "https://api.linkupapi.com",
+    "playground": {
+      "mode": "show"
+    }
+    
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@linkup.com"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://app.linkupapi.com"
+  },
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": ["api-reference/introduction",
+                "api-reference/getting-linkedin-cookie"
+    ]
+    },
+    {
+      "group": "Authentication",
+      "pages": [
+        "api-reference/linkup/authentication/login",
+        "api-reference/linkup/authentication/verify"
+      ]
+    },
+    {
+      "group": "Profile",
+      "pages": [
+        "api-reference/linkup/Profile/me",
+        "api-reference/linkup/Profile/contact",
+        "api-reference/linkup/Profile/profile-info",
+        "api-reference/linkup/Profile/search"
+      ]
+    },
+    {
+      "group": "Companies",
+      "pages": [
+        "api-reference/linkup/Companies/search",
+        "api-reference/linkup/Companies/company-info"
+      ]
+    },
+    {
+      "group": "Network",
+      "pages": [
+        "api-reference/linkup/Network/connect",
+        "api-reference/linkup/Network/get-connections",
+        "api-reference/linkup/Network/accept-invitations",
+        "api-reference/linkup/Network/get-invitations",
+        "api-reference/linkup/Network/get-network-recomandations"
+      ]
+    },
+  
+    {
+      "group": "Messages",
+      "pages": [
+        "api-reference/linkup/Messages/send",
+        "api-reference/linkup/Messages/inbox-conversations",
+        "api-reference/linkup/Messages/conversation"
+      ]
+    },
+    {
+      "group": "posts",
+      "pages": [
+        "api-reference/linkup/posts/get-reactions",
+        "api-reference/linkup/posts/like",
+        "api-reference/linkup/posts/comment",
+        "api-reference/linkup/posts/search",
+        "api-reference/linkup/posts/create"
+      ]
+    }
+
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/linkupapi",
+    "github": "https://github.com/linkupapi",
+    "linkedin": "https://linkedin.com/company/linkupapi"
+  },
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
+  },
+  "search": {
+    "prompt": "Search the docs..."
+  }
+}

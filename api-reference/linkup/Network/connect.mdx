@@ -1,0 +1,65 @@
+---
+title: 'Send Connection Request'
+api: 'POST /v1/network/connect'
+description: 'Send a connection request to a LinkedIn profile'
+---
+
+Send a connection request to any LinkedIn profile with an optional custom message.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  URL of the LinkedIn profile to connect with (e.g., https://www.linkedin.com/in/username)
+</ParamField>
+
+<ParamField body="message" type="string">
+  Custom message to send with the connection request
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the connection request
+</ResponseField>
+
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Connection request sent successfully",
+}
+```
+
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- The profile must be accessible with the provided login cookie
+- Connection requests are subject to LinkedIn's daily and weekly limits
+- Messages are optional but can increase acceptance rate
+- The URL must be a valid LinkedIn profile URL in the format https://www.linkedin.com/in/[username]

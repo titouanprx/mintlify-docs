@@ -1,0 +1,117 @@
+---
+title: 'Extract Profile Information'
+api: 'POST /v1/profile/extract-info'
+description: 'Extract detailed information from a LinkedIn profile'
+---
+
+Extract comprehensive information from any LinkedIn profile, including personal details, experience, education, and professional skills.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  URL of the LinkedIn profile to extract information from
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="public_id" type="string">
+      Public identifier of the LinkedIn profile
+    </ResponseField>
+    
+    <ResponseField name="first_name" type="string">
+      First name of the profile owner
+    </ResponseField>
+    
+    <ResponseField name="last_name" type="string">
+      Last name of the profile owner
+    </ResponseField>
+    
+    <ResponseField name="headline" type="string">
+      Professional headline/title
+    </ResponseField>
+    
+    <ResponseField name="location" type="string">
+      Geographic location
+    </ResponseField>
+    
+    <ResponseField name="summary" type="string">
+      Profile summary/about section
+    </ResponseField>
+    
+    <ResponseField name="industry" type="string">
+      Industry sector
+    </ResponseField>
+    
+    <ResponseField name="experience" type="array">
+      Array of professional experiences
+    </ResponseField>
+    
+    <ResponseField name="education" type="array">
+      Array of education entries
+    </ResponseField>
+    
+    <ResponseField name="skills" type="array">
+      Array of professional skills
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "public_id": "anthony-bourbon",
+    "first_name": "Anthony",
+    "last_name": "Bourbon",
+    "headline": "Founder & CEO at Blast. Club",
+    "location": "France",
+    "summary": "Jure investisseur Qui Veut Etre Mon Associe, M6\n\nFondateur et CEO du Blast. Club www.Blast.club",
+    "industry": "Gestion des investissements",
+    "experience": [
+      {
+        "company": "Blast.Club",
+        "title": "Founder & CEO",
+        "description": "Investissez aux cotes d'Anthony Bourbon, Tony Parker et Eric Larcheveque dans les startups de demain, a partir de 1 000 par projet.",
+        "start_date": "",
+        "end_date": ""
+      }
+    ],
+    "education": [],
+    "skills": [
+      "Developpement de start-up",
+      "business angel",
+      "Marketing",
+      "Marque et identite"
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "message error"
+}
+```
+</ResponseExample>

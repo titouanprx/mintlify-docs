@@ -1,0 +1,123 @@
+---
+title: 'Get Network Recommendations'
+api: 'POST /v1/network/recommendations'
+description: 'Retrieve LinkedIn network recommendations of people you may know'
+---
+
+Get personalized LinkedIn connection recommendations including detailed information about each recommended profile.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="total_results" type="integer" default="10">
+  Maximum number of recommendations to retrieve
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_recommendations" type="integer">
+      Number of recommendations returned
+    </ResponseField>
+
+    <ResponseField name="recommendations" type="array">
+      <Expandable title="Recommendation Object">
+        <ResponseField name="name" type="string">
+          Full name of the recommended person
+        </ResponseField>
+
+        <ResponseField name="subtitle" type="string">
+          Professional headline or current position
+        </ResponseField>
+
+        <ResponseField name="profile_url" type="string">
+          LinkedIn profile URL of the recommended person
+        </ResponseField>
+
+        <ResponseField name="insight" type="string">
+          Recommendation context (e.g., mutual connections or reason for recommendation)
+        </ResponseField>
+
+        <ResponseField name="entity_urn" type="string">
+          LinkedIn entity URN for the recommendation
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+  ```json Success Response
+  {
+    "status": "success", 
+    "data": {
+      "total_recommendations": 3,
+      "recommendations": [
+        {
+          "name": "John Smith",
+          "subtitle": "Student at Business School 🚀 | Intern at TechCorp 💻",
+          "profile_url": "https://www.linkedin.com/in/john-smith-bizdev",
+          "insight": "James and 24 other mutual connections",
+          "entity_urn": "urn:li:fsd_discoveryEntityViewModel:(urn:li:fsd_profile:ACoAAETRgbEBse4dNJFD7gPNwB2DHqdHijuWMUI,PYMK)"
+        },
+        {
+          "name": "Sarah Parker",
+          "subtitle": "Content Marketing | +6.5k followers on X in 2 months | Content Strategy & Engagement",
+          "profile_url": "https://www.linkedin.com/in/sarah-parker-539017285",
+          "insight": "Emma and 19 other mutual connections",
+          "entity_urn": "urn:li:fsd_discoveryEntityViewModel:(urn:li:fsd_profile:ACoAAEU8Uz0BBTKZehAEjjTUUP0iEXeDJ0ThzW4,PYMK)"
+        },
+        {
+          "name": "Michael Johnson",
+          "subtitle": "Helping entrepreneurs generate qualified leads by automating their marketing process with AI. (effortlessly)",
+          "profile_url": "https://www.linkedin.com/in/michaeljohnson1",
+          "insight": "David and 4 other mutual connections",
+          "entity_urn": "urn:li:fsd_discoveryEntityViewModel:(urn:li:fsd_profile:ACoAACjveEcBSGN-I-TMI7NESPgssxZH8AW9LYY,PYMK)"
+        }
+      ]
+    }
+  }
+  ```
+
+  ```json Error Response
+  {
+    "status": "error",
+    "message": "Failed to retrieve recommendations"
+  }
+  ```
+</ResponseExample>
+
+### Notes
+
+* The API returns personalized recommendations based on your LinkedIn profile and network
+
+* The `insight` field indicates either mutual connections or the recommendation reason
+
+* The `entity_urn` is a unique identifier used by LinkedIn for the recommendation
+
+* Results are sorted by relevance to your prfile
+
+* The number of returned recommendations may be less than `total_results` if fewer recommendations are available

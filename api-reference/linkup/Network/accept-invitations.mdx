@@ -1,0 +1,67 @@
+---
+title: 'Accept Connection Invitation'
+api: 'POST /v1/network/accept-invitation'
+description: 'Accept a pending LinkedIn connection invitation'
+---
+
+Accept a pending connection invitation using the invitation's shared secret and entity URN.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="shared_secret" type="string" required>
+  Shared secret of the invitation
+</ParamField>
+
+<ParamField body="entity_urn" type="string" required>
+  Entity URN of the invitation
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed message about the acceptance status
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Invitation accepted successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- Both `shared_secret` and `entity_urn` can be obtained from the `/v1/network/invitations` endpoint
+- The invitation must still be pending and not expired
+- Each invitation can only be accepted once
+- The API will return an error if:
+  - The invitation has already been accepted
+  - The invitation has expired
+  - The shared secret or entity URN is invalid
+  - The user doesn't have permission to accept the invitation

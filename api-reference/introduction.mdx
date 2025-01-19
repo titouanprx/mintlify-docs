@@ -1,0 +1,112 @@
+---
+title: 'Introduction'
+description: 'Welcome to the LinkUp API'
+---
+
+# LinkUp API
+
+The LinkUp API lets you automate your LinkedIn interactions programmatically. Our API provides comprehensive access to LinkedIn features including profile management, messaging, networking, and post interactions.
+
+## Authentication
+
+All API requests require an API key that must be included in the `x-api-key` header:
+
+```bash
+curl -H "x-api-key: your_api_key" https://api.linkupapi.com/v1/...
+```
+
+### LinkedIn Authentication
+
+**Important**: All endpoints except the authentication endpoints (`/v1/auth/login` and `/v1/auth/verify`) require a valid LinkedIn authentication cookie (`li_at`). This cookie is obtained after successfully logging in through our authentication endpoints.
+
+Include the `li_at` cookie in your requests using the `login_cookie` parameter:
+
+```bash
+curl -X POST https://api.linkupapi.com/v1/profile/me \
+  -H "x-api-key: your_api_key" \
+  -d "login_cookie=your_li_at_cookie"
+```
+
+## Common Parameters
+
+Most endpoints require these parameters:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| x-api-key | header | Yes | Your API authentication key |
+| login_cookie | body | Yes* | LinkedIn authentication cookie (li_at) |
+| country | body | No | Proxy country code (default: "FR") |
+
+*Not required for authentication endpoints
+
+## Core Features
+
+<CardGroup cols={2}>
+  <Card title="Profile Management" icon="user">
+    Access and manage LinkedIn profiles
+  </Card>
+  <Card title="Post Interactions" icon="share-nodes">
+    Create posts and interact with content
+  </Card>
+  <Card title="Networking" icon="network-wired">
+    Manage connections and invitations
+  </Card>
+  <Card title="Messaging" icon="message">
+    Send and receive LinkedIn messages
+  </Card>
+</CardGroup>
+
+## Rate Limiting
+
+- 100 requests per minute per API key
+- 1000 requests per day per API key
+
+## Response Format
+
+All responses for data scraping are returned in JSON format:
+
+```json
+{
+  "status": "success",
+  "data": {
+    // Response data
+  }
+}
+```
+Other responses:
+ 
+```json
+{
+  "status": "success",
+  "message": ""
+ }
+```
+## Error Handling
+
+Error responses follow this format:
+
+```json
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+
+Common status codes:
+- `400` Bad Request
+- `401` Unauthorized (invalid API key)
+- `403` Forbidden (invalid or expired LinkedIn cookie)
+- `429` Rate Limit Exceeded
+- `500` Internal Server Error
+
+## Support
+
+Need help? Email us at [support@linkupapi.com](mailto:support@linkupapi.com)
+
+## Best Practices
+
+1. Always store and reuse the LinkedIn authentication cookie (li_at) until it expires
+2. Implement proper error handling for rate limits and cookie expiration
+3. Use appropriate country codes when needed for geolocation-specific requests
+4. Keep your API key secure and never expose it in client-side code
+5. Monitor rate limits through response headers

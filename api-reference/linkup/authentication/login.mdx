@@ -1,0 +1,60 @@
+---
+title: 'Login'
+api: 'POST /v1/auth/login'
+description: 'Authenticate with LinkedIn credentials'
+---
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" name="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="email" name="email" type="string" required>
+  Your LinkedIn email address
+</ParamField>
+
+<ParamField body="password" name="password" type="string" required>
+  Your LinkedIn password
+</ParamField>
+
+<ParamField body="country" name="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+### Response
+
+<ResponseField name="status" type="string">
+  Authentication status
+</ResponseField>
+
+<ResponseField name="requires_verification" type="boolean">
+  Whether security code verification is needed
+</ResponseField>
+
+<ResponseField name="cookie" type="string">
+  LinkedIn authentication cookie (if no verification required)
+</ResponseField>
+
+<ResponseExample>
+```json Response with Verification Required
+{
+  "status": "verification_code_required",
+  "message": "Check your email for verification code",
+  "email": "user@example.com"
+}
+```
+
+```json Response without Verification
+{
+  "status": "success",
+  "login_cookie": "XXXX...",
+  "message": "Login successful"
+}
+```
+</ResponseExample>

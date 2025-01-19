@@ -1,0 +1,76 @@
+---
+title: 'Introduction'
+description: 'Welcome to the LinkUp API'
+---
+
+# LinkUp API Reference
+
+The LinkUp API lets you automate your LinkedIn interactions programmatically. Our API provides comprehensive access to LinkedIn features including profile management, messaging, networking, and post interactions.
+
+## Authentication
+
+All API requests require an API key that must be included in the `x-api-key` header:
+
+```bash
+curl -H "x-api-key: your_api_key" https://api.linkupapi.com/v1/...
+```
+
+## Core Features
+
+<CardGroup cols={2}>
+  <Card title="Profile Management" icon="user">
+    Access and manage LinkedIn profiles
+  </Card>
+  <Card title="Post Interactions" icon="share-nodes">
+    Create posts and interact with content
+  </Card>
+  <Card title="Networking" icon="network-wired">
+    Manage connections and invitations
+  </Card>
+  <Card title="Messaging" icon="message">
+    Send and receive LinkedIn messages
+  </Card>
+</CardGroup>
+
+## Rate Limiting
+
+- 100 requests per minute per API key
+- 1000 requests per day per API key
+
+## Response Format
+
+All responses are returned in JSON format:
+
+```json
+{
+  "status": "success",
+  "data": {
+    // Response data
+  }
+}
+```
+
+## Error Handling
+
+Error responses follow this format:
+
+```json
+{
+  "status": "error",
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Error description"
+  }
+}
+```
+
+Common status codes:
+- `400` Bad Request
+- `401` Unauthorized
+- `403` Forbidden
+- `429` Rate Limit Exceeded
+- `500` Internal Server Error
+
+## Support
+
+Need help? Email us at [support@linkup.com](mailto:support@linkup.com)

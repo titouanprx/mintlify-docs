@@ -1,0 +1,69 @@
+---
+title: 'Repost Content'
+api: 'POST /v1/posts/repost'
+description: 'Share an existing LinkedIn post on your profile'
+---
+
+Repost (share) any LinkedIn post on your own profile.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post to repost (supports multiple formats)
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the repost request
+</ResponseField>
+
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Post shared successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Failed to repost content"
+}
+```
+</ResponseExample>
+
+### Notes
+- Supports two URL formats:
+  - Feed updates: `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - Profile posts: `https://www.linkedin.com/posts/user-activity-...`
+- The post must be accessible with the provided login cookie
+- The repost will appear on your LinkedIn profile's activity feed
+- The original author and content will be credited in the repost
+- Some types of content may not be available for reposting:
+  - Posts from private groups
+  - Content from users who have restricted sharing
+  - Certain types of sponsored content
+  - Posts that have been deleted or are no longer available
+- LinkedIn's sharing limits and spam detection apply to reposts
+- The API automatically handles different types of posts (ugcPosts, shares, etc.)

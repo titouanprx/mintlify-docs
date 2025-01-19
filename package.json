@@ -1,0 +1,17 @@
+{
+  "name": "linkup-docs",
+  "version": "1.0.0",
+  "description": "LinkUp API Documentation",
+  "devDependencies": {
+    "mintlify": "^4.0.322",
+    "sharp": "^0.33.5"
+  },
+  "scripts": {
+    "dev": "mintlify dev",
+    "build": "mintlify build"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

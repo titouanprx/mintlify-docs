@@ -1,0 +1,72 @@
+---
+title: 'Add Comment to Post'
+api: 'POST /v1/posts/comment'
+description: 'Add a comment to a LinkedIn post'
+---
+
+Add a new comment to any LinkedIn post using the post URL.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  LinkedIn post URL to comment on (must contain a valid activity URN)
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Text content of the comment to post
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the comment request
+</ResponseField>
+
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Comment posted successfully"
+}
+
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- The post URL must contain a valid LinkedIn activity URN
+- Example of valid post URLs:
+  - `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - `https://www.linkedin.com/posts/user-activity-...`
+- Comments are posted with the identity associated with the login cookie
+- Comment text supports plain text only
+- No formatting or special characters are supported in comments
+- The post must be accessible with the provided login cookie
+- LinkedIn's rate limits and spam detection apply to comment posting
+- Comments cannot be longer than LinkedIn's maximum character limit
+- Some posts may have commenting disabled by their authors

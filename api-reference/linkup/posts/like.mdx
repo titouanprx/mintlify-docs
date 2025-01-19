@@ -1,0 +1,66 @@
+---
+title: 'Like Post'
+api: 'POST /v1/posts/like'
+description: 'Add a like reaction to a LinkedIn post'
+---
+
+Add a like reaction to any LinkedIn post using the post URL.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post to like (supports multiple formats)
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the like request
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Post liked successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- Supports multiple post URL formats:
+  - Feed updates: `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - Profile posts: `https://www.linkedin.com/posts/user-activity-...`
+  - Group posts: `https://www.linkedin.com/feed/update/urn:li:groupPost:...`
+- The post must be accessible with the provided login cookie
+- A post can only be liked once by the same user
+- LinkedIn's rate limits apply to like operations
+- The like action is performed with the identity associated with the login cookie
+- Some posts may have reactions disabled by their authors
+- Posts from private groups or connections may not be accessible
+- The API automatically detects the post type (share, article, etc.)

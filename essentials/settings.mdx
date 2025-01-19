@@ -1,0 +1,152 @@
+---
+title: 'Global Settings'
+description: 'Configure your API documentation settings'
+icon: 'gear'
+---
+
+## Required Settings
+
+### Base URL Configuration
+
+```json
+{
+  "baseUrl": "https://docs.linkupapi.com",
+  "api": {
+    "baseUrl": "https://api.linkupapi.com"
+  }
+}
+```
+
+### Authentication Settings
+
+Our API uses `x-api-key` authentication. Configure this in your `mint.json`:
+
+```json
+{
+  "api": {
+    "auth": {
+      "method": "key",
+      "name": "x-api-key"
+    }
+  }
+}
+```
+
+<Note>
+  The API key should be included in the header of every request as `x-api-key: your_api_key_here`
+</Note>
+
+## Response Fields
+
+Use these components to document your API responses:
+
+### Basic Response Field
+
+```jsx
+<ResponseField name="status" type="string" required>
+  The status of the API response.
+  
+  Example: `success` or `error`
+</ResponseField>
+```
+
+### Expandable Response Field
+
+For nested objects:
+
+```jsx
+<ResponseField name="data" type="object">
+  <Expandable title="Response Data">
+    <ResponseField name="cookie" type="string">
+      The LinkedIn authentication cookie
+    </ResponseField>
+    <ResponseField name="requires_verification" type="boolean">
+      Whether additional verification is needed
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+```
+
+## Code Examples
+
+Use these components to show code examples:
+
+<CodeGroup>
+
+```python Python
+import requests
+
+headers = {
+  "x-api-key": "your_api_key_here"
+}
+
+response = requests.post(url, headers=headers)
+```
+
+```bash cURL
+curl -X POST "https://api.linkupapi.com/endpoint" \
+  -H "x-api-key: your_api_key_here"
+```
+
+</CodeGroup>
+
+## Error Codes
+
+| Status Code | Description                    |
+|------------|--------------------------------|
+| 400        | Invalid request parameters     |
+| 401        | Authentication failed          |
+| 403        | Invalid or missing x-api-key   |
+| 429        | Rate limit exceeded            |
+| 500        | Internal server error          |
+
+## Best Practices
+
+1. Always include both request and response examples
+2. Document all required headers
+3. Use expandable sections for complex objects
+4. Include error handling examples
+5. Provide language-specific code samples
+
+## Full Example
+
+Here's a complete example of an endpoint documentation:
+
+---
+title: 'Create Post'
+api: 'POST /v1/linkedin/posts/create'
+---
+
+## Overview
+
+Create a new LinkedIn post
+
+<ResponseField name="Parameters" type="object">
+  <Expandable title="Request Body">
+    <ResponseField name="message" type="string" required>
+      The content of your post
+    </ResponseField>
+    <ResponseField name="login_cookie" type="string" required>
+      Your LinkedIn authentication cookie
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<CodeGroup>
+
+```python Python
+import requests
+
+headers = {
+  "x-api-key": "your_api_key_here"
+}
+
+data = {
+  "message": "Hello LinkedIn!",
+  "login_cookie": "your_cookie"
+}
+
+response = requests.post(url, headers=headers, data=data)
+```
+
+</CodeGroup>

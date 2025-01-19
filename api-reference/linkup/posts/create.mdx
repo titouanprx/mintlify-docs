@@ -1,0 +1,92 @@
+---
+title: 'Create Post'
+api: 'POST /v1/posts/create'
+description: 'Create a new LinkedIn post with optional image attachment'
+---
+
+Create a new post on LinkedIn with text content and an optional image attachment.
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="message" type="string" required>
+  Text content of the post
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+
+<ParamField body="file" type="string">
+  Optional image file URL. Direct link to the image file you want to attach to the post.
+</ParamField>
+
+
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the post creation
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Post created successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+
+#### Post Settings
+- Default post visibility is set to "ANYONE" (public)
+- Comments are enabled for all users by default
+
+#### Image Requirements
+- Image must be provided as a direct URL to the file
+- Supported formats:
+  - PNG
+  - JPEG/JPG
+  - Other LinkedIn-supported image formats
+- Image restrictions:
+  - Must comply with LinkedIn's maximum file size limits
+  - Should meet LinkedIn's dimension requirements
+
+#### Features
+- Text content with no formatting
+- Single image attachment support via URL
+- Comments enabled by default
+
+#### Automatic Handling
+- Image download and upload process
+- Post metadata creation
+- Visibility and sharing options configuration
+
+#### Limitations & Guidelines
+- Subject to LinkedIn's posting frequency limits
+- Must comply with LinkedIn's content policies
+- Media upload size and format restrictions apply

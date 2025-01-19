@@ -1,0 +1,132 @@
+---
+title: 'Get Pending Invitations'
+api: 'POST /v1/network/invitations'
+description: 'Retrieve pending LinkedIn connection invitations'
+---
+
+Get a list of pending connection invitations with detailed information about each invitation and inviter.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of invitations to retrieve
+</ParamField>
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection
+</ParamField>
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_invitations" type="integer">
+      Number of invitations returned
+    </ResponseField>
+
+    <ResponseField name="invitations" type="array">
+      <Expandable title="Invitation Object">
+        <ResponseField name="name" type="string">
+          Full name of the person who sent the invitation
+        </ResponseField>
+
+        <ResponseField name="profile_url" type="string">
+          LinkedIn profile URL of the inviter
+        </ResponseField>
+
+        <ResponseField name="profile_picture" type="string">
+          URL of the inviter's profile picture (if available)
+        </ResponseField>
+
+        <ResponseField name="subtitle" type="string">
+          Professional headline or current position
+        </ResponseField>
+
+        <ResponseField name="sent_time" type="string">
+          When the invitation was sent
+        </ResponseField>
+
+        <ResponseField name="message" type="string">
+          Custom message included with the invitation (if any)
+        </ResponseField>
+
+        <ResponseField name="invitation_id" type="string">
+          Unique identifier for the invitation
+        </ResponseField>
+
+        <ResponseField name="shared_secret" type="string">
+          Shared secret required for accepting the invitation
+        </ResponseField>
+
+        <ResponseField name="shared_connections" type="string">
+          Information about mutual connections (if any)
+        </ResponseField>
+
+        <ResponseField name="invitation_state" type="string">
+          Current state of the invitation
+        </ResponseField>
+
+        <ResponseField name="entity_urn" type="string">
+          LinkedIn entity URN for the invitation
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_invitations": 1,
+    "invitations": [
+      {
+        "name": "John Doe",
+        "profile_url": "https://www.linkedin.com/in/johndoe/",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg",
+        "subtitle": "Software Engineer at Tech Company",
+        "sent_time": "2 days ago",
+        "message": "I'd like to join your network!",
+        "invitation_id": "2906418534",
+        "shared_secret": "xyz123",
+        "shared_connections": "5 shared connections",
+        "invitation_state": "PENDING",
+        "entity_urn": "urn:li:invitation:2906418534"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Error description"
+}
+```
+</ResponseExample>
+
+### Notes
+- The `shared_secret` and `entity_urn` are required for accepting invitations using the `/v1/network/accept-invitation` endpoint
+- The profile picture URL may be null if not available
+- The message field may be empty if no custom message was included
+- Shared connections information may be null if there are no mutual connections
+- Retrieved invitations are sorted by most recent first
