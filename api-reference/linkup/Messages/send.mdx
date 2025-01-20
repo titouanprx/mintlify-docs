@@ -24,7 +24,7 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
   Content of the message to send
 </ParamField>
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -48,12 +48,6 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 }
 ```
 
-```json Error Response
-{
-  "status": "error",
-  "message": "Error description"
-}
-```
 
 </ResponseExample>
 

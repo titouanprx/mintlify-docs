@@ -24,7 +24,7 @@ Add a new comment to any LinkedIn post using the post URL.
   Text content of the comment to post
 </ParamField>
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -50,12 +50,7 @@ Add a new comment to any LinkedIn post using the post URL.
 
 ```
 
-```json Error Response
-{
-  "status": "error",
-  "message": "Error description"
-}
-```
+
 </ResponseExample>
 
 ### Notes

@@ -24,7 +24,7 @@ Get personalized LinkedIn connection recommendations including detailed informat
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 
 <ParamField body="login_cookie" type="string" required>
@@ -102,12 +102,6 @@ Get personalized LinkedIn connection recommendations including detailed informat
   }
   ```
 
-  ```json Error Response
-  {
-    "status": "error",
-    "message": "Failed to retrieve recommendations"
-  }
-  ```
 </ResponseExample>
 
 ### Notes

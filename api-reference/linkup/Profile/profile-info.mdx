@@ -20,7 +20,7 @@ Extract comprehensive information from any LinkedIn profile, including personal 
   URL of the LinkedIn profile to extract information from
 </ParamField>
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -108,10 +108,4 @@ Extract comprehensive information from any LinkedIn profile, including personal 
 }
 ```
 
-```json Error Response
-{
-  "status": "error",
-  "message": "message error"
-}
-```
 </ResponseExample>

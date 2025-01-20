@@ -27,7 +27,7 @@ Get a list of messaging conversations from your LinkedIn inbox, including inform
   Number of conversations to retrieve
 </ParamField>
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -117,12 +117,6 @@ Get a list of messaging conversations from your LinkedIn inbox, including inform
 }
 ```
 
-```json Error Response
-{
-  "status": "error",
-  "message": "Error description"
-}
-```
 </ResponseExample>
 
 ### Notes

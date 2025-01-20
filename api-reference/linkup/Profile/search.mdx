@@ -43,7 +43,7 @@ Search for LinkedIn profiles using multiple filters including company, location,
   Number of profiles to retrieve
 </ParamField>
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -111,12 +111,6 @@ Search for LinkedIn profiles using multiple filters including company, location,
 }
 ```
 
-```json Error Response
-{
-  "status": "error",
-  "message": "message error"
-}
-```
 </ResponseExample>
 
 ### Notes

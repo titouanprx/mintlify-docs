@@ -27,7 +27,7 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:support@linkup.com"
+      "url": "https://app.linkupapi.com/support"
     }
   ],
   "topbarCtaButton": {
@@ -41,6 +41,12 @@
                 "api-reference/getting-linkedin-cookie"
     ]
     },
+    {
+      "group": "Error Handling",
+      "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"
+    ] 
+    },
+    
     {
       "group": "Authentication",
       "pages": [

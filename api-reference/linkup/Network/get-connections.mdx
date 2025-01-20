@@ -20,7 +20,7 @@ Get a list of your LinkedIn connections with their basic information including n
   Number of connections to retrieve
 </ParamField>
 <ParamField body="country" type="string" default="FR">
-  Country code for proxy selection
+  Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 <ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -84,12 +84,6 @@ Get a list of your LinkedIn connections with their basic information including n
 }
 ```
 
-```json Error Response
-{
-  "status": "error",
-  "message": "Error description"
-}
-```
 </ResponseExample>
 
 ### Notes
