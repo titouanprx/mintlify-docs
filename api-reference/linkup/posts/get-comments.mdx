@@ -1,0 +1,128 @@
+---
+title: 'Get Post Reactions'
+api: 'POST /v1/posts/extract-comments'
+description: 'Retrieve comments on a specific LinkedIn post'
+---
+
+Get a detailed list of comments on a LinkedIn post, including information about who commented.
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post to extract reactions from (supports feed/update and /posts/ formats)
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of reactions to retrieve
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US,UK,FR)
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_reactions" type="integer">
+      Number of comment returned
+    </ResponseField>
+
+    <ResponseField name="reactions" type="array">
+      <Expandable title="Reaction Object">
+        <ResponseField name="reaction_type" type="string">
+          Type of reaction (e.g., "LIKE", "CELEBRATE", "SUPPORT", etc.)
+        </ResponseField>
+
+        <ResponseField name="created_time" type="string">
+          When the reaction was made
+        </ResponseField>
+
+        <ResponseField name="actor" type="object">
+          <Expandable title="Actor Properties">
+            <ResponseField name="name" type="string">
+              Full name of the person who reacted
+            </ResponseField>
+
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the reactor
+            </ResponseField>
+
+            <ResponseField name="profile_picture" type="string">
+              URL of the reactor's profile picture (if available)
+            </ResponseField>
+
+            <ResponseField name="title" type="string">
+              Professional headline or title
+            </ResponseField>
+
+            <ResponseField name="connection_degree" type="string">
+              LinkedIn connection degree (1st, 2nd, 3rd)
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": [
+    {
+      "type": "INTEREST",
+      "name": "Benjamin DESOLE",
+      "subtitle": "Developpeur React / React Native / Next.js / TypeScript - Freelance / CDI",
+      "profile_url": "https://www.linkedin.com/in/benjamindesole",
+      "actor_urn": "urn:li:fsd_profile:ACoAABkYZhcBzP8mTsQ-sZMN49Y6DtxSTZTGabg"
+    },
+    {
+      "type": "LIKE",
+      "name": "Antonin DI NARDO",
+      "subtitle": "Etudiant en BUT GEA",
+      "profile_url": "https://www.linkedin.com/in/antonin-di-nardo-287a61266",
+      "actor_urn": "urn:li:fsd_profile:ACoAAEFLxkcBWhNeYI8FrIAzHIG11TJJEdWLbhQ"
+    }
+      
+    ]
+  }
+
+```
+
+</ResponseExample>
+
+### Notes
+
+- The API supports two post URL formats:
+  - Feed updates: `https://www.linkedin.com/feed/update/urn:li:activity:...`
+  - share url: `https://www.linkedin.com/posts/..`
+- Results are returned in batches with a default limit of 10 reactions per request
+- The profile picture URL may be null if not available or if the user has no profile picture
+- Connection degree shows your network relationship with the reactor (1st, 2nd, or 3rd degree connection)
+- Some reaction information may be limited based on:
+  - Your connection level with the reactor
+  - The reactor's privacy settings
+  - The post's visibility settings
+- Rate limits apply to reaction retrieval requests
+
