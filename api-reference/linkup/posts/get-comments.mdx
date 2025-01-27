@@ -1,16 +1,18 @@
 ---
-title: 'Get Post Reactions'
-api: 'POST /v1/posts/extract-comments'
+title: 'Get Comments'
+api: 'POST /v1/posts/comments'
 description: 'Retrieve comments on a specific LinkedIn post'
 ---
 
-Get a detailed list of comments on a LinkedIn post, including information about who commented.
+Get a detailed list of comments on a LinkedIn post, including information about who commented and the comment content.
+
 <Note>
   **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
   - 1-10 results = 1 credit
   - 11-20 results = 2 credits
   - 300 results = 30 credits
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -20,11 +22,11 @@ Get a detailed list of comments on a LinkedIn post, including information about 
 ### Body Parameters
 
 <ParamField body="post_url" type="string" required>
-  URL of the LinkedIn post to extract reactions from (supports feed/update and /posts/ formats)
+  URL of the LinkedIn post to extract comments from (supports feed/update and /posts/ formats)
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of reactions to retrieve
+  Number of comments to retrieve
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -43,32 +45,32 @@ Get a detailed list of comments on a LinkedIn post, including information about 
 
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
-    <ResponseField name="total_reactions" type="integer">
-      Number of comment returned
+    <ResponseField name="total_comments" type="integer">
+      Number of comments returned
     </ResponseField>
 
-    <ResponseField name="reactions" type="array">
-      <Expandable title="Reaction Object">
-        <ResponseField name="reaction_type" type="string">
-          Type of reaction (e.g., "LIKE", "CELEBRATE", "SUPPORT", etc.)
+    <ResponseField name="comments" type="array">
+      <Expandable title="Comment Object">
+        <ResponseField name="comment_text" type="string">
+          The content of the comment
         </ResponseField>
 
         <ResponseField name="created_time" type="string">
-          When the reaction was made
+          When the comment was made
         </ResponseField>
 
         <ResponseField name="actor" type="object">
           <Expandable title="Actor Properties">
             <ResponseField name="name" type="string">
-              Full name of the person who reacted
+              Full name of the person who commented
             </ResponseField>
 
             <ResponseField name="profile_url" type="string">
-              LinkedIn profile URL of the reactor
+              LinkedIn profile URL of the commenter
             </ResponseField>
 
             <ResponseField name="profile_picture" type="string">
-              URL of the reactor's profile picture (if available)
+              URL of the commenter's profile picture (if available)
             </ResponseField>
 
             <ResponseField name="title" type="string">
@@ -89,27 +91,35 @@ Get a detailed list of comments on a LinkedIn post, including information about 
 ```json Success Response
 {
   "status": "success",
-  "data": [
-    {
-      "type": "INTEREST",
-      "name": "Benjamin DESOLE",
-      "subtitle": "Developpeur React / React Native / Next.js / TypeScript - Freelance / CDI",
-      "profile_url": "https://www.linkedin.com/in/benjamindesole",
-      "actor_urn": "urn:li:fsd_profile:ACoAABkYZhcBzP8mTsQ-sZMN49Y6DtxSTZTGabg"
-    },
-    {
-      "type": "LIKE",
-      "name": "Antonin DI NARDO",
-      "subtitle": "Etudiant en BUT GEA",
-      "profile_url": "https://www.linkedin.com/in/antonin-di-nardo-287a61266",
-      "actor_urn": "urn:li:fsd_profile:ACoAAEFLxkcBWhNeYI8FrIAzHIG11TJJEdWLbhQ"
-    }
-      
+  "data": {
+    "total_comments": 2,
+    "comments": [
+      {
+        "comment_text": "Great insights! Thanks for sharing.",
+        "created_time": "2024-01-15T14:23:45Z",
+        "actor": {
+          "name": "Benjamin DESOLE",
+          "profile_url": "https://www.linkedin.com/in/benjamindesole",
+          "profile_picture": "https://media.licdn.com/dms/image/...",
+          "title": "Developpeur React / React Native / Next.js / TypeScript - Freelance / CDI",
+          "connection_degree": "2nd"
+        }
+      },
+      {
+        "comment_text": "This is very interesting!",
+        "created_time": "2024-01-15T15:30:12Z",
+        "actor": {
+          "name": "Antonin DI NARDO",
+          "profile_url": "https://www.linkedin.com/in/antonin-di-nardo-287a61266",
+          "profile_picture": null,
+          "title": "Etudiant en BUT GEA",
+          "connection_degree": "3rd"
+        }
+      }
     ]
   }
-
+}
 ```
-
 </ResponseExample>
 
 ### Notes
@@ -117,12 +127,11 @@ Get a detailed list of comments on a LinkedIn post, including information about 
 - The API supports two post URL formats:
   - Feed updates: `https://www.linkedin.com/feed/update/urn:li:activity:...`
   - share url: `https://www.linkedin.com/posts/..`
-- Results are returned in batches with a default limit of 10 reactions per request
+- Results are returned in batches with a default limit of 10 comments per request
 - The profile picture URL may be null if not available or if the user has no profile picture
-- Connection degree shows your network relationship with the reactor (1st, 2nd, or 3rd degree connection)
-- Some reaction information may be limited based on:
-  - Your connection level with the reactor
-  - The reactor's privacy settings
+- Connection degree shows your network relationship with the commenter (1st, 2nd, or 3rd degree connection)
+- Some comment information may be limited based on:
+  - Your connection level with the commenter
+  - The commenter's privacy settings
   - The post's visibility settings
-- Rate limits apply to reaction retrieval requests
-
+- Rate limits apply to comment retrieval requests
