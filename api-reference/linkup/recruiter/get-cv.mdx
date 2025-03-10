@@ -62,27 +62,3 @@ Retrieve the CV/resume URL for a specific candidate who has applied to your Link
     "file_type": "PDF"
   }
 }
-```
-
-```json Error Response
-{
-  "status": "error",
-  "message": "No CV found for this application ID or insufficient permissions."
-}
-```
-</ResponseExample>
-
-### Notes
-- The application ID can be obtained from the get-candidates endpoint
-- The CV URL is temporary and may expire after a certain period
-- Not all applications include a CV/resume attachment
-- The following errors can occur:
-  - Invalid application ID
-  - CV not found for the specified application
-  - Authentication failures
-  - Permission errors (if you don't have access to the application)
-  - Rate limiting from LinkedIn
-
-### Rate Limits
-- Maximum 100 requests per minute
-- Maximum 1000 requests per day
