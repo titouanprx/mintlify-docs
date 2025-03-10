@@ -1,0 +1,88 @@
+---
+title: 'Get CV'
+api: 'POST /v1/jobs/get-cv'
+description: 'Retrieve a candidate\'s CV from a LinkedIn job application'
+---
+
+Retrieve the CV/resume URL for a specific candidate who has applied to your LinkedIn job posting.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="application_id" type="string" required>
+  LinkedIn application ID of the candidate
+</ParamField>
+
+<ParamField body="login_cookie" type="string" required>
+  LinkedIn authentication cookie (li_at) obtained from the login/verify process
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US,UK,FR)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  CV data
+</ResponseField>
+
+<ResponseField name="data.cv_url" type="string">
+  Direct URL to download the candidate's CV
+</ResponseField>
+
+<ResponseField name="data.file_name" type="string">
+  Original filename of the CV
+</ResponseField>
+
+<ResponseField name="data.file_type" type="string">
+  File type of the CV (PDF, DOCX, etc.)
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "cv_url": "https://www.linkedin.com/dms/D4D/profile-attachments/file/chXtQ/1684932047623/JohnDoe_CV.pdf",
+    "file_name": "JohnDoe_CV.pdf",
+    "file_type": "PDF"
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "No CV found for this application ID or insufficient permissions."
+}
+```
+</ResponseExample>
+
+### Notes
+- The application ID can be obtained from the get-candidates endpoint
+- The CV URL is temporary and may expire after a certain period
+- Not all applications include a CV/resume attachment
+- The following errors can occur:
+  - Invalid application ID
+  - CV not found for the specified application
+  - Authentication failures
+  - Permission errors (if you don't have access to the application)
+  - Rate limiting from LinkedIn
+
+### Rate Limits
+- Maximum 100 requests per minute
+- Maximum 1000 requests per day
