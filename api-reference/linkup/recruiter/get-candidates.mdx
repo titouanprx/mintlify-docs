@@ -1,6 +1,6 @@
 ---
 title: 'Get Candidates'
-api: 'POST /v1/jobs/get-candidates'
+api: 'POST /v1/recruiter/candidates'
 description: 'Retrieve applicants for a LinkedIn job posting'
 ---
 
@@ -22,7 +22,7 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
   LinkedIn job posting ID (e.g., "4178681649")
 </ParamField>
 
-<ParamField body="count" type="string" default="10">
+<ParamField body="total_results" type="string" default="10">
   Number of candidates to retrieve
 </ParamField>
 
