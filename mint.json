@@ -103,9 +103,9 @@
     {
       "group": "recruiter",
       "pages": [
-        "api-reference/linkup/recruiter/get-candidates",
+        "api-reference/linkup/recruiter/get-candidate",
         "api-reference/linkup/recruiter/get-cv",
-        "api-reference/linkup/recruiter/get-post"
+        "api-reference/linkup/recruiter/get-posts"
 
       ]
     }
