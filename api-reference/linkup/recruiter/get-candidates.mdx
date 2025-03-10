@@ -1,0 +1,233 @@
+---
+title: 'Get Candidates'
+api: 'GET /v1/jobs/get-candidates'
+description: 'Retrieve applicants for a LinkedIn job posting'
+---
+
+Retrieve detailed information about candidates who have applied to your LinkedIn job posting, including their profiles, work experience, education, and application responses.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Query Parameters
+
+<ParamField query="job_id" type="string" required>
+  LinkedIn job posting ID (e.g., "4178681649")
+</ParamField>
+
+<ParamField query="count" type="string" default="10">
+  Number of candidates to retrieve
+</ParamField>
+
+<ParamField query="start" type="string" default="0">
+  Starting position for pagination
+</ParamField>
+
+<ParamField query="sortType" type="string" default="RELEVANCE">
+  Sorting method. Options: RELEVANCE, DATE
+</ParamField>
+
+<ParamField query="sortOrder" type="string" default="DESCENDING">
+  Sorting order. Options: ASCENDING, DESCENDING
+</ParamField>
+
+<ParamField query="ratings" type="string" default="GOOD_FIT,MAYBE,UNRATED">
+  Candidate ratings to include, comma-separated
+</ParamField>
+
+<ParamField query="location" type="string">
+  Filter candidates by location (e.g., "Paris")
+</ParamField>
+
+<ParamField query="skills" type="string">
+  Filter candidates by skills, comma-separated (e.g., "Python,Marketing")
+</ParamField>
+
+<ParamField query="yearsOfExperience" type="string">
+  Filter by years of experience, comma-separated (e.g., "THREE_TO_FIVE_YEARS,SIX_TO_TEN_YEARS")
+</ParamField>
+
+<ParamField query="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US,UK,FR)
+</ParamField>
+
+<ParamField query="login_cookie" type="string" required>
+  LinkedIn authentication cookie (li_at) obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  List of candidate profiles
+</ResponseField>
+
+<ResponseField name="data[].application_id" type="string">
+  Unique ID of the application
+</ResponseField>
+
+<ResponseField name="data[].rating" type="string">
+  Recruiter's rating of the candidate (GOOD_FIT, MAYBE, UNRATED)
+</ResponseField>
+
+<ResponseField name="data[].first_name" type="string">
+  Candidate's first name
+</ResponseField>
+
+<ResponseField name="data[].last_name" type="string">
+  Candidate's last name
+</ResponseField>
+
+<ResponseField name="data[].full_name" type="string">
+  Candidate's full name
+</ResponseField>
+
+<ResponseField name="data[].headline" type="string">
+  Candidate's LinkedIn headline
+</ResponseField>
+
+<ResponseField name="data[].public_identifier" type="string">
+  Candidate's LinkedIn URL identifier
+</ResponseField>
+
+<ResponseField name="data[].linkedin_id" type="string">
+  Candidate's LinkedIn internal ID
+</ResponseField>
+
+<ResponseField name="data[].location" type="string">
+  Candidate's location
+</ResponseField>
+
+<ResponseField name="data[].experiences" type="array">
+  List of candidate's work experiences
+</ResponseField>
+
+<ResponseField name="data[].experiences[].title" type="string">
+  Job title
+</ResponseField>
+
+<ResponseField name="data[].experiences[].company" type="string">
+  Company name
+</ResponseField>
+
+<ResponseField name="data[].experiences[].date_range" type="string">
+  Employment period
+</ResponseField>
+
+<ResponseField name="data[].experiences[].description" type="string">
+  Job description
+</ResponseField>
+
+<ResponseField name="data[].education" type="array">
+  List of candidate's education history
+</ResponseField>
+
+<ResponseField name="data[].education[].school" type="string">
+  School name
+</ResponseField>
+
+<ResponseField name="data[].education[].degree" type="string">
+  Degree obtained
+</ResponseField>
+
+<ResponseField name="data[].education[].field" type="string">
+  Field of study
+</ResponseField>
+
+<ResponseField name="data[].education[].years" type="string">
+  Period of study
+</ResponseField>
+
+<ResponseField name="data[].responses" type="object">
+  Candidate's answers to job application questions
+</ResponseField>
+
+<ResponseField name="data[].application_date" type="string">
+  Date and time when the application was submitted
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": [
+    {
+      "application_id": "2987654321",
+      "rating": "GOOD_FIT",
+      "first_name": "John",
+      "last_name": "Doe",
+      "full_name": "John Doe",
+      "headline": "Senior Software Engineer | Python | JavaScript | React",
+      "public_identifier": "johndoe",
+      "linkedin_id": "abcdef123",
+      "location": "Paris, France",
+      "experiences": [
+        {
+          "title": "Senior Software Engineer",
+          "company": "Tech Solutions Inc.",
+          "date_range": "6/2020 - Present",
+          "description": "Leading the development of web applications using Python and React."
+        },
+        {
+          "title": "Software Developer",
+          "company": "Digital Innovations",
+          "date_range": "3/2017 - 5/2020",
+          "description": "Developed RESTful APIs and implemented frontend features."
+        }
+      ],
+      "education": [
+        {
+          "school": "University of Technology",
+          "degree": "Master's Degree",
+          "field": "Computer Science",
+          "years": "2015 - 2017"
+        },
+        {
+          "school": "City College",
+          "degree": "Bachelor's Degree",
+          "field": "Software Engineering",
+          "years": "2011 - 2015"
+        }
+      ],
+      "responses": {
+        "Why are you interested in this position?": "I'm passionate about developing innovative solutions and believe my skills align perfectly with your requirements.",
+        "Describe your experience with Python": "I have 5+ years of experience building applications with Python, including Django and Flask frameworks."
+      },
+      "application_date": "2024-02-15 14:23:45"
+    }
+  ]
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Failed to fetch candidates. Please check your login credentials or job ID."
+}
+```
+</ResponseExample>
+
+### Notes
+- The job posting must be accessible with your LinkedIn account
+- Provides comprehensive candidate data including profile details, work history, education, and application answers
+- Supports filtering by location, skills, and experience level
+- Pagination is available through the `start` and `count` parameters
+- The following errors can occur:
+  - Invalid job ID
+  - Authentication failures
+  - Network or permission errors
+  - Rate limiting from LinkedIn
+
+### Rate Limits
+- Maximum 100 requests per minute
+- Maximum 1000 requests per day

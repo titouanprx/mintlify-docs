@@ -99,6 +99,12 @@
         "api-reference/linkup/posts/search",
         "api-reference/linkup/posts/create"
       ]
+    },
+    {
+      "group": "recruiter",
+      "pages": [
+        "api-reference/linkup/recruiter/get-candidates"
+      ]
     }
 
   ],
