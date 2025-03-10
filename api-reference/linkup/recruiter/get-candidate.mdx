@@ -157,7 +157,10 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
 ```json Success Response
 {
   "status": "success",
-  "data": [
+  "data": {
+    "total_candidates": 1,
+
+  "candidates": [
     {
       "application_id": "2987654321",
       "rating": "GOOD_FIT",
@@ -201,8 +204,9 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
         "Describe your experience with Python": "I have 5+ years of experience building applications with Python, including Django and Flask frameworks."
       },
       "application_date": "2024-02-15 14:23:45"
-    }
-  ]
+      }
+    ]
+  }
 }
 ```
 
