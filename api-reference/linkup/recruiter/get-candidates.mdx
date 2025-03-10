@@ -1,6 +1,6 @@
 ---
 title: 'Get Candidates'
-api: 'GET /v1/jobs/get-candidates'
+api: 'POST /v1/jobs/get-candidates'
 description: 'Retrieve applicants for a LinkedIn job posting'
 ---
 
@@ -16,49 +16,49 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
   Your API key
 </ParamField>
 
-### Query Parameters
+### Body Parameters
 
-<ParamField query="job_id" type="string" required>
+<ParamField body="job_id" type="string" required>
   LinkedIn job posting ID (e.g., "4178681649")
 </ParamField>
 
-<ParamField query="count" type="string" default="10">
+<ParamField body="count" type="string" default="10">
   Number of candidates to retrieve
 </ParamField>
 
-<ParamField query="start" type="string" default="0">
+<ParamField body="start" type="string" default="0">
   Starting position for pagination
 </ParamField>
 
-<ParamField query="sortType" type="string" default="RELEVANCE">
+<ParamField body="sortType" type="string" default="RELEVANCE">
   Sorting method. Options: RELEVANCE, DATE
 </ParamField>
 
-<ParamField query="sortOrder" type="string" default="DESCENDING">
+<ParamField body="sortOrder" type="string" default="DESCENDING">
   Sorting order. Options: ASCENDING, DESCENDING
 </ParamField>
 
-<ParamField query="ratings" type="string" default="GOOD_FIT,MAYBE,UNRATED">
+<ParamField body="ratings" type="string" default="GOOD_FIT,MAYBE,UNRATED">
   Candidate ratings to include, comma-separated
 </ParamField>
 
-<ParamField query="location" type="string">
+<ParamField body="location" type="string">
   Filter candidates by location (e.g., "Paris")
 </ParamField>
 
-<ParamField query="skills" type="string">
+<ParamField body="skills" type="string">
   Filter candidates by skills, comma-separated (e.g., "Python,Marketing")
 </ParamField>
 
-<ParamField query="yearsOfExperience" type="string">
+<ParamField body="yearsOfExperience" type="string">
   Filter by years of experience, comma-separated (e.g., "THREE_TO_FIVE_YEARS,SIX_TO_TEN_YEARS")
 </ParamField>
 
-<ParamField query="country" type="string" default="FR">
+<ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 
-<ParamField query="login_cookie" type="string" required>
+<ParamField body="login_cookie" type="string" required>
   LinkedIn authentication cookie (li_at) obtained from the login/verify process
 </ParamField>
 
