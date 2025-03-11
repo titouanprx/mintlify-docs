@@ -4,7 +4,7 @@ api: "POST /v1/recruiter/cv"
 description: "Retrieve a candidate's CV from a LinkedIn job application"
 ---
 
-Retrieve the CV/resume URL for a specific candidate who has applied to your LinkedIn job posting.
+Retrieve the CV/resume and contact information for a specific candidate who has applied to your LinkedIn job posting.
 
 <Note>
   This endpoint costs **1 credit** per request.
@@ -37,19 +37,31 @@ Retrieve the CV/resume URL for a specific candidate who has applied to your Link
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  CV data
+  Candidate data
 </ResponseField>
 
-<ResponseField name="data.cv_url" type="string">
-  Direct URL to download the candidate's CV
+<ResponseField name="data.name" type="string">
+  Full name of the candidate
 </ResponseField>
 
-<ResponseField name="data.file_name" type="string">
-  Original filename of the CV
+<ResponseField name="data.headline" type="string">
+  Professional headline of the candidate
 </ResponseField>
 
-<ResponseField name="data.file_type" type="string">
-  File type of the CV (PDF, DOCX, etc.)
+<ResponseField name="data.location" type="string">
+  Location of the candidate
+</ResponseField>
+
+<ResponseField name="data.email" type="string">
+  Email address of the candidate
+</ResponseField>
+
+<ResponseField name="data.phone" type="string">
+  Phone number of the candidate
+</ResponseField>
+
+<ResponseField name="data.resume_url" type="string">
+  Direct URL to download the candidate's CV/resume
 </ResponseField>
 
 <ResponseExample>
