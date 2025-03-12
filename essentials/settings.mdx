@@ -126,7 +126,7 @@ Create a new LinkedIn post
     <ResponseField name="message" type="string" required>
       The content of your post
     </ResponseField>
-    <ResponseField name="login_cookie" type="string" required>
+    <ResponseField name="login_token" type="string" required>
       Your LinkedIn authentication cookie
     </ResponseField>
   </Expandable>
@@ -143,7 +143,7 @@ headers = {
 
 data = {
   "message": "Hello LinkedIn!",
-  "login_cookie": "your_cookie"
+  "login_token": "your_cookie"
 }
 
 response = requests.post(url, headers=headers, data=data)
