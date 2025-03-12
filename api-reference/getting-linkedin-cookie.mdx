@@ -1,26 +1,25 @@
 ---
-title: 'Getting LinkedIn Authentication Cookie'
-description: 'How to obtain the LinkedIn authentication cookie (li_at)'
+title: 'Getting LinkedIn Authentication Token'
+description: 'How to obtain the LinkedIn authentication token (li_at)'
 ---
 
-To use most endpoints of the LinkUp API, you need a valid LinkedIn authentication cookie (li_at). There are two methods to obtain this cookie, with our authentication API being the recommended approach.
+To use most endpoints of the LinkUp API, you need a valid LinkedIn authentication token (li_at). Our authentication API provides the recommended approach to obtain this token.
 
-## Method 1: Using LinkUp Authentication API (Recommended)
+## Using LinkUp Authentication API
 
-Our authentication API provides the most reliable and secure way to obtain the LinkedIn cookie. This method automatically handles IP matching and security challenges.
+Our authentication API provides the most reliable and secure way to obtain the LinkedIn token. This method automatically handles IP matching and security challenges.
 
 ### Important Note ⚠️
 
-The login endpoint should be used sparingly. Once you obtain a valid li_at cookie, it remains valid for 365 days. You should:
-- Store the cookie securely after first authentication
-- Reuse the same cookie for all subsequent requests
-- Only re-authenticate if the cookie becomes invalid
+The login endpoint should be used sparingly. Once you obtain a valid li_at token, it remains valid for 365 days. You should:
+- Store the token securely after first authentication
+- Reuse the same token for all subsequent requests
+- Only re-authenticate if the token becomes invalid
 
 ### Advantages:
 
-
 1. **Automatic IP Handling**
-   - Cookie is automatically configured to work with our proxy network
+   - Token is automatically configured to work with our proxy network
    - No need to worry about IP matching
    - Works seamlessly with all API endpoints
 
@@ -31,7 +30,7 @@ The login endpoint should be used sparingly. Once you obtain a valid li_at cooki
 
 ### How to Use:
 
-Read the Authentication part.
+Read the Authentication part of our documentation for detailed instructions.
 
 ### Response Example:
 
@@ -39,39 +38,19 @@ Read the Authentication part.
 {
   "status": "success",
   "message": "Login successful",
-  "login_token": "XXXX..."  // Your LinkedIn cookie - valid for 365 days
+  "login_token": "XXXX..."  // Your LinkedIn token - valid for 365 days
 }
 ```
 
-## Method 2: Manual Extraction (Alternative Method)
-
-If needed, you can manually extract the cookie from your browser. However, this method requires careful attention to IP addresses and is generally less reliable.
-
-### Steps:
-
-1. **Install Cookie Editor Extension**
-   - For Chrome: Install [EditThisCookie](https://www.editthiscookie.com/)
-   - For Firefox: Install [Cookie Editor](https://addons.mozilla.org/en-US/firefox/addon/edit-cookie/)
-
-2. **Login to LinkedIn**
-   - Go to [LinkedIn.com](https://www.linkedin.com)
-   - Login with your account credentials
-   - Complete any security verifications if prompted
-
-3. **Extract the Cookie**
-   - Click on the EditThisCookie extension icon
-   - Look for the cookie named "li_at"
-   - Copy its value - it should be a long string of characters
-
 ## Best Practices
 
-1. **Cookie Storage**
-   - Store the cookie securely in your environment variables or secure storage
+1. **Token Storage**
+   - Store the token securely in your environment variables or secure storage
    - Never expose it in client-side code or version control
    - Implement proper access controls
 
 2. **Usage Pattern**
-   - Get the cookie once through our API
+   - Get the token once through our API
    - Store it securely
    - Reuse it for all requests until it expires (365 days)
    - Only re-authenticate if you get a 403 error
@@ -80,13 +59,13 @@ If needed, you can manually extract the cookie from your browser. However, this 
 
 Common issues and solutions:
 
-1. **Cookie Invalid**
-   - Check if the cookie has expired (after 365 days)
-   - Verify cookie format is correct
-   - Use the authentication API to get a new cookie
+1. **Token Invalid**
+   - Check if the token has expired (after 365 days)
+   - Verify token format is correct
+   - Use the authentication API to get a new token
 
 2. **Rate Limiting**
-   - Avoid making login requests if you already have a valid cookie
-   - Store and reuse the cookie instead of authenticating repeatedly
+   - Avoid making login requests if you already have a valid token
+   - Store and reuse the token instead of authenticating repeatedly
 
 Need more help? Contact our support at support@linkupapi.com
