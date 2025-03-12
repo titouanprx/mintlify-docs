@@ -17,8 +17,9 @@ curl -H "x-api-key: your_api_key" https://api.linkupapi.com/v1/...
 
 ### LinkedIn Authentication
 
-**Important**: All endpoints except the authentication endpoints (`/v1/auth/login` and `/v1/auth/verify`) require a valid LinkedIn authentication cookie (`li_at`). This cookie is obtained after successfully logging in through our authentication endpoints.
-Read the Getting LinkedIn Cookie channel for more information
+**Important**: All endpoints except the authentication endpoints (`/v1/auth/login` and `//v1/auth/verify`) require a valid LinkedIn authentication token. This token is obtained only through our authentication endpoints.
+Read the Getting LinkedIn Token section for more information.
+
 ## Common Parameters
 
 Most endpoints require these parameters:
@@ -26,7 +27,7 @@ Most endpoints require these parameters:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | x-api-key | header | Yes | Your API authentication key |
-| login_token | body | Yes* | LinkedIn authentication cookie (li_at) |
+| login_token | body | Yes* | LinkedIn authentication token |
 | country | body | No | Proxy country code (default: "FR"), Available: (US,UK,FR) |
 
 *Not required for authentication endpoints
@@ -52,8 +53,6 @@ Most endpoints require these parameters:
 
 - 300 requests per minute per API key
 
-
-
 ## Credits Usage Policy
 Important: All API calls consume credits regardless of the status code returned (except for 500 server errors). This is because the resources are used to process your request even if it results in an error. Most errors (400, 401, 403, 404, 429) are due to user-side issues like:
 * Invalid parameters
@@ -63,7 +62,6 @@ Important: All API calls consume credits regardless of the status code returned 
 * Rate limit exceeded
 
 These errors consume credits as they result from client-side issues rather than server problems. Only 500 server errors, which indicate problems on our end, will not consume credits.
-
 
 ## Response Format
 
@@ -96,14 +94,13 @@ Error responses follow this format:
 }
 ```
 
-
 ## Support
 
 Need help? Email us at [support@linkupapi.com](mailto:support@linkupapi.com)
 
 ## Best Practices
 
-1. Always store and reuse the LinkedIn authentication cookie (li_at) until it expires
-2. Implement proper error handling for rate limits and cookie expiration
+1. Always store and reuse the LinkedIn authentication token until it expires
+2. Implement proper error handling for rate limits and token expiration
 3. Use appropriate country codes when needed for geolocation-specific requests
 4. Keep your API key secure and never expose it in client-side code
