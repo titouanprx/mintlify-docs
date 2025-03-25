@@ -61,7 +61,7 @@ Retrieve the connection degree and invitation status between your account and an
 </ResponseField>
 
 <ResponseExample>
-```json Connected Response
+```json Connected (1st degree)
 {
  "status": "success",
  "data": {
@@ -72,7 +72,9 @@ Retrieve the connection degree and invitation status between your account and an
    "message": "You are connected with this person"
  }
 }
+```
 
+```json Pending Invitation (2nd degree)
 {
  "status": "success",
  "data": {
@@ -83,7 +85,9 @@ Retrieve the connection degree and invitation status between your account and an
    "message": "Invitation pending"
  }
 }
+```
 
+```json No Invitation (3rd degree)
 {
  "status": "success",
  "data": {
