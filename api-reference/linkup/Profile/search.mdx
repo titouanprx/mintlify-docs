@@ -5,12 +5,14 @@ description: 'Search for LinkedIn profiles with advanced filters'
 ---
 
 Search for LinkedIn profiles using multiple filters including company, location, school, network, and keywords.
+
 <Note>
   **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
   - 1-10 results = 1 credit
   - 11-20 results = 2 credits
   - 300 results = 30 credits
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -42,20 +44,21 @@ Search for LinkedIn profiles using multiple filters including company, location,
 <ParamField body="total_results" type="integer" default="10">
   Number of profiles to retrieve
 </ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 
 <ParamField body="first_name" type="string" default="">
-  first name parameter in advanced keyword
+  First name parameter in advanced keyword
 </ParamField>
 
-</ParamField><ParamField body="last_name" type="string" default="">
-  last name parameter in advanced keyword
+<ParamField body="last_name" type="string" default="">
+  Last name parameter in advanced keyword
 </ParamField>
 
-</ParamField><ParamField body="title_text" type="string" default="">
-  title text parameter in advanced keyword
+<ParamField body="title_text" type="string" default="">
+  Title text parameter in advanced keyword
 </ParamField>
 
 <ParamField body="login_token" type="string" required>
@@ -123,7 +126,6 @@ Search for LinkedIn profiles using multiple filters including company, location,
   }
 }
 ```
-
 </ResponseExample>
 
 ### Notes
