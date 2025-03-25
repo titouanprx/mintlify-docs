@@ -1,0 +1,74 @@
+---
+title: 'Get Invitation Status'
+api: 'POST /v1/profile/invitation-status'
+description: 'Check the status of connection and invitation with a LinkedIn profile'
+---
+
+Retrieve the connection degree and invitation status between your account and any LinkedIn profile. This endpoint provides information about whether you are connected, have a pending invitation, or have no relationship with the target profile.
+
+<Note>
+ **Credit Usage:** 1 credit per request
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+ Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="profile_url" type="string" required>
+ URL of the LinkedIn profile you want to check (e.g., https://www.linkedin.com/in/username/)
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+ Country code for proxy selection. Available: (US,UK,FR)
+</ParamField>
+
+<ParamField body="login_token" type="string" required>
+ LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+ Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+ <Expandable title="Properties">
+   <ResponseField name="invitation_state" type="string">
+     Current state of invitation (ACCEPTED, PENDING, NO_INVITATION)
+   </ResponseField>
+
+   <ResponseField name="invitation_type" type="string">
+     Type of invitation (CONNECTED, SENT, RECEIVED, null)
+   </ResponseField>
+
+   <ResponseField name="invitation_id" type="string">
+     Unique identifier of the invitation (if exists)
+   </ResponseField>
+
+   <ResponseField name="member_distance" type="integer">
+     Degree of connection (1, 2, 3, or null)
+   </ResponseField>
+
+   <ResponseField name="message" type="string">
+     Human-readable summary of the relationship status
+   </ResponseField>
+ </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Connected Response
+{
+ "status": "success",
+ "data": {
+   "invitation_state": "ACCEPTED",
+   "invitation_type": "CONNECTED",
+   "invitation_id": null,
+   "member_distance": 1,
+   "message": "You are connected with this person"
+ }
+}
