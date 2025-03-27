@@ -1,0 +1,208 @@
+---
+title: 'Get LinkedIn Feed'
+api: 'POST /v1/posts/extract-feed'
+description: 'Retrieve posts from LinkedIn feed with automatic pagination'
+---
+
+Get a comprehensive list of posts from the LinkedIn feed, including information about authors, content, social stats, and more.
+
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 100 results = 10 credits
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of feed posts to retrieve (the API will automatically handle pagination)
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="total_results" type="integer">
+      Number of feed posts returned
+    </ResponseField>
+
+    <ResponseField name="Feed" type="array">
+      <Expandable title="Post Object">
+
+        <ResponseField name="type" type="string">
+          Type of post (regular/sponsored)
+        </ResponseField>
+
+        <ResponseField name="url" type="string">
+          Direct URL to the LinkedIn post
+        </ResponseField>
+
+        <ResponseField name="commentary" type="string">
+          Main text content of the post
+        </ResponseField>
+
+        <ResponseField name="reshared" type="boolean">
+          Whether this is a reshared post
+        </ResponseField>
+
+        <ResponseField name="actor" type="object">
+          <Expandable title="Actor Properties">
+            <ResponseField name="name" type="string">
+              Full name of the post author
+            </ResponseField>
+
+            <ResponseField name="description" type="string">
+              Author's professional headline or description
+            </ResponseField>
+
+            <ResponseField name="image_url" type="string">
+              URL of the author's profile picture
+            </ResponseField>
+
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the author
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="content" type="object">
+          <Expandable title="Content Properties">
+            <ResponseField name="type" type="string">
+              Type of content (image, article, video, document, unknown)
+            </ResponseField>
+
+            <ResponseField name="images" type="array">
+              Array of image URLs (for image content type)
+            </ResponseField>
+
+            <ResponseField name="title" type="string">
+              Title (for article, video, document content types)
+            </ResponseField>
+
+            <ResponseField name="subtitle" type="string">
+              Subtitle (for article content type)
+            </ResponseField>
+
+            <ResponseField name="url" type="string">
+              Link URL (for article content type)
+            </ResponseField>
+
+            <ResponseField name="thumbnail" type="string">
+              Thumbnail URL (for video content type)
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="social_stats" type="object">
+          <Expandable title="Social Stats Properties">
+            <ResponseField name="reactions" type="integer">
+              Number of reactions (likes, etc.)
+            </ResponseField>
+
+            <ResponseField name="comments" type="integer">
+              Number of comments
+            </ResponseField>
+
+            <ResponseField name="shares" type="integer">
+              Number of shares
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="original_post" type="object">
+          Original post details if this is a reshared post (has the same structure as a post object but without the social_stats)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "total_results": 2,
+    "Feed": [
+      {
+        "type": "regular",
+        "url": "https://www.linkedin.com/posts/sami-chehade-3679b4306_jai-go%C3%BBt%C3%A9-%C3%A0-mac-pour-la-1e-fois-hier-et-activity-7310518562224226304-yOXB",
+        "commentary": "J'ai goûté à Mac pour la 1e fois hier\n\nEt je vais pas vous mentir je comprends pourquoi les gens quand ils goûtent à Mac ne peuvent plus passer à autre chose après\n\nLe design, le confort, mes commandes shell chéries\n\nIls sont forts les mecs j'avoue \n\nLe pire c'est que c'est un MacBook Pro de 2019 donc qu'est-ce que ça doit être les nouveaux modèles 😶",
+        "actor": {
+          "name": "Sami CHEHADE",
+          "description": "Expert Java (8 ans XP) | Lead & développeur full-stack Spring Boot / Angular | Expert Kubernetes et Docker",
+          "image_url": "https://media.licdn.com/dms/image/v2/D5603AQGv5ryNrCi2TQ/profile-displayphoto-shrink_800_800/0/1729919004238",
+          "profile_url": "https://www.linkedin.com/in/sami-chehade-3679b4306"
+        },
+        "content": {
+          "type": "image",
+          "images": [
+            "https://media.licdn.com/dms/image/v2/D5622AQGmkHQI4t18Dg/feedshare-shrink_2048_1536/0/1742963447133"
+          ]
+        },
+        "social_stats": {
+          "reactions": 95,
+          "comments": 84,
+          "shares": 1
+        },
+        "reshared": false
+      },
+      {
+        "id": "urn:li:fsd_update:(urn:li:activity:7310564045936312320,MAIN_FEED,EMPTY,DEFAULT,false)",
+        "type": "regular",
+        "url": "https://www.linkedin.com/posts/johanleroch_classements-des-business-angels-angelsquare-activity-7310564045936312320-MMVb",
+        "commentary": "Tout le monde parle de créa de contenu.\nMais tout le monde oublie de faire du social warming 👇\n\nLe social warming, c'est interagir avec les autres avant de penser à toi.",
+        "actor": {
+          "name": "Johan Le Roch",
+          "description": "Atteins les 8K€/mois en 90 jours avec ma méthode SCALE - 1h par jour, remboursé à 100% si pas de résultat ✱ Développeur Freelance Sénior ✱ Expert React",
+          "image_url": "https://media.licdn.com/dms/image/v2/D4E03AQEPbkOj2iw_yQ/profile-displayphoto-shrink_800_800/0/1724103849232",
+          "profile_url": "https://www.linkedin.com/in/johanleroch"
+        },
+        "content": {
+          "type": "article",
+          "title": "L'extension N°1 pour exploser sur Linkedin.",
+          "subtitle": "linkhub.gg",
+          "url": "https://jhn.sh/pEih59A"
+        },
+        "social_stats": {
+          "reactions": 22,
+          "comments": 11,
+          "shares": 2
+        },
+        "reshared": false
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+
+- The API automatically handles pagination to retrieve the exact number of posts you specify
+- Post content can be of different types (image, article, video, document, etc.)
+- For reshared posts, the `original_post` field contains details about the original post
+- The `url` field provides a direct link to the LinkedIn post
+- Image URLs and profile pictures may expire after a certain period of time
+- Social stats include the number of reactions, comments, and shares at the time of retrieval
+- Posts may be regular or sponsored (indicated by the `type` field)
+- Rate limits apply to feed retrieval requests
