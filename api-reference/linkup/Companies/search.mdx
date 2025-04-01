@@ -48,9 +48,11 @@ Search and retrieve information about companies on LinkedIn using filters like l
 <ParamField body="total_results" type="integer" default="10">
   Number of companies to return
 </ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
+
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -63,6 +65,14 @@ Search and retrieve information about companies on LinkedIn using filters like l
 
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
+    <ResponseField name="total_results" type="integer">
+      Number of companies returned in the response
+    </ResponseField>
+
+    <ResponseField name="total_available_results" type="integer">
+      Total number of results available in LinkedIn matching your search criteria
+    </ResponseField>
+
     <ResponseField name="companies" type="array">
       <Expandable title="Company Object">
         <ResponseField name="company_name" type="string">
@@ -74,7 +84,7 @@ Search and retrieve information about companies on LinkedIn using filters like l
         </ResponseField>
 
         <ResponseField name="job_offers" type="string">
-          Current job openings information
+          Current job openings information (null if not available)
         </ResponseField>
 
         <ResponseField name="subscribers" type="string">
@@ -82,11 +92,31 @@ Search and retrieve information about companies on LinkedIn using filters like l
         </ResponseField>
 
         <ResponseField name="location" type="string">
-          Company's primary location
+          Company's primary location and industry
         </ResponseField>
 
         <ResponseField name="logo_url" type="string">
           URL of company logo (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          First page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Last page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page (typically 50)
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Total number of pages fetched in the current request
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -98,24 +128,40 @@ Search and retrieve information about companies on LinkedIn using filters like l
 {
   "status": "success",
   "data": {
-    "total_results": 1,
+    "total_results": 2,
+    "total_available_results": 1368,
     "companies": [
       {
-        "company_name": "Example Tech",
-        "company_url": "https://www.linkedin.com/company/example-tech",
-        "job_offers": "50 job offers",
-        "subscribers": "10,000 followers",
-        "location": "Paris, France",
-        "logo_url": "https://media.licdn.com/dms/image/example.png"
+        "company_name": "Software République",
+        "company_url": "https://www.linkedin.com/company/softwarerepublique/",
+        "job_offers": null,
+        "subscribers": "4 k abonnés",
+        "location": "Développement de logiciels • Paris",
+        "logo_url": "https://media.licdn.com/dms/image/v2/C4E0BAQEOM_2p0wtaWQ/company-logo_100_100/company-logo_100_100/0/1653290912803?e=1749081600&v=beta&t=qshekRz09DUyP6lo2KEQppZBMj-gJ7zmzj-3saswwkA"
+      },
+      {
+        "company_name": "Software Club",
+        "company_url": "https://www.linkedin.com/company/softwareclub/",
+        "job_offers": "2 offres d'emploi",
+        "subscribers": "8 k abonnés",
+        "location": "Technologie, information et Internet • Paris, Île-de-France",
+        "logo_url": "https://media.licdn.com/dms/image/v2/C4E0BAQGtU0gjNC8ONw/company-logo_100_100/company-logo_100_100/0/1673453153703/softwareclub_logo?e=1749081600&v=beta&t=E4mMCkbmbIcBbLsAHSj_PGP5FBHPQfJ3eVlexTGEdo8"
       }
-    ]
+    ],
+    "pagination": {
+      "start_page": 1,
+      "end_page": 1,
+      "results_per_page": 50,
+      "pages_fetched": 1
+    }
   }
 }
 ```
-
 </ResponseExample>
 
 ### Notes
 - All filter parameters are optional but at least one should be provided for meaningful results
 - Results are paginated with a maximum of 50 companies per page
 - Location and sector IDs are automatically resolved from provided strings
+- The `total_available_results` field shows the total number of companies that match your search criteria on LinkedIn
+- The `job_offers` field may be null if no job listings are currently available
