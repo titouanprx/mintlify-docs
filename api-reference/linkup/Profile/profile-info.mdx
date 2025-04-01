@@ -8,6 +8,7 @@ Extract comprehensive information from any LinkedIn profile, including personal 
 <Note>
   This endpoint costs **1 credit** per request.
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -19,9 +20,11 @@ Extract comprehensive information from any LinkedIn profile, including personal 
 <ParamField body="linkedin_url" type="string" required>
   URL of the LinkedIn profile to extract information from
 </ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
+
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -63,15 +66,79 @@ Extract comprehensive information from any LinkedIn profile, including personal 
     </ResponseField>
     
     <ResponseField name="experience" type="array">
-      Array of professional experiences
+      <Expandable title="Experience Object">
+        <ResponseField name="company" type="string">
+          Company name
+        </ResponseField>
+        
+        <ResponseField name="title" type="string">
+          Job title
+        </ResponseField>
+        
+        <ResponseField name="description" type="string">
+          Job description
+        </ResponseField>
+        
+        <ResponseField name="start_date" type="string">
+          Start date of employment (MM/YYYY format)
+        </ResponseField>
+        
+        <ResponseField name="end_date" type="string">
+          End date of employment (MM/YYYY format, empty string if current position)
+        </ResponseField>
+      </Expandable>
     </ResponseField>
     
     <ResponseField name="education" type="array">
-      Array of education entries
+      <Expandable title="Education Object">
+        <ResponseField name="school" type="string">
+          School or institution name
+        </ResponseField>
+        
+        <ResponseField name="degree" type="string">
+          Degree obtained
+        </ResponseField>
+        
+        <ResponseField name="field_of_study" type="string">
+          Field of study or specialization
+        </ResponseField>
+        
+        <ResponseField name="start_date" type="string">
+          Start year
+        </ResponseField>
+        
+        <ResponseField name="end_date" type="string">
+          End year (empty string if ongoing)
+        </ResponseField>
+      </Expandable>
     </ResponseField>
     
     <ResponseField name="skills" type="array">
-      Array of professional skills
+      Array of professional skills (strings)
+    </ResponseField>
+    
+    <ResponseField name="profile_picture_url" type="string">
+      URL to the profile picture
+    </ResponseField>
+    
+    <ResponseField name="email" type="string">
+      Email address (if publicly available)
+    </ResponseField>
+    
+    <ResponseField name="phone" type="string">
+      Phone number (if publicly available)
+    </ResponseField>
+    
+    <ResponseField name="website" type="string">
+      Personal or professional website (if available)
+    </ResponseField>
+    
+    <ResponseField name="relationship" type="string">
+      Connection degree (e.g., "2nd degree")
+    </ResponseField>
+    
+    <ResponseField name="connection_date" type="string">
+      Date when connection was established (if connected)
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -81,31 +148,63 @@ Extract comprehensive information from any LinkedIn profile, including personal 
 {
   "status": "success",
   "data": {
-    "public_id": "anthony-bourbon",
-    "first_name": "Anthony",
-    "last_name": "Bourbon",
-    "headline": "Founder & CEO at Blast. Club",
+    "public_id": "jeremygoillot",
+    "first_name": "Jeremy",
+    "last_name": "Goillot",
+    "headline": "CEO @The Mobile-First Company \n Your Business, in your Pocket |  Angel Investor in +40 startups",
     "location": "France",
-    "summary": "Jure investisseur Qui Veut Etre Mon Associe, M6\n\nFondateur et CEO du Blast. Club www.Blast.club",
-    "industry": "Gestion des investissements",
+    "summary": "NO EMAIL \nPhone Call Only >> 06 44 60 39 99\n\nBuilding @The Mobile-First Company\nOur goal is clear: Turn your phone into your primary business tool.\n\nWe will build a suite of B2B Apps to help businesses globally finally use simple solutions!\nActively hiring people: https://www.themobilefirstcompany.com/hiring\n\nBonus: I'm still INVESTING in Early-Stage Startups in Africa   (send me your deck by mail jeremy@kara.ventures) \n\n\nWHAT I DID IN THE PAST?\n\n Spendesk  (Fintech Unicorn in B2B Payment)\n+30 Angel investments\nMade my parents proud :) \n\n\nKeywords: CEO, Mobile-First Software, USA Country Manager, Emerging Countries, Africa, LATAM, Growth Advisor, SaaS, B2B Hiring, Smart Angel, Seed, Serie A, Serie B, Serie C, , Product Market Fit, Growth, Outbound, Sales Automation, CRO, DBT, Snowflake, n8n, Hightouch...",
+    "industry": "Technologie, information et Internet",
     "experience": [
       {
-        "company": "Blast.Club",
-        "title": "Founder & CEO",
-        "description": "Investissez aux cotes d'Anthony Bourbon, Tony Parker et Eric Larcheveque dans les startups de demain, a partir de 1 000 par projet.",
+        "company": "The Mobile-First Company",
+        "title": "CEO & Co-Founder",
+        "description": "Your Business, in your Pocket. Mobile Apps for Every Need.\n\nWe're convinced that smartphones are becoming the universal interface for software usage in the future.\nWe focus on building, scaling, and improving mobile apps to streamline how you work.\n\n We're actively hiring people: https://www.themobilefirstcompany.com/",
+        "start_date": "9/2023",
+        "end_date": ""
+      },
+      {
+        "company": "The Mobile Entrepreneurs",
+        "title": "Content Creator",
+        "description": "Le media des entrepreneurs du quotidien, avec un telephone a portee de main.",
+        "start_date": "10/2024",
+        "end_date": ""
+      }
+    ],
+    "education": [
+      {
+        "school": "Le Wagon",
+        "degree": "FullStack Developer",
+        "field_of_study": "Web Development",
+        "start_date": "2016",
+        "end_date": "2016"
+      },
+      {
+        "school": "INSEEC U.",
+        "degree": "Bachelor of Business Administration (BBA)",
+        "field_of_study": "",
         "start_date": "",
         "end_date": ""
       }
     ],
-    "education": [],
-    "skills": [
-      "Developpement de start-up",
-      "business angel",
-      "Marketing",
-      "Marque et identite"
-    ]
+    "skills": ["Allo", " Build a Fintech Unicorn (from 0 to 1B$)", " Build Growth Team for Early Stage Startups", "Angel investing (+30 Startups)"],
+    "profile_picture_url": "https://media.licdn.com/dms/image/v2/D4E03AQGNeGf5rNxHfw/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1708347819714?e=1749081600&v=beta&t=Fc0vOkxS_LjCwtTl4wU5-FBBHrk7N6gwLQAz0meDsrk",
+    "email": "",
+    "phone": "",
+    "website": "",
+    "relationship": "2nd degree",
+    "connection_date": ""
   }
 }
 ```
-
 </ResponseExample>
+
+### Notes
+- Fields may be empty strings when information is not available
+- Experience and education arrays may be empty when no entries exist
+- Profile data extraction depth depends on:
+  - Your connection level with the profile
+  - The profile's privacy settings
+  - LinkedIn visibility restrictions
+- The profile information extraction is optimized to respect LinkedIn's fair usage policies
+- The response includes all publicly available information, but some fields may be restricted based on the profile's privacy settings

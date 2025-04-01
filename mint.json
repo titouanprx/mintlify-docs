@@ -58,7 +58,6 @@
       "group": "Profile",
       "pages": [
         "api-reference/linkup/Profile/me",
-        "api-reference/linkup/Profile/contact",
         "api-reference/linkup/Profile/profile-info",
         "api-reference/linkup/Profile/search"
       ]
