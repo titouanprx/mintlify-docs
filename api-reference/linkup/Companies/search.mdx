@@ -46,7 +46,15 @@ Search and retrieve information about companies on LinkedIn using filters like l
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of companies to return
+  Number of companies to return (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  First page to fetch when using pagination mode (default: 1)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Last page to fetch when using pagination mode (default: same as start_page)
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -165,3 +173,8 @@ Search and retrieve information about companies on LinkedIn using filters like l
 - Location and sector IDs are automatically resolved from provided strings
 - The `total_available_results` field shows the total number of companies that match your search criteria on LinkedIn
 - The `job_offers` field may be null if no job listings are currently available
+- **Pagination Mode vs. Total Results Mode**:
+  - **Total Results Mode**: Use the `total_results` parameter to specify how many companies you want (default)
+  - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
+  - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
+  - When using pagination mode, `total_results` parameter is ignored
