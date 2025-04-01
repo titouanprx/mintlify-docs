@@ -74,7 +74,11 @@ Search for LinkedIn profiles using multiple filters including company, location,
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
     <ResponseField name="total_results" type="integer">
-      Number of profiles returned
+      Number of profiles returned in the response
+    </ResponseField>
+    
+    <ResponseField name="total_available_results" type="integer">
+      Total number of profiles available in LinkedIn matching your search criteria
     </ResponseField>
 
     <ResponseField name="profiles" type="array">
@@ -100,7 +104,27 @@ Search for LinkedIn profiles using multiple filters including company, location,
         </ResponseField>
 
         <ResponseField name="profile_picture" type="string">
-          URL of the profile picture (if available)
+          URL of the profile picture (if available, may be null)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          First page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Last page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page (typically 50)
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Total number of pages fetched in the current request
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -112,7 +136,8 @@ Search for LinkedIn profiles using multiple filters including company, location,
 {
   "status": "success",
   "data": {
-    "total_results": 1,
+    "total_results": 2,
+    "total_available_results": 827,
     "profiles": [
       {
         "name": "John Doe",
@@ -121,8 +146,22 @@ Search for LinkedIn profiles using multiple filters including company, location,
         "location": "San Francisco Bay Area",
         "profile_url": "https://www.linkedin.com/in/johndoe/",
         "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg"
+      },
+      {
+        "name": "Jane Smith",
+        "job_title": "Product Manager at Innovative Solutions",
+        "connection_level": "3rd",
+        "location": "New York Metropolitan Area",
+        "profile_url": "https://www.linkedin.com/in/janesmith/",
+        "profile_picture": null
       }
-    ]
+    ],
+    "pagination": {
+      "start_page": 1,
+      "end_page": 1,
+      "results_per_page": 50,
+      "pages_fetched": 1
+    }
   }
 }
 ```
@@ -139,6 +178,9 @@ Search for LinkedIn profiles using multiple filters including company, location,
   - Market areas
 - Profile pictures are direct links to LinkedIn's media servers
 - Missing information is marked as 'N/A'
+- Profile pictures may be null if not available or restricted
+- The `total_available_results` field shows the total number of profiles that match your search criteria on LinkedIn
+- Results are paginated with a maximum of 50 profiles per page
 - Search results may be limited by:
   - LinkedIn's visibility settings
   - Your network connection level
