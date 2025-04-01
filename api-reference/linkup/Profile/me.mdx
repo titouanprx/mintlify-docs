@@ -4,10 +4,11 @@ api: 'POST /v1/profile/me'
 description: 'Retrieve your own LinkedIn profile information'
 ---
 
-Get basic information about your own LinkedIn profile using your authentication cookie.
+Get comprehensive information about your own LinkedIn profile using your authentication cookie.
 <Note>
   This endpoint costs **1 credit** per request.
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -15,9 +16,11 @@ Get basic information about your own LinkedIn profile using your authentication 
 </ParamField>
 
 ### Body Parameters
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
+
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -30,36 +33,100 @@ Get basic information about your own LinkedIn profile using your authentication 
 
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
-    <ResponseField name="plainId" type="integer">
-      Internal LinkedIn profile ID
+    <ResponseField name="public_id" type="string">
+      Public identifier of your LinkedIn profile
     </ResponseField>
     
-    <ResponseField name="firstName" type="string">
-      First name
+    <ResponseField name="first_name" type="string">
+      Your first name
     </ResponseField>
     
-    <ResponseField name="lastName" type="string">
-      Last name
+    <ResponseField name="last_name" type="string">
+      Your last name
     </ResponseField>
     
-    <ResponseField name="occupation" type="string">
-      Current professional occupation
+    <ResponseField name="headline" type="string">
+      Your professional headline/title
     </ResponseField>
     
-    <ResponseField name="publicIdentifier" type="string">
-      Public LinkedIn profile identifier
+    <ResponseField name="location" type="string">
+      Your geographic location
     </ResponseField>
     
-    <ResponseField name="entityUrn" type="string">
-      LinkedIn internal URN identifier
+    <ResponseField name="summary" type="string">
+      Your profile summary/about section
     </ResponseField>
     
-    <ResponseField name="publicContactInfo" type="object">
-      Public contact information (if available)
+    <ResponseField name="industry" type="string">
+      Your industry sector
     </ResponseField>
     
-    <ResponseField name="premiumSubscriber" type="boolean">
-      Whether the profile has a premium subscription
+    <ResponseField name="experience" type="array">
+      <Expandable title="Experience Object">
+        <ResponseField name="company" type="string">
+          Company name
+        </ResponseField>
+        
+        <ResponseField name="title" type="string">
+          Job title
+        </ResponseField>
+        
+        <ResponseField name="description" type="string">
+          Job description
+        </ResponseField>
+        
+        <ResponseField name="start_date" type="string">
+          Start date of employment (MM/YYYY format)
+        </ResponseField>
+        
+        <ResponseField name="end_date" type="string">
+          End date of employment (MM/YYYY format, empty string if current position)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="education" type="array">
+      <Expandable title="Education Object">
+        <ResponseField name="school" type="string">
+          School or institution name
+        </ResponseField>
+        
+        <ResponseField name="degree" type="string">
+          Degree obtained
+        </ResponseField>
+        
+        <ResponseField name="field_of_study" type="string">
+          Field of study or specialization
+        </ResponseField>
+        
+        <ResponseField name="start_date" type="string">
+          Start year
+        </ResponseField>
+        
+        <ResponseField name="end_date" type="string">
+          End year (empty string if ongoing)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="skills" type="array">
+      Array of your professional skills (strings)
+    </ResponseField>
+    
+    <ResponseField name="profile_picture_url" type="string">
+      URL to your profile picture
+    </ResponseField>
+    
+    <ResponseField name="email" type="string">
+      Your email address (if publicly available)
+    </ResponseField>
+    
+    <ResponseField name="phone" type="string">
+      Your phone number (if publicly available)
+    </ResponseField>
+    
+    <ResponseField name="website" type="string">
+      Your personal or professional website (if available)
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -69,15 +136,36 @@ Get basic information about your own LinkedIn profile using your authentication 
 {
   "status": "success",
   "data": {
-    "plainId": 1374179736,
-    "firstName": "Ales",
-    "lastName": "Prw",
-    "occupation": "growth hacker",
-    "publicIdentifier": "ales-prw-aa0262324",
-    "entityUrn": "urn:li:fs_miniProfile:ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ",
-    "profilePictureUrl": "https://media.licdn.com/dms/image/v2/D4E35AQHM55HVRsX2EQ/profile-framedphoto-shrink_800_800/B4EZVxtoULHUAk-/0/1741369542263?e=1744048800&v=beta&t=ay0jVt_OmGgLUjDI3iA75R_97Sileiixags6LwBEs2w",
-    "publicContactInfo": {},
-    "premiumSubscriber": false
+    "public_id": "ales-prw-aa0262324",
+    "first_name": "Ales",
+    "last_name": "Prw",
+    "headline": "I am building the API that allows automating any action on LinkedIn",
+    "location": "France",
+    "summary": "",
+    "industry": "Technologie, information et Internet",
+    "experience": [
+      {
+        "company": "Linkup API",
+        "title": "Chef des operations de vente",
+        "description": "",
+        "start_date": "2/2024",
+        "end_date": ""
+      }
+    ],
+    "education": [
+      {
+        "school": "Audencia",
+        "degree": "",
+        "field_of_study": "",
+        "start_date": "2023",
+        "end_date": "2028"
+      }
+    ],
+    "skills": [],
+    "profile_picture_url": "https://media.licdn.com/dms/image/v2/D4E35AQHM55HVRsX2EQ/profile-framedphoto-shrink_800_800/B4EZVxtoULHUAk-/0/1741369542263?e=1744149600&v=beta&t=p-clL5GlL8k1XUFNIx0NgBnegAJv8eckGUG_c2cZrFg",
+    "email": "aless.prx@gmail.com",
+    "phone": "",
+    "website": ""
   }
 }
 ```
@@ -85,7 +173,14 @@ Get basic information about your own LinkedIn profile using your authentication 
 ```json Error Response
 {
   "status": "error",
-  "data": "LinkedIn cookie invalid or expired"
+  "message": "LinkedIn cookie invalid or expired"
 }
 ```
 </ResponseExample>
+
+### Notes
+- This endpoint returns the same comprehensive profile data format as the `/v1/profile/info` endpoint
+- Fields may be empty strings when information is not available
+- Experience and education arrays may be empty when no entries exist
+- The response includes all your profile information, formatted in a consistent structure with other profile endpoints
+- This endpoint is useful for validating your login token and retrieving your own profile data
