@@ -4,13 +4,14 @@ api: 'POST /v1/messages/conversation'
 description: 'Retrieve messages from a specific LinkedIn conversation'
 ---
 
-Get detailed messages from a specific LinkedIn conversation, including message content, timestamps, and sender information.
+Get detailed messages from a LinkedIn conversation with a specific profile, including message content, timestamps, and sender information.
 <Note>
   **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
   - 1-10 results = 1 credit
   - 11-20 results = 2 credits
   - 300 results = 30 credits
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -19,17 +20,26 @@ Get detailed messages from a specific LinkedIn conversation, including message c
 
 ### Body Parameters
 
-<ParamField body="conversation_id" type="string" required>
-  The URN of the conversation to retrieve (e.g., "urn:li:conversation:123456789").
-  You can get it in /v1/messages/inbox endpoint
+<ParamField body="linkedin_url" type="string" required>
+  URL of the LinkedIn profile to get conversation messages with
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of messages to retrieve
+  Number of messages to retrieve (used when not in pagination mode)
 </ParamField>
+
+<ParamField body="start_page" type="integer">
+  First page to fetch when using pagination mode (default: 1)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Last page to fetch when using pagination mode (default: same as start_page)
+</ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
+
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -42,8 +52,12 @@ Get detailed messages from a specific LinkedIn conversation, including message c
 
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
+    <ResponseField name="profile_url" type="string">
+      The LinkedIn profile URL used in the request
+    </ResponseField>
+
     <ResponseField name="conversation_id" type="string">
-      The conversation identifier
+      The unique identifier of the conversation
     </ResponseField>
 
     <ResponseField name="total_results" type="integer">
@@ -57,7 +71,7 @@ Get detailed messages from a specific LinkedIn conversation, including message c
         </ResponseField>
 
         <ResponseField name="timestamp" type="integer">
-          Delivery timestamp of the message
+          Delivery timestamp of the message (milliseconds since epoch)
         </ResponseField>
 
         <ResponseField name="sender" type="string">
@@ -73,15 +87,7 @@ Get detailed messages from a specific LinkedIn conversation, including message c
             <ResponseField name="last_name" type="string">
               Last name of the sender
             </ResponseField>
-            
-            <ResponseField name="profile_id" type="string">
-              LinkedIn profile ID of the sender
-            </ResponseField>
           </Expandable>
-        </ResponseField>
-
-        <ResponseField name="message_id" type="string">
-          Unique identifier of the message
         </ResponseField>
 
         <ResponseField name="message_type" type="string">
@@ -93,6 +99,26 @@ Get detailed messages from a specific LinkedIn conversation, including message c
         </ResponseField>
       </Expandable>
     </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          First page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Last page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="messages_per_page" type="integer">
+          Number of messages per page (typically 10)
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Total number of pages fetched in the current request
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -101,8 +127,9 @@ Get detailed messages from a specific LinkedIn conversation, including message c
 {
   "status": "success",
   "data": {
-    "conversation_id": "urn:li:conversation:123456789",
-    "total_results": 1,
+    "profile_url": "https://www.linkedin.com/in/johndoe/",
+    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:1234567890,12345678)",
+    "total_results": 2,
     "messages": [
       {
         "text": "Hello! Thanks for connecting.",
@@ -110,24 +137,50 @@ Get detailed messages from a specific LinkedIn conversation, including message c
         "sender": "John Doe",
         "sender_info": {
           "first_name": "John",
-          "last_name": "Doe",
-          "profile_id": "abcd1234"
+          "last_name": "Doe"
         },
-        "message_id": "urn:li:message:123456789",
+        "message_type": "TEXT",
+        "read_status": "READ"
+      },
+      {
+        "text": "Great to connect with you too!",
+        "timestamp": 1679530500000,
+        "sender": "Jane Smith",
+        "sender_info": {
+          "first_name": "Jane",
+          "last_name": "Smith"
+        },
         "message_type": "TEXT",
         "read_status": "READ"
       }
-    ]
+    ],
+    "pagination": {
+      "start_page": 1,
+      "end_page": 1,
+      "messages_per_page": 10,
+      "pages_fetched": 1
+    }
   }
 }
 ```
 
+```json Error Response - No Conversation
+{
+  "status": "error",
+  "message": "No conversation found with this profile"
+}
+```
 </ResponseExample>
 
 ### Notes
 - Messages are returned in chronological order (oldest first)
 - The `timestamp` is in milliseconds since epoch
-- The conversation_id must be a valid LinkedIn conversation URN
-- Message types can include TEXT and other special types (e.g., attachments)
-- Read status indicates whether the message has been read by the recipient
-- Historical messages may be limited by LinkedIn's API
+- **Pagination Mode vs. Total Results Mode**:
+  - **Total Results Mode**: Use the `total_results` parameter to specify how many messages you want (default)
+  - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
+  - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
+  - When using pagination mode, `total_results` parameter is ignored
+- Messages per page is fixed at 10
+- The API first retrieves the conversation ID for the specified profile, then fetches the messages
+- This endpoint can only retrieve messages with profiles you've already had a conversation with
+- Historical messages may be limited by LinkedIn's data retention policies
