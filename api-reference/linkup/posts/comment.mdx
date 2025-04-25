@@ -26,7 +26,7 @@ Add a new comment to any LinkedIn post using the post URL.
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
-<ParamField body="login_cookie" type="string" required>
+<ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
@@ -58,10 +58,10 @@ Add a new comment to any LinkedIn post using the post URL.
 - Example of valid post URLs:
   - `https://www.linkedin.com/feed/update/urn:li:activity:...`
   - `https://www.linkedin.com/posts/user-activity-...`
-- Comments are posted with the identity associated with the login cookie
+- Comments are posted with the identity associated with the login token
 - Comment text supports plain text only
 - No formatting or special characters are supported in comments
-- The post must be accessible with the provided login cookie
+- The post must be accessible with the provided login token
 - LinkedIn's rate limits and spam detection apply to comment posting
 - Comments cannot be longer than LinkedIn's maximum character limit
 - Some posts may have commenting disabled by their authors
