@@ -1,10 +1,10 @@
 ---
-title: "Get CV"
+title: "Get Candidate CV"
 api: "POST /v1/recruiter/cv"
-description: "Retrieve a candidate's CV from a LinkedIn job application"
+description: "Retrieve a candidate's CV document from a LinkedIn job application"
 ---
 
-Retrieve the CV/resume and contact information for a specific candidate who has applied to your LinkedIn job posting.
+This endpoint retrieves the CV/resume document for a specific candidate who has applied to your LinkedIn job posting.
 
 <Note>
   This endpoint costs **1 credit** per request.
@@ -23,7 +23,7 @@ Retrieve the CV/resume and contact information for a specific candidate who has 
 </ParamField>
 
 <ParamField body="login_token" type="string" required>
-  LinkedIn authentication cookie () obtained from the login/verify process
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -32,50 +32,21 @@ Retrieve the CV/resume and contact information for a specific candidate who has 
 
 ### Response
 
-<ResponseField name="status" type="string">
-  Request status (success/error)
-</ResponseField>
+The response is the raw PDF or document file of the candidate's CV, returned with appropriate headers for download.
 
-<ResponseField name="data" type="object">
-  Candidate data
-</ResponseField>
+- Content-Type: Usually "application/pdf" (or the detected content type of the document)
+- Content-Disposition: attachment; filename="cv_{application_id}_{candidate_name}.pdf"
 
-<ResponseField name="data.name" type="string">
-  Full name of the candidate
-</ResponseField>
+### Example Request
 
-<ResponseField name="data.headline" type="string">
-  Professional headline of the candidate
-</ResponseField>
-
-<ResponseField name="data.location" type="string">
-  Location of the candidate
-</ResponseField>
-
-<ResponseField name="data.email" type="string">
-  Email address of the candidate
-</ResponseField>
-
-<ResponseField name="data.phone" type="string">
-  Phone number of the candidate
-</ResponseField>
-
-<ResponseField name="data.resume_url" type="string">
-  Direct URL to download the candidate's CV/resume
-</ResponseField>
-
-<ResponseExample>
-```json Success Response
-{
-  "status": "success",
-  "data": {
-    "name": "Pierre Dubois",
-    "headline": "Marketing & Communication. BtoB, BtoC. \nGastronomie et Hôtellerie expert.",
-    "location": "Lyon, Auvergne-Rhône-Alpes, France",
-    "email": "pierre.dubois@example.com",
-    "phone": "+33012345678",
-    "resume_url": "https://www.linkedin.com/resume/pierre-dubois"
-  }
-}
-```
-</ResponseExample>
+```bash
+curl --request POST \
+  --url https://api.linkupapi.com/v1/recruiter/cv \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: YOUR_API_KEY' \
+  --output downloaded_cv.pdf \
+  --data '{
+  "login_token": "YOUR_LINKEDIN_LOGIN_TOKEN",
+  "country": "FR",
+  "application_id": "31461710693"
+}'
