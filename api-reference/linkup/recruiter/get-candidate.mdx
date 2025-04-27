@@ -4,7 +4,7 @@ api: 'POST /v1/recruiter/candidates'
 description: 'Retrieve applicants for a LinkedIn job posting'
 ---
 
-Retrieve detailed information about candidates who have applied to your LinkedIn job posting, including their profiles, work experience, education, and application responses.
+Retrieve detailed information about candidates who have applied to your LinkedIn job posting, including their profiles, work experience, education, contact information, and application responses.
 
 <Note>
   This endpoint costs **1 credit** per result.
@@ -46,7 +46,6 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
   Filter candidates by location (e.g., "Paris")
 </ParamField>
 
-
 <ParamField body="yearsOfExperience" type="string">
   Filter by years of experience, comma-separated (e.g., "THREE_TO_FIVE_YEARS,SIX_TO_TEN_YEARS")
 </ParamField>
@@ -65,92 +64,128 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
   Request status (success/error)
 </ResponseField>
 
-<ResponseField name="data" type="array">
+<ResponseField name="data" type="object">
+  Response data container
+</ResponseField>
+
+<ResponseField name="data.total_results" type="integer">
+  Total number of candidates retrieved
+</ResponseField>
+
+<ResponseField name="data.candidates" type="array">
   List of candidate profiles
 </ResponseField>
 
-<ResponseField name="data[].application_id" type="string">
+<ResponseField name="data.candidates[].application_id" type="string">
   Unique ID of the application
 </ResponseField>
 
-<ResponseField name="data[].rating" type="string">
-  Recruiter's rating of the candidate (GOOD_FIT, MAYBE, UNRATED)
+<ResponseField name="data.candidates[].rating" type="string">
+  Recruiter's rating of the candidate (GOOD_FIT, MAYBE, UNRATED, NOT_A_FIT)
 </ResponseField>
 
-<ResponseField name="data[].first_name" type="string">
+<ResponseField name="data.candidates[].is_top_choice" type="boolean">
+  Whether the candidate is marked as a top choice
+</ResponseField>
+
+<ResponseField name="data.candidates[].top_choice_message" type="string">
+  Message from candidate if marked as top choice
+</ResponseField>
+
+<ResponseField name="data.candidates[].first_name" type="string">
   Candidate's first name
 </ResponseField>
 
-<ResponseField name="data[].last_name" type="string">
+<ResponseField name="data.candidates[].last_name" type="string">
   Candidate's last name
 </ResponseField>
 
-<ResponseField name="data[].full_name" type="string">
+<ResponseField name="data.candidates[].full_name" type="string">
   Candidate's full name
 </ResponseField>
 
-<ResponseField name="data[].headline" type="string">
+<ResponseField name="data.candidates[].headline" type="string">
   Candidate's LinkedIn headline
 </ResponseField>
 
-<ResponseField name="data[].public_identifier" type="string">
+<ResponseField name="data.candidates[].public_identifier" type="string">
   Candidate's LinkedIn URL identifier
 </ResponseField>
 
-<ResponseField name="data[].linkedin_id" type="string">
+<ResponseField name="data.candidates[].profile_url" type="string">
+  Complete LinkedIn profile URL
+</ResponseField>
+
+<ResponseField name="data.candidates[].linkedin_id" type="string">
   Candidate's LinkedIn internal ID
 </ResponseField>
 
-<ResponseField name="data[].location" type="string">
+<ResponseField name="data.candidates[].location" type="string">
   Candidate's location
 </ResponseField>
 
-<ResponseField name="data[].experiences" type="array">
+<ResponseField name="data.candidates[].experiences" type="array">
   List of candidate's work experiences
 </ResponseField>
 
-<ResponseField name="data[].experiences[].title" type="string">
+<ResponseField name="data.candidates[].experiences[].title" type="string">
   Job title
 </ResponseField>
 
-<ResponseField name="data[].experiences[].company" type="string">
+<ResponseField name="data.candidates[].experiences[].company" type="string">
   Company name
 </ResponseField>
 
-<ResponseField name="data[].experiences[].date_range" type="string">
+<ResponseField name="data.candidates[].experiences[].company_url" type="string">
+  LinkedIn URL of the company
+</ResponseField>
+
+<ResponseField name="data.candidates[].experiences[].date_range" type="string">
   Employment period
 </ResponseField>
 
-<ResponseField name="data[].experiences[].description" type="string">
+<ResponseField name="data.candidates[].experiences[].description" type="string">
   Job description
 </ResponseField>
 
-<ResponseField name="data[].education" type="array">
+<ResponseField name="data.candidates[].education" type="array">
   List of candidate's education history
 </ResponseField>
 
-<ResponseField name="data[].education[].school" type="string">
+<ResponseField name="data.candidates[].education[].school" type="string">
   School name
 </ResponseField>
 
-<ResponseField name="data[].education[].degree" type="string">
+<ResponseField name="data.candidates[].education[].school_url" type="string">
+  LinkedIn URL of the school/university
+</ResponseField>
+
+<ResponseField name="data.candidates[].education[].degree" type="string">
   Degree obtained
 </ResponseField>
 
-<ResponseField name="data[].education[].field" type="string">
+<ResponseField name="data.candidates[].education[].field" type="string">
   Field of study
 </ResponseField>
 
-<ResponseField name="data[].education[].years" type="string">
+<ResponseField name="data.candidates[].education[].years" type="string">
   Period of study
 </ResponseField>
 
-<ResponseField name="data[].responses" type="object">
+<ResponseField name="data.candidates[].responses" type="object">
   Candidate's answers to job application questions
 </ResponseField>
 
-<ResponseField name="data[].application_date" type="string">
+<ResponseField name="data.candidates[].application_date" type="string">
   Date and time when the application was submitted
+</ResponseField>
+
+<ResponseField name="data.candidates[].contact_email" type="string">
+  Candidate's email address
+</ResponseField>
+
+<ResponseField name="data.candidates[].contact_phone" type="string">
+  Candidate's phone number
 </ResponseField>
 
 <ResponseExample>
@@ -158,76 +193,61 @@ Retrieve detailed information about candidates who have applied to your LinkedIn
 {
   "status": "success",
   "data": {
-    "total_results": 1,
+    "total_results": 10,
     "candidates": [
-    {
-      "application_id": "2987654321",
-      "rating": "GOOD_FIT",
-      "first_name": "John",
-      "last_name": "Doe",
-      "full_name": "John Doe",
-      "headline": "Senior Software Engineer | Python | JavaScript | React",
-      "public_identifier": "johndoe",
-      "linkedin_id": "abcdef123",
-      "location": "Paris, France",
-      "experiences": [
-        {
-          "title": "Senior Software Engineer",
-          "company": "Tech Solutions Inc.",
-          "date_range": "6/2020 - Present",
-          "description": "Leading the development of web applications using Python and React."
+      {
+        "application_id": "22985735624",
+        "rating": "GOOD_FIT",
+        "is_top_choice": true,
+        "top_choice_message": "Hello,\nI'm very excited about this opportunity and believe my background in digital marketing would be a perfect fit. Please find my resume attached.\nBest regards,\nSarah",
+        "first_name": "Sarah",
+        "last_name": "Johnson",
+        "full_name": "Sarah Johnson",
+        "headline": "Digital Marketing Director | SEO | Content Strategy | E-commerce",
+        "public_identifier": "sarahjohnsondigital",
+        "profile_url": "https://www.linkedin.com/in/sarahjohnsondigital",
+        "linkedin_id": "ACoABXr3u75B1hdj6t39ybasmK",
+        "location": "London, United Kingdom",
+        "experiences": [
+          {
+            "title": "Digital Marketing Director",
+            "company": "TechGrowth Solutions",
+            "company_url": "https://www.linkedin.com/company/techgrowth-solutions/",
+            "date_range": "5/2022 - Present",
+            "description": "Leading a team of 12 marketing specialists across SEO, content, and paid acquisition channels. Developed and executed comprehensive marketing strategies that increased organic traffic by 78% and improved conversion rates by 34% within 18 months."
+          },
+          {
+            "title": "Senior Marketing Manager",
+            "company": "E-Commerce Innovators",
+            "company_url": "https://www.linkedin.com/company/ecommerce-innovators/",
+            "date_range": "3/2019 - 5/2022",
+            "description": "Managed digital marketing initiatives for B2B SaaS platform. Implemented data-driven marketing strategies that generated 12M in pipeline and contributed to 25% YoY revenue growth."
+          }
+        ],
+        "education": [
+          {
+            "school": "University of Manchester",
+            "school_url": "https://www.linkedin.com/school/university-of-manchester/",
+            "degree": "Master's degree, Digital Marketing",
+            "field": "Marketing",
+            "years": "2016 - 2018"
+          },
+          {
+            "school": "King's College London",
+            "school_url": "https://www.linkedin.com/school/kings-college-london/",
+            "degree": "Bachelor's degree, Business Administration",
+            "field": "Marketing and Communications",
+            "years": "2012 - 2016"
+          }
+        ],
+        "responses": {
+          "Do you have experience with SEO and SEM strategies?": "Yes, I have 8+ years of experience developing and implementing SEO/SEM strategies for e-commerce and SaaS companies. My recent campaign increased organic traffic by 78% year-over-year.",
+          "Are you willing to relocate?": "Yes, I'm open to relocation opportunities."
         },
-        {
-          "title": "Software Developer",
-          "company": "Digital Innovations",
-          "date_range": "3/2017 - 5/2020",
-          "description": "Developed RESTful APIs and implemented frontend features."
-        }
-      ],
-      "education": [
-        {
-          "school": "University of Technology",
-          "degree": "Master's Degree",
-          "field": "Computer Science",
-          "years": "2015 - 2017"
-        },
-        {
-          "school": "City College",
-          "degree": "Bachelor's Degree",
-          "field": "Software Engineering",
-          "years": "2011 - 2015"
-        }
-      ],
-      "responses": {
-        "Why are you interested in this position?": "I'm passionate about developing innovative solutions and believe my skills align perfectly with your requirements.",
-        "Describe your experience with Python": "I have 5+ years of experience building applications with Python, including Django and Flask frameworks."
-      },
-      "application_date": "2024-02-15 14:23:45"
+        "application_date": "2025-04-15 10:27:39",
+        "contact_email": "sarah.johnson@example.com",
+        "contact_phone": "+44 7700 900123"
       }
     ]
   }
 }
-```
-
-```json Error Response
-{
-  "status": "error",
-  "message": "Failed to fetch candidates. Please check your login credentials or job ID."
-}
-```
-</ResponseExample>
-
-### Notes
-- The job posting must be accessible with your LinkedIn account
-- Provides comprehensive candidate data including profile details, work history, education, and application answers
-- Supports filtering by location, skills, and experience level
-- Pagination is available through the `start` and `count` parameters
-- The following errors can occur:
-  - Invalid job ID
-  - Authentication failures
-  - Network or permission errors
-  - Rate limiting from LinkedIn
-
-### Rate Limits
-- Maximum 100 requests per minute
-- Maximum 1000 requests per day
