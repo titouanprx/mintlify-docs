@@ -1,0 +1,220 @@
+
+---
+title: 'Create Job'
+api: 'POST /v1/recruiter/create-job'
+description: 'Create a new job posting on LinkedIn'
+---
+
+Create a complete job posting on LinkedIn with customizable fields, including job title, description, location, and screening questions. The job will be created in draft state.
+
+<Note>
+  This endpoint costs **5 credits** per job posting.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="company_url" type="string" required>
+  URL of the LinkedIn company page (e.g., "https://www.linkedin.com/company/company-name/")
+</ParamField>
+
+<ParamField body="title" type="string" required>
+  Job title (e.g., "Senior Software Engineer")
+</ParamField>
+
+<ParamField body="place" type="string" required>
+  Job location (e.g., "Paris, France")
+</ParamField>
+
+<ParamField body="html_description" type="string" required>
+  Job description in HTML format. Supports basic HTML formatting (bold, lists, paragraphs)
+</ParamField>
+
+<ParamField body="employment_status" type="string" default="FULL_TIME">
+  Employment type. Options: FULL_TIME, PART_TIME, CONTRACT, TEMPORARY, VOLUNTEER, INTERNSHIP
+</ParamField>
+
+<ParamField body="workplace" type="string" default="1">
+  Workplace type. Options: "1" (on-site), "2" (remote), "3" (hybrid)
+</ParamField>
+
+<ParamField body="screening_questions" type="array">
+  List of screening questions to add to the job posting
+</ParamField>
+
+<ParamField body="screening_questions[].type" type="string">
+  Type of question. Can be a predefined LinkedIn question type or "CUSTOM_QUESTION"
+</ParamField>
+
+<ParamField body="screening_questions[].questionText" type="string">
+  Required for custom questions. The text of the question
+</ParamField>
+
+<ParamField body="screening_questions[].format" type="string" default="MULTIPLE_CHOICE">
+  For custom questions, the format of the question (currently supports "MULTIPLE_CHOICE")
+</ParamField>
+
+<ParamField body="screening_questions[].required" type="boolean" default="true">
+  Whether the question is required to be answered
+</ParamField>
+
+<ParamField body="screening_questions[].parameterValue" type="string">
+  For predefined questions, the value for the parameter (e.g., skill ID, industry ID)
+</ParamField>
+
+<ParamField body="screening_questions[].parameterDisplayText" type="string">
+  For predefined questions, the display text for the parameter
+</ParamField>
+
+<ParamField body="auto_rejection_template" type="string">
+  Template message for automatic rejections
+</ParamField>
+
+<ParamField body="contact_email" type="string" default="">
+  Contact email for the job posting
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error/partial_success)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Status message
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response data container (on success)
+</ResponseField>
+
+<ResponseField name="data.job_posting_id" type="string">
+  LinkedIn job posting ID that can be used for other operations
+</ResponseField>
+
+<ResponseField name="data.screening_questions_added" type="boolean">
+  Whether screening questions were successfully added
+</ResponseField>
+
+<ResponseField name="details" type="string">
+  Additional error details (in case of error)
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Job posting created successfully",
+  "data": {
+    "job_posting_id": "4219038884",
+    "screening_questions_added": true
+  }
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Impossible de récupérer les informations de l'entreprise"
+}
+```
+
+```json Partial Success Response
+{
+  "status": "partial_success",
+  "message": "Offre créée mais erreur lors de l'ajout des questions: 400",
+  "job_posting_id": "4219038884",
+  "details": "Invalid question format"
+}
+```
+</ResponseExample>
+
+## Predefined Screening Question Types
+
+You can use the following predefined question types in your `screening_questions` array:
+
+### Yes/No Questions
+
+- `WORK_AUTHORIZATION`: Verify if candidates are authorized to work
+- `URGENT_HIRING`: Indicate urgent hiring needs
+- `REMOTE_WORK`: Confirm if candidate can work remotely
+- `HYBRID_WORK`: Confirm if candidate can work in hybrid mode
+- `ONSITE_WORK`: Confirm if candidate can work on-site
+- `DRUG_SCREENING`: Verify willingness to undergo drug screening
+- `DRIVERS_LICENSE`: Verify if candidate has a driver's license
+- `BACKGROUND_CHECK`: Verify willingness to undergo background checks
+- `VISA_STATUS`: Verify visa status
+
+### Numerical Questions
+
+- `INDUSTRY_EXPERIENCE`: Years of experience in a specific industry (requires `parameterValue` with industry ID)
+- `PROFESSIONAL_EXPERIENCE`: Years of general professional experience (requires `parameterValue`)
+- `SKILL_COMPETENCE`: Level of competence with a specific skill (requires `parameterValue` with skill ID)
+- `TRANSACTION_AMOUNT`: Average transaction amount (requires `parameterValue`)
+
+### Education & Language
+
+- `EDUCATION`: Education level (requires `parameterValue`)
+- `LANGUAGE`: Language proficiency (requires `parameterValue` with language name)
+
+### Location
+
+- `LOCATION`: Location preference (requires `parameterValue`)
+
+## Example - Creating a Job with Custom Questions
+
+Here's a complete example of creating a job with both custom and predefined questions:
+
+</ResponseExample>
+```json
+{
+  "login_token": "AQEDATQBr-0K3AA...",
+  "company_url": "https://www.linkedin.com/company/acme-corporation/",
+  "title": "Senior Software Developer",
+  "place": "Paris, France",
+  "html_description": "<p>We are seeking a <strong>talented developer</strong> to join our team.</p><ul><li>5+ years of experience with Python</li><li>Experience with cloud technologies</li><li>Strong problem-solving skills</li></ul>",
+  "employment_status": "FULL_TIME",
+  "workplace": "3",
+  "contact_email": "jobs@acmecorp.com",
+  "country": "FR",
+  "screening_questions": [
+    {
+      "type": "CUSTOM_QUESTION",
+      "questionText": "Are you comfortable with at least weekly travel to client sites?",
+      "format": "MULTIPLE_CHOICE",
+      "required": true
+    },
+    {
+      "type": "PROFESSIONAL_EXPERIENCE",
+      "parameterValue": "Python development",
+      "parameterDisplayText": "Python development",
+      "required": true
+    },
+    {
+      "type": "LANGUAGE",
+      "parameterValue": "French",
+      "parameterDisplayText": "French"
+    },
+    {
+      "type": "SKILL_COMPETENCE",
+      "parameterValue": "urn:li:skill:42",
+      "parameterDisplayText": "Docker"
+    }
+  ],
+  "auto_rejection_template": "Thank you for your interest in our position. After careful consideration, we've decided to pursue other candidates whose qualifications better match our current needs."
+}
+```
+</ResponseExample>

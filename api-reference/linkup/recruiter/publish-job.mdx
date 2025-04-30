@@ -1,0 +1,55 @@
+---
+title: 'Publish Job'
+api: 'POST /v1/recruiter/publish-job'
+description: 'Publish an existing job posting on LinkedIn'
+---
+
+Publish a previously created job posting on LinkedIn, changing its status from draft to active.
+
+<Note>
+  This endpoint costs **1 credit** per job publish operation.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="job_id" type="string" required>
+  LinkedIn job posting ID (obtained from the create-job endpoint)
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Status message
+</ResponseField>
+
+<ResponseField name="details" type="string">
+  Additional error details (in case of error)
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Job posting published successfully",
+  "job_id": "4219038884"
+}
+```
+</ResponseExample>
