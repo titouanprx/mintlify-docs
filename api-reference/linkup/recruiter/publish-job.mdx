@@ -1,6 +1,6 @@
 ---
 title: 'Publish Job'
-api: 'POST /v1/recruiter/publish-job'
+api: 'POST /v1/recruiter/publish'
 description: 'Publish an existing job posting on LinkedIn'
 ---
 
@@ -23,7 +23,7 @@ Publish a previously created job posting on LinkedIn, changing its status from d
 </ParamField>
 
 <ParamField body="job_id" type="string" required>
-  LinkedIn job posting ID (obtained from the create-job endpoint)
+  LinkedIn job posting ID (obtained from the create endpoint)
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">

@@ -9,7 +9,10 @@ Retrieve information about the job postings you have created on LinkedIn. You ca
 <Note>
   **Credit Usage:** 
   - With `fetch_details: true` (default): 1 credit per job posting retrieved.
-  - With `fetch_details: false`: No credits used, returns basic information only.
+  - With `fetch_details: false`: 1 credit per 10 results (or fraction thereof). For example:
+    * 1-10 results = 1 credit
+    * 11-20 results = 2 credits
+    * 300 results = 30 credits
   - When specifying a `job_id`, 1 credit is always used regardless of `fetch_details` value.
 </Note>
 
