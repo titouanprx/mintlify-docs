@@ -106,7 +106,10 @@
       "pages": [
         "api-reference/linkup/recruiter/get-candidate",
         "api-reference/linkup/recruiter/get-cv",
-        "api-reference/linkup/recruiter/get-posts"
+        "api-reference/linkup/recruiter/get-posts",
+        "api-reference/linkup/recruiter/publish-job",
+        "api-reference/linkup/recruiter/close-job-offer",
+        "api-reference/linkup/recruiter/create-job-post"
 
       ]
     }
