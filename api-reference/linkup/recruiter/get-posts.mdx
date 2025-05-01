@@ -1,13 +1,16 @@
 ---
 title: 'Get Job Posts'
 api: 'POST /v1/recruiter/posts'
-description: 'Retrieve your posted LinkedIn job listings with complete details'
+description: 'Retrieve your posted LinkedIn job listings with basic or complete details'
 ---
 
-Retrieve detailed information about the job postings you have created on LinkedIn, including complete job details such as description, applicant statistics, workplace type, and industry.
+Retrieve information about the job postings you have created on LinkedIn. You can choose between getting basic information (title, company, location) at no cost, or complete details (description, applicant statistics, workplace type, industry) for 1 credit per job posting.
 
 <Note>
-  **Credit Usage:** 1 credit per job posting retrieved. Each job posting includes complete details.
+  **Credit Usage:** 
+  - With `fetch_details: true` (default): 1 credit per job posting retrieved.
+  - With `fetch_details: false`: No credits used, returns basic information only.
+  - When specifying a `job_id`, 1 credit is always used regardless of `fetch_details` value.
 </Note>
 
 ### Header Parameters
@@ -24,6 +27,10 @@ Retrieve detailed information about the job postings you have created on LinkedI
 
 <ParamField body="job_id" type="string">
   Optional: Retrieve details for a specific job posting by its LinkedIn ID
+</ParamField>
+
+<ParamField body="fetch_details" type="boolean" default="true">
+  Whether to retrieve complete job details (true) or basic information only (false)
 </ParamField>
 
 <ParamField body="total_results" type="number" default="10">
@@ -60,13 +67,16 @@ Retrieve detailed information about the job postings you have created on LinkedI
   Total number of job postings available on LinkedIn
 </ResponseField>
 
+<ResponseField name="data.fetch_details" type="boolean">
+  Indicates whether the response contains complete details or basic information only
+</ResponseField>
 
 <ResponseField name="data.pagination" type="object">
   Pagination information (not included when using job_id)
 </ResponseField>
 
 <ResponseField name="data.posts" type="array">
-  List of job postings with complete details
+  List of job postings with details according to fetch_details parameter
 </ResponseField>
 
 <ResponseField name="data.posts[].linkedin_job_id" type="string">
@@ -84,6 +94,26 @@ Retrieve detailed information about the job postings you have created on LinkedI
 <ResponseField name="data.posts[].location" type="string">
   Job location
 </ResponseField>
+
+<ResponseField name="data.posts[].job_url" type="string">
+  URL to view the job posting
+</ResponseField>
+
+<ResponseField name="data.posts[].posted_date" type="string">
+  Human-readable posting date (e.g. "Posted 2 days ago") - Basic info only
+</ResponseField>
+
+<ResponseField name="data.posts[].status" type="string">
+  Basic status (e.g. "Active") - Basic info only
+</ResponseField>
+
+<ResponseField name="data.posts[].applicants_count" type="string">
+  Human-readable applicant count (e.g. "25+ applicants") - Basic info only
+</ResponseField>
+
+<Note>
+  **The following fields are only available when fetch_details is true:**
+</Note>
 
 <ResponseField name="data.posts[].job_state" type="string">
   Current state of the job posting (OPEN, CLOSED, SUSPENDED, etc.)
@@ -125,10 +155,6 @@ Retrieve detailed information about the job postings you have created on LinkedI
   Number of applications the job posting has received
 </ResponseField>
 
-<ResponseField name="data.posts[].job_url" type="string">
-  URL to view the job posting
-</ResponseField>
-
 <ResponseField name="data.posts[].contact_email" type="string">
   Contact email for the job posting
 </ResponseField>
@@ -150,12 +176,13 @@ Retrieve detailed information about the job postings you have created on LinkedI
 </ResponseField>
 
 <ResponseExample>
-```json Success Response (Multiple Posts)
+```json Success Response (Multiple Posts with fetch_details=true)
 {
   "status": "success",
   "data": {
     "total_results": 1,
     "total_available_results": 5,
+    "fetch_details": true,
     "posts": [
       {
         "linkedin_job_id": "4178681649",
@@ -184,15 +211,14 @@ Retrieve detailed information about the job postings you have created on LinkedI
           "daily_budget": "0"
         }
       }
-
-    ]
+    ],
     "pagination": {
       "start_page": 1,
       "end_page": 1,
       "items_per_page": 10,
       "pages_fetched": 1
-    },
+    }
   }
 }
-```
-</ResponseExample>
+
+<ResponseExample>
