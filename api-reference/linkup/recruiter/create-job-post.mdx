@@ -46,6 +46,10 @@ Create a complete job posting on LinkedIn with customizable fields, including jo
   Workplace type. Options: "1" (on-site), "2" (remote), "3" (hybrid)
 </ParamField>
 
+<ParamField body="skills" type="array">
+  List of skills required for the job (e.g., ["Python", "Django"])
+</ParamField>
+
 <ParamField body="screening_questions" type="array">
   List of screening questions to add to the job posting
 </ParamField>
@@ -67,11 +71,23 @@ Create a complete job posting on LinkedIn with customizable fields, including jo
 </ParamField>
 
 <ParamField body="screening_questions[].parameterValue" type="string">
-  For predefined questions, the value for the parameter (e.g., skill ID, industry ID)
+  For predefined questions, the value for the parameter (e.g., skill name, industry name)
 </ParamField>
 
 <ParamField body="screening_questions[].parameterDisplayText" type="string">
   For predefined questions, the display text for the parameter
+</ParamField>
+
+<ParamField body="screening_questions[].favorableFloor" type="number">
+  For numeric questions, the minimum acceptable value (e.g., years of experience)
+</ParamField>
+
+<ParamField body="screening_questions[].experienceYears" type="number">
+  For PROFESSIONAL_EXPERIENCE questions, years of experience required
+</ParamField>
+
+<ParamField body="screening_questions[].languageLevel" type="string">
+  For LANGUAGE questions, the proficiency level required (Elementary, Conversational, Professional, Native)
 </ParamField>
 
 <ParamField body="auto_rejection_template" type="string">
@@ -163,15 +179,15 @@ You can use the following predefined question types in your `screening_questions
 
 ### Numerical Questions
 
-- `INDUSTRY_EXPERIENCE`: Years of experience in a specific industry (requires `parameterValue` with industry ID)
-- `PROFESSIONAL_EXPERIENCE`: Years of general professional experience (requires `parameterValue`)
-- `SKILL_COMPETENCE`: Level of competence with a specific skill (requires `parameterValue` with skill ID)
+- `INDUSTRY_EXPERIENCE`: Years of experience in a specific industry (requires `parameterValue` with industry name)
+- `PROFESSIONAL_EXPERIENCE`: Years of general professional experience (requires `parameterValue` with field name)
+- `SKILL_COMPETENCE`: Level of competence with a specific skill (requires `parameterValue` with skill name)
 - `TRANSACTION_AMOUNT`: Average transaction amount (requires `parameterValue`)
 
 ### Education & Language
 
-- `EDUCATION`: Education level (requires `parameterValue`)
-- `LANGUAGE`: Language proficiency (requires `parameterValue` with language name)
+- `EDUCATION`: Education level (requires `parameterValue` with education level)
+- `LANGUAGE`: Language proficiency (requires `parameterValue` with language name and optional `languageLevel`)
 
 ### Location
 
@@ -192,6 +208,7 @@ Here's a complete example of creating a job with both custom and predefined ques
   "workplace": "3",
   "contact_email": "jobs@acmecorp.com",
   "country": "FR",
+  "skills": ["Python", "Django", "AWS"],
   "screening_questions": [
     {
       "type": "CUSTOM_QUESTION",
@@ -203,19 +220,27 @@ Here's a complete example of creating a job with both custom and predefined ques
       "type": "PROFESSIONAL_EXPERIENCE",
       "parameterValue": "Python development",
       "parameterDisplayText": "Python development",
-      "required": true
+      "required": true,
+      "experienceYears": 3
     },
     {
       "type": "LANGUAGE",
       "parameterValue": "French",
-      "parameterDisplayText": "French"
+      "parameterDisplayText": "French",
+      "languageLevel": "Professional"
     },
     {
       "type": "SKILL_COMPETENCE",
-      "parameterValue": "urn:li:skill:42",
-      "parameterDisplayText": "Docker"
+      "parameterValue": "Docker",
+      "parameterDisplayText": "Docker",
+      "favorableFloor": 2
+    },
+    {
+      "type": "EDUCATION",
+      "parameterValue": "BTS, DUT (ou diplôme de niveau Bac+2)",
+      "parameterDisplayText": "BTS, DUT (ou diplôme de niveau Bac+2)",
+      "required": true
     }
   ],
   "auto_rejection_template": "Thank you for your interest in our position. After careful consideration, we've decided to pursue other candidates whose qualifications better match our current needs."
 }
-```
