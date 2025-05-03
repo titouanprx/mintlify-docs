@@ -47,9 +47,13 @@ Publish a previously created job posting on LinkedIn, changing its status from d
 <ResponseExample>
 ```json Success Response
 {
-  "status": "success",
-  "message": "Job posting published successfully",
-  "job_id": "4219038884"
+  "status":"success",
+  "data":{
+    "job_id":"4222748461",
+    "message":"Job posting successfully published",
+    "job_state":"LISTED",
+    "published_at":1746301533088
+  }
 }
 ```
 </ResponseExample>

@@ -48,8 +48,11 @@ Close an active job posting on LinkedIn, removing it from the available position
 ```json Success Response
 {
   "status": "success",
-  "message": "Job posting closed successfully",
-  "job_id": "4219038884"
+  "data": {
+            "job_id": job_id,
+            "message": "Job posting successfully closed",
+            "closed_at": current_timestamp
+          }
 }
 ```
 </ResponseExample>
