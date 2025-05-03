@@ -51,42 +51,58 @@ Create a complete job posting on LinkedIn with customizable fields, including jo
 </ParamField>
 
 <ParamField body="screening_questions" type="array">
-  List of screening question objects to add to the job posting
+  List of screening question objects. Each object in this array should contain the properties described below.
 </ParamField>
 
-<ParamField body="screening_questions[0].type" type="string">
+<ParamField body="auto_rejection_template" type="string">
+  Template message for automatic rejections
+</ParamField>
+
+<ParamField body="contact_email" type="string" default="">
+  Contact email for the job posting
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+### Screening Question Object Properties
+
+Each object in the `screening_questions` array should have the following properties:
+
+<ParamField name="type" type="string">
   Type of question. Can be a predefined LinkedIn question type or "CUSTOM_QUESTION"
 </ParamField>
 
-<ParamField body="screening_questions[0].questionText" type="string">
+<ParamField name="questionText" type="string">
   Required for custom questions. The text of the question
 </ParamField>
 
-<ParamField body="screening_questions[0].format" type="string" default="MULTIPLE_CHOICE">
+<ParamField name="format" type="string" default="MULTIPLE_CHOICE">
   For custom questions, the format of the question (currently supports "MULTIPLE_CHOICE")
 </ParamField>
 
-<ParamField body="screening_questions[0].required" type="boolean" default="true">
+<ParamField name="required" type="boolean" default="true">
   Whether the question is required to be answered
 </ParamField>
 
-<ParamField body="screening_questions[0].parameterValue" type="string">
+<ParamField name="parameterValue" type="string">
   For predefined questions, the value for the parameter (e.g., skill name, industry name)
 </ParamField>
 
-<ParamField body="screening_questions[0].parameterDisplayText" type="string">
+<ParamField name="parameterDisplayText" type="string">
   For predefined questions, the display text for the parameter
 </ParamField>
 
-<ParamField body="screening_questions[0].favorableFloor" type="number">
+<ParamField name="favorableFloor" type="number">
   For numeric questions, the minimum acceptable value (e.g., years of experience)
 </ParamField>
 
-<ParamField body="screening_questions[0].experienceYears" type="number">
+<ParamField name="experienceYears" type="number">
   For PROFESSIONAL_EXPERIENCE questions, years of experience required
 </ParamField>
 
-<ParamField body="screening_questions[0].languageLevel" type="string">
+<ParamField name="languageLevel" type="string">
   For LANGUAGE questions, the proficiency level required (Elementary, Conversational, Professional, Native)
 </ParamField>
 
