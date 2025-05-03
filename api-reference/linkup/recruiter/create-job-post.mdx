@@ -194,9 +194,9 @@ You can use the following predefined question types in your `screening_questions
 
 ### Numerical Questions
 
-- `INDUSTRY_EXPERIENCE`: Years of experience in a specific industry (requires `parameterValue` with industry name)
+- `INDUSTRY_EXPERIENCE`: Years of experience in a specific industry (requires `parameterValue` with industry name)(industry list: https://learn.microsoft.com/en-us/linkedin/shared/references/reference-tables/industry-codes-v2)
 - `PROFESSIONAL_EXPERIENCE`: Years of general professional experience (requires `parameterValue` with field name)
-- `SKILL_COMPETENCE`: Level of competence with a specific skill (requires `parameterValue` with skill name)
+- `SKILL_COMPETENCE`: Level of competence with a specific skill (requires `parameterValue` with skill name,skill list:(https://github.com/maciejszewczyk/linkedin-skills/blob/master/linkedin_skills.txt))
 - `TRANSACTION_AMOUNT`: Average transaction amount (requires `parameterValue`)
 
 ### Education & Language
@@ -240,7 +240,7 @@ Here's a complete example of creating a job with both custom and predefined ques
     },
     {
       "type": "LANGUAGE",
-      "parameterValue": "French",
+      "parameterValue": "fr",
       "parameterDisplayText": "French",
       "languageLevel": "Professional"
     },
