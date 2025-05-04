@@ -95,7 +95,6 @@
         "api-reference/linkup/posts/get-reactions",
         "api-reference/linkup/posts/like",
         "api-reference/linkup/posts/comment",
-        "api-reference/linkup/posts/answer-comment",
         "api-reference/linkup/posts/get-comments",
         "api-reference/linkup/posts/search",
         "api-reference/linkup/posts/create",
