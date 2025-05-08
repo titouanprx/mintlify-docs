@@ -21,12 +21,14 @@ Search and retrieve information about companies on LinkedIn using filters like l
 ### Body Parameters
 
 <ParamField body="location" type="string">
-  Geographic location for company search (e.g., "Paris", "France", "Europe")
+  Geographic location for company search (e.g., "Paris", "France", "Europe"). 
+  Use semicolon (;) as separator for multiple locations (e.g., "Paris;London;Berlin").
 </ParamField>
 
 <ParamField body="sector" type="string">
   Industry sector you can find the label here: 
   https://learn.microsoft.com/en-us/linkedin/shared/references/reference-tables/industry-codes-v2
+  Use semicolon (;) as separator for multiple sectors (e.g., "Software;Finance;Marketing").
 </ParamField>
 
 <ParamField body="keyword" type="string">

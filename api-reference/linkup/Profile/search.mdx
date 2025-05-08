@@ -22,19 +22,26 @@ Search for LinkedIn profiles using multiple filters including company, location,
 ### Body Parameters
 
 <ParamField body="company_url" type="string">
-  LinkedIn company URL or identifier to filter by current company
+  LinkedIn company URL or identifier to filter by current company.
+  Use semicolon (;) as separator for multiple companies (e.g., "google;microsoft;apple").
 </ParamField>
 
 <ParamField body="location" type="string">
-  Geographic location to filter profiles
+  Geographic location to filter profiles.
+  Use semicolon (;) as separator for multiple locations (e.g., "Paris;London;New York").
 </ParamField>
 
 <ParamField body="school_url" type="string">
-  LinkedIn school URL or identifier to filter by education
+  LinkedIn school URL or identifier to filter by education.
+  Use semicolon (;) as separator for multiple schools (e.g., "harvard;stanford;mit").
 </ParamField>
 
 <ParamField body="network" type="string">
-  Network connection level to filter by
+  Network connection level to filter by:
+  - "F" = First-degree connections (1st)
+  - "S" = Second-degree connections (2nd)
+  - "O" = Out-of-network connections (3rd+)
+  Use (,) as separator for multiple, eg: F,S,O
 </ParamField>
 
 <ParamField body="keyword" type="string">
