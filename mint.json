@@ -76,6 +76,7 @@
         "api-reference/linkup/Network/get-connections",
         "api-reference/linkup/Network/accept-invitations",
         "api-reference/linkup/Network/get-invitations",
+        "api-reference/linkup/Network/get-sent-invitations",
         "api-reference/linkup/Network/get-network-recomandations",
         "api-reference/linkup/Network/get_invitations_status"
       ]
