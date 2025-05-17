@@ -1,16 +1,17 @@
 ---
 title: 'Get Pending Invitations'
 api: 'POST /v1/network/invitations'
-description: 'Retrieve pending LinkedIn connection invitations'
+description: 'Retrieve pending LinkedIn connection invitations with pagination and filtering'
 ---
 
-Get a list of pending connection invitations with detailed information about each invitation and inviter.
+Search and retrieve pending connection invitations with detailed information about each invitation and inviter. Supports pagination and filtering by invitation type.
+
 <Note>
-  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
-  - 1-10 results = 1 credit
-  - 11-20 results = 2 credits
-  - 300 results = 30 credits
+  **Credit Usage:** 1 credit per page of results. For example:
+  - 1 page = 1 credit
+  - 5 pages = 5 credits
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -19,12 +20,30 @@ Get a list of pending connection invitations with detailed information about eac
 
 ### Body Parameters
 
-<ParamField body="total_results" type="integer" default="10">
-  Number of invitations to retrieve
+<ParamField body="invitation_type" type="string">
+  Filter by invitation type. Available types:
+  - CONNECTION (from people)
+  - ORGANIZATION (from pages)
+  - CONTENT_SERIES (from newsletters)
+  If not specified, all types will be returned.
 </ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of invitations to return (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  First page to fetch when using pagination mode (default: 1)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Last page to fetch when using pagination mode (default: same as start_page)
+</ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
+
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -38,7 +57,11 @@ Get a list of pending connection invitations with detailed information about eac
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
     <ResponseField name="total_results" type="integer">
-      Number of invitations returned
+      Number of invitations returned in this response
+    </ResponseField>
+
+    <ResponseField name="total_available_results" type="integer">
+      Total number of pending invitations available matching the filter criteria
     </ResponseField>
 
     <ResponseField name="invitations" type="array">
@@ -88,6 +111,26 @@ Get a list of pending connection invitations with detailed information about eac
         </ResponseField>
       </Expandable>
     </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          First page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Last page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page (typically 10)
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Total number of pages fetched in the current request
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -96,7 +139,8 @@ Get a list of pending connection invitations with detailed information about eac
 {
   "status": "success",
   "data": {
-    "total_results": 1,
+    "total_results": 20,
+    "total_available_results": 44,
     "invitations": [
       {
         "name": "John Doe",
@@ -110,17 +154,16 @@ Get a list of pending connection invitations with detailed information about eac
         "shared_connections": "5 shared connections",
         "invitation_state": "PENDING",
         "entity_urn": "urn:li:invitation:2906418534"
-      }
-    ]
+      },
+      // More invitations...
+    ],
+    "pagination": {
+      "start_page": 1,
+      "end_page": 2,
+      "results_per_page": 10,
+      "pages_fetched": 2
+    }
   }
 }
 ```
-
-</ResponseExample>
-
-### Notes
-- The `shared_secret` and `entity_urn` are required for accepting invitations using the `/v1/network/accept-invitation` endpoint
-- The profile picture URL may be null if not available
-- The message field may be empty if no custom message was included
-- Shared connections information may be null if there are no mutual connections
-- Retrieved invitations are sorted by most recent first
+<ResponseExample>
