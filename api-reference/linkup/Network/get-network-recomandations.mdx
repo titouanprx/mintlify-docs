@@ -1,16 +1,22 @@
 ---
 title: 'Get Network Recommendations'
 api: 'POST /v1/network/recommendations'
-description: 'Retrieve LinkedIn network recommendations of people you may know'
+description: 'Retrieve LinkedIn network recommendations of people you may know, with optional pagination support'
 ---
 
-Get personalized LinkedIn connection recommendations including detailed information about each recommended profile.
+Get personalized LinkedIn connection recommendations including detailed information about each recommended profile. Supports both pagination and total results modes.
+
 <Note>
-  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
-  - 1-10 results = 1 credit
-  - 11-20 results = 2 credits
-  - 300 results = 30 credits
+  **Credit Usage:** 
+  - In total results mode: 1 credit per 10 results (or fraction thereof)
+    - 1-10 results = 1 credit
+    - 11-20 results = 2 credits
+    - 300 results = 30 credits
+  - In pagination mode: 1 credit per page requested
+    - 1 page = 1 credit
+    - pages 1-3 = 3 credits
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -20,7 +26,15 @@ Get personalized LinkedIn connection recommendations including detailed informat
 ### Body Parameters
 
 <ParamField body="total_results" type="integer" default="10">
-  Maximum number of recommendations to retrieve
+  Maximum number of recommendations to retrieve (used in total results mode)
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination (optional, enables pagination mode)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination (optional, defaults to start_page if not provided)
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -66,6 +80,10 @@ Get personalized LinkedIn connection recommendations including detailed informat
         </ResponseField>
       </Expandable>
     </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      Optional pagination information when using pagination mode
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -97,21 +115,29 @@ Get personalized LinkedIn connection recommendations including detailed informat
           "insight": "David and 4 other mutual connections",
           "entity_urn": "urn:li:fsd_discoveryEntityViewModel:(urn:li:fsd_profile:ACoAACjveEcBSGN-I-TMI7NESPgssxZH8AW9LYY,PYMK)"
         }
-      ]
+      ],
+      "pagination": {
+        "current_page": 1,
+        "total_pages": 5,
+        "pages_fetched": 1
+      }
     }
   }
   ```
-
 </ResponseExample>
 
 ### Notes
 
-* The API returns personalized recommendations based on your LinkedIn profile and network
+* The API supports two modes of operation:
+  * Total results mode: Specify `total_results` to get a specific number of recommendations
+  * Pagination mode: Use `start_page` and `end_page` to retrieve results page by page (25 results per page)
 
 * The `insight` field indicates either mutual connections or the recommendation reason
 
 * The `entity_urn` is a unique identifier used by LinkedIn for the recommendation
 
-* Results are sorted by relevance to your prfile
+* Results are sorted by relevance to your profile
 
-* The number of returned recommendations may be less than `total_results` if fewer recommendations are available
+* When using pagination mode, the response includes pagination information
+
+* The number of returned recommendations may be less than requested if fewer recommendations are available

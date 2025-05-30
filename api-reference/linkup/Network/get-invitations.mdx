@@ -1,15 +1,15 @@
 ---
-title: 'Get Pending Invitations'
+title: 'Get Invitations'
 api: 'POST /v1/network/invitations'
-description: 'Retrieve pending LinkedIn connection invitations with pagination and filtering'
+description: 'Retrieve your LinkedIn invitations with pagination support'
 ---
 
-Search and retrieve pending connection invitations with detailed information about each invitation and inviter. Supports pagination and filtering by invitation type.
+Get a list of your LinkedIn invitations (sent or received) with detailed information about each invitation.
 
 <Note>
-  **Credit Usage:** 1 credit per page of results. For example:
-  - 1 page = 1 credit
-  - 5 pages = 5 credits
+  Credit cost varies based on usage mode:
+  - Pagination mode: **1 credit per page**
+  - Total results mode: **1 credit per 10 invitations** (rounded up)
 </Note>
 
 ### Header Parameters
@@ -20,32 +20,28 @@ Search and retrieve pending connection invitations with detailed information abo
 
 ### Body Parameters
 
-<ParamField body="invitation_type" type="string">
-  Filter by invitation type. Available types:
-  - CONNECTION (from people)
-  - ORGANIZATION (from pages)
-  - CONTENT_SERIES (from newsletters)
-  If not specified, all types will be returned.
-</ParamField>
-
-<ParamField body="total_results" type="integer" default="10">
-  Number of invitations to return (used when not in pagination mode)
-</ParamField>
-
-<ParamField body="start_page" type="integer">
-  First page to fetch when using pagination mode (default: 1)
-</ParamField>
-
-<ParamField body="end_page" type="integer">
-  Last page to fetch when using pagination mode (default: same as start_page)
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
 
-<ParamField body="login_token" type="string" required>
-  LinkedIn authentication cookie obtained from the login/verify process
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination mode
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination mode
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of invitations to retrieve (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="invitation_type" type="string">
+  Type of invitations to retrieve (optional)
 </ParamField>
 
 ### Response
@@ -61,53 +57,53 @@ Search and retrieve pending connection invitations with detailed information abo
     </ResponseField>
 
     <ResponseField name="total_available_results" type="integer">
-      Total number of pending invitations available matching the filter criteria
+      Total number of invitations available
     </ResponseField>
 
     <ResponseField name="invitations" type="array">
       <Expandable title="Invitation Object">
         <ResponseField name="name" type="string">
-          Full name of the person who sent the invitation
+          Full name of the person
         </ResponseField>
 
         <ResponseField name="profile_url" type="string">
-          LinkedIn profile URL of the inviter
-        </ResponseField>
-
-        <ResponseField name="profile_picture" type="string">
-          URL of the inviter's profile picture (if available)
+          LinkedIn profile URL
         </ResponseField>
 
         <ResponseField name="subtitle" type="string">
-          Professional headline or current position
+          Professional headline or description
         </ResponseField>
 
         <ResponseField name="sent_time" type="string">
-          When the invitation was sent
+          Time elapsed since the invitation was sent
         </ResponseField>
 
         <ResponseField name="message" type="string">
-          Custom message included with the invitation (if any)
+          Invitation message (if any)
         </ResponseField>
 
-        <ResponseField name="invitation_id" type="string">
+        <ResponseField name="invitation_id" type="integer">
           Unique identifier for the invitation
         </ResponseField>
 
         <ResponseField name="shared_secret" type="string">
-          Shared secret required for accepting the invitation
+          Shared secret for the invitation
         </ResponseField>
 
         <ResponseField name="shared_connections" type="string">
-          Information about mutual connections (if any)
+          Number of mutual connections
         </ResponseField>
 
         <ResponseField name="invitation_state" type="string">
-          Current state of the invitation
+          Current state of the invitation (e.g., "PENDING")
         </ResponseField>
 
         <ResponseField name="entity_urn" type="string">
           LinkedIn entity URN for the invitation
+        </ResponseField>
+
+        <ResponseField name="profile_picture" type="string">
+          URL of the person's profile picture
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -115,19 +111,19 @@ Search and retrieve pending connection invitations with detailed information abo
     <ResponseField name="pagination" type="object">
       <Expandable title="Pagination Object">
         <ResponseField name="start_page" type="integer">
-          First page fetched in the current request
+          Starting page number of the request
         </ResponseField>
 
         <ResponseField name="end_page" type="integer">
-          Last page fetched in the current request
+          Ending page number of the request
         </ResponseField>
 
         <ResponseField name="results_per_page" type="integer">
-          Number of results per page (typically 10)
+          Number of results per page
         </ResponseField>
 
         <ResponseField name="pages_fetched" type="integer">
-          Total number of pages fetched in the current request
+          Number of pages successfully fetched
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -140,22 +136,21 @@ Search and retrieve pending connection invitations with detailed information abo
   "status": "success",
   "data": {
     "total_results": 20,
-    "total_available_results": 44,
+    "total_available_results": 36,
     "invitations": [
       {
-        "name": "John Doe",
-        "profile_url": "https://www.linkedin.com/in/johndoe/",
-        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg",
-        "subtitle": "Software Engineer at Tech Company",
-        "sent_time": "2 days ago",
-        "message": "I'd like to join your network!",
-        "invitation_id": "2906418534",
-        "shared_secret": "xyz123",
-        "shared_connections": "5 shared connections",
+        "name": "Sandrine BRUNET",
+        "profile_url": "https://www.linkedin.com/in/sandrine-brunet-6a910b94",
+        "subtitle": "Cost and Time killer, J'accompagne les entreprises à faire des économies et gagner en temps et sérénité",
+        "sent_time": "1 week ago",
+        "message": null,
+        "invitation_id": 7331558767219683329,
+        "shared_secret": "9gAd0GPh",
+        "shared_connections": "13 mutual connections",
         "invitation_state": "PENDING",
-        "entity_urn": "urn:li:invitation:2906418534"
-      },
-      // More invitations...
+        "entity_urn": "urn:li:fsd_invitation:7331558767219683329",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/100_100/profile-displayphoto-shrink_100_100/0/1673297968581?e=1753920000&v=beta&t=vlKK6RCRuU4H3Yp8OUgov5OigmYLxlaeqPUiOVuK0yo"
+      }
     ],
     "pagination": {
       "start_page": 1,
@@ -165,6 +160,28 @@ Search and retrieve pending connection invitations with detailed information abo
     }
   }
 }
-  ```
+```
 
+```json Error Response - Invalid Cookie
+{
+  "status": "error",
+  "message": "Invalid or expired LinkedIn cookie"
+}
+```
+
+```json Error Response - Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
 </ResponseExample>
+
+### Notes
+- The endpoint supports two modes of operation:
+  1. Pagination mode: Specify both `start_page` and `end_page` to fetch specific pages
+  2. Total results mode: Use `total_results` to specify the number of invitations to fetch
+- When using pagination, `end_page` must be greater than or equal to `start_page`
+- The `message` field may be null if no message was included with the invitation
+- The `sent_time` is returned in a human-readable format (e.g., "1 week ago", "2 months ago")
+- Profile pictures URLs are temporary and will expire

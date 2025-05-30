@@ -1,13 +1,17 @@
 ---
 title: 'Get Connections'
 api: 'POST /v1/network/connections'
-description: 'Retrieve your LinkedIn connections list'
+description: 'Retrieve your LinkedIn connections list with pagination support'
 ---
 
-Get a list of your LinkedIn connections with their basic information including name, job title, profile URL, and profile picture.
+Get a list of your LinkedIn connections with their basic information including name, job title, profile URL, and profile picture. Supports both pagination and total results modes.
+
 <Note>
-  This endpoint costs **1 credit** per request.
+  Credit cost varies based on usage mode:
+  - Pagination mode: **1 credit per page**
+  - Total results mode: **1 credit per 10 connections** (rounded up)
 </Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -16,14 +20,24 @@ Get a list of your LinkedIn connections with their basic information including n
 
 ### Body Parameters
 
-<ParamField body="total_results" type="integer" default="10">
-  Number of connections to retrieve
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
-<ParamField body="login_token" type="string" required>
-  LinkedIn authentication cookie obtained from the login/verify process
+
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination mode
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination mode
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of connections to retrieve (used when not in pagination mode)
 </ParamField>
 
 ### Response
@@ -35,7 +49,11 @@ Get a list of your LinkedIn connections with their basic information including n
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
     <ResponseField name="total_results" type="integer">
-      Number of connections returned
+      Number of connections returned in this response
+    </ResponseField>
+
+    <ResponseField name="total_available_results" type="integer">
+      Total number of connections available in your network
     </ResponseField>
 
     <ResponseField name="connections" type="array">
@@ -57,6 +75,26 @@ Get a list of your LinkedIn connections with their basic information including n
         </ResponseField>
       </Expandable>
     </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          Starting page number of the request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Ending page number of the request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Number of pages successfully fetched
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -65,27 +103,49 @@ Get a list of your LinkedIn connections with their basic information including n
 {
   "status": "success",
   "data": {
-    "total_results": 2,
+    "total_results": 20,
+    "total_available_results": 839,
     "connections": [
       {
-        "name": "John Doe",
-        "job_title": "Software Engineer at Tech Company",
-        "profile_url": "https://www.linkedin.com/in/johndoe/",
-        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg"
-      },
-      {
-        "name": "Jane Smith",
-        "job_title": "Product Manager at Startup",
-        "profile_url": "https://www.linkedin.com/in/janesmith/",
-        "profile_picture": "https://media.licdn.com/dms/image/v2/example2.jpg"
+        "name": "Linda Källqvist",
+        "job_title": "Planhat - VP Customer Success",
+        "profile_url": "https://www.linkedin.com/in/lindakallqvist/",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/100_100/profile-displayphoto-shrink_100_100/0/1692692323766?e=1753920000&v=beta&t=HQ7CjvtZvsf7oq-tCtgJ82p5Px_oVf0HZlQtQLLjdMA"
       }
-    ]
+    ],
+    "pagination": {
+      "start_page": 1,
+      "end_page": 2,
+      "results_per_page": 10,
+      "pages_fetched": 2
+    }
   }
 }
 ```
+</ResponseExample>
 
+### Error Responses
+
+<ResponseExample>
+```json Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
+
+```json Invalid Cookie
+{
+  "status": "error",
+  "message": "Invalid or expired LinkedIn cookie"
+}
+```
 </ResponseExample>
 
 ### Notes
+- The endpoint supports two modes of operation:
+  1. Pagination mode: Specify both `start_page` and `end_page` to fetch specific pages
+  2. Total results mode: Use `total_results` to specify the number of connections to fetch
 - The profile picture URL may be 'N/A' if not available or if the connection has no profile picture
 - The job title may be 'N/A' if the connection hasn't specified their current position
+- When using pagination, `end_page` must be greater than or equal to `start_page`
