@@ -5,12 +5,14 @@ description: 'Retrieve LinkedIn messaging conversations'
 ---
 
 Get a list of messaging conversations from your LinkedIn inbox, including information about participants and latest messages.
+
 <Note>
   **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
   - 1-10 results = 1 credit
   - 11-20 results = 2 credits
   - 300 results = 30 credits
 </Note>
+
 ### Header Parameters
 
 <ParamField 
@@ -21,16 +23,27 @@ Get a list of messaging conversations from your LinkedIn inbox, including inform
 >
   Your API key
 </ParamField>
+
 ### Body Parameters
 
-<ParamField body="total_results" type="integer" default="10">
-  Number of conversations to retrieve
-</ParamField>
-<ParamField body="country" type="string" default="FR">
-  Country code for proxy selection. Available: (US,UK,FR)
-</ParamField>
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of conversations to retrieve in this batch
+</ParamField>
+
+<ParamField body="category" type="string" default="INBOX">
+  Category to filter by. Available: (INBOX, INMAIL, JOB, UNREAD)
+</ParamField>
+
+<ParamField body="next_cursor" type="string">
+  Cursor for pagination (optional - used to get the next batch of results)
 </ParamField>
 
 ### Response
@@ -41,10 +54,6 @@ Get a list of messaging conversations from your LinkedIn inbox, including inform
 
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
-    <ResponseField name="total_results" type="integer">
-      Number of conversations returned
-    </ResponseField>
-
     <ResponseField name="conversations" type="array">
       <Expandable title="Conversation Object">
         <ResponseField name="conversation_id" type="string">
@@ -88,6 +97,14 @@ Get a list of messaging conversations from your LinkedIn inbox, including inform
         </ResponseField>
       </Expandable>
     </ResponseField>
+    
+    <ResponseField name="total_results" type="integer">
+      Number of conversations returned in this response
+    </ResponseField>
+    
+    <ResponseField name="next_cursor" type="string">
+      Cursor for the next batch of results (null if no more results available)
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -96,33 +113,34 @@ Get a list of messaging conversations from your LinkedIn inbox, including inform
 {
   "status": "success",
   "data": {
-    "total_results": 1,
     "conversations": [
       {
-        "conversation_id": "urn:li:conversation:123456789",
+        "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsPU_W1omM-Xu24o,2-M2ZkODhkZjYtZDI1ZC00NzE4LWFiYjgtZDY4YmUxMGMwM2NkXzEwMA==)",
         "participant": {
-          "name": "John Doe",
-          "headline": "Software Engineer at Tech Company",
-          "profile_url": "https://www.linkedin.com/in/johndoe/"
+          "name": "John Bell 🗓️⚡️",
+          "headline": "AI that instantly converts and manages pipeline meetings 24/7365. | Believer, Husband, Girl Dad x 3",
+          "profile_url": "https://www.linkedin.com/in/michaeltoddbell",
+          "profile_picture": "https://media.licdn.com/dms/image/v2/D4E0AEkAmN1PCA6OA/profile-displayphoto-shrink_800_800/B4EZRK07l_GYAg-/0/1736422177433?e=1754524800&v=beta&t=0sRsoyG2kUWaBUOMc99nPnx0CuYV4OFgTEjxLGk03AQ"
         },
         "last_message": {
-          "text": "Thanks for connecting!",
-          "time": 1679529600000
+          "text": "Hey Mike, I'm the founder of LinkupAPI (https://linkupapi.com), an API that allows you to automate any action on LinkedIn. I saw you're working on Scheduler AI – have you thought about adding LinkedIn integration to enhance your offering?",
+          "time": 1748629426457,
+          "sender": {
+            "first_name": "Titouan",
+            "last_name": "Prioux",
+            "name": "Titouan Prioux",
+            "headline": "Founder of linkup API, the LinkedIn API that automates all your actions on LinkedIn. Easily integrate it into your SaaS/CRM or AI agents",
+            "profile_url": "https://www.linkedin.com/in/ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o",
+            "profile_picture": "https://media.licdn.com/dms/image/v2/D4E03AQtezmVn8txQ/profile-displayphoto-shrink_800_800/B4EZXoxaZGHgAc-/0/1743367023080?e=1754524800&v=beta&t=xYaqHyrAogNjcpL3bo8_UlrLzglpJ-pmQHjQSrPPNtM"
+          }
         },
-        "unread": 1,
+        "unread": 0,
         "type": "normal"
       }
-    ]
+    ],
+    "total_results": 1,
+    "next_cursor": "REVTQ0VORElORyYxNzQ4NjI5NDI2NDU3JjItTTJaa09EaGtaall0WkRJMVpDMBOekU0TFdGaVlqZ3RaRFk0WW1VeE1HTXdNMk5rWHpFd01BPT0="
   }
 }
 ```
-
 </ResponseExample>
-
-### Notes
-- Conversations are sorted by most recent messages first
-- The timestamp in `last_message.time` is in milliseconds since epoch
-- The `unread` count indicates how many messages in the conversation haven't been read
-- Each conversation includes details about the other participant only (not yourself)
-- The `type` field indicates if it's a normal conversation or a special type
-- The maximum number of conversations that can be retrieved in a single request is limited
