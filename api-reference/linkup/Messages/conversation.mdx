@@ -223,7 +223,7 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
   - **LinkedIn Profile URL**: The API will first find the conversation ID associated with that profile
   - **Direct Conversation ID**: Skip the profile lookup and access the conversation directly
 - **Parameter Requirements**: Either `linkedin_url` OR `conversation_id` must be provided (not both required)
-- Messages are returned in chronological order (oldest first)
+- Messages are returned in chronological order (recent first)
 - The `timestamp` is in milliseconds since epoch
 - **Pagination Mode vs. Total Results Mode**:
   - **Total Results Mode**: Use the `total_results` parameter to specify how many messages you want (default)
