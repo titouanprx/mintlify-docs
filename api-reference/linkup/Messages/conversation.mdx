@@ -1,10 +1,12 @@
+
 ---
 title: 'Get Conversation Messages'
 api: 'POST /v1/messages/conversation'
 description: 'Retrieve messages from a specific LinkedIn conversation'
 ---
 
-Get detailed messages from a LinkedIn conversation with a specific profile, including message content, timestamps, and sender information.
+Get detailed messages from a LinkedIn conversation using either a LinkedIn profile URL or a direct conversation ID, including message content, timestamps, and sender information.
+
 <Note>
   **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
   - 1-10 results = 1 credit
@@ -20,8 +22,12 @@ Get detailed messages from a LinkedIn conversation with a specific profile, incl
 
 ### Body Parameters
 
-<ParamField body="linkedin_url" type="string" required>
-  URL of the LinkedIn profile to get conversation messages with
+<ParamField body="linkedin_url" type="string">
+  URL of the LinkedIn profile to get conversation messages with. **Required if `conversation_id` is not provided.**
+</ParamField>
+
+<ParamField body="conversation_id" type="string">
+  Direct conversation ID to retrieve messages from. **Required if `linkedin_url` is not provided.**
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
@@ -53,7 +59,7 @@ Get detailed messages from a LinkedIn conversation with a specific profile, incl
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
     <ResponseField name="profile_url" type="string">
-      The LinkedIn profile URL used in the request
+      The LinkedIn profile URL used in the request (only included if provided in request)
     </ResponseField>
 
     <ResponseField name="conversation_id" type="string">
@@ -123,7 +129,7 @@ Get detailed messages from a LinkedIn conversation with a specific profile, incl
 </ResponseField>
 
 <ResponseExample>
-```json Success Response
+```json Success Response - Using LinkedIn URL
 {
   "status": "success",
   "data": {
@@ -164,15 +170,60 @@ Get detailed messages from a LinkedIn conversation with a specific profile, incl
 }
 ```
 
-```json Error Response - No Conversation
+```json Success Response - Using Conversation ID
+{
+  "status": "success",
+  "data": {
+    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:1234567890,12345678)",
+    "total_results": 2,
+    "messages": [
+      {
+        "text": "Hello! Thanks for connecting.",
+        "timestamp": 1679529600000,
+        "sender": "John Doe",
+        "sender_info": {
+          "first_name": "John",
+          "last_name": "Doe"
+        },
+        "message_type": "TEXT",
+        "read_status": "READ"
+      },
+      {
+        "text": "Great to connect with you too!",
+        "timestamp": 1679530500000,
+        "sender": "Jane Smith",
+        "sender_info": {
+          "first_name": "Jane",
+          "last_name": "Smith"
+        },
+        "message_type": "TEXT",
+        "read_status": "READ"
+      }
+    ]
+  }
+}
+```
+
+```json Error Response - Missing Parameters
 {
   "status": "error",
+  "message": "Missing required parameter: either 'conversation_id' or 'linkedin_url' must be provided"
+}
+```
+
+```json Success Response - No Conversation
+{
+  "status": "success",
   "message": "No conversation found with this profile"
 }
 ```
 </ResponseExample>
 
 ### Notes
+- **Two Access Methods**: You can retrieve conversation messages using either:
+  - **LinkedIn Profile URL**: The API will first find the conversation ID associated with that profile
+  - **Direct Conversation ID**: Skip the profile lookup and access the conversation directly
+- **Parameter Requirements**: Either `linkedin_url` OR `conversation_id` must be provided (not both required)
 - Messages are returned in chronological order (oldest first)
 - The `timestamp` is in milliseconds since epoch
 - **Pagination Mode vs. Total Results Mode**:
@@ -181,6 +232,8 @@ Get detailed messages from a LinkedIn conversation with a specific profile, incl
   - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
   - When using pagination mode, `total_results` parameter is ignored
 - Messages per page is fixed at 10
-- The API first retrieves the conversation ID for the specified profile, then fetches the messages
+- When using `linkedin_url`, the API first retrieves the conversation ID for the specified profile, then fetches the messages
+- When using `conversation_id`, the API directly fetches messages from that conversation
 - This endpoint can only retrieve messages with profiles you've already had a conversation with
 - Historical messages may be limited by LinkedIn's data retention policies
+- The `profile_url` field is only included in the response when it was provided in the request
