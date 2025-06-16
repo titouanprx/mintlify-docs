@@ -69,6 +69,22 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
       Number of messages returned
     </ResponseField>
 
+    <ResponseField name="total_other_member_message_count" type="integer">
+      Total number of messages from other conversation participants
+    </ResponseField>
+
+    <ResponseField name="unread_count" type="integer">
+      Number of unread messages in the conversation
+    </ResponseField>
+
+    <ResponseField name="last_seen_message" type="boolean">
+      Indicates if the last message has been seen
+    </ResponseField>
+
+    <ResponseField name="last_seen_at" type="integer">
+      Timestamp when the conversation was last seen (milliseconds since epoch)
+    </ResponseField>
+
     <ResponseField name="messages" type="array">
       <Expandable title="Message Object">
         <ResponseField name="text" type="string">
@@ -96,11 +112,15 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
         </ResponseField>
 
         <ResponseField name="message_type" type="string">
-          Type of message (e.g., "TEXT")
+          Type of message (e.g., "TEXT", "SYSTEM")
+        </ResponseField>
+
+        <ResponseField name="entity_urn" type="string">
+          Unique identifier for the message entity
         </ResponseField>
 
         <ResponseField name="read_status" type="string">
-          Status of the message (e.g., "READ", "UNREAD")
+          Status of the message (e.g., "READ", "UNREAD") - *Note: This field may not always be present*
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -128,77 +148,59 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
 </ResponseField>
 
 <ResponseExample>
+
 ```json Success Response - Using LinkedIn URL
 {
   "status": "success",
   "data": {
-    "profile_url": "https://www.linkedin.com/in/johndoe/",
-    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:1234567890,12345678)",
-    "total_results": 2,
+    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-OTFjNWU3YWMtN2IwNi00ZWUwLWE1YzYtNTg4OGNkMGU2ZGRhXzAxMw==)",
+    "profile_url": "https://www.linkedin.com/in/al%C3%A9s-pr%C3%A9w-aa0262324/",
+    "total_results": 20,
+    "total_other_member_message_count": 32,
+    "unread_count": 0,
+    "last_seen_message": true,
+    "last_seen_at": 1749403535456,
     "messages": [
       {
-        "text": "Hello! Thanks for connecting.",
-        "timestamp": 1679529600000,
-        "sender": "John Doe",
+        "text": "😃",
+        "timestamp": 1745270025236,
+        "sender": "Titouan Prioux",
         "sender_info": {
-          "first_name": "John",
-          "last_name": "Doe"
+          "first_name": "Titouan",
+          "last_name": "Prioux"
         },
         "message_type": "TEXT",
-        "read_status": "READ"
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MTc0NTI3MDAyNTA5MWIzODI1OS0xMDAmOTFjNWU3YWMtN2IwNi00ZWUwLWE1YzYtNTg4OGNkMGU2ZGRhXzAxMw==)"
       },
       {
-        "text": "Great to connect with you too!",
-        "timestamp": 1679530500000,
-        "sender": "Jane Smith",
+        "text": "hello",
+        "timestamp": 1745267779513,
+        "sender": "Alés Préw",
         "sender_info": {
-          "first_name": "Jane",
-          "last_name": "Smith"
+          "first_name": "Alés",
+          "last_name": "Préw"
         },
         "message_type": "TEXT",
-        "read_status": "READ"
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MTc0NTI2Nzc3OTM2MmI3NTkxNS0xMDAmOTFjNWU3YWMtN2IwNi00ZWUwLWE1YzYtNTg4OGNkMGU2ZGRhXzAxMw==)"
+      },
+      {
+        "text": "",
+        "timestamp": 1745266498889,
+        "sender": "Alés Préw",
+        "sender_info": {
+          "first_name": "Alés",
+          "last_name": "Préw"
+        },
+        "message_type": "SYSTEM",
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MTc0NTI2NjQ5ODY1OWI3NDYxOC0xMDAmOTFjNWU3YWMtN2IwNi00ZWUwLWE1YzYtNTg4OGNkMGU2ZGRhXzAxMw==)"
       }
     ],
     "pagination": {
-      "start_page": 1,
-      "end_page": 1,
+      "start_page": 2,
+      "end_page": 3,
       "messages_per_page": 10,
-      "pages_fetched": 1
+      "pages_fetched": 2
     }
-  }
-}
-```
-
-```json Success Response - Using Conversation ID
-{
-  "status": "success",
-  "data": {
-    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:1234567890,12345678)",
-    "total_results": 2,
-    "messages": [
-      {
-        "text": "Hello! Thanks for connecting.",
-        "timestamp": 1679529600000,
-        "sender": "John Doe",
-        "sender_info": {
-          "first_name": "John",
-          "last_name": "Doe"
-        },
-        "message_type": "TEXT",
-        "read_status": "READ"
-      },
-      {
-        "text": "Great to connect with you too!",
-        "timestamp": 1679530500000,
-        "sender": "Jane Smith",
-        "sender_info": {
-          "first_name": "Jane",
-          "last_name": "Smith"
-        },
-        "message_type": "TEXT",
-        "read_status": "READ"
-      }
-    ]
   }
 }
 ```
