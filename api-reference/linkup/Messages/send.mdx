@@ -35,9 +35,6 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
     Click to select a file from your computer. The file will be automatically converted to base64 format with metadata.
   </Note>
 </ParamField>
-<ParamField body="media_path" type="string">
-  Server path to media file (for backwards compatibility, lowest priority)
-</ParamField>
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -71,7 +68,6 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 - **Media Priority**: If multiple media parameters are provided, the system uses this priority order:
   1. `media_link` (direct URL) - highest priority
   2. `media_file` (base64 with metadata) - second priority  
-  3. `media_path` (server path) - lowest priority, for backwards compatibility
 - For `media_file`, the base64 data can include the data URL prefix (e.g., "data:image/jpeg;base64,...")
 - Temporary files created from `media_file` are automatically cleaned up after sending
 - The following errors can occur:
