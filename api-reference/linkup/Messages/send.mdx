@@ -26,11 +26,22 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
-<ParamField body="media_path" type="string">
-  Path to media file to attach to the message
-</ParamField>
 <ParamField body="media_link" type="string">
-  Direct link to media to attach to the message (takes priority over media_path if both provided)
+  Direct URL to media file to attach to the message (highest priority)
+</ParamField>
+<ParamField body="media_file" type="object">
+  Media file in base64 format with metadata (second priority)
+  <Expandable title="media_file structure">
+    <ParamField body="data" type="string" required>
+      Base64 encoded file data (can include data URL prefix like "data:image/jpeg;base64,...")
+    </ParamField>
+    <ParamField body="filename" type="string" required>
+      Original filename of the media file
+    </ParamField>
+  </Expandable>
+</ParamField>
+<ParamField body="media_path" type="string">
+  Server path to media file (for backwards compatibility, lowest priority)
 </ParamField>
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
@@ -62,7 +73,14 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 - The API includes a typing indicator for existing conversations
 - Messages are sent with push notification enabled for the recipient
 - The recipient profile must be accessible with your login token
+- **Media Priority**: If multiple media parameters are provided, the system uses this priority order:
+  1. `media_link` (direct URL) - highest priority
+  2. `media_file` (base64 with metadata) - second priority  
+  3. `media_path` (server path) - lowest priority, for backwards compatibility
+- For `media_file`, the base64 data can include the data URL prefix (e.g., "data:image/jpeg;base64,...")
+- Temporary files created from `media_file` are automatically cleaned up after sending
 - The following errors can occur:
   - Invalid profile URL format
+  - Invalid media_file format or base64 encoding
   - Network or permission errors
   - Rate limiting from LinkedIn
