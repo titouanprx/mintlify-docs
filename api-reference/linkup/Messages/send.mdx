@@ -29,16 +29,11 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 <ParamField body="media_link" type="string">
   Direct URL to media file to attach to the message (highest priority)
 </ParamField>
-<ParamField body="media_file" type="object">
-  Media file in base64 format with metadata (second priority)
-  <Expandable title="media_file structure">
-    <ParamField body="data" type="string" required>
-      Base64 encoded file data (can include data URL prefix like "data:image/jpeg;base64,...")
-    </ParamField>
-    <ParamField body="filename" type="string" required>
-      Original filename of the media file
-    </ParamField>
-  </Expandable>
+<ParamField body="media_file" type="file">
+  Media file to attach to the message (second priority)
+  <Note>
+    Click to select a file from your computer. The file will be automatically converted to base64 format with metadata.
+  </Note>
 </ParamField>
 <ParamField body="media_path" type="string">
   Server path to media file (for backwards compatibility, lowest priority)
