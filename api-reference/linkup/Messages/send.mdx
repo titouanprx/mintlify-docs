@@ -26,6 +26,12 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
 </ParamField>
+<ParamField body="media_path" type="string">
+  Path to media file to attach to the message
+</ParamField>
+<ParamField body="media_link" type="string">
+  Direct link to media to attach to the message (takes priority over media_path if both provided)
+</ParamField>
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
