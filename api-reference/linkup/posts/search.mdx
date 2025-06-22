@@ -42,7 +42,15 @@ Search and extract LinkedIn posts with advanced filtering options including post
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of posts to retrieve
+  Number of posts to retrieve (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  First page to fetch when using pagination mode (default: 1)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Last page to fetch when using pagination mode (default: same as start_page)
 </ParamField>
 
 <ParamField body="login_token" type="string" required>
@@ -61,6 +69,26 @@ Search and extract LinkedIn posts with advanced filtering options including post
       Number of posts returned
     </ResponseField>
 
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          First page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Last page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page (typically 50)
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Total number of pages fetched in the current request
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
     <ResponseField name="posts" type="array">
       <Expandable title="Post Object">
         <ResponseField name="shareAudience" type="string">
@@ -73,6 +101,10 @@ Search and extract LinkedIn posts with advanced filtering options including post
 
         <ResponseField name="text" type="string">
           Content of the post
+        </ResponseField>
+
+        <ResponseField name="created_time" type="string">
+          Timestamp when the post was created
         </ResponseField>
 
         <ResponseField name="numLikes" type="integer">
@@ -117,11 +149,18 @@ Search and extract LinkedIn posts with advanced filtering options including post
   "status": "success",
   "data": {
     "total_results": 1,
+          "pagination": {
+        "start_page": 1,
+        "end_page": 1,
+        "results_per_page": 50,
+        "pages_fetched": 1
+      },
     "posts": [
       {
         "shareAudience": "PUBLIC",
         "shareUrl": "https://www.linkedin.com/posts/user_post-activity-123",
         "text": "Example post content",
+        "created_time": "2023-04-01T12:00:00",
         "numLikes": 50,
         "numComments": 10,
         "numShares": 5,
@@ -145,6 +184,12 @@ Search and extract LinkedIn posts with advanced filtering options including post
 - Text content has special characters normalized
 - Social metrics (likes, comments, shares) are included when available
 - Post visibility information is included
+- Results are paginated with a maximum of 50 posts per page
+- **Pagination Mode vs. Total Results Mode**:
+  - **Total Results Mode**: Use the `total_results` parameter to specify how many posts you want (default)
+  - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
+  - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
+  - When using pagination mode, `total_results` parameter is ignored
 - The API supports:
   - Multiple filtering options
   - Custom sort orders
