@@ -24,7 +24,15 @@ Get a detailed list of reactions on a LinkedIn post, including information about
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of reactions to retrieve
+  Number of reactions to retrieve (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  First page to fetch when using pagination mode (default: 1)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Last page to fetch when using pagination mode (default: same as start_page)
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -44,7 +52,11 @@ Get a detailed list of reactions on a LinkedIn post, including information about
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
     <ResponseField name="total_results" type="integer">
-      Number of reactions returned
+      Number of reactions returned in this response
+    </ResponseField>
+
+    <ResponseField name="total_available_results" type="integer">
+      Total number of reactions available on the post
     </ResponseField>
 
     <ResponseField name="reactions" type="array">
@@ -82,6 +94,26 @@ Get a detailed list of reactions on a LinkedIn post, including information about
         </ResponseField>
       </Expandable>
     </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="start_page" type="integer">
+          First page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Last page fetched in the current request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page (typically 50)
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Total number of pages fetched in the current request
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -91,6 +123,7 @@ Get a detailed list of reactions on a LinkedIn post, including information about
   "status": "success",
   "data": {
     "total_results": 1,
+    "total_available_results": 245,
     "reactions": [
     {
       "type": "INTEREST",
@@ -99,7 +132,13 @@ Get a detailed list of reactions on a LinkedIn post, including information about
       "profile_url": "https://www.linkedin.com/in/benjamindesole",
       "actor_urn": "urn:li:fsd_profile:ACoAABkYZhcBzP8mTsQ-sZMN49Y6DtxSTZTGabg"
     }  
-  ]
+  ],
+    "pagination": {
+      "start_page": 1,
+      "end_page": 1,
+      "results_per_page": 50,
+      "pages_fetched": 1
+    }
   }
 }
 
@@ -112,9 +151,15 @@ Get a detailed list of reactions on a LinkedIn post, including information about
 - The API supports two post URL formats:
   - Feed updates: `https://www.linkedin.com/feed/update/urn:li:activity:...`
   - share url: `https://www.linkedin.com/posts/..`
-- Results are returned in batches with a default limit of 10 reactions per request
+- Results are paginated with a maximum of 50 reactions per page
 - The profile picture URL may be null if not available or if the user has no profile picture
 - Connection degree shows your network relationship with the reactor (1st, 2nd, or 3rd degree connection)
+- **Pagination Mode vs. Total Results Mode**:
+  - **Total Results Mode**: Use the `total_results` parameter to specify how many reactions you want (default)
+  - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
+  - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
+  - When using pagination mode, `total_results` parameter is ignored
+- The `total_available_results` field shows the total number of reactions available on the post
 - Some reaction information may be limited based on:
   - Your connection level with the reactor
   - The reactor's privacy settings
