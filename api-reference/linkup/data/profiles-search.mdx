@@ -6,7 +6,7 @@ description: "Search LinkedIn profiles with multiple criteria"
 
 ## Description
 
-This endpoint allows you to search LinkedIn profiles using different search criteria. It uses Google Search to identify LinkedIn profiles matching the specified criteria.
+This endpoint allows you to search LinkedIn profiles using different search criteria.
 
 ## Headers
 
@@ -16,28 +16,46 @@ This endpoint allows you to search LinkedIn profiles using different search crit
 
 ## Body Parameters
 
-<ParamField body="keyword" type="string">
-  Main search keyword (name, position, skills, etc.)
+<ParamField body="keyword" type="string | array">
+  Main search keyword(s) (name, position, skills, etc.)
+  
+  Can be a single string or an array of strings for batch searching
 </ParamField>
 
-<ParamField body="job_title" type="string">
-  Job title to search for
+<ParamField body="keywords" type="array">
+  Alternative parameter for providing multiple keywords as an array
+  
+  Alias for `keyword` when using multiple search terms
 </ParamField>
 
-<ParamField body="industry" type="string">
-  Industry sector
+<ParamField body="job_title" type="string | array">
+  Job title(s) to search for
+  
+  Can be a single string or an array of job titles
 </ParamField>
 
-<ParamField body="school" type="string">
-  School or university
+<ParamField body="industry" type="string | array">
+  Industry sector(s)
+  
+  Can be a single string or an array of industries (e.g., ["technology", "finance", "healthcare"])
 </ParamField>
 
-<ParamField body="location" type="string">
-  Location (city, region, country)
+<ParamField body="school" type="string | array">
+  School(s) or university(ies)
+  
+  Can be a single string or an array of educational institutions
 </ParamField>
 
-<ParamField body="current_company" type="string">
-  Current company
+<ParamField body="location" type="string | array">
+  Location(s) (city, region, country)
+  
+  Can be a single string or an array of locations (e.g., ["Paris", "Lyon", "Marseille"])
+</ParamField>
+
+<ParamField body="current_company" type="string | array">
+  Current company(ies)
+  
+  Can be a single string or an array of company names
 </ParamField>
 
 <ParamField body="num_results" type="integer" default="10">
@@ -50,6 +68,13 @@ This endpoint allows you to search LinkedIn profiles using different search crit
 
 <ParamField body="country" type="string" default="FR">
   Country code for proxy (e.g., "FR", "US", "GB")
+</ParamField>
+
+<ParamField body="search_mode" type="string" default="single">
+  Search mode type
+  
+  - "single": Single search with advanced filters (default)
+  - "batch": Parallel search for multiple keywords
 </ParamField>
 
 <Note>
@@ -97,9 +122,24 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
   "job_title": "Software Engineer",
   "industry": "Technology",
   "location": "Paris",
-  "current_company": "Google",
+  "current_company": "Microsoft",
   "num_results": 15,
   "country": "FR"
+}
+```
+
+## Request Example with Arrays
+
+```json
+{
+  "keywords": ["developer", "engineer", "programmer"],
+  "job_title": ["Software Engineer", "Frontend Developer"],
+  "industry": ["Technology", "Finance"],
+  "location": ["Paris", "Lyon", "Marseille"],
+  "current_company": ["Microsoft", "Google", "Apple"],
+  "num_results": 20,
+  "country": "FR",
+  "search_mode": "batch"
 }
 ```
 
@@ -177,10 +217,35 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 }
 ```
 
+### Batch search with multiple keywords
+```json
+{
+  "keywords": ["data scientist", "machine learning engineer", "AI researcher"],
+  "location": ["Paris", "Lyon"],
+  "industry": ["Technology", "Healthcare"],
+  "search_mode": "batch",
+  "num_results": 50
+}
+```
+
+### Advanced search with multiple criteria
+```json
+{
+  "job_title": ["Software Engineer", "Full Stack Developer"],
+  "current_company": ["Google", "Microsoft", "Apple"],
+  "location": ["Paris", "London", "Berlin"],
+  "industry": "Technology",
+  "num_results": 40
+}
+```
+
 ## Important Notes
 
-- Each successful search consumes 1 credit
+- Each successful search consumes 1 credit (single mode) or 1 credit per keyword (batch mode)
 - Credits are only deducted on successful searches
 - The endpoint uses an automatic retry system for proxy errors
-- The more criteria you provide, the more precise the search will be
-- Combining multiple criteria improves result quality 
+- **Single mode**: The more criteria you provide, the more precise the search will be
+- **Batch mode**: When using multiple keywords or `search_mode: "batch"`, searches are executed in parallel
+- Combining multiple criteria improves result quality
+- All search parameters support both single strings and arrays for flexible searching
+- Use `keywords` parameter or `keyword` as array for batch searching multiple terms simultaneously 
