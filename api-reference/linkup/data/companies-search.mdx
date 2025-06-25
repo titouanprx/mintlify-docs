@@ -19,14 +19,9 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 <ParamField body="keyword" type="string | array" required>
   Keyword(s) to search for (company name, industry, etc.)
   
-  Can be a single string or an array of strings for batch searching.
-  Can also be provided as `company_name` for backward compatibility
-</ParamField>
-
-<ParamField body="keywords" type="array">
-  Alternative parameter for providing multiple keywords as an array
-  
-  Alias for `keyword` when using multiple search terms
+  - Single string: Performs advanced search with filters
+  - Array of strings: Automatically switches to batch mode for parallel searching
+  - Also supports `company_name` for backward compatibility
 </ParamField>
 
 <ParamField body="industry" type="string | array">
@@ -74,13 +69,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 <ParamField body="country" type="string" default="FR">
   Country code for proxy (e.g., "FR", "US", "GB")
-</ParamField>
-
-<ParamField body="search_mode" type="string" default="single">
-  Search mode type
-  
-  - "single": Single search with advanced filters (default)
-  - "batch": Parallel search for multiple keywords
 </ParamField>
 
 ## Response
@@ -137,14 +125,13 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 ```json
 {
-  "keywords": ["technology", "fintech", "startup"],
+  "keyword": ["technology", "fintech", "startup"],
   "industry": ["technology", "finance", "healthcare"],
   "location": ["Paris", "Lyon", "Bordeaux"],
   "company_size": "medium",
   "employee_range": "51-200",
   "num_results": 30,
-  "country": "FR",
-  "search_mode": "batch"
+  "country": "FR"
 }
 ```
 
@@ -204,15 +191,15 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 ## Important Notes
 
-- Each successful search consumes 1 credit (single mode) or 1 credit per keyword (batch mode)
+- Each successful search consumes 1 credit (single keyword) or 1 credit per keyword (multiple keywords)
 - Credits are only deducted on successful searches
 - The endpoint uses an automatic retry system for proxy errors
 - The `company_name` parameter is supported for backward compatibility with `keyword`
-- **Single mode**: All filter parameters are optional - you can combine multiple filters for more precise results
-- **Batch mode**: When using multiple keywords or `search_mode: "batch"`, searches are executed in parallel
+- **Single keyword**: Advanced search with optional filters for precise results
+- **Multiple keywords**: Automatically activates batch mode for parallel searching
 - The `founding_year` parameter must be between 1800 and 2024
 - Most search parameters support both single strings and arrays for flexible searching
-- Use `keywords` parameter or `keyword` as array for batch searching multiple terms simultaneously
+- When using multiple keywords, batch mode is automatically activated for optimal performance
 
 ## Usage Examples
 
@@ -249,10 +236,9 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ### Batch search with multiple keywords
 ```json
 {
-  "keywords": ["fintech", "blockchain", "cryptocurrency"],
+  "keyword": ["fintech", "blockchain", "cryptocurrency"],
   "industry": ["Finance", "Technology"],
   "location": ["New York", "San Francisco", "London"],
-  "search_mode": "batch",
   "num_results": 100
 }
 ```

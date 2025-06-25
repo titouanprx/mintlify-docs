@@ -19,13 +19,8 @@ This endpoint allows you to search LinkedIn profiles using different search crit
 <ParamField body="keyword" type="string | array">
   Main search keyword(s) (name, position, skills, etc.)
   
-  Can be a single string or an array of strings for batch searching
-</ParamField>
-
-<ParamField body="keywords" type="array">
-  Alternative parameter for providing multiple keywords as an array
-  
-  Alias for `keyword` when using multiple search terms
+  - Single string: Performs advanced search with filters
+  - Array of strings: Automatically switches to batch mode for parallel searching
 </ParamField>
 
 <ParamField body="job_title" type="string | array">
@@ -68,13 +63,6 @@ This endpoint allows you to search LinkedIn profiles using different search crit
 
 <ParamField body="country" type="string" default="FR">
   Country code for proxy (e.g., "FR", "US", "GB")
-</ParamField>
-
-<ParamField body="search_mode" type="string" default="single">
-  Search mode type
-  
-  - "single": Single search with advanced filters (default)
-  - "batch": Parallel search for multiple keywords
 </ParamField>
 
 <Note>
@@ -132,14 +120,13 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 
 ```json
 {
-  "keywords": ["developer", "engineer", "programmer"],
+  "keyword": ["developer", "engineer", "programmer"],
   "job_title": ["Software Engineer", "Frontend Developer"],
   "industry": ["Technology", "Finance"],
   "location": ["Paris", "Lyon", "Marseille"],
   "current_company": ["Microsoft", "Google", "Apple"],
   "num_results": 20,
-  "country": "FR",
-  "search_mode": "batch"
+  "country": "FR"
 }
 ```
 
@@ -220,10 +207,9 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 ### Batch search with multiple keywords
 ```json
 {
-  "keywords": ["data scientist", "machine learning engineer", "AI researcher"],
+  "keyword": ["data scientist", "machine learning engineer", "AI researcher"],
   "location": ["Paris", "Lyon"],
   "industry": ["Technology", "Healthcare"],
-  "search_mode": "batch",
   "num_results": 50
 }
 ```
@@ -241,11 +227,11 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 
 ## Important Notes
 
-- Each successful search consumes 1 credit (single mode) or 1 credit per keyword (batch mode)
+- Each successful search consumes 1 credit (single keyword) or 1 credit per keyword (multiple keywords)
 - Credits are only deducted on successful searches
 - The endpoint uses an automatic retry system for proxy errors
-- **Single mode**: The more criteria you provide, the more precise the search will be
-- **Batch mode**: When using multiple keywords or `search_mode: "batch"`, searches are executed in parallel
+- **Single keyword**: Advanced search with optional filters for precise results
+- **Multiple keywords**: Automatically activates batch mode for parallel searching
 - Combining multiple criteria improves result quality
 - All search parameters support both single strings and arrays for flexible searching
-- Use `keywords` parameter or `keyword` as array for batch searching multiple terms simultaneously 
+- When using multiple keywords, batch mode is automatically activated for optimal performance 
