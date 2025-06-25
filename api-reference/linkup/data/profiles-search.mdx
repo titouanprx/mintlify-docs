@@ -64,38 +64,6 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 
 <ResponseField name="data" type="object">
   <Expandable title="Response Data">
-    <ResponseField name="search_criteria" type="object">
-      The search criteria used
-      <Expandable title="Criteria Structure">
-        <ResponseField name="keyword" type="string">
-          Keyword used
-        </ResponseField>
-        <ResponseField name="job_title" type="string">
-          Job title
-        </ResponseField>
-        <ResponseField name="industry" type="string">
-          Industry sector
-        </ResponseField>
-        <ResponseField name="school" type="string">
-          School/university
-        </ResponseField>
-        <ResponseField name="location" type="string">
-          Location
-        </ResponseField>
-        <ResponseField name="current_company" type="string">
-          Current company
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-    
-    <ResponseField name="query_used" type="string">
-      The generated Google Search query
-    </ResponseField>
-    
-    <ResponseField name="total_available" type="integer">
-      Total number of available results
-    </ResponseField>
-    
     <ResponseField name="results_returned" type="integer">
       Number of results returned in this response
     </ResponseField>
@@ -103,29 +71,14 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
     <ResponseField name="profiles" type="array">
       List of found profiles
       <Expandable title="Profile Structure">
-        <ResponseField name="name" type="string">
-          Person's full name
-        </ResponseField>
-        <ResponseField name="linkedin_url" type="string">
+        <ResponseField name="url" type="string">
           LinkedIn profile URL
         </ResponseField>
         <ResponseField name="title" type="string">
-          Current title/position
-        </ResponseField>
-        <ResponseField name="company" type="string">
-          Current company
-        </ResponseField>
-        <ResponseField name="location" type="string">
-          Location
+          Profile title/name from LinkedIn
         </ResponseField>
         <ResponseField name="description" type="string">
           Profile description/summary
-        </ResponseField>
-        <ResponseField name="experience" type="string">
-          Professional experience
-        </ResponseField>
-        <ResponseField name="education" type="string">
-          Education/training
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -157,17 +110,22 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 {
   "status": "success",
   "data": {
-    "results_returned": 15,
+    "results_returned": 10,
     "profiles": [
       {
-        "name": "John Doe",
-        "linkedin_url": "https://linkedin.com/in/john-doe",
-        "title": "Senior Software Engineer",
-        "company": "Google",
-        "location": "Paris, France",
-        "description": "Full-stack developer passionate about new technologies",
-        "experience": "5+ years in software development",
-        "education": "Stanford University"
+        "url": "https://www.linkedin.com/in/johnperez",
+        "title": "John M P. - CRM Experts Online - LinkedIn",
+        "description": "As the founder of CRM Experts Online, I leverage my 19+ years of experience in enterprise… · Experience: CRM Experts Online · Education: New York College Of ..."
+      },
+      {
+        "url": "https://www.linkedin.com/in/brentleary",
+        "title": "Brent Leary - CRM Essentials - LinkedIn",
+        "description": "Brent Leary is Co-founder and Partner of CRM Essentials LLC, a CRM consulting/advisory… · Experience: CRM Essentials · Location: Stockbridge · 500+ ..."
+      },
+      {
+        "url": "https://www.linkedin.com/in/jsrosenth",
+        "title": "Jeff Rosenthal - Head of CRM GTM, North America - monday.com",
+        "description": "I lead GTM for an emerging portfolio of CRM & AI products at monday.com. Deep expertise in CRM & AI GTM as a trusted advisor to global go to market, sales, ..."
       }
     ]
   }

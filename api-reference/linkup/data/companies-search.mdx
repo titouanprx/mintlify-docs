@@ -80,23 +80,14 @@ This endpoint allows you to search LinkedIn company pages using various advanced
     <ResponseField name="companies" type="array">
       List of found companies
       <Expandable title="Company Structure">
-        <ResponseField name="name" type="string">
-          Company name
-        </ResponseField>
-        <ResponseField name="linkedin_url" type="string">
+        <ResponseField name="url" type="string">
           Company LinkedIn profile URL
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Company title/name from LinkedIn
         </ResponseField>
         <ResponseField name="description" type="string">
           Company description
-        </ResponseField>
-        <ResponseField name="industry" type="string">
-          Industry sector
-        </ResponseField>
-        <ResponseField name="location" type="string">
-          Company location
-        </ResponseField>
-        <ResponseField name="employee_count" type="string">
-          Number of employees
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -130,19 +121,26 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ```json
 {
   "status": "success",
-    "data": {
-      "results_returned": 20,
-      "companies": [
-        {
-          "name": "TechCorp",
-          "linkedin_url": "https://linkedin.com/company/techcorp",
-          "description": "Innovative technology company",
-          "industry": "Technology",
-          "location": "Paris, France",
-          "employee_count": "51-200"
-        }
-      ]
-    }
+  "data": {
+    "results_returned": 10,
+    "companies": [
+      {
+        "url": "https://uk.linkedin.com/company/crm.com",
+        "title": "CRM.COM - LinkedIn",
+        "description": "CRM.COM is a global specialist in designing and developing commerce, fintech and subscription-based solutions, ideal for the new generation digital consumers."
+      },
+      {
+        "url": "https://www.linkedin.com/company/recruitcrm",
+        "title": "Recruit CRM - LinkedIn",
+        "description": "Recruit CRM builds cloud-based software for the global Recruitment & Staffing industry. We are on a mission to help recruitment firms grow faster with cutting ..."
+      },
+      {
+        "url": "https://www.linkedin.com/company/aesthetix-crm",
+        "title": "Aesthetix CRM - LinkedIn",
+        "description": "The #1 CRM platform for plastic surgeons and medical spas. Aesthetix CRM gives your practice access to all the tools you need to grow."
+      }
+    ]
+  }
 }
 ```
 </ResponseExample>
