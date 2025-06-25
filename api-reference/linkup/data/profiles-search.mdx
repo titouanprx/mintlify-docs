@@ -1,0 +1,237 @@
+---
+title: "Search Profiles"
+api: "POST /data/profile/search"
+description: "Recherche de profils LinkedIn avec critères multiples"
+---
+
+## Description
+
+Cet endpoint permet de rechercher des profils LinkedIn en utilisant différents critères de recherche. Il utilise Google Search pour identifier les profils LinkedIn correspondant aux critères spécifiés.
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API pour l'authentification
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="keyword" type="string">
+  Mot-clé principal de recherche (nom, poste, compétences, etc.)
+</ParamField>
+
+<ParamField body="job_title" type="string">
+  Intitulé du poste recherché
+</ParamField>
+
+<ParamField body="industry" type="string">
+  Secteur d'activité
+</ParamField>
+
+<ParamField body="school" type="string">
+  École ou université
+</ParamField>
+
+<ParamField body="location" type="string">
+  Localisation (ville, région, pays)
+</ParamField>
+
+<ParamField body="current_company" type="string">
+  Entreprise actuelle
+</ParamField>
+
+<ParamField body="num_results" type="integer" default="10">
+  Nombre de résultats à retourner
+  
+  - Minimum: 1
+  - Maximum: 50,000
+  - Défaut: 10
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Code pays pour le proxy (ex: "FR", "US", "GB")
+</ParamField>
+
+<Note>
+Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title`, `industry`, `school`, `location`, ou `current_company`.
+</Note>
+
+## Response
+
+<ResponseField name="status" type="string">
+  Statut de la réponse ("success" ou "error")
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Données de réponse">
+    <ResponseField name="search_criteria" type="object">
+      Les critères de recherche utilisés
+      <Expandable title="Structure des critères">
+        <ResponseField name="keyword" type="string">
+          Mot-clé utilisé
+        </ResponseField>
+        <ResponseField name="job_title" type="string">
+          Intitulé du poste
+        </ResponseField>
+        <ResponseField name="industry" type="string">
+          Secteur d'activité
+        </ResponseField>
+        <ResponseField name="school" type="string">
+          École/université
+        </ResponseField>
+        <ResponseField name="location" type="string">
+          Localisation
+        </ResponseField>
+        <ResponseField name="current_company" type="string">
+          Entreprise actuelle
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="query_used" type="string">
+      La requête Google Search générée
+    </ResponseField>
+    
+    <ResponseField name="total_available" type="integer">
+      Nombre total de résultats disponibles
+    </ResponseField>
+    
+    <ResponseField name="results_returned" type="integer">
+      Nombre de résultats retournés dans cette réponse
+    </ResponseField>
+    
+    <ResponseField name="profiles" type="array">
+      Liste des profils trouvés
+      <Expandable title="Structure d'un profil">
+        <ResponseField name="name" type="string">
+          Nom complet de la personne
+        </ResponseField>
+        <ResponseField name="linkedin_url" type="string">
+          URL du profil LinkedIn
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Titre/poste actuel
+        </ResponseField>
+        <ResponseField name="company" type="string">
+          Entreprise actuelle
+        </ResponseField>
+        <ResponseField name="location" type="string">
+          Localisation
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Description/résumé du profil
+        </ResponseField>
+        <ResponseField name="experience" type="string">
+          Expérience professionnelle
+        </ResponseField>
+        <ResponseField name="education" type="string">
+          Formation/éducation
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Message d'erreur (si status = "error")
+</ResponseField>
+
+## Exemple de requête
+
+```json
+{
+  "keyword": "développeur",
+  "job_title": "Software Engineer",
+  "industry": "Technology",
+  "location": "Paris",
+  "current_company": "Google",
+  "num_results": 15,
+  "country": "FR"
+}
+```
+
+## Exemple de réponse
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "data": {
+    "search_criteria": {
+      "keyword": "développeur",
+      "job_title": "Software Engineer",
+      "industry": "Technology",
+      "location": "Paris",
+      "current_company": "Google"
+    },
+    "query_used": "site:linkedin.com/in/ développeur \"Software Engineer\" Technology Paris Google",
+    "total_available": 89,
+    "results_returned": 15,
+    "profiles": [
+      {
+        "name": "Jean Dupont",
+        "linkedin_url": "https://linkedin.com/in/jean-dupont",
+        "title": "Senior Software Engineer",
+        "company": "Google",
+        "location": "Paris, France",
+        "description": "Développeur full-stack passionné par les nouvelles technologies",
+        "experience": "5+ years in software development",
+        "education": "École Polytechnique"
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+## Codes d'erreur
+
+<ResponseExample>
+```json
+{
+  "status": "error",
+  "message": "At least one search criteria must be provided"
+}
+```
+</ResponseExample>
+
+- **400**: Paramètres invalides ou aucun critère de recherche fourni
+- **401**: Clé API invalide ou crédits insuffisants
+- **500**: Erreur serveur lors du traitement de la requête
+
+## Exemples d'utilisation
+
+### Recherche par poste et localisation
+```json
+{
+  "job_title": "Data Scientist",
+  "location": "Lyon",
+  "num_results": 10
+}
+```
+
+### Recherche par école et secteur
+```json
+{
+  "school": "HEC Paris",
+  "industry": "Finance",
+  "num_results": 20
+}
+```
+
+### Recherche par entreprise et mot-clé
+```json
+{
+  "current_company": "Microsoft",
+  "keyword": "intelligence artificielle",
+  "num_results": 25
+}
+```
+
+## Notes importantes
+
+- Chaque recherche réussie consomme 1 crédit
+- Les crédits ne sont décomptés qu'en cas de succès de la recherche
+- L'endpoint utilise un système de retry automatique en cas d'erreur de proxy
+- Plus vous fournissez de critères, plus la recherche sera précise
+- La combinaison de plusieurs critères améliore la qualité des résultats 

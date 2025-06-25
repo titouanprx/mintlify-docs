@@ -63,6 +63,13 @@
       ]
     },
     {
+      "group": "Data",
+      "pages": [
+        "api-reference/linkup/data/companies-search",
+        "api-reference/linkup/data/profiles-search"
+      ]
+    },
+    {
       "group": "Companies",
       "pages": [
         "api-reference/linkup/Companies/search",

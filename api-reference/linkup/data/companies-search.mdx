@@ -1,0 +1,212 @@
+---
+title: "Search Companies"
+api: "POST /data/search/companies"
+description: "Recherche de pages d'entreprises LinkedIn avec filtres avancés"
+---
+
+## Description
+
+Cet endpoint permet de rechercher des pages d'entreprises LinkedIn en utilisant divers critères de filtrage avancés. Il utilise Google Search pour identifier les profils d'entreprises LinkedIn correspondant aux critères spécifiés.
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Votre clé API pour l'authentification
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="keyword" type="string" required>
+  Mot-clé à rechercher (nom d'entreprise, secteur, etc.)
+  
+  Peut aussi être fourni comme `company_name` pour la rétrocompatibilité
+</ParamField>
+
+<ParamField body="num_results" type="integer" default="10">
+  Nombre de résultats à retourner
+  
+  - Minimum: 1
+  - Maximum: 50,000
+  - Défaut: 10
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Code pays pour le proxy (ex: "FR", "US", "GB")
+</ParamField>
+
+<ParamField body="filters" type="object">
+  Filtres avancés pour affiner la recherche
+  
+  <Expandable title="Structure des filtres">
+    <ParamField body="filters.industry" type="object">
+      Secteur d'activité
+      - `names`: Liste des secteurs à inclure
+      - `exclude`: Liste des secteurs à exclure
+    </ParamField>
+    
+    <ParamField body="filters.location" type="object">
+      Localisation de l'entreprise
+      - `city`: Ville
+      - `region`: Région
+      - `country`: Pays
+    </ParamField>
+    
+    <ParamField body="filters.company_size" type="object">
+      Taille de l'entreprise
+      - `ranges`: Plages de taille d'entreprise
+      - `employee_count`: Nombre d'employés spécifique
+    </ParamField>
+    
+    <ParamField body="filters.funding" type="object">
+      Informations de financement
+      - `funding_stage`: Étape de financement (seed, series_a, series_b, series_c)
+    </ParamField>
+    
+    <ParamField body="filters.founding_date" type="object">
+      Date de création
+      - `year`: Année de création
+      - `year_range`: Plage d'années
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="status" type="string">
+  Statut de la réponse ("success" ou "error")
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Données de réponse">
+    <ResponseField name="keyword_searched" type="string">
+      Le mot-clé utilisé pour la recherche
+    </ResponseField>
+    
+    <ResponseField name="filters_applied" type="object">
+      Les filtres appliqués à la recherche
+    </ResponseField>
+    
+    <ResponseField name="query_used" type="string">
+      La requête Google Search générée
+    </ResponseField>
+    
+    <ResponseField name="total_available" type="integer">
+      Nombre total de résultats disponibles
+    </ResponseField>
+    
+    <ResponseField name="results_returned" type="integer">
+      Nombre de résultats retournés dans cette réponse
+    </ResponseField>
+    
+    <ResponseField name="companies" type="array">
+      Liste des entreprises trouvées
+      <Expandable title="Structure d'une entreprise">
+        <ResponseField name="name" type="string">
+          Nom de l'entreprise
+        </ResponseField>
+        <ResponseField name="linkedin_url" type="string">
+          URL du profil LinkedIn de l'entreprise
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Description de l'entreprise
+        </ResponseField>
+        <ResponseField name="industry" type="string">
+          Secteur d'activité
+        </ResponseField>
+        <ResponseField name="location" type="string">
+          Localisation de l'entreprise
+        </ResponseField>
+        <ResponseField name="employee_count" type="string">
+          Nombre d'employés
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Message d'erreur (si status = "error")
+</ResponseField>
+
+## Exemple de requête
+
+```json
+{
+  "keyword": "technologie",
+  "num_results": 20,
+  "country": "FR",
+  "filters": {
+    "industry": {
+      "names": ["technology", "software"],
+      "exclude": ["consulting"]
+    },
+    "location": {
+      "city": "Paris",
+      "country": "France"
+    },
+    "company_size": {
+      "ranges": ["11-50", "51-200"]
+    },
+    "funding": {
+      "funding_stage": "series_a"
+    }
+  }
+}
+```
+
+## Exemple de réponse
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "data": {
+    "keyword_searched": "technologie",
+    "filters_applied": {
+      "industry": {
+        "names": ["technology", "software"]
+      },
+      "location": {
+        "city": "Paris",
+        "country": "France"
+      }
+    },
+    "query_used": "site:linkedin.com/company/ technologie Paris France technology OR software",
+    "total_available": 150,
+    "results_returned": 20,
+    "companies": [
+      {
+        "name": "TechCorp",
+        "linkedin_url": "https://linkedin.com/company/techcorp",
+        "description": "Entreprise de technologie innovante",
+        "industry": "Technology",
+        "location": "Paris, France",
+        "employee_count": "11-50"
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+## Codes d'erreur
+
+<ResponseExample>
+```json
+{
+  "status": "error",
+  "message": "keyword (or company_name) is required"
+}
+```
+</ResponseExample>
+
+- **400**: Paramètres invalides ou manquants
+- **401**: Clé API invalide ou crédits insuffisants
+- **500**: Erreur serveur lors du traitement de la requête
+
+## Notes importantes
+
+- Chaque recherche réussie consomme 1 crédit
+- Les crédits ne sont décomptés qu'en cas de succès de la recherche
+- L'endpoint utilise un système de retry automatique en cas d'erreur de proxy
+- Le paramètre `company_name` est supporté pour la rétrocompatibilité avec `keyword` 
