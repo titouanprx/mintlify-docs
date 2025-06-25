@@ -22,6 +22,37 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   Can also be provided as `company_name` for backward compatibility
 </ParamField>
 
+<ParamField body="industry" type="string">
+  Industry sector (e.g., "technology", "finance", "healthcare")
+</ParamField>
+
+<ParamField body="location" type="string">
+  Location (e.g., "Paris", "France", "New York")
+</ParamField>
+
+<ParamField body="company_size" type="string">
+  Company size category (e.g., "startup", "small", "medium", "large", "enterprise")
+</ParamField>
+
+<ParamField body="employee_range" type="string">
+  Employee count range (e.g., "1-50", "51-200", "201-1000", "1000+")
+</ParamField>
+
+<ParamField body="funding_stage" type="string">
+  Funding stage (e.g., "seed", "series_a", "series_b", "series_c", "ipo")
+</ParamField>
+
+<ParamField body="founding_year" type="integer">
+  Founding year (e.g., 2020)
+  
+  - Minimum: 1800
+  - Maximum: 2024
+</ParamField>
+
+<ParamField body="founding_period" type="string">
+  Founding period category (e.g., "startup", "recent", "established", "legacy")
+</ParamField>
+
 <ParamField body="num_results" type="integer" default="10">
   Number of results to return
   
@@ -34,42 +65,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   Country code for proxy (e.g., "FR", "US", "GB")
 </ParamField>
 
-<ParamField body="filters" type="object">
-  Advanced filters to refine the search
-  
-  <Expandable title="Filter Structure">
-    <ParamField body="filters.industry" type="object">
-      Industry sector
-      - `names`: List of industries to include
-      - `exclude`: List of industries to exclude
-    </ParamField>
-    
-    <ParamField body="filters.location" type="object">
-      Company location
-      - `city`: City
-      - `region`: Region
-      - `country`: Country
-    </ParamField>
-    
-    <ParamField body="filters.company_size" type="object">
-      Company size
-      - `ranges`: Company size ranges
-      - `employee_count`: Specific employee count
-    </ParamField>
-    
-    <ParamField body="filters.funding" type="object">
-      Funding information
-      - `funding_stage`: Funding stage (seed, series_a, series_b, series_c)
-    </ParamField>
-    
-    <ParamField body="filters.founding_date" type="object">
-      Founding date
-      - `year`: Founding year
-      - `year_range`: Year range
-    </ParamField>
-  </Expandable>
-</ParamField>
-
 ## Response
 
 <ResponseField name="status" type="string">
@@ -78,22 +73,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 <ResponseField name="data" type="object">
   <Expandable title="Response Data">
-    <ResponseField name="keyword_searched" type="string">
-      The keyword used for the search
-    </ResponseField>
-    
-    <ResponseField name="filters_applied" type="object">
-      The filters applied to the search
-    </ResponseField>
-    
-    <ResponseField name="query_used" type="string">
-      The generated Google Search query
-    </ResponseField>
-    
-    <ResponseField name="total_available" type="integer">
-      Total number of available results
-    </ResponseField>
-    
     <ResponseField name="results_returned" type="integer">
       Number of results returned in this response
     </ResponseField>
@@ -133,24 +112,15 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ```json
 {
   "keyword": "technology",
+  "industry": "technology",
+  "location": "Paris",
+  "company_size": "medium",
+  "employee_range": "51-200",
+  "funding_stage": "series_a",
+  "founding_year": 2020,
+  "founding_period": "recent",
   "num_results": 20,
-  "country": "FR",
-  "filters": {
-    "industry": {
-      "names": ["technology", "software"],
-      "exclude": ["consulting"]
-    },
-    "location": {
-      "city": "Paris",
-      "country": "France"
-    },
-    "company_size": {
-      "ranges": ["11-50", "51-200"]
-    },
-    "funding": {
-      "funding_stage": "series_a"
-    }
-  }
+  "country": "FR"
 }
 ```
 
@@ -160,20 +130,19 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ```json
 {
   "status": "success",
-  "data": 
-    {
-    "results_returned": 20,
-    "companies": [
-      {
-        "name": "TechCorp",
-        "linkedin_url": "https://linkedin.com/company/techcorp",
-        "description": "Innovative technology company",
-        "industry": "Technology",
-        "location": "Paris, France",
-        "employee_count": "11-50"
-      }
-    ]
-  }
+    "data": {
+      "results_returned": 20,
+      "companies": [
+        {
+          "name": "TechCorp",
+          "linkedin_url": "https://linkedin.com/company/techcorp",
+          "description": "Innovative technology company",
+          "industry": "Technology",
+          "location": "Paris, France",
+          "employee_count": "51-200"
+        }
+      ]
+    }
 }
 ```
 </ResponseExample>
@@ -189,6 +158,15 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ```
 </ResponseExample>
 
+<ResponseExample>
+```json
+{
+  "status": "error",
+  "message": "founding_year must be a valid year between 1800 and 2024"
+}
+```
+</ResponseExample>
+
 - **400**: Invalid or missing parameters
 - **401**: Invalid API key or insufficient credits
 - **500**: Server error during request processing
@@ -198,4 +176,38 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 - Each successful search consumes 1 credit
 - Credits are only deducted on successful searches
 - The endpoint uses an automatic retry system for proxy errors
-- The `company_name` parameter is supported for backward compatibility with `keyword` 
+- The `company_name` parameter is supported for backward compatibility with `keyword`
+- All filter parameters are optional - you can combine multiple filters for more precise results
+- The `founding_year` parameter must be between 1800 and 2024
+
+## Usage Examples
+
+### Basic search with keyword only
+```json
+{
+  "keyword": "artificial intelligence",
+  "num_results": 10
+}
+```
+
+### Search with industry and location filters
+```json
+{
+  "keyword": "software",
+  "industry": "technology",
+  "location": "San Francisco",
+  "num_results": 25
+}
+```
+
+### Search with company size and funding filters
+```json
+{
+  "keyword": "fintech",
+  "company_size": "startup",
+  "employee_range": "1-50",
+  "funding_stage": "seed",
+  "founding_period": "startup",
+  "num_results": 15
+}
+``` 
