@@ -1,131 +1,131 @@
 ---
 title: "Search Profiles"
 api: "POST /data/profile/search"
-description: "Recherche de profils LinkedIn avec critères multiples"
+description: "Search LinkedIn profiles with multiple criteria"
 ---
 
 ## Description
 
-Cet endpoint permet de rechercher des profils LinkedIn en utilisant différents critères de recherche. Il utilise Google Search pour identifier les profils LinkedIn correspondant aux critères spécifiés.
+This endpoint allows you to search LinkedIn profiles using different search criteria. It uses Google Search to identify LinkedIn profiles matching the specified criteria.
 
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Votre clé API pour l'authentification
+  Your API key for authentication
 </ParamField>
 
 ## Body Parameters
 
 <ParamField body="keyword" type="string">
-  Mot-clé principal de recherche (nom, poste, compétences, etc.)
+  Main search keyword (name, position, skills, etc.)
 </ParamField>
 
 <ParamField body="job_title" type="string">
-  Intitulé du poste recherché
+  Job title to search for
 </ParamField>
 
 <ParamField body="industry" type="string">
-  Secteur d'activité
+  Industry sector
 </ParamField>
 
 <ParamField body="school" type="string">
-  École ou université
+  School or university
 </ParamField>
 
 <ParamField body="location" type="string">
-  Localisation (ville, région, pays)
+  Location (city, region, country)
 </ParamField>
 
 <ParamField body="current_company" type="string">
-  Entreprise actuelle
+  Current company
 </ParamField>
 
 <ParamField body="num_results" type="integer" default="10">
-  Nombre de résultats à retourner
+  Number of results to return
   
   - Minimum: 1
   - Maximum: 50,000
-  - Défaut: 10
+  - Default: 10
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
-  Code pays pour le proxy (ex: "FR", "US", "GB")
+  Country code for proxy (e.g., "FR", "US", "GB")
 </ParamField>
 
 <Note>
-Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title`, `industry`, `school`, `location`, ou `current_company`.
+At least one search criteria must be provided among: `keyword`, `job_title`, `industry`, `school`, `location`, or `current_company`.
 </Note>
 
 ## Response
 
 <ResponseField name="status" type="string">
-  Statut de la réponse ("success" ou "error")
+  Response status ("success" or "error")
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  <Expandable title="Données de réponse">
+  <Expandable title="Response Data">
     <ResponseField name="search_criteria" type="object">
-      Les critères de recherche utilisés
-      <Expandable title="Structure des critères">
+      The search criteria used
+      <Expandable title="Criteria Structure">
         <ResponseField name="keyword" type="string">
-          Mot-clé utilisé
+          Keyword used
         </ResponseField>
         <ResponseField name="job_title" type="string">
-          Intitulé du poste
+          Job title
         </ResponseField>
         <ResponseField name="industry" type="string">
-          Secteur d'activité
+          Industry sector
         </ResponseField>
         <ResponseField name="school" type="string">
-          École/université
+          School/university
         </ResponseField>
         <ResponseField name="location" type="string">
-          Localisation
+          Location
         </ResponseField>
         <ResponseField name="current_company" type="string">
-          Entreprise actuelle
+          Current company
         </ResponseField>
       </Expandable>
     </ResponseField>
     
     <ResponseField name="query_used" type="string">
-      La requête Google Search générée
+      The generated Google Search query
     </ResponseField>
     
     <ResponseField name="total_available" type="integer">
-      Nombre total de résultats disponibles
+      Total number of available results
     </ResponseField>
     
     <ResponseField name="results_returned" type="integer">
-      Nombre de résultats retournés dans cette réponse
+      Number of results returned in this response
     </ResponseField>
     
     <ResponseField name="profiles" type="array">
-      Liste des profils trouvés
-      <Expandable title="Structure d'un profil">
+      List of found profiles
+      <Expandable title="Profile Structure">
         <ResponseField name="name" type="string">
-          Nom complet de la personne
+          Person's full name
         </ResponseField>
         <ResponseField name="linkedin_url" type="string">
-          URL du profil LinkedIn
+          LinkedIn profile URL
         </ResponseField>
         <ResponseField name="title" type="string">
-          Titre/poste actuel
+          Current title/position
         </ResponseField>
         <ResponseField name="company" type="string">
-          Entreprise actuelle
+          Current company
         </ResponseField>
         <ResponseField name="location" type="string">
-          Localisation
+          Location
         </ResponseField>
         <ResponseField name="description" type="string">
-          Description/résumé du profil
+          Profile description/summary
         </ResponseField>
         <ResponseField name="experience" type="string">
-          Expérience professionnelle
+          Professional experience
         </ResponseField>
         <ResponseField name="education" type="string">
-          Formation/éducation
+          Education/training
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -133,14 +133,14 @@ Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title
 </ResponseField>
 
 <ResponseField name="message" type="string">
-  Message d'erreur (si status = "error")
+  Error message (if status = "error")
 </ResponseField>
 
-## Exemple de requête
+## Request Example
 
 ```json
 {
-  "keyword": "développeur",
+  "keyword": "developer",
   "job_title": "Software Engineer",
   "industry": "Technology",
   "location": "Paris",
@@ -150,7 +150,7 @@ Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title
 }
 ```
 
-## Exemple de réponse
+## Response Example
 
 <ResponseExample>
 ```json
@@ -158,25 +158,25 @@ Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title
   "status": "success",
   "data": {
     "search_criteria": {
-      "keyword": "développeur",
+      "keyword": "developer",
       "job_title": "Software Engineer",
       "industry": "Technology",
       "location": "Paris",
       "current_company": "Google"
     },
-    "query_used": "site:linkedin.com/in/ développeur \"Software Engineer\" Technology Paris Google",
+    "query_used": "site:linkedin.com/in/ developer \"Software Engineer\" Technology Paris Google",
     "total_available": 89,
     "results_returned": 15,
     "profiles": [
       {
-        "name": "Jean Dupont",
-        "linkedin_url": "https://linkedin.com/in/jean-dupont",
+        "name": "John Doe",
+        "linkedin_url": "https://linkedin.com/in/john-doe",
         "title": "Senior Software Engineer",
         "company": "Google",
         "location": "Paris, France",
-        "description": "Développeur full-stack passionné par les nouvelles technologies",
+        "description": "Full-stack developer passionate about new technologies",
         "experience": "5+ years in software development",
-        "education": "École Polytechnique"
+        "education": "Stanford University"
       }
     ]
   }
@@ -184,7 +184,7 @@ Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title
 ```
 </ResponseExample>
 
-## Codes d'erreur
+## Error Codes
 
 <ResponseExample>
 ```json
@@ -195,13 +195,13 @@ Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title
 ```
 </ResponseExample>
 
-- **400**: Paramètres invalides ou aucun critère de recherche fourni
-- **401**: Clé API invalide ou crédits insuffisants
-- **500**: Erreur serveur lors du traitement de la requête
+- **400**: Invalid parameters or no search criteria provided
+- **401**: Invalid API key or insufficient credits
+- **500**: Server error during request processing
 
-## Exemples d'utilisation
+## Usage Examples
 
-### Recherche par poste et localisation
+### Search by position and location
 ```json
 {
   "job_title": "Data Scientist",
@@ -210,28 +210,28 @@ Au moins un critère de recherche doit être fourni parmi: `keyword`, `job_title
 }
 ```
 
-### Recherche par école et secteur
+### Search by school and industry
 ```json
 {
-  "school": "HEC Paris",
+  "school": "Harvard University",
   "industry": "Finance",
   "num_results": 20
 }
 ```
 
-### Recherche par entreprise et mot-clé
+### Search by company and keyword
 ```json
 {
   "current_company": "Microsoft",
-  "keyword": "intelligence artificielle",
+  "keyword": "artificial intelligence",
   "num_results": 25
 }
 ```
 
-## Notes importantes
+## Important Notes
 
-- Chaque recherche réussie consomme 1 crédit
-- Les crédits ne sont décomptés qu'en cas de succès de la recherche
-- L'endpoint utilise un système de retry automatique en cas d'erreur de proxy
-- Plus vous fournissez de critères, plus la recherche sera précise
-- La combinaison de plusieurs critères améliore la qualité des résultats 
+- Each successful search consumes 1 credit
+- Credits are only deducted on successful searches
+- The endpoint uses an automatic retry system for proxy errors
+- The more criteria you provide, the more precise the search will be
+- Combining multiple criteria improves result quality 
