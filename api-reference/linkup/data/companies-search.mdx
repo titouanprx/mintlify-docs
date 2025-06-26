@@ -36,12 +36,10 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   Can be a single string or an array of locations
 </ParamField>
 
-<ParamField body="company_size" type="string">
-  Company size category (e.g., "startup", "small", "medium", "large", "enterprise")
-</ParamField>
-
-<ParamField body="employee_range" type="string">
-  Employee count range (e.g., "1-50", "51-200", "201-1000", "1000+")
+<ParamField body="employee_range" type="string | array">
+  Employee count range(s) (e.g., "1-50", "51-200", "201-1000", "1000+")
+  
+  Can be a single string or an array of employee ranges for multiple size categories
 </ParamField>
 
 <ParamField body="founding_company" type="boolean">
@@ -103,7 +101,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "keyword": "technology",
   "industry": "technology",
   "location": "Paris",
-  "company_size": "medium",
   "employee_range": "51-200",
   "founding_company": true,
   "num_results": 20,
@@ -118,8 +115,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "keyword": ["technology", "fintech", "startup"],
   "industry": ["technology", "finance", "healthcare"],
   "location": ["Paris", "Lyon", "Bordeaux"],
-  "company_size": "medium",
-  "employee_range": "51-200",
+  "employee_range": ["1-50", "51-200", "201-1000"],
   "founding_company": true,
   "num_results": 30,
   "country": "FR"
@@ -202,11 +198,10 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 }
 ```
 
-### Search with company size and funding filters
+### Search with employee range and founding filter
 ```json
 {
   "keyword": "fintech",
-  "company_size": "startup",
   "employee_range": "1-50",
   "founding_company": true,
   "num_results": 15
@@ -219,6 +214,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "keyword": ["fintech", "blockchain", "cryptocurrency"],
   "industry": ["Finance", "Technology"],
   "location": ["New York", "San Francisco", "London"],
+  "employee_range": ["51-200", "201-1000"],
   "num_results": 100
 }
 ```
@@ -229,8 +225,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "keyword": "startup",
   "industry": ["Technology", "Healthcare", "Finance"],
   "location": ["Paris", "Lyon", "Marseille"],
-  "company_size": "startup",
-  "employee_range": "1-50",
+  "employee_range": ["1-50", "51-200"],
   "founding_company": true,
   "num_results": 50
 }
