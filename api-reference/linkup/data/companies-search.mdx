@@ -57,12 +57,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   - Default: 10
 </ParamField>
 
-<ParamField body="total_results" type="boolean" default="false">
-  Include total count of available results
-  
-  - `true`: Return total count of all matching results in response
-  - `false`: Don't return total count (default)
-</ParamField>
 
 
 
@@ -74,12 +68,8 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 <ResponseField name="data" type="object">
   <Expandable title="Response Data">
-    <ResponseField name="results_returned" type="integer">
-      Number of results returned in this response
-    </ResponseField>
-    
     <ResponseField name="total_results" type="integer">
-      Total count of all matching results (only included if total_results parameter is true)
+      Total count of all matching results
     </ResponseField>
     
     <ResponseField name="companies" type="array">
@@ -116,8 +106,7 @@ payload = {
     "location": "Paris",
     "employee_range": "51-200",
     "founding_company": True,
-    "total_results": 20,
-    "total_results": True
+    "total_results": 20
 }
 headers = {
     "x-api-key": "your-api-key-here",
@@ -135,8 +124,7 @@ print(response.json())
   "location": "Paris",
   "employee_range": "51-200",
   "founding_company": true,
-  "total_results": 20,
-  "total_results": true
+  "total_results": 20
 }
 ```
 
@@ -153,8 +141,7 @@ payload = {
     "location": ["Paris", "Lyon", "Bordeaux"],
     "employee_range": ["1-50", "51-200", "201-1000"],
     "founding_company": True,
-    "total_results": 30,
-    "total_results": True
+    "total_results": 30
 }
 headers = {
     "x-api-key": "your-api-key-here", 
@@ -172,8 +159,7 @@ print(response.json())
   "location": ["Paris", "Lyon", "Bordeaux"],
   "employee_range": ["1-50", "51-200", "201-1000"],
   "founding_company": true,
-  "total_results": 30,
-  "total_results": true
+  "total_results": 30
 }
 ```
 
@@ -184,7 +170,6 @@ print(response.json())
 {
   "status": "success",
   "data": {
-    "results_returned": 10,
     "total_results": 2847,
     "companies": [
       {
@@ -233,8 +218,7 @@ print(response.json())
 - **Multiple keywords**: Automatically activates batch mode for parallel searching
 - Most search parameters support both single strings and arrays for flexible searching
 - When using multiple keywords, batch mode is automatically activated for optimal performance
-- Set `total_results: true` to get the total count of all matching results in the response
-- Set `total_results: true` to get the total count of all matching results in the response
+
 
 ## Usage Examples
 
@@ -289,12 +273,11 @@ print(response.json())
 }
 ```
 
-### Search with total results count
+### Search with specific number of results
 ```json
 {
   "keyword": "artificial intelligence",
   "industry": "Technology",
-  "total_results": 10,
-  "total_results": true
+  "total_results": 10
 }
 ```

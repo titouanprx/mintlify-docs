@@ -61,12 +61,7 @@ This endpoint allows you to search LinkedIn profiles using different search crit
   - Default: 10
 </ParamField>
 
-<ParamField body="total_results" type="boolean" default="false">
-  Include total count of available results
-  
-  - `true`: Return total count of all matching results in response
-  - `false`: Don't return total count (default)
-</ParamField>
+
 
 
 
@@ -82,12 +77,8 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 
 <ResponseField name="data" type="object">
   <Expandable title="Response Data">
-    <ResponseField name="results_returned" type="integer">
-      Number of results returned in this response
-    </ResponseField>
-    
     <ResponseField name="total_results" type="integer">
-      Total count of all matching results (only included if total_results parameter is true)
+      Total count of all matching results
     </ResponseField>
     
     <ResponseField name="profiles" type="array">
@@ -124,8 +115,7 @@ payload = {
     "industry": "Technology",
     "location": "Paris",
     "current_company": "Microsoft",
-    "total_results": 15,
-    "total_results": True
+    "total_results": 15
 }
 headers = {
     "x-api-key": "your-api-key-here",
@@ -143,8 +133,7 @@ print(response.json())
   "industry": "Technology",
   "location": "Paris",
   "current_company": "Microsoft",
-  "total_results": 15,
-  "total_results": true
+  "total_results": 15
 }
 ```
 
@@ -161,8 +150,7 @@ payload = {
     "industry": ["Technology", "Finance"],
     "location": ["Paris", "Lyon", "Marseille"],
     "current_company": ["Microsoft", "Google", "Apple"],
-    "total_results": 20,
-    "total_results": True
+    "total_results": 20
 }
 headers = {
     "x-api-key": "your-api-key-here",
@@ -180,8 +168,7 @@ print(response.json())
   "industry": ["Technology", "Finance"],
   "location": ["Paris", "Lyon", "Marseille"],
   "current_company": ["Microsoft", "Google", "Apple"],
-  "total_results": 20,
-  "total_results": true
+  "total_results": 20
 }
 ```
 
@@ -192,7 +179,6 @@ print(response.json())
 {
   "status": "success",
   "data": {
-    "results_returned": 10,
     "total_results": 1523,
     "profiles": [
       {
@@ -281,13 +267,12 @@ print(response.json())
 }
 ```
 
-### Search with total results count
+### Search with specific number of results
 ```json
 {
   "keyword": "data scientist",
   "location": "Paris",
-  "total_results": 15,
-  "total_results": true
+  "total_results": 15
 }
 ```
 
@@ -301,5 +286,3 @@ print(response.json())
 - Combining multiple criteria improves result quality
 - All search parameters support both single strings and arrays for flexible searching
 - When using multiple keywords, batch mode is automatically activated for optimal performance
-- Set `total_results: true` to get the total count of all matching results in the response
-- Set `total_results: true` to get the total count of all matching results in the response
