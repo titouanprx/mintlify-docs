@@ -53,7 +53,7 @@ This endpoint allows you to search LinkedIn profiles using different search crit
   Can be a single string or an array of company names
 </ParamField>
 
-<ParamField body="num_results" type="integer" default="10">
+<ParamField body="total_results" type="integer" default="10">
   Number of results to return
   
   - Minimum: 1
@@ -124,7 +124,7 @@ payload = {
     "industry": "Technology",
     "location": "Paris",
     "current_company": "Microsoft",
-    "num_results": 15,
+    "total_results": 15,
     "total_results": True
 }
 headers = {
@@ -143,7 +143,7 @@ print(response.json())
   "industry": "Technology",
   "location": "Paris",
   "current_company": "Microsoft",
-  "num_results": 15,
+  "total_results": 15,
   "total_results": true
 }
 ```
@@ -161,7 +161,7 @@ payload = {
     "industry": ["Technology", "Finance"],
     "location": ["Paris", "Lyon", "Marseille"],
     "current_company": ["Microsoft", "Google", "Apple"],
-    "num_results": 20,
+    "total_results": 20,
     "total_results": True
 }
 headers = {
@@ -180,7 +180,7 @@ print(response.json())
   "industry": ["Technology", "Finance"],
   "location": ["Paris", "Lyon", "Marseille"],
   "current_company": ["Microsoft", "Google", "Apple"],
-  "num_results": 20,
+  "total_results": 20,
   "total_results": true
 }
 ```
@@ -238,7 +238,7 @@ print(response.json())
 {
   "job_title": "Data Scientist",
   "location": "Lyon",
-  "num_results": 10
+  "total_results": 10
 }
 ```
 
@@ -247,7 +247,7 @@ print(response.json())
 {
   "school": "Harvard University",
   "industry": "Finance",
-  "num_results": 20
+  "total_results": 20
 }
 ```
 
@@ -256,7 +256,7 @@ print(response.json())
 {
   "current_company": "Microsoft",
   "keyword": "artificial intelligence",
-  "num_results": 25
+  "total_results": 25
 }
 ```
 
@@ -266,7 +266,7 @@ print(response.json())
   "keyword": ["data scientist", "machine learning engineer", "AI researcher"],
   "location": ["Paris", "Lyon"],
   "industry": ["Technology", "Healthcare"],
-  "num_results": 50
+  "total_results": 50
 }
 ```
 
@@ -277,7 +277,7 @@ print(response.json())
   "current_company": ["Google", "Microsoft", "Apple"],
   "location": ["Paris", "London", "Berlin"],
   "industry": "Technology",
-  "num_results": 40
+  "total_results": 40
 }
 ```
 
@@ -286,7 +286,7 @@ print(response.json())
 {
   "keyword": "data scientist",
   "location": "Paris",
-  "num_results": 15,
+  "total_results": 15,
   "total_results": true
 }
 ```
