@@ -104,6 +104,29 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 
 ## Request Example
 
+```python
+import requests
+
+url = "https://api.linkupapi.com/v1/data/search/profiles"
+
+payload = {
+    "keyword": "developer",
+    "job_title": "Software Engineer",
+    "industry": "Technology",
+    "location": "Paris",
+    "current_company": "Microsoft",
+    "num_results": 15,
+    "country": "FR"
+}
+headers = {
+    "x-api-key": "your-api-key-here",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
 ```json
 {
   "keyword": "developer",
@@ -117,6 +140,29 @@ At least one search criteria must be provided among: `keyword`, `job_title`, `in
 ```
 
 ## Request Example with Arrays
+
+```python
+import requests
+
+url = "https://api.linkupapi.com/v1/data/search/profiles"
+
+payload = {
+    "keyword": ["developer", "engineer", "programmer"],
+    "job_title": ["Software Engineer", "Frontend Developer"],
+    "industry": ["Technology", "Finance"],
+    "location": ["Paris", "Lyon", "Marseille"],
+    "current_company": ["Microsoft", "Google", "Apple"],
+    "num_results": 20,
+    "country": "FR"
+}
+headers = {
+    "x-api-key": "your-api-key-here",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
 
 ```json
 {

@@ -96,6 +96,29 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 ## Request Example
 
+```python
+import requests
+
+url = "https://api.linkupapi.com/v1/data/search/companies"
+
+payload = {
+    "keyword": "technology",
+    "industry": "technology",
+    "location": "Paris",
+    "employee_range": "51-200",
+    "founding_company": True,
+    "num_results": 20,
+    "country": "FR"
+}
+headers = {
+    "x-api-key": "your-api-key-here",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
 ```json
 {
   "keyword": "technology",
@@ -109,6 +132,29 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ```
 
 ## Request Example with Arrays
+
+```python
+import requests
+
+url = "https://api.linkupapi.com/v1/data/search/companies"
+
+payload = {
+    "keyword": ["technology", "fintech", "startup"],
+    "industry": ["technology", "finance", "healthcare"],
+    "location": ["Paris", "Lyon", "Bordeaux"],
+    "employee_range": ["1-50", "51-200", "201-1000"],
+    "founding_company": True,
+    "num_results": 30,
+    "country": "FR"
+}
+headers = {
+    "x-api-key": "your-api-key-here", 
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
 
 ```json
 {
