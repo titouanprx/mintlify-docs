@@ -44,19 +44,11 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   Employee count range (e.g., "1-50", "51-200", "201-1000", "1000+")
 </ParamField>
 
-<ParamField body="funding_stage" type="string">
-  Funding stage (e.g., "seed", "series_a", "series_b", "series_c", "ipo")
-</ParamField>
-
-<ParamField body="founding_year" type="integer">
-  Founding year (e.g., 2020)
+<ParamField body="founding_company" type="boolean">
+  Filter for founding companies
   
-  - Minimum: 1800
-  - Maximum: 2024
-</ParamField>
-
-<ParamField body="founding_period" type="string">
-  Founding period category (e.g., "startup", "recent", "established", "legacy")
+  - `true`: Search only founding companies
+  - `false`: Exclude founding companies
 </ParamField>
 
 <ParamField body="num_results" type="integer" default="10">
@@ -113,9 +105,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "location": "Paris",
   "company_size": "medium",
   "employee_range": "51-200",
-  "funding_stage": "series_a",
-  "founding_year": 2020,
-  "founding_period": "recent",
+  "founding_company": true,
   "num_results": 20,
   "country": "FR"
 }
@@ -130,6 +120,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "location": ["Paris", "Lyon", "Bordeaux"],
   "company_size": "medium",
   "employee_range": "51-200",
+  "founding_company": true,
   "num_results": 30,
   "country": "FR"
 }
@@ -176,15 +167,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 ```
 </ResponseExample>
 
-<ResponseExample>
-```json
-{
-  "status": "error",
-  "message": "founding_year must be a valid year between 1800 and 2024"
-}
-```
-</ResponseExample>
-
 - **400**: Invalid or missing parameters
 - **401**: Invalid API key or insufficient credits
 - **500**: Server error during request processing
@@ -197,7 +179,6 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 - The `company_name` parameter is supported for backward compatibility with `keyword`
 - **Single keyword**: Advanced search with optional filters for precise results
 - **Multiple keywords**: Automatically activates batch mode for parallel searching
-- The `founding_year` parameter must be between 1800 and 2024
 - Most search parameters support both single strings and arrays for flexible searching
 - When using multiple keywords, batch mode is automatically activated for optimal performance
 
@@ -227,8 +208,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "keyword": "fintech",
   "company_size": "startup",
   "employee_range": "1-50",
-  "funding_stage": "seed",
-  "founding_period": "startup",
+  "founding_company": true,
   "num_results": 15
 }
 ```
@@ -251,6 +231,7 @@ This endpoint allows you to search LinkedIn company pages using various advanced
   "location": ["Paris", "Lyon", "Marseille"],
   "company_size": "startup",
   "employee_range": "1-50",
+  "founding_company": true,
   "num_results": 50
 }
 ```
