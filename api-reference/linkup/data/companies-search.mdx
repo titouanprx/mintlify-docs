@@ -16,30 +16,22 @@ This endpoint allows you to search LinkedIn company pages using various advanced
 
 ## Body Parameters
 
-<ParamField body="keyword" type="string | array" required>
-  Keyword(s) to search for (company name, industry, etc.)
+<ParamField body="keyword" type="string" required>
+  Keyword to search for (company name, industry, etc.)
   
-  - Single string: Performs advanced search with filters
-  - Array of strings: Automatically switches to batch mode for parallel searching
-  - Also supports `company_name` for backward compatibility
+  Also supports `company_name` for backward compatibility
 </ParamField>
 
-<ParamField body="industry" type="string | array">
-  Industry sector(s) (e.g., "technology", "finance", "healthcare")
-  
-  Can be a single string or an array of industries
+<ParamField body="industry" type="string">
+  Industry sector (e.g., "technology", "finance", "healthcare")
 </ParamField>
 
-<ParamField body="location" type="string | array">
-  Location(s) (e.g., "Paris", "France", "New York")
-  
-  Can be a single string or an array of locations
+<ParamField body="location" type="string">
+  Location (e.g., "Paris", "France", "New York")
 </ParamField>
 
-<ParamField body="employee_range" type="string | array">
-  Employee count range(s) (e.g., "1-50", "51-200", "201-1000", "1000+")
-  
-  Can be a single string or an array of employee ranges for multiple size categories
+<ParamField body="employee_range" type="string">
+  Employee count range (e.g., "1-50", "51-200", "201-1000", "1000+")
 </ParamField>
 
 <ParamField body="founding_company" type="boolean">
@@ -210,7 +202,7 @@ print(response.json())
 
 ## Important Notes
 
-- Each successful search consumes 1 credit (single keyword) or 1 credit per keyword (multiple keywords)
+- Credit consumption is based on the number of results: 1 credit for 1-10 results, 2 credits for 11-20 results, etc.
 - Credits are only deducted on successful searches
 - The endpoint uses an automatic retry system for proxy errors
 - The `company_name` parameter is supported for backward compatibility with `keyword`

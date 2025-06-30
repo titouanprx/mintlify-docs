@@ -16,41 +16,28 @@ This endpoint allows you to search LinkedIn profiles using different search crit
 
 ## Body Parameters
 
-<ParamField body="keyword" type="string | array">
-  Main search keyword(s) (name, position, skills, etc.)
-  
-  - Single string: Performs advanced search with filters
-  - Array of strings: Automatically switches to batch mode for parallel searching
+<ParamField body="keyword" type="string">
+  Main search keyword (name, position, skills, etc.)
 </ParamField>
 
-<ParamField body="job_title" type="string | array">
-  Job title(s) to search for
-  
-  Can be a single string or an array of job titles
+<ParamField body="job_title" type="string">
+  Job title to search for
 </ParamField>
 
-<ParamField body="industry" type="string | array">
-  Industry sector(s)
-  
-  Can be a single string or an array of industries (e.g., ["technology", "finance", "healthcare"])
+<ParamField body="industry" type="string">
+  Industry sector (e.g., "technology", "finance", "healthcare")
 </ParamField>
 
-<ParamField body="school" type="string | array">
-  School(s) or university(ies)
-  
-  Can be a single string or an array of educational institutions
+<ParamField body="school" type="string">
+  School or university
 </ParamField>
 
-<ParamField body="location" type="string | array">
-  Location(s) (city, region, country)
-  
-  Can be a single string or an array of locations (e.g., ["Paris", "Lyon", "Marseille"])
+<ParamField body="location" type="string">
+  Location (city, region, country)
 </ParamField>
 
-<ParamField body="current_company" type="string | array">
-  Current company(ies)
-  
-  Can be a single string or an array of company names
+<ParamField body="current_company" type="string">
+  Current company
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
@@ -278,7 +265,7 @@ print(response.json())
 
 ## Important Notes
 
-- Each successful search consumes 1 credit (single keyword) or 1 credit per keyword (multiple keywords)
+- Credit consumption is based on the number of results: 1 credit for 1-10 results, 2 credits for 11-20 results, etc.
 - Credits are only deducted on successful searches
 - The endpoint uses an automatic retry system for proxy errors
 - **Single keyword**: Advanced search with optional filters for precise results
