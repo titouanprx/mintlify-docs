@@ -106,9 +106,14 @@ Search for LinkedIn profiles using multiple filters including company, location,
           Current job title or headline
         </ResponseField>
 
-        <ResponseField name="connection_level" type="string">
-          LinkedIn connection degree (e.g., "1st", "2nd", "3rd")
-        </ResponseField>
+            <ResponseField name="connection_level" type="string">
+      Connection level with the profile owner. Possible values:
+      - "1st degree" (Direct connection)
+      - "2nd degree" (Connection through mutual contact)
+      - "3rd+ degree" (Connection through multiple intermediaries)
+      - "Out of network" (No connection path)
+
+    </ResponseField>
 
         <ResponseField name="location" type="string">
           Geographic location
@@ -157,7 +162,7 @@ Search for LinkedIn profiles using multiple filters including company, location,
       {
         "name": "John Doe",
         "job_title": "Software Engineer at Tech Company",
-        "connection_level": "2nd",
+        "connection_level": "2nd degree",
         "location": "San Francisco Bay Area",
         "profile_url": "https://www.linkedin.com/in/johndoe/",
         "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg"
@@ -165,7 +170,7 @@ Search for LinkedIn profiles using multiple filters including company, location,
       {
         "name": "Jane Smith",
         "job_title": "Product Manager at Innovative Solutions",
-        "connection_level": "3rd",
+        "connection_level": "3rd+ degree",
         "location": "New York Metropolitan Area",
         "profile_url": "https://www.linkedin.com/in/janesmith/",
         "profile_picture": null
