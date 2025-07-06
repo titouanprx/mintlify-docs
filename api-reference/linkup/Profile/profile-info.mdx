@@ -134,7 +134,10 @@ Extract comprehensive information from any LinkedIn profile, including personal 
     </ResponseField>
     
     <ResponseField name="relationship" type="string">
-      Connection degree (e.g., "2nd degree")
+      Connection degree with the profile owner. Possible values:
+      - "1st degree" (Direct connection)
+      - "2nd degree" (Connection through mutual contact)
+      - "3rd+ degree" (Connection through multiple intermediaries)
     </ResponseField>
     
     <ResponseField name="connection_date" type="string">
