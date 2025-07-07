@@ -1,0 +1,227 @@
+---
+title: 'Get Company Information'
+api: 'POST /v1/data/company/info'
+description: 'Extract detailed information about a company from LinkedIn without requiring a LinkedIn account'
+---
+
+Get comprehensive information about a company without needing your own LinkedIn account. This method provides detailed and reliable data extraction directly through our service.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="company_url" type="string" required>
+  LinkedIn company URL (e.g., https://www.linkedin.com/company/stripe/)
+</ParamField>
+
+<ParamField body="proxy_country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="name" type="string">
+      Company name
+    </ResponseField>
+
+    <ResponseField name="universalName" type="string">
+      Company URL identifier
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Company description
+    </ResponseField>
+
+    <ResponseField name="tagline" type="string">
+      Company tagline or slogan
+    </ResponseField>
+
+    <ResponseField name="websiteUrl" type="string">
+      Company website URL
+    </ResponseField>
+
+    <ResponseField name="industry" type="string">
+      Industry classification
+    </ResponseField>
+
+    <ResponseField name="employeeCount" type="integer">
+      Total number of employees
+    </ResponseField>
+
+    <ResponseField name="employeeCountRange" type="object">
+      <Expandable title="Range Properties">
+        <ResponseField name="start" type="integer">Minimum range</ResponseField>
+        <ResponseField name="end" type="integer">Maximum range</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="headquarter" type="object">
+      <Expandable title="Address Properties">
+        <ResponseField name="country" type="string">Country code</ResponseField>
+        <ResponseField name="geographicArea" type="string">State/Region</ResponseField>
+        <ResponseField name="city" type="string">City</ResponseField>
+        <ResponseField name="line1" type="string">Street address</ResponseField>
+        <ResponseField name="line2" type="string">Additional address line</ResponseField>
+        <ResponseField name="postalCode" type="string">Postal code</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="logoUrl" type="string">
+      URL to the company logo
+    </ResponseField>
+
+    <ResponseField name="coverImageUrl" type="string">
+      URL to the company cover image
+    </ResponseField>
+
+    <ResponseField name="callToAction" type="object">
+      <Expandable title="Call to Action Properties">
+        <ResponseField name="displayText" type="string">Text displayed for the CTA</ResponseField>
+        <ResponseField name="visible" type="boolean">Whether the CTA is visible</ResponseField>
+        <ResponseField name="type" type="string">Type of call to action</ResponseField>
+        <ResponseField name="url" type="string">URL for the call to action</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="locations" type="array">
+      <Expandable title="Location Object">
+        <ResponseField name="streetAddressOptOut" type="boolean">
+          Whether street address is opted out
+        </ResponseField>
+        
+        <ResponseField name="description" type="string">
+          Location description
+        </ResponseField>
+        
+        <ResponseField name="address" type="object">
+          <Expandable title="Address Properties">
+            <ResponseField name="country" type="string">Country code</ResponseField>
+            <ResponseField name="geographicArea" type="string">State/Region</ResponseField>
+            <ResponseField name="city" type="string">City</ResponseField>
+            <ResponseField name="line1" type="string">Street address</ResponseField>
+            <ResponseField name="line2" type="string">Additional address line</ResponseField>
+            <ResponseField name="postalCode" type="string">Postal code</ResponseField>
+          </Expandable>
+        </ResponseField>
+        
+        <ResponseField name="headquarter" type="boolean">
+          Whether this location is the headquarters
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="organizationType" type="string">
+      Type of organization (e.g., "Privately Held", "Public Company")
+    </ResponseField>
+
+    <ResponseField name="defaultLocale" type="string">
+      Default locale/language code
+    </ResponseField>
+
+    <ResponseField name="followersCount" type="integer">
+      Number of LinkedIn followers
+    </ResponseField>
+
+    <ResponseField name="pageMailbox" type="boolean">
+      Whether the company page has mailbox enabled
+    </ResponseField>
+
+    <ResponseField name="verified" type="boolean">
+      Whether the company page is verified
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "name": "Stripe",
+    "universalName": "stripe",
+    "description": "Stripe is a financial infrastructure platform for businesses. Millions of companies—from the world's largest enterprises to the most ambitious startups—use Stripe to accept payments, grow their revenue, and accelerate new business opportunities. Headquartered in San Francisco and Dublin, the company aims to increase the GDP of the internet.",
+    "tagline": "Help increase the GDP of the internet.",
+    "websiteUrl": "https://stripe.com",
+    "industry": "Technology, Information and Internet",
+    "employeeCount": 11685,
+    "employeeCountRange": {
+      "start": 5001,
+      "end": 10000
+    },
+    "headquarter": {
+      "country": "US",
+      "geographicArea": "California",
+      "city": "South San Francisco",
+      "line2": null,
+      "line1": "354 Oyster Point Blvd",
+      "postalCode": "94080"
+    },
+    "logoUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFqiwiSMcKk6A/company-logo_200_200/company-logo_200_200/0/1724937022726/stripe_logo?e=1750896000&v=beta&t=HhXH11lhKvAADBP8MukV5oM-Im2NLhNTAWeMDx5QGM8",
+    "coverImageUrl": null,
+    "callToAction": {
+      "displayText": "Learn more",
+      "visible": true,
+      "type": "LEARN_MORE",
+      "url": "https://stripe.com/jobs"
+    },
+    "locations": [
+      {
+        "streetAddressOptOut": false,
+        "description": "Headquarters",
+        "address": {
+          "country": "US",
+          "geographicArea": "California",
+          "city": "South San Francisco",
+          "line2": null,
+          "line1": "354 Oyster Point Blvd",
+          "postalCode": "94080"
+        },
+        "headquarter": true
+      },
+      {
+        "streetAddressOptOut": false,
+        "description": "Stripe Dublin",
+        "address": {
+          "country": "IE",
+          "geographicArea": "County Dublin",
+          "city": "Dublin",
+          "line2": null,
+          "line1": "1 Grand Canal Street Lower",
+          "postalCode": null
+        },
+        "headquarter": false
+      }
+    ],
+    "organizationType": "Privately Held",
+    "defaultLocale": "en",
+    "followersCount": 1016002,
+    "pageMailbox": false,
+    "verified": true
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- This endpoint doesn't require you to have a LinkedIn account - we handle all the extraction for you
+- The company URL must be a valid LinkedIn company page URL
+- Some fields may be null or missing depending on the company's public information and privacy settings
+- This method provides comprehensive data extraction without requiring your own LinkedIn credentials
+- Location information includes all company offices and facilities when available
+- Employee count data may vary and reflects the most recent information available on LinkedIn
+- The response excludes social proof text for privacy reasons
+- Verified companies will have `verified: true` in the response 

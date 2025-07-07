@@ -63,13 +63,6 @@
       ]
     },
     {
-      "group": "Data",
-      "pages": [
-        "api-reference/linkup/data/companies-search",
-        "api-reference/linkup/data/profiles-search"
-      ]
-    },
-    {
       "group": "Companies",
       "pages": [
         "api-reference/linkup/Companies/search",
@@ -121,6 +114,16 @@
         "api-reference/linkup/recruiter/close-job-offer",
         "api-reference/linkup/recruiter/create-job-post"
 
+      ]
+    },
+    {
+      "group": "Data",
+      "pages": [
+        "api-reference/linkup/data/companies-search",
+        "api-reference/linkup/data/profiles-search",
+        "api-reference/linkup/data/profile-enrich",
+        "api-reference/linkup/data/profile-info-direct",
+        "api-reference/linkup/data/company-info-direct"
       ]
     }
 
