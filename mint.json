@@ -120,8 +120,7 @@
       "group": "Data",
       "pages": [
         "api-reference/linkup/data/companies-search",
-        "api-reference/linkup/data/profiles-search",
-        "api-reference/linkup/data/profile-enrich"
+        "api-reference/linkup/data/profiles-search"
       ]
     }
   ],
