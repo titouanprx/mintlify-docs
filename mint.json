@@ -121,12 +121,9 @@
       "pages": [
         "api-reference/linkup/data/companies-search",
         "api-reference/linkup/data/profiles-search",
-        "api-reference/linkup/data/profile-enrich",
-        "api-reference/linkup/data/profile-info-direct",
-        "api-reference/linkup/data/company-info-direct"
+        "api-reference/linkup/data/profile-enrich"
       ]
     }
-
   ],
   "footerSocials": {
     "twitter": "https://twitter.com/linkupapi",

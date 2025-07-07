@@ -10,13 +10,6 @@ Automatically find a person's LinkedIn profile using their name and company, the
   This endpoint costs **1 credit** per request.
 </Note>
 
-### Process Overview
-
-The enrichment process follows these 3 steps:
-1. **Google Search** (primary method) - Search for LinkedIn profiles using Google
-2. **LinkedIn API Search** (fallback) - Direct LinkedIn search if Google fails
-3. **Complete Profile Extraction** - Extract detailed information from the found profile
-
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -252,4 +245,3 @@ The enrichment process follows these 3 steps:
 - Profile data extraction depth depends on the profile's privacy settings
 - The response includes all publicly available information when a profile is found
 - Contact information (email, phone) may be empty depending on profile privacy settings
-- The enrichment process respects LinkedIn's fair usage policies 
