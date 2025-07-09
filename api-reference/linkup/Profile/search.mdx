@@ -80,6 +80,10 @@ Search for LinkedIn profiles using multiple filters including company, location,
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
+<ParamField body="fetch_invitation_state" type="boolean" default="true">
+  Whether to fetch the invitation state for each profile. When set to true, the response will include the current invitation/connection status for each profile.
+</ParamField>
+
 ### Response
 
 <ResponseField name="status" type="string">
@@ -126,6 +130,15 @@ Search for LinkedIn profiles using multiple filters including company, location,
         <ResponseField name="profile_picture" type="string">
           URL of the profile picture (if available, may be null)
         </ResponseField>
+
+        <ResponseField name="invitation_state" type="string">
+          Current invitation/connection status with this profile. Possible values:
+          - "CAN_INVITE" (Can send connection request)
+          - "INVITATION_SENT" (Connection request already sent)
+          - "CONNECTED" (Already connected)
+          - "UNKNOWN" (Status could not be determined)
+          - "NOT_FETCHED" (Status not retrieved - when fetch_invitation_state is false)
+        </ResponseField>
       </Expandable>
     </ResponseField>
     
@@ -165,7 +178,8 @@ Search for LinkedIn profiles using multiple filters including company, location,
         "connection_level": "2nd degree",
         "location": "San Francisco Bay Area",
         "profile_url": "https://www.linkedin.com/in/johndoe/",
-        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg"
+        "profile_picture": "https://media.licdn.com/dms/image/v2/example.jpg",
+        "invitation_state": "CAN_INVITE"
       },
       {
         "name": "Jane Smith",
@@ -173,7 +187,8 @@ Search for LinkedIn profiles using multiple filters including company, location,
         "connection_level": "3rd+ degree",
         "location": "New York Metropolitan Area",
         "profile_url": "https://www.linkedin.com/in/janesmith/",
-        "profile_picture": null
+        "profile_picture": null,
+        "invitation_state": "INVITATION_SENT"
       }
     ],
     "pagination": {
@@ -206,6 +221,11 @@ Search for LinkedIn profiles using multiple filters including company, location,
   - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
   - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
   - When using pagination mode, `total_results` parameter is ignored
+- **Invitation State Feature**:
+  - When `fetch_invitation_state` is enabled (default), the API makes additional requests to determine the current invitation/connection status
+  - This feature helps you understand whether you can send connection requests to specific profiles
+  - Setting `fetch_invitation_state` to false will improve response time but won't include invitation status information
+  - Invitation states are determined in real-time and reflect the current LinkedIn relationship status
 - Search results may be limited by:
   - LinkedIn's visibility settings
   - Your network connection level
