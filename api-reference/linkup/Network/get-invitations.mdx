@@ -1,10 +1,10 @@
 ---
-title: 'Get Invitations'
+title: 'Get Received Invitations'
 api: 'POST /v1/network/invitations'
 description: 'Retrieve your LinkedIn invitations with pagination support'
 ---
 
-Get a list of your LinkedIn invitations ( received) with detailed information about each invitation.
+Get a list of your LinkedIn invitations (received) with detailed information about each invitation.
 
 <Note>
   Credit cost varies based on usage mode:
@@ -78,6 +78,10 @@ Get a list of your LinkedIn invitations ( received) with detailed information ab
           Time elapsed since the invitation was sent
         </ResponseField>
 
+        <ResponseField name="sent_time_days" type="integer">
+          Number of days since the invitation was sent (precise to within 7 days for invitations older than a week)
+        </ResponseField>
+
         <ResponseField name="message" type="string">
           Invitation message (if any)
         </ResponseField>
@@ -143,6 +147,7 @@ Get a list of your LinkedIn invitations ( received) with detailed information ab
         "profile_url": "https://www.linkedin.com/in/sandrine-brunet-6a910b94",
         "subtitle": "Cost and Time killer, J'accompagne les entreprises à faire des économies et gagner en temps et sérénité",
         "sent_time": "1 week ago",
+        "sent_time_days": 7,
         "message": null,
         "invitation_id": 7331558767219683329,
         "shared_secret": "9gAd0GPh",
