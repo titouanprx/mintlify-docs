@@ -1,10 +1,10 @@
 ---
-title: 'Like Post'
-api: 'POST /v1/posts/like'
-description: 'Add a like reaction to a LinkedIn post'
+title: 'React to Post'
+api: 'POST /v1/posts/react'
+description: 'Add a reaction to a LinkedIn post with different reaction types'
 ---
 
-Add a like reaction to any LinkedIn post using the post URL.
+Add various types of reactions to any LinkedIn post using the post URL.
 <Note>
   This endpoint costs **1 credit** per request.
 </Note>
@@ -17,7 +17,10 @@ Add a like reaction to any LinkedIn post using the post URL.
 ### Body Parameters
 
 <ParamField body="post_url" type="string" required>
-  URL of the LinkedIn post to like (supports multiple formats)
+  URL of the LinkedIn post to react to (supports multiple formats)
+</ParamField>
+<ParamField body="reaction_type" type="string" default="LIKE">
+  Type of reaction to add. Available options: LIKE, PRAISE, APPRECIATION, EMPATHY, INTEREST, ENTERTAINMENT
 </ParamField>
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: (US,UK,FR)
@@ -33,18 +36,27 @@ Add a like reaction to any LinkedIn post using the post URL.
 </ResponseField>
 
 <ResponseField name="message" type="string">
-  Detailed status message about the like request
+  Detailed status message about the reaction request
 </ResponseField>
 
 <ResponseExample>
 ```json Success Response
 {
   "status": "success",
-  "message": "Post liked successfully"
+  "message": "Post reacted successfully"
 }
 ```
 
 </ResponseExample>
+
+### Reaction Types
+The following reaction types are supported:
+- **LIKE** - Standard like reaction (default)
+- **PRAISE** - Celebrate/praise reaction  
+- **APPRECIATION** - Support/appreciation reaction
+- **EMPATHY** - Care/empathy reaction
+- **INTEREST** - Insightful/interest reaction
+- **ENTERTAINMENT** - Funny/entertainment reaction
 
 ### Notes
 - Supports multiple post URL formats:
@@ -52,9 +64,10 @@ Add a like reaction to any LinkedIn post using the post URL.
   - Profile posts: `https://www.linkedin.com/posts/user-activity-...`
   - Group posts: `https://www.linkedin.com/feed/update/urn:li:groupPost:...`
 - The post must be accessible with the provided login token
-- A post can only be liked once by the same user
-- LinkedIn's rate limits apply to like operations
-- The like action is performed with the identity associated with the login token
+- A post can only be reacted to once by the same user per reaction type
+- LinkedIn's rate limits apply to reaction operations
+- The reaction is performed with the identity associated with the login token
 - Some posts may have reactions disabled by their authors
 - Posts from private groups or connections may not be accessible
 - The API automatically detects the post type (share, article, etc.)
+- If no reaction_type is specified, defaults to "LIKE"
