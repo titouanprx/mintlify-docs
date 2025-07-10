@@ -1,0 +1,85 @@
+---
+title: 'Withdraw Invitation'
+api: 'POST /v1/network/withdraw-invitation'
+description: 'Withdraw a sent LinkedIn connection invitation'
+---
+
+Withdraw a LinkedIn connection invitation that you have previously sent to another user.
+
+<Note>
+  Credit cost: **1 credit per invitation withdrawal**
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="invitation_id" type="string" required>
+  ID of the invitation to withdraw
+</ParamField>
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US,UK,FR)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Descriptive message about the operation result
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Connection invitation withdrawn successfully"
+}
+```
+
+```json Error Response - Missing Parameter
+{
+  "status": "error",
+  "message": "Missing required parameter: invitation_id"
+}
+```
+
+```json Error Response - Invalid Cookie
+{
+  "status": "error",
+  "message": "Invalid or expired LinkedIn cookie"
+}
+```
+
+```json Error Response - Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
+
+```json Error Response - Rate Limit
+{
+  "status": "error",
+  "message": "Rate limit exceeded. Please try again later"
+}
+```
+</ResponseExample>
+
+### Notes
+- You can only withdraw invitations that you have sent and are still pending
+- The invitation_id can be obtained from the "Get Sent Invitations" endpoint
+- Once an invitation is withdrawn, it cannot be undone
+- The operation will fail if the invitation has already been accepted or declined
+- Rate limiting applies to prevent abuse of LinkedIn's systems 
