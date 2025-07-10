@@ -1,0 +1,110 @@
+---
+title: 'Send Post Time Spent Signal'
+api: 'POST /v1/posts/time-spent'
+description: 'Send time spent signal for a LinkedIn post to track engagement duration'
+---
+
+Send a time spent signal to LinkedIn indicating how long a user spent viewing a specific post. This helps with engagement tracking and analytics.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post to send time spent signal for
+</ParamField>
+
+<ParamField body="duration" type="integer" required>
+  Duration in milliseconds that the user spent viewing the post. Must be a positive integer.
+</ParamField>
+
+<ParamField body="duration_start_time" type="integer">
+  Optional start time in milliseconds when the user began viewing the post
+</ParamField>
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US,UK,FR)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the time spent signal request
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Time spent signal sent successfully"
+}
+```
+
+```json Error Response - Invalid Duration
+{
+  "status": "error",
+  "message": "duration must be a positive integer (milliseconds)"
+}
+```
+
+```json Error Response - Invalid Post URL
+{
+  "status": "error",
+  "message": "Invalid post URL format"
+}
+```
+
+```json Error Response - Invalid Cookie
+{
+  "status": "error",
+  "message": "Invalid or expired LinkedIn authentication cookie"
+}
+```
+
+</ResponseExample>
+
+### Notes
+
+#### Duration Requirements
+- Duration must be provided in milliseconds
+- Must be a positive integer value
+- Represents the actual time spent viewing the post
+
+#### Optional Parameters
+- `duration_start_time`: Can be used to specify when the viewing session began
+- If provided, must be an integer in milliseconds
+
+#### Post URL Support
+- Supports multiple LinkedIn post URL formats
+- Must be a valid LinkedIn post that is accessible with the provided login token
+- The API automatically extracts the activity ID from the URL
+
+#### Error Handling
+- **Invalid Cookie**: Returned when the login token is expired or invalid
+- **Invalid Post URL**: Returned when the post URL format is incorrect or the activity ID cannot be extracted
+- **Invalid Parameters**: Returned when required parameters are missing or have invalid values
+- **Insufficient Credits**: Returned when the API key doesn't have enough credits
+
+#### Engagement Tracking
+
+- Signals are sent to LinkedIn's analytics system
+- The signal is associated with the user identity from the login token
+
+#### Rate Limits
+- Consider implementing appropriate delays between requests
