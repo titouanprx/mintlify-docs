@@ -47,13 +47,32 @@ Send a direct message to any LinkedIn user. The message can be sent to either a 
 <ResponseField name="message" type="string">
   Detailed message about the message status
 </ResponseField>
+<ResponseField name="data" type="object">
+  Additional data returned when message is sent successfully
+  <Expandable title="data properties">
+    <ResponseField name="entityUrn" type="string">
+      LinkedIn entity URN for the sent message
+    </ResponseField>
+    <ResponseField name="conversation_id" type="string">
+      LinkedIn conversation URN identifier
+    </ResponseField>
+    <ResponseField name="deliveredAt" type="integer">
+      Timestamp when the message was delivered (Unix timestamp in milliseconds)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
 
 
 <ResponseExample>
 ```json Success Response
 {
   "status": "success",
-  "message": "Message sent successfully"
+  "message": "Message sent successfully",
+  "data": {
+    "entityUrn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ,2-MTc1MzY5NjE4NzkxMmIyODM2My0xMDAmZDYxZWIyZjUtMDQ5MS00NjJmLWJjY2ItOWFkYWVhZmM4MWFmXzEwMA==)",
+    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ,2-ZDYxZWIyZjUtMDQ5MS00NjJmLWJjY2ItOWFkYWVhZmM4MWFmXzEwMA==)",
+    "deliveredAt": 1753696188256
+  }
 }
 ```
 
