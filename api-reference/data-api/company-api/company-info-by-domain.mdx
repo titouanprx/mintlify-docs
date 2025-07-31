@@ -6,7 +6,7 @@ description: 'Search and extract company information from LinkedIn using a domai
 
 Search for a company on LinkedIn using its domain name and extract comprehensive information including description, size, locations, and other business details.
 <Note>
-  This endpoint costs **2 credits** per request (1 credit for Google search + 1 credit for LinkedIn scraping).
+  This endpoint costs **1 credits** per request.
 </Note>
 
 ### Header Parameters
@@ -41,8 +41,16 @@ Search for a company on LinkedIn using its domain name and extract comprehensive
       Company description
     </ResponseField>
 
+    <ResponseField name="tagline" type="string">
+      Company tagline (can be null)
+    </ResponseField>
+
     <ResponseField name="websiteUrl" type="string">
       Company website URL
+    </ResponseField>
+
+    <ResponseField name="industry" type="string">
+      Company industry
     </ResponseField>
 
     <ResponseField name="employeeCount" type="integer">
@@ -52,7 +60,7 @@ Search for a company on LinkedIn using its domain name and extract comprehensive
     <ResponseField name="employeeCountRange" type="object">
       <Expandable title="Range Properties">
         <ResponseField name="start" type="integer">Minimum range</ResponseField>
-        <ResponseField name="end" type="integer">Maximum range</ResponseField>
+        <ResponseField name="end" type="integer">Maximum range (can be null)</ResponseField>
       </Expandable>
     </ResponseField>
 
@@ -62,20 +70,46 @@ Search for a company on LinkedIn using its domain name and extract comprehensive
         <ResponseField name="geographicArea" type="string">State/Region</ResponseField>
         <ResponseField name="city" type="string">City</ResponseField>
         <ResponseField name="line1" type="string">Street address</ResponseField>
+        <ResponseField name="line2" type="string">Additional address line (can be null)</ResponseField>
         <ResponseField name="postalCode" type="string">Postal code</ResponseField>
       </Expandable>
     </ResponseField>
 
+    <ResponseField name="logoUrl" type="string">
+      Company logo URL
+    </ResponseField>
+
+    <ResponseField name="coverImageUrl" type="string">
+      Company cover image URL (can be null)
+    </ResponseField>
+
+    <ResponseField name="callToAction" type="object">
+      <Expandable title="Call to Action Properties">
+        <ResponseField name="displayText" type="string">Display text for the call to action</ResponseField>
+        <ResponseField name="visible" type="boolean">Whether the call to action is visible</ResponseField>
+        <ResponseField name="type" type="string">Type of call to action</ResponseField>
+        <ResponseField name="url" type="string">URL for the call to action</ResponseField>
+      </Expandable>
+    </ResponseField>
+
     <ResponseField name="locations" type="array">
-      Array of company office locations
+      Array of company office locations with detailed address information
     </ResponseField>
 
     <ResponseField name="organizationType" type="string">
       Type of organization
     </ResponseField>
 
+    <ResponseField name="defaultLocale" type="string">
+      Default locale for the company page
+    </ResponseField>
+
     <ResponseField name="followersCount" type="integer">
       Number of LinkedIn followers
+    </ResponseField>
+
+    <ResponseField name="pageMailbox" type="boolean">
+      Whether the company page has a mailbox
     </ResponseField>
 
     <ResponseField name="verified" type="boolean">
@@ -97,33 +131,55 @@ Search for a company on LinkedIn using its domain name and extract comprehensive
 {
   "status": "success",
   "data": {
-    "name": "Equans",
-    "universalName": "equans",
-    "description": "Equans is a world leader in the energy and services sector, operating in 17 countries with 74,500 employees.",
-    "websiteUrl": "https://www.equans.com",
-    "employeeCount": 74500,
+    "name": "Apple",
+    "universalName": "apple",
+    "description": "We're a diverse collective of thinkers and doers, continually reimagining what's possible to help us all do what we love in new ways. And the same innovation that goes into our products also applies to our practices — strengthening our commitment to leave the world better than we found it. This is where your work can make a difference in people's lives. Including your own.\n\nApple is an equal opportunity employer that is committed to inclusion and diversity. Visit apple.com/careers to learn more.",
+    "tagline": null,
+    "websiteUrl": "http://www.apple.com/careers",
+    "industry": "Fabrication de produits informatiques et électroniques",
+    "employeeCount": 162425,
     "employeeCountRange": {
-      "start": 50000,
-      "end": 100000
+      "start": 10001,
+      "end": null
     },
     "headquarter": {
-      "country": "FR",
-      "geographicArea": "Île-de-France",
-      "city": "Paris",
-      "line1": "Tour Equans",
-      "postalCode": "75008"
+      "country": "US",
+      "geographicArea": "California",
+      "city": "Cupertino",
+      "line2": null,
+      "line1": "1 Apple Park Way",
+      "postalCode": "95014"
+    },
+    "logoUrl": "https://media.licdn.com/dms/image/v2/C560BAQHdAaarsO-eyA/company-logo_200_200/company-logo_200_200/0/1630637844948/apple_logo?e=1756944000&v=beta&t=wLEZ5E4-Tbe_Iip10HmTOc7OWiczVhpnjeLlwBuK76s",
+    "coverImageUrl": null,
+    "callToAction": {
+      "displayText": "Consulter le site web",
+      "visible": true,
+      "type": "VIEW_WEBSITE",
+      "url": "http://www.apple.com/careers"
     },
     "locations": [
       {
-        "country": "FR",
-        "city": "Paris"
+        "streetAddressOptOut": false,
+        "description": "Corporate Headquarters",
+        "address": {
+          "country": "US",
+          "geographicArea": "California",
+          "city": "Cupertino",
+          "line2": null,
+          "line1": "1 Apple Park Way",
+          "postalCode": "95014"
+        },
+        "headquarter": true
       }
     ],
-    "organizationType": "Public Company",
-    "followersCount": 125000,
+    "organizationType": "Entreprise cotée en bourse",
+    "defaultLocale": "en",
+    "followersCount": 17872675,
+    "pageMailbox": false,
     "verified": true,
-    "linkedin_url": "https://www.linkedin.com/company/equans",
-    "searched_domain": "equans.com"
+    "linkedin_url": "https://www.linkedin.com/company/apple",
+    "searched_domain": "apple.com"
   }
 }
 ```
@@ -157,12 +213,6 @@ Search for a company on LinkedIn using its domain name and extract comprehensive
 ```
 </ResponseExample>
 
-### How it works
-
-1. **Domain Search**: The endpoint first searches Google to find the LinkedIn company page associated with the provided domain
-2. **URL Extraction**: It extracts the LinkedIn company URL from the search results
-3. **Data Scraping**: Using the found LinkedIn URL, it scrapes comprehensive company information with automatic proxy rotation
-4. **Data Return**: Returns the complete company profile data along with the LinkedIn URL and searched domain
 
 ### Use Cases
 
@@ -171,16 +221,3 @@ Search for a company on LinkedIn using its domain name and extract comprehensive
 - **Data Enrichment**: Enrich your database with LinkedIn company data using domain names
 - **Market Research**: Research companies in your target market using their domain names
 
-### Rate Limits
-
-This endpoint uses 2 credits per request:
-- 1 credit for the Google search to find the LinkedIn URL
-- 1 credit for the LinkedIn company data scraping
-
-### Error Handling
-
-The endpoint handles various error scenarios:
-- **401**: Insufficient credits
-- **400**: Missing or invalid domain parameter
-- **404**: No LinkedIn company page found for the domain
-- **500**: Service temporarily unavailable or scraping errors 

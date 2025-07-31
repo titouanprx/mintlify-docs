@@ -8,6 +8,13 @@ description: "Search LinkedIn company pages with advanced filters"
 
 This endpoint allows you to search LinkedIn company pages using various advanced filtering criteria.
 
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
@@ -185,7 +192,6 @@ print(response.json())
 ```
 </ResponseExample>
 
-## Error Codes
 
 <ResponseExample>
 ```json
@@ -196,15 +202,11 @@ print(response.json())
 ```
 </ResponseExample>
 
-- **400**: Invalid or missing parameters
-- **401**: Invalid API key or insufficient credits
-- **500**: Server error during request processing
 
 ## Important Notes
 
 - Credit consumption is based on the number of results: 1 credit for 1-10 results, 2 credits for 11-20 results, etc.
 - Credits are only deducted on successful searches
-- The endpoint uses an automatic retry system for proxy errors
 - The `company_name` parameter is supported for backward compatibility with `keyword`
 - **Single keyword**: Advanced search with optional filters for precise results
 - **Multiple keywords**: Automatically activates batch mode for parallel searching

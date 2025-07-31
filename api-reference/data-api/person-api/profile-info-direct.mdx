@@ -217,13 +217,8 @@ Extract comprehensive information from any LinkedIn profile without needing your
 </ResponseExample>
 
 ### Notes
-- This endpoint doesn't require you to have a LinkedIn account - we handle all the extraction for you
-- Contact information extraction is optional and can be disabled by setting `extract_contact_info` to `false`
 - Fields may be empty strings when information is not available on the profile
 - Experience and education arrays may be empty when no entries exist
 - Profile data extraction depth depends on:
   - The profile's privacy settings
   - LinkedIn visibility restrictions
-- This method provides comprehensive data extraction without requiring your own LinkedIn credentials
-- The response structure separates main profile data from contact information for better organization
-- Contact information fields (email, phone, website) are filtered from the main profile data to avoid duplication 

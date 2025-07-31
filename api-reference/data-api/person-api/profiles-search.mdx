@@ -8,6 +8,13 @@ description: "Search LinkedIn profiles with multiple criteria"
 
 This endpoint allows you to search LinkedIn profiles using different search criteria.
 
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
@@ -189,7 +196,6 @@ print(response.json())
 ```
 </ResponseExample>
 
-## Error Codes
 
 <ResponseExample>
 ```json
@@ -200,9 +206,6 @@ print(response.json())
 ```
 </ResponseExample>
 
-- **400**: Invalid parameters or no search criteria provided
-- **401**: Invalid API key or insufficient credits
-- **500**: Server error during request processing
 
 ## Usage Examples
 
@@ -267,9 +270,7 @@ print(response.json())
 
 - Credit consumption is based on the number of results: 1 credit for 1-10 results, 2 credits for 11-20 results, etc.
 - Credits are only deducted on successful searches
-- The endpoint uses an automatic retry system for proxy errors
 - **Single keyword**: Advanced search with optional filters for precise results
 - **Multiple keywords**: Automatically activates batch mode for parallel searching
-- Combining multiple criteria improves result quality
+- Too many keywords can hurt search relevance - it's better to focus on 2-3 key terms rather than overloading the query.
 - All search parameters support both single strings and arrays for flexible searching
-- When using multiple keywords, batch mode is automatically activated for optimal performance

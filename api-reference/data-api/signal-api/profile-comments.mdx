@@ -7,7 +7,10 @@ description: 'Extract comments from a LinkedIn profile (comments that the person
 Extract comments from a LinkedIn profile, showing comments that the person has posted on other posts.
 
 <Note>
-  **Credit Usage:** 1 credit per request
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
 </Note>
 
 ### Header Parameters
@@ -50,78 +53,66 @@ Extract comments from a LinkedIn profile, showing comments that the person has p
 
 <ResponseField name="data" type="object">
   <Expandable title="Properties">
-    <ResponseField name="profile_url" type="string">
-      URL of the analyzed profile
-    </ResponseField>
-
-    <ResponseField name="total_results" type="integer">
-      Number of comments returned in this response
-    </ResponseField>
-
     <ResponseField name="comments" type="array">
       <Expandable title="Comment Object">
-        <ResponseField name="comment_text" type="string">
+        <ResponseField name="comment_id" type="string">
+          LinkedIn URN identifier for the comment
+        </ResponseField>
+
+        <ResponseField name="comment_content" type="string">
           The comment content
         </ResponseField>
 
-        <ResponseField name="created_time" type="string">
-          When the comment was posted
+        <ResponseField name="comment_time" type="string">
+          Relative time when the comment was posted (e.g., "3d", "1w")
         </ResponseField>
 
-        <ResponseField name="likes_count" type="integer">
-          Number of likes on the comment
-        </ResponseField>
-
-        <ResponseField name="replies_count" type="integer">
-          Number of replies to the comment
-        </ResponseField>
-
-        <ResponseField name="post_url" type="string">
-          URL of the post where the comment was made
-        </ResponseField>
-
-        <ResponseField name="post_content" type="string">
-          Brief content or description of the original post
-        </ResponseField>
-
-        <ResponseField name="post_author" type="object">
-          <Expandable title="Post Author Properties">
+        <ResponseField name="commenter" type="object">
+          <Expandable title="Commenter Properties">
             <ResponseField name="name" type="string">
-              Full name of the original post author
+              Full name of the comment author
             </ResponseField>
 
             <ResponseField name="profile_url" type="string">
-              LinkedIn profile URL of the original post author
+              LinkedIn profile URL of the commenter
             </ResponseField>
 
-            <ResponseField name="title" type="string">
-              Professional headline or title
+            <ResponseField name="profile_picture" type="string">
+              URL of the commenter's profile picture
+            </ResponseField>
+
+            <ResponseField name="entity_urn" type="string">
+              LinkedIn URN identifier for the commenter's profile
+            </ResponseField>
+
+            <ResponseField name="headline" type="string">
+              Professional headline or occupation
             </ResponseField>
           </Expandable>
         </ResponseField>
 
-        <ResponseField name="replies" type="array">
-          <Expandable title="Reply Object">
-            <ResponseField name="reply_text" type="string">
-              The reply content
+        <ResponseField name="post" type="object">
+          <Expandable title="Post Properties">
+            <ResponseField name="urn" type="string">
+              LinkedIn URN identifier for the original post
             </ResponseField>
 
-            <ResponseField name="created_time" type="string">
-              When the reply was posted
+            <ResponseField name="url" type="string">
+              URL of the post where the comment was made
             </ResponseField>
 
             <ResponseField name="author" type="object">
-              <Expandable title="Reply Author Properties">
+              <Expandable title="Post Author Properties">
                 <ResponseField name="name" type="string">
-                  Full name of the reply author
+                  Full name of the original post author
                 </ResponseField>
 
                 <ResponseField name="profile_url" type="string">
-                  LinkedIn profile URL of the reply author
+                  LinkedIn profile URL of the original post author
                 </ResponseField>
 
-                <ResponseField name="title" type="string">
-                  Professional headline or title
+                <ResponseField name="entity_urn" type="string">
+                  LinkedIn URN identifier for the post author's profile
                 </ResponseField>
               </Expandable>
             </ResponseField>
@@ -130,14 +121,46 @@ Extract comments from a LinkedIn profile, showing comments that the person has p
       </Expandable>
     </ResponseField>
 
+    <ResponseField name="total_results" type="integer">
+      Number of comments returned in this response
+    </ResponseField>
+
+    <ResponseField name="profile_url" type="string">
+      URL of the analyzed profile
+    </ResponseField>
+
+    <ResponseField name="entity_urn" type="string">
+      LinkedIn URN identifier for the analyzed profile
+    </ResponseField>
+
+    <ResponseField name="profile_urn" type="string">
+      LinkedIn URN identifier for the analyzed profile (alternative format)
+    </ResponseField>
+
     <ResponseField name="pagination" type="object">
       <Expandable title="Pagination Object">
-        <ResponseField name="cursor" type="string">
-          Cursor for next page of results
+        <ResponseField name="start_page" type="integer">
+          Starting page number for the current request
+        </ResponseField>
+
+        <ResponseField name="end_page" type="integer">
+          Ending page number for the current request
+        </ResponseField>
+
+        <ResponseField name="results_per_page" type="integer">
+          Number of results per page
+        </ResponseField>
+
+        <ResponseField name="pages_fetched" type="integer">
+          Number of pages fetched in this request
         </ResponseField>
 
         <ResponseField name="has_more" type="boolean">
           Whether there are more results available
+        </ResponseField>
+
+        <ResponseField name="next_cursor" type="string">
+          Cursor for next page of results
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -149,37 +172,61 @@ Extract comments from a LinkedIn profile, showing comments that the person has p
 {
   "status": "success",
   "data": {
-    "profile_url": "https://www.linkedin.com/in/johndoe",
-    "total_results": 8,
     "comments": [
       {
-        "comment_text": "This is a great insight! Thanks for sharing.",
-        "created_time": "2024-01-15T10:30:00Z",
-        "likes_count": 5,
-        "replies_count": 2,
-        "post_url": "https://www.linkedin.com/posts/example-post",
-        "post_content": "Excited to share our latest product launch...",
-        "post_author": {
-          "name": "Jane Smith",
-          "profile_url": "https://www.linkedin.com/in/janesmith",
-          "title": "CEO at Tech Corp"
+        "comment_id": "urn:li:fsd_update:(urn:li:activity:7356769110317252608,PROFILE_COMMENTS,EMPTY,DEFAULT,false)",
+        "comment_content": "N'importe quel créateur Linkedin le ferait payer 499€ / mois. Sauf qu'aujourd'hui, j'ai décidé de t'offrir gratuitement TOUTES mes ressources de 2025 (et 2024) 🎁\n\nOui t'as bien entendu, j'ai centralisé tous les leads magnets que j'ai fait en 2025 pour les mettre à un seul endroit 👌\n\n----\n\n🔹 Toutes mes masterclass en Cold Email et Prospection automatisée.\n\n🔹 Toutes mes ressources sur mes stratégies Linkedin\n\n🔹 Tous les processus publiques de mon accompagnement Offbound\n\n--\n\nAprès avoir obtenu des milliers de commentaires sous ces posts, j'ai centralisé tous ces documents dans un seul espace.\n\nAujourd'hui, 𝗷𝗲 𝘁𝗲 𝗹𝗲 𝗱𝗼𝗻𝗻𝗲 𝗴𝗿𝗮𝘁𝘂𝗶𝘁𝗲𝗺𝗲𝗻𝘁 pour que tu ne perdes aucun temps 💙\n\n--\n\n👉 Pour le recevoir, 𝗹𝗶𝗸𝗲 + 𝗰𝗼𝗺𝗺𝗲𝗻𝘁𝗲 \"CADEAU\" + 𝗮𝗷𝗼𝘂𝘁𝗲-𝗺𝗼𝗶 sur Linkedin\n\n(demande-moi bien en connexion sinon je ne pourrai rien t'envoyer 😇)\n\nMerci de m'avoir lu 🙏\n\n––––––\n\nPS : Je transmets un conseil par jour pour systématiser l'acquisition de ton agence ➜ abonne-toi\n\nPPS : Réserve ta session de consulting offerte en cliquant en haut sur \"Prendre un rendez-vous\" ⬆︎︎︎︎",
+        "comment_time": "3d",
+        "commenter": {
+          "name": "Valentin Thomy",
+          "profile_url": "https://www.linkedin.com/in/valentin-thomy?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+          "profile_picture": "https://media.licdn.com/dms/image/v2/D4E03AQEo5zj7XYSLQQ/profile-displayphoto-shrink_200_200/B4EZdf2Z5SHQAg-/0/1749659787615?e=1756944000&v=beta&t=UassGUldcHGT491z4bfZ-0pBNeqMgEL0GNrrpsJXoxc",
+          "entity_urn": "urn:li:fsd_profile:ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+          "headline": "On systématise l'acquisition de ton agence marketing en 120 jours – Et ça, avec une méthode MINIMALISTE et adaptée au marché Français 🇫🇷 ✦ + 60 agences transformées ✦ Clique sur \"Prendre Rendez-vous\" "
         },
-        "replies": [
-          {
-            "reply_text": "I completely agree with your point!",
-            "created_time": "2024-01-15T11:00:00Z",
-            "author": {
-              "name": "Bob Johnson",
-              "profile_url": "https://www.linkedin.com/in/bobjohnson",
-              "title": "Product Manager"
-            }
+        "post": {
+          "urn": "urn:li:activity:7355465957651140608",
+          "url": "https://www.linkedin.com/feed/update/urn:li:activity:7356769110317252608?updateEntityUrn=urn%3Ali%3Afsd_update%3A%28urn%3Ali%3Aactivity%3A7356769110317252608%2CPROFILE_COMMENTS%2CEMPTY%2CDEFAULT%2Cfalse%29&originTrackingId=Bpp56F%2BlPzL%2BbMhb2X2vlQ%3D%3D",
+          "author": {
+            "name": "Valentin Thomy",
+            "profile_url": "https://www.linkedin.com/in/valentin-thomy?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+            "entity_urn": "urn:li:fsd_profile:ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk"
           }
-        ]
+        }
+      },
+      {
+        "comment_id": "urn:li:fsd_update:(urn:li:activity:7356769062615404544,PROFILE_COMMENTS,EMPTY,DEFAULT,false)",
+        "comment_content": "N'importe quel créateur Linkedin le ferait payer 499€ / mois. Sauf qu'aujourd'hui, j'ai décidé de t'offrir gratuitement TOUTES mes ressources de 2025 (et 2024) 🎁\n\nOui t'as bien entendu, j'ai centralisé tous les leads magnets que j'ai fait en 2025 pour les mettre à un seul endroit 👌\n\n----\n\n🔹 Toutes mes masterclass en Cold Email et Prospection automatisée.\n\n🔹 Toutes mes ressources sur mes stratégies Linkedin\n\n🔹 Tous les processus publiques de mon accompagnement Offbound\n\n--\n\nAprès avoir obtenu des milliers de commentaires sous ces posts, j'ai centralisé tous ces documents dans un seul espace.\n\nAujourd'hui, 𝗷𝗲 𝘁𝗲 𝗹𝗲 𝗱𝗼𝗻𝗻𝗲 𝗴𝗿𝗮𝘁𝘂𝗶𝘁𝗲𝗺𝗲𝗻𝘁 pour que tu ne perdes aucun temps 💙\n\n--\n\n👉 Pour le recevoir, 𝗹𝗶𝗸𝗲 + 𝗰𝗼𝗺𝗺𝗲𝗻𝘁𝗲 \"CADEAU\" + 𝗮𝗷𝗼𝘂𝘁𝗲-𝗺𝗼𝗶 sur Linkedin\n\n(demande-moi bien en connexion sinon je ne pourrai rien t'envoyer 😇)\n\nMerci de m'avoir lu 🙏\n\n––––––\n\nPS : Je transmets un conseil par jour pour systématiser l'acquisition de ton agence ➜ abonne-toi\n\nPPS : Réserve ta session de consulting offerte en cliquant en haut sur \"Prendre un rendez-vous\" ⬆︎︎︎︎",
+        "comment_time": "3d",
+        "commenter": {
+          "name": "Valentin Thomy",
+          "profile_url": "https://www.linkedin.com/in/valentin-thomy?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+          "profile_picture": "https://media.licdn.com/dms/image/v2/D4E03AQEo5zj7XYSLQQ/profile-displayphoto-shrink_200_200/B4EZdf2Z5SHQAg-/0/1749659787615?e=1756944000&v=beta&t=UassGUldcHGT491z4bfZ-0pBNeqMgEL0GNrrpsJXoxc",
+          "entity_urn": "urn:li:fsd_profile:ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+          "headline": "On systématise l'acquisition de ton agence marketing en 120 jours – Et ça, avec une méthode MINIMALISTE et adaptée au marché Français 🇫🇷 ✦ + 60 agences transformées ✦ Clique sur \"Prendre Rendez-vous\" "
+        },
+        "post": {
+          "urn": "urn:li:activity:7355465957651140608",
+          "url": "https://www.linkedin.com/feed/update/urn:li:activity:7356769062615404544?updateEntityUrn=urn%3Ali%3Afsd_update%3A%28urn%3Ali%3Aactivity%3A7356769062615404544%2CPROFILE_COMMENTS%2CEMPTY%2CDEFAULT%2Cfalse%29&originTrackingId=%2B0z8SKISc21KSTeMMyN5lw%3D%3D",
+          "author": {
+            "name": "Valentin Thomy",
+            "profile_url": "https://www.linkedin.com/in/valentin-thomy?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+            "entity_urn": "urn:li:fsd_profile:ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk"
+          }
+        }
       }
     ],
+    "total_results": 10,
+    "profile_url": "https://www.linkedin.com/in/valentin-thomy/",
+    "entity_urn": "ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
+    "profile_urn": "urn:li:fsd_profile:ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk",
     "pagination": {
-      "cursor": "eyJ0aW1lc3RhbXAiOiIxNzA1MzI0MDAwIiwicGFnZSI6MiwiaGFzTW9yZSI6dHJ1ZX0=",
-      "has_more": true
+      "start_page": 1,
+      "end_page": 1,
+      "results_per_page": 10,
+      "pages_fetched": 1,
+      "has_more": true,
+      "next_cursor": "dXJuOmxpOmFjdGl2aXR5OjczNTY3Njg3OTAwMTA4MzA4NDgtMTc1Mzk5MzM4NDU0OA=="
     }
   }
 }
@@ -221,9 +268,9 @@ Extract comments from a LinkedIn profile, showing comments that the person has p
 ### Notes
 
 - The API extracts comments that the profile owner has posted on other posts
-- Results are paginated using cursor-based pagination
-- The `cursor` parameter can be used to continue from where a previous request left off
-- Comments include replies when available
-- Post content may be truncated for privacy reasons
-- Rate limits apply to profile comment extraction requests
-- The pagination object provides a cursor for fetching the next page of results 
+- Results are paginated using both page-based and cursor-based pagination
+- The `comment_time` field provides relative time (e.g., "3d", "1w") rather than absolute timestamps
+- Each comment includes detailed information about both the commenter and the original post
+- The `comment_id` field contains LinkedIn URN identifiers for unique comment identification
+- Profile pictures and headlines are included when available
+- The pagination object provides both page information and a cursor for fetching the next page of results 

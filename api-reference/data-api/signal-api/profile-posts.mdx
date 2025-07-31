@@ -7,8 +7,12 @@ description: 'Extract posts from a LinkedIn profile'
 Extract posts from a LinkedIn profile with various filtering and sorting options.
 
 <Note>
-  **Credit Usage:** 1 credit per request
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
 </Note>
+
 
 ### Header Parameters
 
@@ -96,44 +100,56 @@ Extract posts from a LinkedIn profile with various filtering and sorting options
 
     <ResponseField name="posts" type="array">
       <Expandable title="Post Object">
-        <ResponseField name="post_url" type="string">
+        <ResponseField name="shareAudience" type="string">
+          Audience setting for the post (e.g., "PUBLIC", "CONNECTIONS")
+        </ResponseField>
+
+        <ResponseField name="shareUrl" type="string">
           URL of the post
         </ResponseField>
 
-        <ResponseField name="post_type" type="string">
-          Type of post (ARTICLE, VIDEO, PHOTO, DOCUMENT, TEXT)
-        </ResponseField>
-
-        <ResponseField name="content" type="string">
+        <ResponseField name="text" type="string">
           Post content or description
         </ResponseField>
 
-        <ResponseField name="created_time" type="string">
-          When the post was created
-        </ResponseField>
-
-        <ResponseField name="likes_count" type="integer">
+        <ResponseField name="numLikes" type="integer">
           Number of likes on the post
         </ResponseField>
 
-        <ResponseField name="comments_count" type="integer">
+        <ResponseField name="numComments" type="integer">
           Number of comments on the post
         </ResponseField>
 
-        <ResponseField name="shares_count" type="integer">
+        <ResponseField name="numShares" type="integer">
           Number of shares of the post
         </ResponseField>
 
-        <ResponseField name="media_urls" type="array">
-          URLs of media attached to the post (images, videos, documents)
+        <ResponseField name="actor_name" type="string">
+          Name of the post author
         </ResponseField>
 
-        <ResponseField name="article_url" type="string">
-          URL of the article (if post_type is ARTICLE)
+        <ResponseField name="actor_description" type="string">
+          Professional headline or description of the post author
         </ResponseField>
 
-        <ResponseField name="article_title" type="string">
-          Title of the article (if post_type is ARTICLE)
+        <ResponseField name="actor_image" type="string">
+          URL of the post author's profile picture
+        </ResponseField>
+
+        <ResponseField name="actor_profile_url" type="string">
+          LinkedIn profile URL of the post author
+        </ResponseField>
+
+        <ResponseField name="created_time" type="integer">
+          Unix timestamp when the post was created
+        </ResponseField>
+
+        <ResponseField name="backend_urn" type="string">
+          LinkedIn URN identifier for the post
+        </ResponseField>
+
+        <ResponseField name="post_images" type="array">
+          URLs of images attached to the post
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -145,8 +161,8 @@ Extract posts from a LinkedIn profile with various filtering and sorting options
 {
   "status": "success",
   "data": {
-    "profile_url": "https://www.linkedin.com/in/johndoe",
-    "total_results": 5,
+    "profile_url": "https://www.linkedin.com/in/thomas-read-35215830a/",
+    "total_results": 10,
     "filters": {
       "post_type": "ALL",
       "sort_by": "DATE_POSTED",
@@ -155,28 +171,49 @@ Extract posts from a LinkedIn profile with various filtering and sorting options
     },
     "posts": [
       {
-        "post_url": "https://www.linkedin.com/posts/johndoe_example-post",
-        "post_type": "ARTICLE",
-        "content": "Excited to share my latest thoughts on the future of AI in business...",
-        "created_time": "2024-01-15T10:30:00Z",
-        "likes_count": 45,
-        "comments_count": 12,
-        "shares_count": 8,
-        "media_urls": [],
-        "article_url": "https://www.linkedin.com/pulse/example-article",
-        "article_title": "The Future of AI in Business"
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/thomas-read-35215830a_ive-built-45-ai-agent-set-up-guides-to-activity-7348316259391823873-T7Ec?utm_source=combined_share_message&utm_medium=ios_app&rcm=ACoAAFyCXeoBWi7pNYQgRnKertW5tkcVFRqC4h0",
+        "text": "I've Built 45 AI Agent Set-up Guides \nTo Give To Everyone On LinkedIn For FREE!\n\nEach Agent is trained for a specific role and works 24/7 - no breaks, no burnout. \n\nI'm sharing the exact blueprints to build each agent. \n\nIf you would like me to send you access \n\nAll you have to do is: \n\n1️⃣ Like this post 👍\n\n2️⃣ Comment \"ai agents\" 💬\n\nAnd then I will send you access! \n\n(MUST BE CONNECTED) \n\nP.S. I might not be able to get back to all the comments, so if you want priority access:\nClick Repost 🔄",
+        "numLikes": 3327,
+        "numComments": 5054,
+        "numShares": 210,
+        "actor_name": "Thomas Read",
+        "actor_description": "B2B Owners: Turn Your Website Visits into Paying Clients with a Genuine Al Lead Gen System (Fully Automated).",
+        "actor_image": "https://media.licdn.com/dms/image/v2/D4E03AQHsbVT-RV3QNw/profile-displayphoto-shrink_800_800/B4EZRdWswWHMAc-/0/1736733020007?e=1756944000&v=beta&t=vlbwBMYBwJLUmn_OgynENVVnJmV_LJUwzD_8vlzGcrw",
+        "actor_profile_url": "https://www.linkedin.com/in/thomas-read-35215830a?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAE6wOO4BB4MNxFsujMp7AuJwxYNAqX8Hses",
+        "created_time": 1753993527,
+        "backend_urn": "urn:li:activity:7348316259391823873",
+        "post_images": ["https://media.licdn.com/dms/image/v2/D4E22AQF39OkUfMOR4A/feedshare-shrink_480/B4EZfp2spHHcAc-/0/1751975120398?e=1756944000&v=beta&t=PzpPk3c-lG5fyiTO7FhczZfjVBoFn0E3roKywVNCejk"]
       },
       {
-        "post_url": "https://www.linkedin.com/posts/johndoe_another-post",
-        "post_type": "TEXT",
-        "content": "Great meeting with the team today!",
-        "created_time": "2024-01-14T15:20:00Z",
-        "likes_count": 23,
-        "comments_count": 5,
-        "shares_count": 2,
-        "media_urls": ["https://media.licdn.com/dms/image/..."],
-        "article_url": null,
-        "article_title": null
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/thomas-read-35215830a_how-i-rebuilt-amazons-banned-10m-ai-hiring-activity-7347621144960638977-1y7J?utm_source=combined_share_message&utm_medium=ios_app&rcm=ACoAAFyCXeoBWi7pNYQgRnKertW5tkcVFRqC4h0",
+        "text": "Finley Topping Is doing some really impressive work at the moment. \nHe is re-building AI Systems for the biggest companies in the world! 🌍 \nCheck it out here 👇",
+        "numLikes": 13,
+        "numComments": 2,
+        "numShares": 0,
+        "actor_name": "Thomas Read",
+        "actor_description": "B2B Owners: Turn Your Website Visits into Paying Clients with a Genuine Al Lead Gen System (Fully Automated).",
+        "actor_image": "https://media.licdn.com/dms/image/v2/D4E03AQHsbVT-RV3QNw/profile-displayphoto-shrink_800_800/B4EZRdWswWHMAc-/0/1736733020007?e=1756944000&v=beta&t=vlbwBMYBwJLUmn_OgynENVVnJmV_LJUwzD_8vlzGcrw",
+        "actor_profile_url": "https://www.linkedin.com/in/thomas-read-35215830a?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAE6wOO4BB4MNxFsujMp7AuJwxYNAqX8Hses",
+        "created_time": 1753993527,
+        "backend_urn": "urn:li:activity:7347621144960638977",
+        "post_images": []
+      },
+      {
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/thomas-read-35215830a_free-giveaway-the-ultimate-automated-activity-7345393238821797888-CFnP?utm_source=combined_share_message&utm_medium=ios_app&rcm=ACoAAFyCXeoBWi7pNYQgRnKertW5tkcVFRqC4h0",
+        "text": "FREE GIVEAWAY 🤖🎁🎉\nThe Ultimate Automated Lead Gen Machine\n\n\n✨ What This Automation Does: \n\n✅ Scrapes leads from Google, TikTok, IG, LinkedIn, FB & YouTube\n\n✅ Generates 30+ platform-specific content scripts\n\n✅ Scores & enriches leads (via Relevance AI)\n\n✅ Sends personalized outreach via DM + email\n\n✅ Runs 100% no-code on Make.com\n\n\n\n🎥 Imagine this running while you sleep:\n\n- 📍 Google Maps: Local leads + SEO-ready content\n- 🎵 TikTok: Viral script ideas + influencer outreach\n- 📸 Instagram: Reels scripts + niche-specific DMs\n- 💼 LinkedIn: Authority posts + automated InMail\n- 📘 Facebook: Group/page insights + Messenger outreach\n- 📺 YouTube: Shorts + multichannel lead-nurturing\n\nIf you would like me to send you access \nAll you have to do is: \n\n1️⃣ Like this post 👍\n\n2️⃣ Comment \"leads\" 💬\n\nAnd then I will send you access! \n\n(MUST BE CONNECTED) \n\nP.S. I might not be able to get back to all the comments, so if you want priority access:\nClick Repost 🔄",
+        "numLikes": 441,
+        "numComments": 904,
+        "numShares": 22,
+        "actor_name": "Thomas Read",
+        "actor_description": "B2B Owners: Turn Your Website Visits into Paying Clients with a Genuine Al Lead Gen System (Fully Automated).",
+        "actor_image": "https://media.licdn.com/dms/image/v2/D4E03AQHsbVT-RV3QNw/profile-displayphoto-shrink_800_800/B4EZRdWswWHMAc-/0/1736733020007?e=1756944000&v=beta&t=vlbwBMYBwJLUmn_OgynENVVnJmV_LJUwzD_8vlzGcrw",
+        "actor_profile_url": "https://www.linkedin.com/in/thomas-read-35215830a?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAE6wOO4BB4MNxFsujMp7AuJwxYNAqX8Hses",
+        "created_time": 1751401527,
+        "backend_urn": "urn:li:activity:7345393238821797888",
+        "post_images": ["https://media.licdn.com/dms/image/v2/D4E22AQHdsIKLx0GwyQ/feedshare-shrink_160/B4EZfAUOd9HIAc-/0/1751278217815?e=1756944000&v=beta&t=pu6E42L44JmmqkSK5AnA1wyATcOTm8F7_NTKO-ZZl2Q"]
       }
     ]
   }
@@ -228,9 +265,10 @@ Extract posts from a LinkedIn profile with various filtering and sorting options
 - The API supports LinkedIn profile URLs in the format `linkedin.com/in/username`
 - Results can be filtered by post type, sorted by relevance or date, and filtered by keywords
 - Date filters allow you to focus on recent posts
+- The `created_time` field is provided as a Unix timestamp
+- Each post includes detailed information about the author including name, description, profile picture, and profile URL
+- The `shareAudience` field indicates the visibility setting of the post
+- The `backend_urn` field contains LinkedIn URN identifiers for unique post identification
 - **Pagination Mode vs. Total Results Mode**:
   - **Total Results Mode**: Use the `total_results` parameter to specify how many posts you want (default)
   - **Pagination Mode**: Set `use_pagination` to true and use `start_page` and `end_page` parameters
-- Media URLs are provided for posts with images, videos, or documents
-- Article posts include additional metadata like article URL and title
-- Rate limits apply to profile post extraction requests 

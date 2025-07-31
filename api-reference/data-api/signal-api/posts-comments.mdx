@@ -7,8 +7,12 @@ description: 'Extract comments from a specific LinkedIn post'
 Extract detailed comments from a LinkedIn post, including information about who commented and the comment content.
 
 <Note>
-  **Credit Usage:** 1 credit per request
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
 </Note>
+
 
 ### Header Parameters
 
@@ -64,70 +68,38 @@ Extract detailed comments from a LinkedIn post, including information about who 
 
     <ResponseField name="comments" type="array">
       <Expandable title="Comment Object">
+        <ResponseField name="comment_urn" type="string">
+          LinkedIn URN identifier for the comment
+        </ResponseField>
+
+        <ResponseField name="tracking_id" type="string">
+          Internal tracking identifier for the comment
+        </ResponseField>
+
         <ResponseField name="comment_text" type="string">
           The comment content
         </ResponseField>
 
-        <ResponseField name="created_time" type="string">
-          When the comment was posted
+        <ResponseField name="created_time" type="integer">
+          Unix timestamp when the comment was posted
         </ResponseField>
 
-        <ResponseField name="likes_count" type="integer">
-          Number of likes on the comment
-        </ResponseField>
-
-        <ResponseField name="replies_count" type="integer">
-          Number of replies to the comment
-        </ResponseField>
-
-        <ResponseField name="author" type="object">
-          <Expandable title="Author Properties">
+        <ResponseField name="commenter" type="object">
+          <Expandable title="Commenter Properties">
             <ResponseField name="name" type="string">
               Full name of the comment author
             </ResponseField>
 
-            <ResponseField name="profile_url" type="string">
-              LinkedIn profile URL of the author
+            <ResponseField name="profile_urn" type="string">
+              LinkedIn URN identifier for the commenter's profile
             </ResponseField>
 
-            <ResponseField name="profile_picture" type="string">
-              URL of the author's profile picture (if available)
+            <ResponseField name="linkedin_url" type="string">
+              LinkedIn profile URL of the commenter
             </ResponseField>
 
-            <ResponseField name="title" type="string">
-              Professional headline or title
-            </ResponseField>
-
-            <ResponseField name="connection_degree" type="string">
-              LinkedIn connection degree (1st, 2nd, 3rd)
-            </ResponseField>
-          </Expandable>
-        </ResponseField>
-
-        <ResponseField name="replies" type="array">
-          <Expandable title="Reply Object">
-            <ResponseField name="reply_text" type="string">
-              The reply content
-            </ResponseField>
-
-            <ResponseField name="created_time" type="string">
-              When the reply was posted
-            </ResponseField>
-
-            <ResponseField name="author" type="object">
-              <Expandable title="Reply Author Properties">
-                <ResponseField name="name" type="string">
-                  Full name of the reply author
-                </ResponseField>
-
-                <ResponseField name="profile_url" type="string">
-                  LinkedIn profile URL of the reply author
-                </ResponseField>
-
-                <ResponseField name="title" type="string">
-                  Professional headline or title
-                </ResponseField>
-              </Expandable>
+            <ResponseField name="occupation" type="string">
+              Professional headline or occupation
             </ResponseField>
           </Expandable>
         </ResponseField>
@@ -141,33 +113,129 @@ Extract detailed comments from a LinkedIn post, including information about who 
 {
   "status": "success",
   "data": {
-    "post_url": "https://www.linkedin.com/posts/example-post",
-    "total_results": 8,
-    "total_available": 45,
+    "post_url": "https://www.linkedin.com/posts/valentin-thomy_lemlist-ont-r%C3%A9cemment-sorti-un-crm-et-pourtant-activity-7356553168706560000-yvf4?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ",
+    "total_results": 10,
+    "total_available": 14,
     "comments": [
       {
-        "comment_text": "Great insights! This is exactly what we've been looking for.",
-        "created_time": "2024-01-15T10:30:00Z",
-        "likes_count": 3,
-        "replies_count": 1,
-        "author": {
-          "name": "Jane Smith",
-          "profile_url": "https://www.linkedin.com/in/janesmith",
-          "profile_picture": "https://media.licdn.com/dms/image/...",
-          "title": "Marketing Manager at Tech Corp",
-          "connection_degree": "1st"
-        },
-        "replies": [
-          {
-            "reply_text": "I completely agree!",
-            "created_time": "2024-01-15T11:00:00Z",
-            "author": {
-              "name": "Bob Johnson",
-              "profile_url": "https://www.linkedin.com/in/bobjohnson",
-              "title": "Product Manager"
-            }
-          }
-        ]
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356655578686853121)",
+        "tracking_id": "rkBbUmOoagwgBP97nmWK6w==",
+        "comment_text": "Fadel Jaber  tu es vraiment partout",
+        "created_time": 1753963370010,
+        "commenter": {
+          "name": "Elias Hamouda",
+          "profile_urn": "urn:li:fsd_profile:ACoAADKXCbEBxLGzZOkZoGF0p_TjRHXxrviM20w",
+          "linkedin_url": "https://www.linkedin.com/in/elias-hamouda",
+          "occupation": "Je revele ce quon ne voit pas et ce qui coute trop | Data Analyst | Power BI Specialist PL-300"
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356676341427044378)",
+        "tracking_id": "wY7F+ZH0M2aiQ7oyJlbY5A==",
+        "comment_text": "tu penses que ca peut remplacer Hubspot dans certains cas ?",
+        "created_time": 1753968320234,
+        "commenter": {
+          "name": "Hugues Selderslagh",
+          "profile_urn": "urn:li:fsd_profile:ACoAAC2OuVIBBh2q3Zyd5z5fWOJyAlCqWtXvoh4",
+          "linkedin_url": "https://www.linkedin.com/in/hugues-selderslagh",
+          "occupation": "SalesTech & Outbound Systems | People & Sales Development at ColdIQ | Automatisez votre prospection B2B avec les meilleurs outils AI (coldiq.com/ai-sales-tools)"
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356572899647918104)",
+        "tracking_id": "mqtsPbHxC+0boLUXtFLNHg==",
+        "comment_text": "Il est temps que j'essaye Lemlist ..!",
+        "created_time": 1753943657792,
+        "commenter": {
+          "name": "Martin Bassard ",
+          "profile_urn": "urn:li:fsd_profile:ACoAABqfXvsBPFa5N600j7XyMviZsnieBaldq2I",
+          "linkedin_url": "https://www.linkedin.com/in/martin-bassard",
+          "occupation": "Je debloque la performance des solo.dirigeant.e.s & freelances qui veulent developper leur potentiel et leur CA  Ton associe Business & Mental  | Createur du GRAND SAUTTM"
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356650029337509890)",
+        "tracking_id": "9ViDSV2BTbjDqyE6ixs2Fg==",
+        "comment_text": "ca c'est quon appelle upgrade silencieux !!",
+        "created_time": 1753962046943,
+        "commenter": {
+          "name": "Gaspard Fruchon",
+          "profile_urn": "urn:li:fsd_profile:ACoAAEQyMrEBsBeEPYhP9bu6I7h-ON9eWquOJsI",
+          "linkedin_url": "https://www.linkedin.com/in/gaspard-fruchon",
+          "occupation": "Je vous offre votre roadmap LinkedInTM Ads  | Expert LinkedInTM Ads | +35 entreprises accompagnees | Je partage un conseil LinkedInTM Ads par jour  Abonnez-vous"
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356581668951896067)",
+        "tracking_id": "89wKThEqbbNoeGdxK4oxXQ==",
+        "comment_text": "Cest bon a savoir anh",
+        "created_time": 1753945748557,
+        "commenter": {
+          "name": "Salome M.",
+          "profile_urn": "urn:li:fsd_profile:ACoAACl16poB--CeeSt8D-U_LKBszuF9vGYr3k0",
+          "linkedin_url": "https://www.linkedin.com/in/salome-m-736b52174",
+          "occupation": "Jaide les independants a obtenir 5 a 10 leads qualifies par semaine, sans DM lourds ni contenu bullshit | Accompagnement Linkedin 1:1 sur 90 jours | Lancement en aout | candidature ici "
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356555226356637696)",
+        "tracking_id": "gQheurRXZVEPAfdW5j915Q==",
+        "comment_text": "tu deconseilles de connecter son CRM pour eviter de faire doublon du coup ?",
+        "created_time": 1753939444151,
+        "commenter": {
+          "name": "Maeva Plichard",
+          "profile_urn": "urn:li:fsd_profile:ACoAAC6g1UUB3vUqqSBFglCnFfM5agrA8i880ws",
+          "linkedin_url": "https://www.linkedin.com/in/maëva-plichard-545ba3199",
+          "occupation": "Je construis ton espace de travail avec Notion | On discute de ton projet ? Reserve un appel "
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356614261080494080)",
+        "tracking_id": "9/U4XIGbYYMfSuAtYWeVcw==",
+        "comment_text": "Super bien vu, ca change tout dans lusage de Lemlist !",
+        "created_time": 1753953519125,
+        "commenter": {
+          "name": "Alexandre Chiabai",
+          "profile_urn": "urn:li:fsd_profile:ACoAACCd1DkB_1LFIrB1SVh0ZfopqySEJRAnFn8",
+          "linkedin_url": "https://www.linkedin.com/in/alexandre-chiabai",
+          "occupation": "On trouve vos futurs clients | Top 1% des systemes d'acquisition | 4+ ans d'XP"
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356562947445309440)",
+        "tracking_id": "uxnNa3gkNvrYfTfEjdNiqQ==",
+        "comment_text": "Merci pour ce partage tres utile !  ",
+        "created_time": 1753941285002,
+        "commenter": {
+          "name": "Clement Gerardin",
+          "profile_urn": "urn:li:fsd_profile:ACoAACqdeEMBpj8BIC3pKaWTN-d4k-tSUaC5rzk",
+          "linkedin_url": "https://www.linkedin.com/in/clemgerardin",
+          "occupation": "Scale ton business en implantant la methode L.I.N.K | Systeme d'acquisition dope a lIA qui attire des prospects prets a acheter | Une structure et une automatisation qui scale a +15K/mois | Consulting offert "
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356603362819162115)",
+        "tracking_id": "ozyTEZJN8RFb8FZof31oAg==",
+        "comment_text": "Les equipes shippent plus vite qu'ils ne peuvent communiquer \nTres cool cette video de presentation ",
+        "created_time": 1753950920778,
+        "commenter": {
+          "name": "Eithan Benero",
+          "profile_urn": "urn:li:fsd_profile:ACoAAB_tnO8BmJpzpROoLEWZgBT2OHwOxF5r1fg",
+          "linkedin_url": "https://www.linkedin.com/in/eithan-benero",
+          "occupation": "Growth & Lemlist expert | Votre acquisition B2B merite une vraie strategie"
+        }
+      },
+      {
+        "comment_urn": "urn:li:comment:(ugcPost:7356553125509365760,7356664504421687297)",
+        "tracking_id": "gik+vNbwVno016TfO1/FtA==",
+        "comment_text": "moi aussi j'aime bien ses posts ",
+        "created_time": 1753965498072,
+        "commenter": {
+          "name": "Fadel Jaber ",
+          "profile_urn": "urn:li:fsd_profile:ACoAAD9TUJABnqd2ysdrGoCMpCqL83Iv3UQq2zo",
+          "linkedin_url": "https://www.linkedin.com/in/fadel-jaber",
+          "occupation": " On aide les Coachs qui vendent sur LinkedIn a devenir une reference sur la plateforme en 2025, grace a notre methode FLCSTM en 4 etapes (strategie , Landing Page...)  Expert Meta ADS  Top 3% LinkedIn FR"
+        }
       }
     ]
   }
@@ -211,9 +279,9 @@ Extract detailed comments from a LinkedIn post, including information about who 
 
 - The API supports LinkedIn post URLs in various formats
 - Results are paginated with configurable page ranges when using pagination mode
-- Comments include replies when available
-- The profile picture URL may be null if not available
-- Connection degree shows your network relationship with the comment author
+- The `created_time` field is provided as a Unix timestamp
+- Each comment includes a unique `comment_urn` and `tracking_id` for identification
+- The `commenter` object contains detailed information about the comment author
 - **Pagination Mode vs. Total Results Mode**:
   - **Total Results Mode**: Use the `total_results` parameter to specify how many comments you want (default)
   - **Pagination Mode**: Set `use_pagination` to true and use `start_page` and `end_page` parameters

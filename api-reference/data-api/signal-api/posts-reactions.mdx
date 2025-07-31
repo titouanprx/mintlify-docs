@@ -7,7 +7,10 @@ description: 'Extract reactions (likes, etc.) from a specific LinkedIn post'
 Extract detailed reactions from a LinkedIn post, including information about who reacted and the type of reaction.
 
 <Note>
-  **Credit Usage:** 1 credit per request
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
 </Note>
 
 ### Header Parameters
@@ -64,36 +67,24 @@ Extract detailed reactions from a LinkedIn post, including information about who
 
     <ResponseField name="reactions" type="array">
       <Expandable title="Reaction Object">
-        <ResponseField name="reaction_type" type="string">
-          Type of reaction (e.g., "LIKE", "CELEBRATE", "SUPPORT", etc.)
+        <ResponseField name="type" type="string">
+          Type of reaction (e.g., "LIKE", "INTEREST", "EMPATHY", etc.)
         </ResponseField>
 
-        <ResponseField name="created_time" type="string">
-          When the reaction was made
+        <ResponseField name="name" type="string">
+          Full name of the person who reacted
         </ResponseField>
 
-        <ResponseField name="actor" type="object">
-          <Expandable title="Actor Properties">
-            <ResponseField name="name" type="string">
-              Full name of the person who reacted
-            </ResponseField>
+        <ResponseField name="subtitle" type="string">
+          Professional headline or title of the reactor
+        </ResponseField>
 
-            <ResponseField name="profile_url" type="string">
-              LinkedIn profile URL of the reactor
-            </ResponseField>
+        <ResponseField name="profile_url" type="string">
+          LinkedIn profile URL of the reactor
+        </ResponseField>
 
-            <ResponseField name="profile_picture" type="string">
-              URL of the reactor's profile picture (if available)
-            </ResponseField>
-
-            <ResponseField name="title" type="string">
-              Professional headline or title
-            </ResponseField>
-
-            <ResponseField name="connection_degree" type="string">
-              LinkedIn connection degree (1st, 2nd, 3rd)
-            </ResponseField>
-          </Expandable>
+        <ResponseField name="actor_urn" type="string">
+          LinkedIn URN identifier for the reactor's profile
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -105,20 +96,79 @@ Extract detailed reactions from a LinkedIn post, including information about who
 {
   "status": "success",
   "data": {
-    "post_url": "https://www.linkedin.com/posts/example-post",
-    "total_results": 15,
-    "total_available": 245,
+    "post_url": "https://www.linkedin.com/posts/valentin-thomy_lemlist-ont-r%C3%A9cemment-sorti-un-crm-et-pourtant-activity-7356553168706560000-yvf4?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFHoUZgB6wGz0HEW1MdqGW45NI4e-JhvGqQ",
+    "total_results": 10,
+    "total_available": 30,
     "reactions": [
       {
-        "reaction_type": "LIKE",
-        "created_time": "2024-01-15T10:30:00Z",
-        "actor": {
-          "name": "John Doe",
-          "profile_url": "https://www.linkedin.com/in/johndoe",
-          "profile_picture": "https://media.licdn.com/dms/image/...",
-          "title": "Software Engineer at Tech Corp",
-          "connection_degree": "2nd"
-        }
+        "type": "INTEREST",
+        "name": "Nourelhouda Kadem ",
+        "subtitle": "Architecte dinterieur  | Je concois pour mettre en lumiere vos espaces residentiels & recevant du public | Mobilier sur-mesure | Visuels 3D realistes | Top 200 createurs LinkedIn Algerie",
+        "profile_url": "https://www.linkedin.com/in/nourelhouda-kadem-🏘-10b85420a",
+        "actor_urn": "urn:li:fsd_profile:ACoAADUpsJsBqlF3JXfg0ihSZ6Tj0uMXqDxWhig"
+      },
+      {
+        "type": "LIKE",
+        "name": "Benjamin  Berteau",
+        "subtitle": " Growth Marketing chez Plug'Heur",
+        "profile_url": "https://www.linkedin.com/in/benjamin-berteau",
+        "actor_urn": "urn:li:fsd_profile:ACoAACRO4foBcvfqWEDQvFecALD2K9DFz2_VqLs"
+      },
+      {
+        "type": "LIKE",
+        "name": "Marc Le Gall",
+        "subtitle": "Founder & CEO at Pluton Consulting",
+        "profile_url": "https://www.linkedin.com/in/marc-le-gall-29574a152",
+        "actor_urn": "urn:li:fsd_profile:ACoAACTF_REBTHH4erlVAlJC4jxcn_XoUgattC4"
+      },
+      {
+        "type": "EMPATHY",
+        "name": "Fadel Jaber ",
+        "subtitle": " On aide les Coachs qui vendent sur LinkedIn a devenir une reference sur la plateforme en 2025, grace a notre methode FLCSTM en 4 etapes (strategie , Landing Page...)  Expert Meta ADS  Top 3% LinkedIn FR",
+        "profile_url": "https://www.linkedin.com/in/fadel-jaber",
+        "actor_urn": "urn:li:fsd_profile:ACoAAD9TUJABnqd2ysdrGoCMpCqL83Iv3UQq2zo"
+      },
+      {
+        "type": "LIKE",
+        "name": "Hugues Selderslagh",
+        "subtitle": "SalesTech & Outbound Systems | People & Sales Development at ColdIQ | Automatisez votre prospection B2B avec les meilleurs outils AI (coldiq.com/ai-sales-tools)",
+        "profile_url": "https://www.linkedin.com/in/hugues-selderslagh",
+        "actor_urn": "urn:li:fsd_profile:ACoAAC2OuVIBBh2q3Zyd5z5fWOJyAlCqWtXvoh4"
+      },
+      {
+        "type": "EMPATHY",
+        "name": "Rabbi Hasan",
+        "subtitle": "Email Marketing Campaign and Cold Email, B2B Lead Generation, Prospect List Building , Data Scrap And Enrichment",
+        "profile_url": "https://www.linkedin.com/in/rabbi-hasan-23608321b",
+        "actor_urn": "urn:li:fsd_profile:ACoAADdcjYoBTXdaubcAuUAJb2IyUbzhZcM6nMU"
+      },
+      {
+        "type": "EMPATHY",
+        "name": "Gaspard Fruchon",
+        "subtitle": "Je vous offre votre roadmap LinkedInTM Ads  | Expert LinkedInTM Ads | +35 entreprises accompagnees | Je partage un conseil LinkedInTM Ads par jour  Abonnez-vous",
+        "profile_url": "https://www.linkedin.com/in/gaspard-fruchon",
+        "actor_urn": "urn:li:fsd_profile:ACoAAEQyMrEBsBeEPYhP9bu6I7h-ON9eWquOJsI"
+      },
+      {
+        "type": "LIKE",
+        "name": "Thomas Durand",
+        "subtitle": "Co-founder  Warmr | utilise le social warming pour booster ta prospection",
+        "profile_url": "https://www.linkedin.com/in/thomas-durand-9194857a",
+        "actor_urn": "urn:li:fsd_profile:ACoAABDMvuUBAXtmLsrnD1IpTvntSifFeRiIras"
+      },
+      {
+        "type": "LIKE",
+        "name": "Valentin Thomy",
+        "subtitle": "On systematise l'acquisition de ton agence marketing en 120 jours  Et ca, avec une methode MINIMALISTE et adaptee au marche Francais   + 60 agences transformees  Clique sur \"Prendre Rendez-vous\" ",
+        "profile_url": "https://www.linkedin.com/in/valentin-thomy",
+        "actor_urn": "urn:li:fsd_profile:ACoAADxfsGYB_lyQrYqCW-NH95pe2j4rg0MtwRk"
+      },
+      {
+        "type": "EMPATHY",
+        "name": "Erwan Gauthier",
+        "subtitle": "Head of Growth @lemlist",
+        "profile_url": "https://www.linkedin.com/in/erwanxgrowth",
+        "actor_urn": "urn:li:fsd_profile:ACoAABE1Zs8BVPrnKEwKfA8H9J8bhIgXn6StA4o"
       }
     ]
   }

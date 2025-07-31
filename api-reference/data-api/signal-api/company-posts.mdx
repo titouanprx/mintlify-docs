@@ -7,8 +7,12 @@ description: 'Extract posts from a LinkedIn company page'
 Extract posts from a LinkedIn company page with various filtering and sorting options.
 
 <Note>
-  **Credit Usage:** 1 credit per request
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
 </Note>
+
 
 ### Header Parameters
 
@@ -96,60 +100,56 @@ Extract posts from a LinkedIn company page with various filtering and sorting op
 
     <ResponseField name="posts" type="array">
       <Expandable title="Post Object">
-        <ResponseField name="post_url" type="string">
+        <ResponseField name="shareAudience" type="string">
+          Audience setting for the post (e.g., "PUBLIC", "CONNECTIONS")
+        </ResponseField>
+
+        <ResponseField name="shareUrl" type="string">
           URL of the post
         </ResponseField>
 
-        <ResponseField name="post_type" type="string">
-          Type of post (ARTICLE, VIDEO, PHOTO, DOCUMENT, TEXT)
-        </ResponseField>
-
-        <ResponseField name="content" type="string">
+        <ResponseField name="text" type="string">
           Post content or description
         </ResponseField>
 
-        <ResponseField name="created_time" type="string">
-          When the post was created
-        </ResponseField>
-
-        <ResponseField name="likes_count" type="integer">
+        <ResponseField name="numLikes" type="integer">
           Number of likes on the post
         </ResponseField>
 
-        <ResponseField name="comments_count" type="integer">
+        <ResponseField name="numComments" type="integer">
           Number of comments on the post
         </ResponseField>
 
-        <ResponseField name="shares_count" type="integer">
+        <ResponseField name="numShares" type="integer">
           Number of shares of the post
         </ResponseField>
 
-        <ResponseField name="media_urls" type="array">
-          URLs of media attached to the post (images, videos, documents)
+        <ResponseField name="actor_name" type="string">
+          Name of the post author
         </ResponseField>
 
-        <ResponseField name="article_url" type="string">
-          URL of the article (if post_type is ARTICLE)
+        <ResponseField name="actor_description" type="string">
+          Professional headline or description of the post author
         </ResponseField>
 
-        <ResponseField name="article_title" type="string">
-          Title of the article (if post_type is ARTICLE)
+        <ResponseField name="actor_image" type="string">
+          URL of the post author's profile picture (may be null for company accounts)
         </ResponseField>
 
-        <ResponseField name="author" type="object">
-          <Expandable title="Author Properties">
-            <ResponseField name="name" type="string">
-              Name of the post author (company employee)
-            </ResponseField>
+        <ResponseField name="actor_profile_url" type="string">
+          LinkedIn profile URL of the post author
+        </ResponseField>
 
-            <ResponseField name="title" type="string">
-              Job title of the author
-            </ResponseField>
+        <ResponseField name="created_time" type="integer">
+          Unix timestamp when the post was created
+        </ResponseField>
 
-            <ResponseField name="profile_url" type="string">
-              LinkedIn profile URL of the author
-            </ResponseField>
-          </Expandable>
+        <ResponseField name="backend_urn" type="string">
+          LinkedIn URN identifier for the post
+        </ResponseField>
+
+        <ResponseField name="post_images" type="array">
+          URLs of images attached to the post
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -161,8 +161,8 @@ Extract posts from a LinkedIn company page with various filtering and sorting op
 {
   "status": "success",
   "data": {
-    "company_url": "https://www.linkedin.com/company/techcorp",
-    "total_results": 5,
+    "company_url": "https://www.linkedin.com/company/morningside-ai/",
+    "total_results": 10,
     "filters": {
       "post_type": "ALL",
       "sort_by": "DATE_POSTED",
@@ -171,38 +171,49 @@ Extract posts from a LinkedIn company page with various filtering and sorting op
     },
     "posts": [
       {
-        "post_url": "https://www.linkedin.com/posts/techcorp_example-post",
-        "post_type": "ARTICLE",
-        "content": "We're excited to announce our latest product launch...",
-        "created_time": "2024-01-15T10:30:00Z",
-        "likes_count": 156,
-        "comments_count": 23,
-        "shares_count": 45,
-        "media_urls": [],
-        "article_url": "https://www.linkedin.com/pulse/example-article",
-        "article_title": "Introducing Our New Product",
-        "author": {
-          "name": "Sarah Johnson",
-          "title": "Marketing Director",
-          "profile_url": "https://www.linkedin.com/in/sarahjohnson"
-        }
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/beno%C3%AEt-aliaga-1549b045_postdoc-postdocsinfrance-frenchresearch-activity-7356765957148528641-ovLU?utm_source=combined_share_message&utm_medium=ios_app&rcm=ACoAAFx6dEUB4EQO5yOCbBZSJqASr1pRvbUwBeg",
+        "text": "🚀 Launching the French Postdoc Network – Join us! 🇫🇷🔬\n\nAre you a postdoctoral researcher in France? Or are you planning to work here soon? Then this group is for you!\n\n👉 We're launching the French Postdoc Network, a new LinkedIn community designed to connect postdocs across France, from all disciplines and backgrounds.\n\n🎯 Our goals:\n\n- Build a strong, supportive community for postdocs in France\n- Share job opportunities, events, resources, and success stories\n- Exchange tips on academic careers, industry transitions, and life as a postdoc\n- Promote visibility and recognition for postdoctoral researchers in the French research landscape\n\nWhether you're in Paris, Lyon, Bordeaux, Strasbourg, Marseille, Lille, or anywhere else, you're not alone!\n\n➡️ Join the group here: https://lnkd.in/e4mKPS7D\n\n 🔄 Like, comment, or share this post to spread the word!\n\nLet's connect, support each other, and grow together 🚀\n\n #Postdoc #PostdocsInFrance #FrenchResearch #AcademicLife #PostdocCommunity #ScienceCareers #PhD",
+        "numLikes": 0,
+        "numComments": 0,
+        "numShares": 1,
+        "actor_name": "Benoît Aliaga",
+        "actor_description": "Docteur en biologie",
+        "actor_image": "https://media.licdn.com/dms/image/v2/C5603AQE_4oTOr6vCpw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1516745106642?e=1756944000&v=beta&t=rKnUDekvaPQTQPf41mRI2j5yZj9xx2wi3t5cQRt_sNc",
+        "actor_profile_url": "https://www.linkedin.com/in/beno%C3%AEt-aliaga-1549b045?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAAmUd9ABBw7OMqwUPu-UdKgTs0b50rsQ4bo",
+        "created_time": 1753990094,
+        "backend_urn": "urn:li:activity:7356765957148528641",
+        "post_images": []
       },
       {
-        "post_url": "https://www.linkedin.com/posts/techcorp_another-post",
-        "post_type": "TEXT",
-        "content": "Great team meeting today!",
-        "created_time": "2024-01-14T15:20:00Z",
-        "likes_count": 89,
-        "comments_count": 12,
-        "shares_count": 8,
-        "media_urls": ["https://media.licdn.com/dms/image/..."],
-        "article_url": null,
-        "article_title": null,
-        "author": {
-          "name": "Mike Chen",
-          "title": "CEO",
-          "profile_url": "https://www.linkedin.com/in/mikechen"
-        }
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/jitenderyadav0008_sql-datascience-interviewtips-activity-7356742086232084482-mptT?utm_source=combined_share_message&utm_medium=ios_app&rcm=ACoAAFx6dEUB4EQO5yOCbBZSJqASr1pRvbUwBeg",
+        "text": "Everyone wants a remote job, but few know where to look.\n\nHere are 12 websites to find a remote job easily in 2025:\n\n1. Remote4Me \n↳ Promotes remote work flexibility across job categories. [remote4me.com]\n\n2. FlexJobs \n↳ Access 26,000+ quality remote job listings. [flexjobs.com] \n\n3. WeWorkRemotely \n↳ Top roles in engineering, design, and product management. [weworkremotely.com] \n\n4. TryRemotely \n↳ 16,000+ remote jobs from growing companies. [tryremotely.com] \n\n5. JobBoardSearch \n↳ Curated remote jobs in 200+ categories. [jobboardsearch.com] \n\n6. Remote. co \n↳ Fully remote job board with resources and tips. [remote.co] \n\n7. LinkedIn \n↳ Discover remote jobs and connect with employers. [linkedin.com] \n\n8. Remotive \n↳ Vetted remote tech jobs in marketing and sales. [remotive.io] \n\n9. Working Nomads \n↳ Find work-from-home opportunities across industries. [workingnomads.co] \n\n10. Flexa \n↳ Insights ino flexible jobs and company culture. [flexa.carrers] \n\n11. RemoteOK \n↳ Simplifies remote job for all seekers. [remoteok.io] \n\n12. RemoteHub \n↳ Community-driven pltform with diverse job listings. [remotehub.io] \n\n𝐅𝐑𝐄𝐄 𝐂𝐨𝐮𝐫𝐬𝐞𝐬 𝐲𝐨𝐮 𝐰𝐢𝐥𝐥 𝐫𝐞𝐠𝐫𝐞𝐭 𝐧𝐨𝐭 𝐭𝐚𝐤𝐢𝐧𝐠 𝐢𝐧 𝟐𝟎𝟐𝟓\n\n🔥7000+ Courses Access: https://lnkd.in/gvSt9Qaj\n\n👉Google Data Analytics\nhttps://lnkd.in/gQhfDenD\n👉Google Project Management\nhttps://lnkd.in/gQRxxaGE\n👉Google IT Support\nhttps://lnkd.in/ghj2Wx6C\n👉Foundations of Cybersecurity\nhttps://lnkd.in/gFGWDdFw\n👉Google UX Design\nhttps://lnkd.in/gHXxaznc\n👉Google Advanced Data Analytics\nhttps://lnkd.in/gjvuqRAw\n👉Google IT Automation with Python\nhttps://lnkd.in/gCp3t8MU\n👉Meta Front-End Developer\nhttps://lnkd.in/gDe_P8m9\n👉Foundations of Project Management\nhttps://lnkd.in/gfCgCz2Y\n👉IBM Data Science\nhttps://lnkd.in/gG98UxQx\n👉SQL for Data Science with R\nhttps://lnkd.in/gdDC9tUQ\n👉Excel Skills for Business Forecasting\nhttps://lnkd.in/gU8Hj-Kf\n👉IBM Data Analytics with Excel and R\nhttps://lnkd.in/ggrFDKTB\n👉Microsoft Azure Data Scientist \nhttps://lnkd.in/g6f9t5hi\n👉 Microsoft Cybersecurity Analyst\nhttps://lnkd.in/g_MW8YAN\n👉 Microsoft Power BI Data Analyst\nhttps://lnkd.in/g-qiqUmn\n\nFollow Jitender Yadav  For More!!\n\nCredit: Respected Owner \n\n#SQL #DataScience #InterviewTips #CareerGrowth #TechJobs",
+        "numLikes": 267,
+        "numComments": 74,
+        "numShares": 0,
+        "actor_name": "Jitender Yadav",
+        "actor_description": "🚀 Frontend Developer | Building Engaging User Experiences | Open for Brand Collaborations LinkedIn Growth Expert | Helping Professionals & Brands Build Influence | Profile Optimization & Branding Specialist",
+        "actor_image": "https://media.licdn.com/dms/image/v2/D5603AQEwDFu90lSgEA/profile-displayphoto-shrink_800_800/B56ZcDEIzlH4Ac-/0/1748103109341?e=1756944000&v=beta&t=w1mWC03Ga1rgad4Iu-J4xr01y0lGVG1oDM_cnvTrHpI",
+        "actor_profile_url": "https://www.linkedin.com/in/jitenderyadav0008?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAADrJEVwBMP-8MKq75X-ld7dcJ19LwQ7Hr5s",
+        "created_time": 1753986494,
+        "backend_urn": "urn:li:activity:7356742086232084482",
+        "post_images": ["https://media.licdn.com/dms/image/v2/D5622AQELbnk8VQFMDg/feedshare-shrink_480/B56Zhhl70CG4AY-/0/1753983993826?e=1756944000&v=beta&t=nx_784IEbYRekzC9rTiJYYNZGje0toVs9iDzDkdx0VY"]
+      },
+      {
+        "shareAudience": "PUBLIC",
+        "shareUrl": "https://www.linkedin.com/posts/jobs-in-germany-ay_jobopening-workingermany-germanyjobopportunities-activity-7356715380167397376-um08?utm_source=combined_share_message&utm_medium=ios_app&rcm=ACoAAFx6dEUB4EQO5yOCbBZSJqASr1pRvbUwBeg",
+        "text": "Chef's Job In Germany 2025\nSalary: 2500 to 4500 EUR per month\nJob openings for experienced professionals in Germany\nA visa will be provided.\nLocation: Germany\nHit like and comment YES\n\n\n #JobOpening #WorkInGermany #GermanyJobOpportunities #Careers #NowHiringGermany #CareerGermany #EmploymentGermany #hiring #jobs #linkedin #JobOpeningGermany #JobVacancyGermany #JobSearch #CareerOpportunities #JobSeeker #NowHiring #HiringAlert #JobVacancy #RemoteJobs",
+        "numLikes": 8,
+        "numComments": 8,
+        "numShares": 0,
+        "actor_name": "Jobs In Germany",
+        "actor_description": "14 801 abonnés",
+        "actor_image": null,
+        "actor_profile_url": "https://www.linkedin.com/company/jobs-in-germany-ay/posts",
+        "created_time": 1753979294,
+        "backend_urn": "urn:li:activity:7356715380167397376",
+        "post_images": []
       }
     ]
   }
@@ -254,10 +265,11 @@ Extract posts from a LinkedIn company page with various filtering and sorting op
 - The API supports LinkedIn company URLs in the format `linkedin.com/company/company-name`
 - Results can be filtered by post type, sorted by relevance or date, and filtered by keywords
 - Date filters allow you to focus on recent posts
+- The `created_time` field is provided as a Unix timestamp
+- Each post includes detailed information about the author including name, description, profile picture, and profile URL
+- The `shareAudience` field indicates the visibility setting of the post
+- The `backend_urn` field contains LinkedIn URN identifiers for unique post identification
+- Company posts can be authored by both individual employees and company accounts
 - **Pagination Mode vs. Total Results Mode**:
   - **Total Results Mode**: Use the `total_results` parameter to specify how many posts you want (default)
   - **Pagination Mode**: Set `use_pagination` to true and use `start_page` and `end_page` parameters
-- Media URLs are provided for posts with images, videos, or documents
-- Article posts include additional metadata like article URL and title
-- Company posts include author information (employee who posted)
-- Rate limits apply to company post extraction requests 

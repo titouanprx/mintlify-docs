@@ -5,7 +5,7 @@ description: 'Welcome to the LinkUp API'
 
 # LinkUp API Reference
 
-The LinkUp API lets you automate your LinkedIn interactions programmatically. Our API provides comprehensive access to LinkedIn features including profile management, messaging, networking, and post interactions.
+The LinkUp API provides comprehensive access to B2B live data extraction and automation services. Our platform offers two main API types to help you automate interactions, gather insights, and enhance your business intelligence.
 
 ## Authentication
 
@@ -15,27 +15,20 @@ All API requests require an API key that must be included in the `x-api-key` hea
 curl -H "x-api-key: your_api_key" https://api.linkupapi.com/v1/...
 ```
 
-## Core Features
+## API Types
 
 <CardGroup cols={2}>
-  <Card title="Profile Management" icon="user">
-    Access and manage LinkedIn profiles
+  <Card title="Data API" icon="database">
+    Extract real-time data from LinkedIn with three specialized APIs: Company, Person, and Signal APIs for comprehensive data enrichment
   </Card>
-  <Card title="Post Interactions" icon="share-nodes">
-    Create posts and interact with content
-  </Card>
-  <Card title="Networking" icon="network-wired">
-    Manage connections and invitations
-  </Card>
-  <Card title="Messaging" icon="message">
-    Send and receive LinkedIn messages
+  <Card title="LinkedIn Engagement API" icon="robot">
+    Automate any LinkedIn action programmatically. Perfect for AI agents, SaaS platforms, and no-code tools like Make and n8n
   </Card>
 </CardGroup>
 
 ## Rate Limiting
 
-- 100 requests per minute per API key
-- 1000 requests per day per API key
+- 300 requests per minute per API key
 
 ## Response Format
 
@@ -57,15 +50,10 @@ Error responses follow this format:
 ```json
 {
   "status": "error",
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Error description"
-  }
+  "message": "Error description"
 }
 ```
 
-
-
 ## Support
 
-Need help? Email us at [support@linkup.com](mailto:support@linkupapi.com)
+Need help? Email us at [support@linkupapi.com](mailto:support@linkupapi.com)

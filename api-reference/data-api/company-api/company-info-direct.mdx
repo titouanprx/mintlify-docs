@@ -1,10 +1,10 @@
 ---
 title: 'Get Company Information'
 api: 'POST /v1/data/company/info'
-description: 'Extract detailed information about a company from LinkedIn without requiring a LinkedIn account'
+description: 'Extract detailed information about a company from LinkedIn.'
 ---
 
-Get comprehensive information about a company without needing your own LinkedIn account. This method provides detailed and reliable data extraction directly through our service.
+This method provides detailed and reliable data extraction directly through our service.
 
 <Note>
   This endpoint costs **1 credit** per request.
@@ -213,11 +213,6 @@ Get comprehensive information about a company without needing your own LinkedIn 
 </ResponseExample>
 
 ### Notes
-- This endpoint doesn't require you to have a LinkedIn account - we handle all the extraction for you
 - The company URL must be a valid LinkedIn company page URL
 - Some fields may be null or missing depending on the company's public information and privacy settings
-- This method provides comprehensive data extraction without requiring your own LinkedIn credentials
-- Location information includes all company offices and facilities when available
-- Employee count data may vary and reflects the most recent information available on LinkedIn
-- The response excludes social proof text for privacy reasons
 - Verified companies will have `verified: true` in the response 
