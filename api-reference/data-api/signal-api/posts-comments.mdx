@@ -1,0 +1,221 @@
+---
+title: 'Extract Post Comments'
+api: 'POST /v1/data/signals/posts/comments'
+description: 'Extract comments from a specific LinkedIn post'
+---
+
+Extract detailed comments from a LinkedIn post, including information about who commented and the comment content.
+
+<Note>
+  **Credit Usage:** 1 credit per request
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="post_url" type="string" required>
+  URL of the LinkedIn post to extract comments from
+</ParamField>
+
+<ParamField body="proxy_country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of comments to retrieve (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="use_pagination" type="boolean" default="false">
+  Use pagination mode instead of total results mode
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination mode (required if use_pagination is true)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination mode (optional if use_pagination is true)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="post_url" type="string">
+      URL of the analyzed post
+    </ResponseField>
+
+    <ResponseField name="total_results" type="integer">
+      Number of comments returned in this response
+    </ResponseField>
+
+    <ResponseField name="total_available" type="integer">
+      Total number of comments available on the post
+    </ResponseField>
+
+    <ResponseField name="comments" type="array">
+      <Expandable title="Comment Object">
+        <ResponseField name="comment_text" type="string">
+          The comment content
+        </ResponseField>
+
+        <ResponseField name="created_time" type="string">
+          When the comment was posted
+        </ResponseField>
+
+        <ResponseField name="likes_count" type="integer">
+          Number of likes on the comment
+        </ResponseField>
+
+        <ResponseField name="replies_count" type="integer">
+          Number of replies to the comment
+        </ResponseField>
+
+        <ResponseField name="author" type="object">
+          <Expandable title="Author Properties">
+            <ResponseField name="name" type="string">
+              Full name of the comment author
+            </ResponseField>
+
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the author
+            </ResponseField>
+
+            <ResponseField name="profile_picture" type="string">
+              URL of the author's profile picture (if available)
+            </ResponseField>
+
+            <ResponseField name="title" type="string">
+              Professional headline or title
+            </ResponseField>
+
+            <ResponseField name="connection_degree" type="string">
+              LinkedIn connection degree (1st, 2nd, 3rd)
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="replies" type="array">
+          <Expandable title="Reply Object">
+            <ResponseField name="reply_text" type="string">
+              The reply content
+            </ResponseField>
+
+            <ResponseField name="created_time" type="string">
+              When the reply was posted
+            </ResponseField>
+
+            <ResponseField name="author" type="object">
+              <Expandable title="Reply Author Properties">
+                <ResponseField name="name" type="string">
+                  Full name of the reply author
+                </ResponseField>
+
+                <ResponseField name="profile_url" type="string">
+                  LinkedIn profile URL of the reply author
+                </ResponseField>
+
+                <ResponseField name="title" type="string">
+                  Professional headline or title
+                </ResponseField>
+              </Expandable>
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "post_url": "https://www.linkedin.com/posts/example-post",
+    "total_results": 8,
+    "total_available": 45,
+    "comments": [
+      {
+        "comment_text": "Great insights! This is exactly what we've been looking for.",
+        "created_time": "2024-01-15T10:30:00Z",
+        "likes_count": 3,
+        "replies_count": 1,
+        "author": {
+          "name": "Jane Smith",
+          "profile_url": "https://www.linkedin.com/in/janesmith",
+          "profile_picture": "https://media.licdn.com/dms/image/...",
+          "title": "Marketing Manager at Tech Corp",
+          "connection_degree": "1st"
+        },
+        "replies": [
+          {
+            "reply_text": "I completely agree!",
+            "created_time": "2024-01-15T11:00:00Z",
+            "author": {
+              "name": "Bob Johnson",
+              "profile_url": "https://www.linkedin.com/in/bobjohnson",
+              "title": "Product Manager"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+### Error Responses
+
+<ResponseExample>
+```json Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
+
+```json Invalid Post URL
+{
+  "status": "error",
+  "message": "post_url is required"
+}
+```
+
+```json Invalid Parameters
+{
+  "status": "error",
+  "message": "total_results must be a positive integer"
+}
+```
+
+```json Service Unavailable
+{
+  "status": "error",
+  "message": "Service temporarily unavailable, please contact support"
+}
+```
+</ResponseExample>
+
+### Notes
+
+- The API supports LinkedIn post URLs in various formats
+- Results are paginated with configurable page ranges when using pagination mode
+- Comments include replies when available
+- The profile picture URL may be null if not available
+- Connection degree shows your network relationship with the comment author
+- **Pagination Mode vs. Total Results Mode**:
+  - **Total Results Mode**: Use the `total_results` parameter to specify how many comments you want (default)
+  - **Pagination Mode**: Set `use_pagination` to true and use `start_page` and `end_page` parameters
+- Rate limits apply to comment extraction requests
+- The `total_available` field shows the total number of comments available on the post 

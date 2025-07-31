@@ -1,0 +1,179 @@
+---
+title: 'Extract Profile Reactions'
+api: 'POST /v1/data/signals/profile/reactions'
+description: 'Extract reactions from a LinkedIn profile (posts that the person has liked/reacted to)'
+---
+
+Extract reactions from a LinkedIn profile, showing posts that the person has liked or reacted to.
+
+<Note>
+  **Credit Usage:** 1 credit per request
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="profile_url" type="string" required>
+  URL of the LinkedIn profile to extract reactions from
+</ParamField>
+
+<ParamField body="proxy_country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of reactions to retrieve
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination
+</ParamField>
+
+<ParamField body="cursor" type="string">
+  Pagination cursor to continue a previous search
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="profile_url" type="string">
+      URL of the analyzed profile
+    </ResponseField>
+
+    <ResponseField name="total_results" type="integer">
+      Number of reactions returned in this response
+    </ResponseField>
+
+    <ResponseField name="reactions" type="array">
+      <Expandable title="Reaction Object">
+        <ResponseField name="reaction_type" type="string">
+          Type of reaction (e.g., "LIKE", "CELEBRATE", "SUPPORT", etc.)
+        </ResponseField>
+
+        <ResponseField name="created_time" type="string">
+          When the reaction was made
+        </ResponseField>
+
+        <ResponseField name="post_url" type="string">
+          URL of the post that was reacted to
+        </ResponseField>
+
+        <ResponseField name="post_content" type="string">
+          Brief content or description of the post
+        </ResponseField>
+
+        <ResponseField name="post_author" type="object">
+          <Expandable title="Post Author Properties">
+            <ResponseField name="name" type="string">
+              Full name of the post author
+            </ResponseField>
+
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the post author
+            </ResponseField>
+
+            <ResponseField name="title" type="string">
+              Professional headline or title
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="cursor" type="string">
+          Cursor for next page of results
+        </ResponseField>
+
+        <ResponseField name="has_more" type="boolean">
+          Whether there are more results available
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "total_results": 12,
+    "reactions": [
+      {
+        "reaction_type": "LIKE",
+        "created_time": "2024-01-15T10:30:00Z",
+        "post_url": "https://www.linkedin.com/posts/example-post",
+        "post_content": "Excited to share our latest product launch...",
+        "post_author": {
+          "name": "Jane Smith",
+          "profile_url": "https://www.linkedin.com/in/janesmith",
+          "title": "CEO at Tech Corp"
+        }
+      }
+    ],
+    "pagination": {
+      "cursor": "eyJ0aW1lc3RhbXAiOiIxNzA1MzI0MDAwIiwicGFnZSI6MiwiaGFzTW9yZSI6dHJ1ZX0=",
+      "has_more": true
+    }
+  }
+}
+```
+</ResponseExample>
+
+### Error Responses
+
+<ResponseExample>
+```json Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
+
+```json Invalid Profile URL
+{
+  "status": "error",
+  "message": "profile_url is required"
+}
+```
+
+```json Invalid Parameters
+{
+  "status": "error",
+  "message": "total_results must be a positive integer"
+}
+```
+
+```json Service Unavailable
+{
+  "status": "error",
+  "message": "Service temporarily unavailable, please contact support"
+}
+```
+</ResponseExample>
+
+### Notes
+
+- The API extracts reactions that the profile owner has made on other posts
+- Results are paginated using cursor-based pagination
+- The `cursor` parameter can be used to continue from where a previous request left off
+- Post content may be truncated for privacy reasons
+- Rate limits apply to profile reaction extraction requests
+- The pagination object provides a cursor for fetching the next page of results 

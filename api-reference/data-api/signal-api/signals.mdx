@@ -1,0 +1,164 @@
+---
+title: 'Signal API'
+description: 'Access real-time signals and insights from LinkedIn activity'
+---
+
+# Signal API
+
+The Signal API provides access to real-time signals and insights from LinkedIn activity, including post reactions, comments, and profile activity.
+
+## Overview
+
+Signal API endpoints allow you to:
+- Extract reactions and comments from LinkedIn posts
+- Monitor profile activity including posts, reactions, and comments
+- Track company page activity and posts
+- Get detailed engagement insights from LinkedIn content
+
+## Authentication
+
+All Signal API endpoints require a valid API key in the `x-api-key` header.
+
+## Base URL
+
+```
+https://api.linkupapi.com/v1/data/signals
+```
+
+## Available Endpoints
+
+### Post Signals
+
+#### Extract Post Reactions
+Retrieve detailed reactions from a specific LinkedIn post.
+
+**Endpoint:** `POST /posts/reactions`
+
+**Parameters:**
+- `post_url` (required): URL of the LinkedIn post
+- `proxy_country` (optional): Country code for proxy (FR, UK, US)
+- `total_results` (optional): Number of reactions to retrieve
+- `use_pagination` (optional): Use pagination mode
+- `start_page` (optional): Starting page for pagination
+- `end_page` (optional): Ending page for pagination
+
+#### Extract Post Comments
+Retrieve comments from a specific LinkedIn post.
+
+**Endpoint:** `POST /posts/comments`
+
+**Parameters:**
+- `post_url` (required): URL of the LinkedIn post
+- `proxy_country` (optional): Country code for proxy (FR, UK, US)
+- `total_results` (optional): Number of comments to retrieve
+- `use_pagination` (optional): Use pagination mode
+- `start_page` (optional): Starting page for pagination
+- `end_page` (optional): Ending page for pagination
+
+### Profile Signals
+
+#### Extract Profile Reactions
+Retrieve reactions made by a LinkedIn profile on other posts.
+
+**Endpoint:** `POST /profile/reactions`
+
+**Parameters:**
+- `profile_url` (required): URL of the LinkedIn profile
+- `proxy_country` (optional): Country code for proxy (FR, UK, US)
+- `total_results` (optional): Number of reactions to retrieve
+- `start_page` (optional): Starting page for pagination
+- `end_page` (optional): Ending page for pagination
+- `cursor` (optional): Pagination cursor
+
+#### Extract Profile Comments
+Retrieve comments posted by a LinkedIn profile on other posts.
+
+**Endpoint:** `POST /profile/comments`
+
+**Parameters:**
+- `profile_url` (required): URL of the LinkedIn profile
+- `proxy_country` (optional): Country code for proxy (FR, UK, US)
+- `total_results` (optional): Number of comments to retrieve
+- `start_page` (optional): Starting page for pagination
+- `end_page` (optional): Ending page for pagination
+- `cursor` (optional): Pagination cursor
+
+#### Extract Profile Posts
+Retrieve posts from a LinkedIn profile with filtering options.
+
+**Endpoint:** `POST /profile/posts`
+
+**Parameters:**
+- `profile_url` (required): URL of the LinkedIn profile
+- `proxy_country` (optional): Country code for proxy (FR, UK, US)
+- `total_results` (optional): Number of posts to retrieve
+- `post_type` (optional): Filter by post type (ALL, ARTICLE, VIDEO, PHOTO, DOCUMENT)
+- `sort_by` (optional): Sort order (RELEVANCE, DATE_POSTED)
+- `keyword` (optional): Keyword filter
+- `post_date` (optional): Date filter (PAST_24_HOURS, PAST_WEEK, PAST_MONTH)
+- `use_pagination` (optional): Use pagination mode
+- `start_page` (optional): Starting page for pagination
+- `end_page` (optional): Ending page for pagination
+
+### Company Signals
+
+#### Extract Company Posts
+Retrieve posts from a LinkedIn company page with filtering options.
+
+**Endpoint:** `POST /company/posts`
+
+**Parameters:**
+- `company_url` (required): URL of the LinkedIn company page
+- `proxy_country` (optional): Country code for proxy (FR, UK, US)
+- `total_results` (optional): Number of posts to retrieve
+- `post_type` (optional): Filter by post type (ALL, ARTICLE, VIDEO, PHOTO, DOCUMENT)
+- `sort_by` (optional): Sort order (RELEVANCE, DATE_POSTED)
+- `keyword` (optional): Keyword filter
+- `post_date` (optional): Date filter (PAST_24_HOURS, PAST_WEEK, PAST_MONTH)
+- `use_pagination` (optional): Use pagination mode
+- `start_page` (optional): Starting page for pagination
+- `end_page` (optional): Ending page for pagination
+
+## Credit Usage
+
+All Signal API endpoints cost **1 credit per request**, regardless of the number of results returned.
+
+## Response Format
+
+All endpoints return responses in the following format:
+
+```json
+{
+  "status": "success",
+  "data": {
+    // Endpoint-specific data
+  }
+}
+```
+
+## Error Handling
+
+The Signal API returns standard HTTP status codes:
+- `200`: Success
+- `400`: Bad Request (invalid parameters)
+- `401`: Unauthorized (insufficient credits or invalid API key)
+- `500`: Internal Server Error
+
+Common error messages:
+- `"Insufficient credits available"`: Your account doesn't have enough credits
+- `"post_url is required"`: Missing required parameter
+- `"Invalid LinkedIn profile URL format"`: Invalid URL format
+- `"Service temporarily unavailable, please contact support"`: Service issue
+
+## Rate Limits
+
+Rate limits apply to all Signal API endpoints. Please implement appropriate retry logic with exponential backoff for production applications.
+
+## Notes
+
+- All endpoints support proxy selection for different geographic regions
+- Pagination is available for most endpoints to handle large datasets
+- Profile and company URLs must follow LinkedIn's standard format
+- Post content may be truncated for privacy reasons
+- Media URLs are provided when available
+- Connection degree information is included for profile-related data 

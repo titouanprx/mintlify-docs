@@ -1,0 +1,263 @@
+---
+title: 'Extract Company Posts'
+api: 'POST /v1/data/signals/company/posts'
+description: 'Extract posts from a LinkedIn company page'
+---
+
+Extract posts from a LinkedIn company page with various filtering and sorting options.
+
+<Note>
+  **Credit Usage:** 1 credit per request
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="company_url" type="string" required>
+  URL of the LinkedIn company page to extract posts from
+</ParamField>
+
+<ParamField body="proxy_country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of posts to retrieve (used when not in pagination mode)
+</ParamField>
+
+<ParamField body="post_type" type="string" default="ALL">
+  Type of posts to filter. Available: (ALL, ARTICLE, VIDEO, PHOTO, DOCUMENT)
+</ParamField>
+
+<ParamField body="sort_by" type="string" default="DATE_POSTED">
+  Sort order for posts. Available: (RELEVANCE, DATE_POSTED)
+</ParamField>
+
+<ParamField body="keyword" type="string">
+  Keyword to filter posts by content
+</ParamField>
+
+<ParamField body="post_date" type="string">
+  Date filter for posts. Available: (PAST_24_HOURS, PAST_WEEK, PAST_MONTH)
+</ParamField>
+
+<ParamField body="use_pagination" type="boolean" default="false">
+  Use pagination mode instead of total results mode
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination mode (required if use_pagination is true)
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination mode (optional if use_pagination is true)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="company_url" type="string">
+      URL of the analyzed company page
+    </ResponseField>
+
+    <ResponseField name="total_results" type="integer">
+      Number of posts returned in this response
+    </ResponseField>
+
+    <ResponseField name="filters" type="object">
+      <Expandable title="Applied Filters">
+        <ResponseField name="post_type" type="string">
+          Type filter applied
+        </ResponseField>
+
+        <ResponseField name="sort_by" type="string">
+          Sort order applied
+        </ResponseField>
+
+        <ResponseField name="keyword" type="string">
+          Keyword filter applied
+        </ResponseField>
+
+        <ResponseField name="post_date" type="string">
+          Date filter applied
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="posts" type="array">
+      <Expandable title="Post Object">
+        <ResponseField name="post_url" type="string">
+          URL of the post
+        </ResponseField>
+
+        <ResponseField name="post_type" type="string">
+          Type of post (ARTICLE, VIDEO, PHOTO, DOCUMENT, TEXT)
+        </ResponseField>
+
+        <ResponseField name="content" type="string">
+          Post content or description
+        </ResponseField>
+
+        <ResponseField name="created_time" type="string">
+          When the post was created
+        </ResponseField>
+
+        <ResponseField name="likes_count" type="integer">
+          Number of likes on the post
+        </ResponseField>
+
+        <ResponseField name="comments_count" type="integer">
+          Number of comments on the post
+        </ResponseField>
+
+        <ResponseField name="shares_count" type="integer">
+          Number of shares of the post
+        </ResponseField>
+
+        <ResponseField name="media_urls" type="array">
+          URLs of media attached to the post (images, videos, documents)
+        </ResponseField>
+
+        <ResponseField name="article_url" type="string">
+          URL of the article (if post_type is ARTICLE)
+        </ResponseField>
+
+        <ResponseField name="article_title" type="string">
+          Title of the article (if post_type is ARTICLE)
+        </ResponseField>
+
+        <ResponseField name="author" type="object">
+          <Expandable title="Author Properties">
+            <ResponseField name="name" type="string">
+              Name of the post author (company employee)
+            </ResponseField>
+
+            <ResponseField name="title" type="string">
+              Job title of the author
+            </ResponseField>
+
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the author
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "company_url": "https://www.linkedin.com/company/techcorp",
+    "total_results": 5,
+    "filters": {
+      "post_type": "ALL",
+      "sort_by": "DATE_POSTED",
+      "keyword": "",
+      "post_date": ""
+    },
+    "posts": [
+      {
+        "post_url": "https://www.linkedin.com/posts/techcorp_example-post",
+        "post_type": "ARTICLE",
+        "content": "We're excited to announce our latest product launch...",
+        "created_time": "2024-01-15T10:30:00Z",
+        "likes_count": 156,
+        "comments_count": 23,
+        "shares_count": 45,
+        "media_urls": [],
+        "article_url": "https://www.linkedin.com/pulse/example-article",
+        "article_title": "Introducing Our New Product",
+        "author": {
+          "name": "Sarah Johnson",
+          "title": "Marketing Director",
+          "profile_url": "https://www.linkedin.com/in/sarahjohnson"
+        }
+      },
+      {
+        "post_url": "https://www.linkedin.com/posts/techcorp_another-post",
+        "post_type": "TEXT",
+        "content": "Great team meeting today!",
+        "created_time": "2024-01-14T15:20:00Z",
+        "likes_count": 89,
+        "comments_count": 12,
+        "shares_count": 8,
+        "media_urls": ["https://media.licdn.com/dms/image/..."],
+        "article_url": null,
+        "article_title": null,
+        "author": {
+          "name": "Mike Chen",
+          "title": "CEO",
+          "profile_url": "https://www.linkedin.com/in/mikechen"
+        }
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+### Error Responses
+
+<ResponseExample>
+```json Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
+
+```json Invalid Company URL
+{
+  "status": "error",
+  "message": "company_url is required"
+}
+```
+
+```json Invalid LinkedIn URL
+{
+  "status": "error",
+  "message": "Invalid LinkedIn company URL format"
+}
+```
+
+```json Invalid Parameters
+{
+  "status": "error",
+  "message": "total_results must be a positive integer"
+}
+```
+
+```json Service Unavailable
+{
+  "status": "error",
+  "message": "Service temporarily unavailable, please contact support"
+}
+```
+</ResponseExample>
+
+### Notes
+
+- The API supports LinkedIn company URLs in the format `linkedin.com/company/company-name`
+- Results can be filtered by post type, sorted by relevance or date, and filtered by keywords
+- Date filters allow you to focus on recent posts
+- **Pagination Mode vs. Total Results Mode**:
+  - **Total Results Mode**: Use the `total_results` parameter to specify how many posts you want (default)
+  - **Pagination Mode**: Set `use_pagination` to true and use `start_page` and `end_page` parameters
+- Media URLs are provided for posts with images, videos, or documents
+- Article posts include additional metadata like article URL and title
+- Company posts include author information (employee who posted)
+- Rate limits apply to company post extraction requests 

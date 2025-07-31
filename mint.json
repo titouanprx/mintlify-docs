@@ -37,8 +37,7 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["api-reference/introduction",
-                "api-reference/getting-linkedin-cookie"
+      "pages": ["api-reference/introduction"
     ]
     },
     {
@@ -46,83 +45,113 @@
       "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"
     ] 
     },
-    
     {
-      "group": "Authentication",
+      "group": "LinkedIn Engagement API",
       "pages": [
-        "api-reference/linkup/authentication/login",
-        "api-reference/linkup/authentication/verify"
+        {
+          "group": "Authentication",
+          "pages": [
+            "api-reference/linkedin-engagement-api/getting-linkedin-cookie",
+            "api-reference/linkup/authentication/login",
+            "api-reference/linkup/authentication/verify"
+          ]
+        },
+        {
+          "group": "Profile Management",
+          "pages": [
+            "api-reference/linkup/Profile/me",
+            "api-reference/linkup/Profile/profile-info",
+            "api-reference/linkup/Profile/search"
+          ]
+        },
+        {
+          "group": "Company Management",
+          "pages": [
+            "api-reference/linkup/Companies/search",
+            "api-reference/linkup/Companies/company-info"
+          ]
+        },
+        {
+          "group": "Network Management",
+          "pages": [
+            "api-reference/linkup/Network/connect",
+            "api-reference/linkup/Network/get-connections",
+            "api-reference/linkup/Network/accept-invitations",
+            "api-reference/linkup/Network/get-invitations",
+            "api-reference/linkup/Network/get-sent-invitations",
+            "api-reference/linkup/Network/withdraw-invitation",
+            "api-reference/linkup/Network/get-network-recomandations",
+            "api-reference/linkup/Network/get_invitations_status"
+          ]
+        },
+        {
+          "group": "Messaging",
+          "pages": [
+            "api-reference/linkup/Messages/send",
+            "api-reference/linkup/Messages/inbox-conversations",
+            "api-reference/linkup/Messages/conversation"
+          ]
+        },
+        {
+          "group": "Content & Posts",
+          "pages": [
+            "api-reference/linkup/posts/get-reactions",
+            "api-reference/linkup/posts/like",
+            "api-reference/linkup/posts/repost",
+            "api-reference/linkup/posts/comment",
+            "api-reference/linkup/posts/get-comments",
+            "api-reference/linkup/posts/answercomment",
+            "api-reference/linkup/posts/search",
+            "api-reference/linkup/posts/create",
+            "api-reference/linkup/posts/get-feed",
+            "api-reference/linkup/posts/time-spent"
+          ]
+        },
+        {
+          "group": "Recruiting",
+          "pages": [
+            "api-reference/linkup/recruiter/get-candidate",
+            "api-reference/linkup/recruiter/get-cv",
+            "api-reference/linkup/recruiter/get-posts",
+            "api-reference/linkup/recruiter/publish-job",
+            "api-reference/linkup/recruiter/close-job-offer",
+            "api-reference/linkup/recruiter/create-job-post"
+          ]
+        }
       ]
     },
     {
-      "group": "Profile",
+      "group": "Data API",
       "pages": [
-        "api-reference/linkup/Profile/me",
-        "api-reference/linkup/Profile/profile-info",
-        "api-reference/linkup/Profile/search"
-      ]
-    },
-    {
-      "group": "Companies",
-      "pages": [
-        "api-reference/linkup/Companies/search",
-        "api-reference/linkup/Companies/company-info"
-      ]
-    },
-    {
-      "group": "Network",
-      "pages": [
-        "api-reference/linkup/Network/connect",
-        "api-reference/linkup/Network/get-connections",
-        "api-reference/linkup/Network/accept-invitations",
-        "api-reference/linkup/Network/get-invitations",
-        "api-reference/linkup/Network/get-sent-invitations",
-        "api-reference/linkup/Network/withdraw-invitation",
-        "api-reference/linkup/Network/get-network-recomandations",
-        "api-reference/linkup/Network/get_invitations_status"
-      ]
-    },
-  
-    {
-      "group": "Messages",
-      "pages": [
-        "api-reference/linkup/Messages/send",
-        "api-reference/linkup/Messages/inbox-conversations",
-        "api-reference/linkup/Messages/conversation"
-      ]
-    },
-    {
-      "group": "posts",
-      "pages": [
-        "api-reference/linkup/posts/get-reactions",
-        "api-reference/linkup/posts/like",
-        "api-reference/linkup/posts/repost",
-        "api-reference/linkup/posts/comment",
-        "api-reference/linkup/posts/get-comments",
-        "api-reference/linkup/posts/answercomment",
-        "api-reference/linkup/posts/search",
-        "api-reference/linkup/posts/create",
-        "api-reference/linkup/posts/get-feed",
-        "api-reference/linkup/posts/time-spent"
-      ]
-    },
-    {
-      "group": "recruiter",
-      "pages": [
-        "api-reference/linkup/recruiter/get-candidate",
-        "api-reference/linkup/recruiter/get-cv",
-        "api-reference/linkup/recruiter/get-posts",
-        "api-reference/linkup/recruiter/publish-job",
-        "api-reference/linkup/recruiter/close-job-offer",
-        "api-reference/linkup/recruiter/create-job-post"
+        {
+          "group": "Signal API",
+          "pages": [
+            "api-reference/data-api/signal-api/posts-reactions",
+            "api-reference/data-api/signal-api/posts-comments",
+            "api-reference/data-api/signal-api/profile-reactions",
+            "api-reference/data-api/signal-api/profile-comments",
+            "api-reference/data-api/signal-api/profile-posts",
+            "api-reference/data-api/signal-api/company-posts"
+          ]
+        },
+        {
+          "group": "Company API",
+          "pages": [
+            "api-reference/data-api/company-api/companies-search",
+            "api-reference/data-api/company-api/company-info-direct",
+            "api-reference/data-api/company-api/company-info-by-domain"
 
-      ]
-    },
-    {
-      "group": "Data",
-      "pages": [
-        "api-reference/linkup/data/companies-search",
-        "api-reference/linkup/data/profiles-search"
+          ]
+        },
+        {
+          "group": "Person API",
+          "pages": [
+        
+            "api-reference/data-api/person-api/profiles-search",
+            "api-reference/data-api/person-api/profile-info-direct",
+            "api-reference/data-api/person-api/profile-enrich"
+          ]
+        }
       ]
     }
   ],

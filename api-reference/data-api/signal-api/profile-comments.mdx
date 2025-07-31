@@ -1,0 +1,229 @@
+---
+title: 'Extract Profile Comments'
+api: 'POST /v1/data/signals/profile/comments'
+description: 'Extract comments from a LinkedIn profile (comments that the person has posted)'
+---
+
+Extract comments from a LinkedIn profile, showing comments that the person has posted on other posts.
+
+<Note>
+  **Credit Usage:** 1 credit per request
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="profile_url" type="string" required>
+  URL of the LinkedIn profile to extract comments from
+</ParamField>
+
+<ParamField body="proxy_country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of comments to retrieve
+</ParamField>
+
+<ParamField body="start_page" type="integer">
+  Starting page number for pagination
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  Ending page number for pagination
+</ParamField>
+
+<ParamField body="cursor" type="string">
+  Pagination cursor to continue a previous search
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="profile_url" type="string">
+      URL of the analyzed profile
+    </ResponseField>
+
+    <ResponseField name="total_results" type="integer">
+      Number of comments returned in this response
+    </ResponseField>
+
+    <ResponseField name="comments" type="array">
+      <Expandable title="Comment Object">
+        <ResponseField name="comment_text" type="string">
+          The comment content
+        </ResponseField>
+
+        <ResponseField name="created_time" type="string">
+          When the comment was posted
+        </ResponseField>
+
+        <ResponseField name="likes_count" type="integer">
+          Number of likes on the comment
+        </ResponseField>
+
+        <ResponseField name="replies_count" type="integer">
+          Number of replies to the comment
+        </ResponseField>
+
+        <ResponseField name="post_url" type="string">
+          URL of the post where the comment was made
+        </ResponseField>
+
+        <ResponseField name="post_content" type="string">
+          Brief content or description of the original post
+        </ResponseField>
+
+        <ResponseField name="post_author" type="object">
+          <Expandable title="Post Author Properties">
+            <ResponseField name="name" type="string">
+              Full name of the original post author
+            </ResponseField>
+
+            <ResponseField name="profile_url" type="string">
+              LinkedIn profile URL of the original post author
+            </ResponseField>
+
+            <ResponseField name="title" type="string">
+              Professional headline or title
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="replies" type="array">
+          <Expandable title="Reply Object">
+            <ResponseField name="reply_text" type="string">
+              The reply content
+            </ResponseField>
+
+            <ResponseField name="created_time" type="string">
+              When the reply was posted
+            </ResponseField>
+
+            <ResponseField name="author" type="object">
+              <Expandable title="Reply Author Properties">
+                <ResponseField name="name" type="string">
+                  Full name of the reply author
+                </ResponseField>
+
+                <ResponseField name="profile_url" type="string">
+                  LinkedIn profile URL of the reply author
+                </ResponseField>
+
+                <ResponseField name="title" type="string">
+                  Professional headline or title
+                </ResponseField>
+              </Expandable>
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="pagination" type="object">
+      <Expandable title="Pagination Object">
+        <ResponseField name="cursor" type="string">
+          Cursor for next page of results
+        </ResponseField>
+
+        <ResponseField name="has_more" type="boolean">
+          Whether there are more results available
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "total_results": 8,
+    "comments": [
+      {
+        "comment_text": "This is a great insight! Thanks for sharing.",
+        "created_time": "2024-01-15T10:30:00Z",
+        "likes_count": 5,
+        "replies_count": 2,
+        "post_url": "https://www.linkedin.com/posts/example-post",
+        "post_content": "Excited to share our latest product launch...",
+        "post_author": {
+          "name": "Jane Smith",
+          "profile_url": "https://www.linkedin.com/in/janesmith",
+          "title": "CEO at Tech Corp"
+        },
+        "replies": [
+          {
+            "reply_text": "I completely agree with your point!",
+            "created_time": "2024-01-15T11:00:00Z",
+            "author": {
+              "name": "Bob Johnson",
+              "profile_url": "https://www.linkedin.com/in/bobjohnson",
+              "title": "Product Manager"
+            }
+          }
+        ]
+      }
+    ],
+    "pagination": {
+      "cursor": "eyJ0aW1lc3RhbXAiOiIxNzA1MzI0MDAwIiwicGFnZSI6MiwiaGFzTW9yZSI6dHJ1ZX0=",
+      "has_more": true
+    }
+  }
+}
+```
+</ResponseExample>
+
+### Error Responses
+
+<ResponseExample>
+```json Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits available"
+}
+```
+
+```json Invalid Profile URL
+{
+  "status": "error",
+  "message": "profile_url is required"
+}
+```
+
+```json Invalid Parameters
+{
+  "status": "error",
+  "message": "total_results must be a positive integer"
+}
+```
+
+```json Service Unavailable
+{
+  "status": "error",
+  "message": "Service temporarily unavailable, please contact support"
+}
+```
+</ResponseExample>
+
+### Notes
+
+- The API extracts comments that the profile owner has posted on other posts
+- Results are paginated using cursor-based pagination
+- The `cursor` parameter can be used to continue from where a previous request left off
+- Comments include replies when available
+- Post content may be truncated for privacy reasons
+- Rate limits apply to profile comment extraction requests
+- The pagination object provides a cursor for fetching the next page of results 

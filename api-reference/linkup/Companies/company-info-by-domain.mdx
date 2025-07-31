@@ -1,0 +1,186 @@
+---
+title: 'Get Company Information by Domain'
+api: 'POST /v1/data/company/info-by-domain'
+description: 'Search and extract company information from LinkedIn using a domain name'
+---
+
+Search for a company on LinkedIn using its domain name and extract comprehensive information including description, size, locations, and other business details.
+<Note>
+  This endpoint costs **2 credits** per request (1 credit for Google search + 1 credit for LinkedIn scraping).
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="domain" type="string" required>
+  Company domain name (e.g., "equans.com", "stripe.com")
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="name" type="string">
+      Company name
+    </ResponseField>
+
+    <ResponseField name="universalName" type="string">
+      Company URL identifier
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Company description
+    </ResponseField>
+
+    <ResponseField name="websiteUrl" type="string">
+      Company website URL
+    </ResponseField>
+
+    <ResponseField name="employeeCount" type="integer">
+      Total number of employees
+    </ResponseField>
+
+    <ResponseField name="employeeCountRange" type="object">
+      <Expandable title="Range Properties">
+        <ResponseField name="start" type="integer">Minimum range</ResponseField>
+        <ResponseField name="end" type="integer">Maximum range</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="headquarter" type="object">
+      <Expandable title="Address Properties">
+        <ResponseField name="country" type="string">Country code</ResponseField>
+        <ResponseField name="geographicArea" type="string">State/Region</ResponseField>
+        <ResponseField name="city" type="string">City</ResponseField>
+        <ResponseField name="line1" type="string">Street address</ResponseField>
+        <ResponseField name="postalCode" type="string">Postal code</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="locations" type="array">
+      Array of company office locations
+    </ResponseField>
+
+    <ResponseField name="organizationType" type="string">
+      Type of organization
+    </ResponseField>
+
+    <ResponseField name="followersCount" type="integer">
+      Number of LinkedIn followers
+    </ResponseField>
+
+    <ResponseField name="verified" type="boolean">
+      Whether the company page is verified
+    </ResponseField>
+
+    <ResponseField name="linkedin_url" type="string">
+      LinkedIn URL of the company that was found and scraped
+    </ResponseField>
+
+    <ResponseField name="searched_domain" type="string">
+      The domain that was used for the search
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "name": "Equans",
+    "universalName": "equans",
+    "description": "Equans is a world leader in the energy and services sector, operating in 17 countries with 74,500 employees.",
+    "websiteUrl": "https://www.equans.com",
+    "employeeCount": 74500,
+    "employeeCountRange": {
+      "start": 50000,
+      "end": 100000
+    },
+    "headquarter": {
+      "country": "FR",
+      "geographicArea": "Île-de-France",
+      "city": "Paris",
+      "line1": "Tour Equans",
+      "postalCode": "75008"
+    },
+    "locations": [
+      {
+        "country": "FR",
+        "city": "Paris"
+      }
+    ],
+    "organizationType": "Public Company",
+    "followersCount": 125000,
+    "verified": true,
+    "linkedin_url": "https://www.linkedin.com/company/equans",
+    "searched_domain": "equans.com"
+  }
+}
+```
+
+```json Error Response - Insufficient Credits
+{
+  "status": "error",
+  "message": "Insufficient credits. Please purchase more credits to continue."
+}
+```
+
+```json Error Response - Domain Not Found
+{
+  "status": "error",
+  "message": "Aucune page LinkedIn d'entreprise trouvée pour le domaine 'example.com'"
+}
+```
+
+```json Error Response - Invalid Domain
+{
+  "status": "error",
+  "message": "domain is required"
+}
+```
+
+```json Error Response - Service Unavailable
+{
+  "status": "error",
+  "message": "Service temporarily unavailable, please contact support"
+}
+```
+</ResponseExample>
+
+### How it works
+
+1. **Domain Search**: The endpoint first searches Google to find the LinkedIn company page associated with the provided domain
+2. **URL Extraction**: It extracts the LinkedIn company URL from the search results
+3. **Data Scraping**: Using the found LinkedIn URL, it scrapes comprehensive company information with automatic proxy rotation
+4. **Data Return**: Returns the complete company profile data along with the LinkedIn URL and searched domain
+
+### Use Cases
+
+- **Lead Generation**: Find company information when you only have a domain name
+- **Competitor Research**: Gather detailed information about competitors using their website domains
+- **Data Enrichment**: Enrich your database with LinkedIn company data using domain names
+- **Market Research**: Research companies in your target market using their domain names
+
+### Rate Limits
+
+This endpoint uses 2 credits per request:
+- 1 credit for the Google search to find the LinkedIn URL
+- 1 credit for the LinkedIn company data scraping
+
+### Error Handling
+
+The endpoint handles various error scenarios:
+- **401**: Insufficient credits
+- **400**: Missing or invalid domain parameter
+- **404**: No LinkedIn company page found for the domain
+- **500**: Service temporarily unavailable or scraping errors 
