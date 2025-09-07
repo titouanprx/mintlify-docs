@@ -18,8 +18,29 @@ Find the email address associated with a LinkedIn profile. This endpoint analyze
 
 ### Body Parameters
 
-<ParamField body="linkedin_url" type="string" required>
+<ParamField body="linkedin_url" type="string">
   LinkedIn profile URL (e.g., https://www.linkedin.com/in/jason-trinka-74aba9312/)
+  Required if first_name and last_name are not provided
+</ParamField>
+
+<ParamField body="first_name" type="string">
+  Person's first name
+  Required if linkedin_url is not provided
+</ParamField>
+
+<ParamField body="last_name" type="string">
+  Person's last name
+  Required if linkedin_url is not provided
+</ParamField>
+
+<ParamField body="company_domain" type="string">
+  Company domain (e.g., "company.com")
+  Recommended over company_name for better accuracy
+</ParamField>
+
+<ParamField body="company_name" type="string">
+  Company name (will be used to find domain)
+  Less accurate than providing company_domain directly
 </ParamField>
 
 ### Response
@@ -167,9 +188,8 @@ Find the email address associated with a LinkedIn profile. This endpoint analyze
 </ResponseExample>
 
 ### Notes
-- The endpoint analyzes the LinkedIn profile to extract company information
-- Multiple domains may be tested based on current and previous companies
+- You can use either a LinkedIn URL or provide first_name + last_name with company information
+- **Recommendation**: Provide `company_domain` directly instead of `company_name` for better accuracy and faster processing
 - If no email is found, the `email` field will be `null`
 - The `catchall` field indicates if the domain accepts all email addresses
 - Alternative email addresses may be provided when multiple options are found
-- Success depends on the availability of company domain information in the profile
