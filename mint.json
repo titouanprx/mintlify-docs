@@ -151,6 +151,15 @@
             "api-reference/data-api/person-api/profile-info-direct",
             "api-reference/data-api/person-api/profile-enrich"
           ]
+        },
+        {
+          "group": "Mail API",
+          "pages": [
+        
+            "api-reference/data-api/mail-api/mail-finder",
+            "api-reference/data-api/mail-api/mail-reverse",
+            "api-reference/data-api/mail-api/mail-validate"
+          ]
         }
       ]
     }
