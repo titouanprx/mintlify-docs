@@ -1,0 +1,175 @@
+---
+title: 'Email Finder'
+api: 'POST /v1/data/mail/finder'
+description: 'Find email address from LinkedIn profile URL'
+---
+
+Find the email address associated with a LinkedIn profile. This endpoint analyzes the LinkedIn profile and attempts to find the professional email address.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  LinkedIn profile URL (e.g., https://www.linkedin.com/in/jason-trinka-74aba9312/)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="email" type="string">
+      Found email address
+    </ResponseField>
+    
+    <ResponseField name="alternatives" type="array">
+      Array of alternative email addresses found
+    </ResponseField>
+    
+    <ResponseField name="catchall" type="boolean">
+      Whether the domain has catch-all email enabled
+    </ResponseField>
+    
+    <ResponseField name="domain_used" type="string">
+      Primary domain used for the email
+    </ResponseField>
+    
+    <ResponseField name="domains_tested" type="array">
+      Array of domains that were tested
+    </ResponseField>
+    
+    <ResponseField name="domains_filtered" type="array">
+      Array of domains after filtering
+    </ResponseField>
+    
+    <ResponseField name="companies_found" type="array">
+      <Expandable title="Company Object">
+        <ResponseField name="name" type="string">
+          Company name
+        </ResponseField>
+        
+        <ResponseField name="linkedin_url" type="string">
+          LinkedIn company URL
+        </ResponseField>
+        
+        <ResponseField name="domain" type="string">
+          Company domain
+        </ResponseField>
+        
+        <ResponseField name="is_current" type="boolean">
+          Whether this is the current company
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="domains_extracted" type="array">
+      Array of domains extracted from profile analysis
+    </ResponseField>
+    
+    <ResponseField name="person_info" type="object">
+      <Expandable title="Person Information">
+        <ResponseField name="full_name" type="string">
+          Full name of the person
+        </ResponseField>
+        
+        <ResponseField name="first_name" type="string">
+          First name
+        </ResponseField>
+        
+        <ResponseField name="last_name" type="string">
+          Last name
+        </ResponseField>
+        
+        <ResponseField name="headline" type="string">
+          Professional headline
+        </ResponseField>
+        
+        <ResponseField name="location" type="string">
+          Geographic location
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "email": "jason@raynmaker.ai",
+    "alternatives": [],
+    "catchall": false,
+    "domain_used": "raynmaker.ai",
+    "domains_tested": ["raynmaker.ai"],
+    "domains_filtered": ["raynmaker.ai"],
+    "companies_found": [
+      {
+        "name": "RaYnmaker",
+        "linkedin_url": "https://linkedin.com/company/raynmaker",
+        "domain": "raynmaker.ai",
+        "is_current": true
+      }
+    ],
+    "domains_extracted": ["raynmaker.ai"],
+    "person_info": {
+      "full_name": "Jason Trinka",
+      "first_name": "Jason",
+      "last_name": "Trinka",
+      "headline": "Spend Less. Sell More. Predictably.",
+      "location": "Etats-Unis"
+    }
+  }
+}
+```
+
+```json Email Not Found
+{
+  "status": "success",
+  "data": {
+    "email": null,
+    "alternatives": [],
+    "catchall": false,
+    "domain_used": null,
+    "domains_tested": ["example.com"],
+    "domains_filtered": ["example.com"],
+    "companies_found": [
+      {
+        "name": "Example Company",
+        "linkedin_url": "https://linkedin.com/company/example",
+        "domain": "example.com",
+        "is_current": true
+      }
+    ],
+    "domains_extracted": ["example.com"],
+    "person_info": {
+      "full_name": "John Doe",
+      "first_name": "John",
+      "last_name": "Doe",
+      "headline": "Professional at Example Company",
+      "location": "United States"
+    }
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The endpoint analyzes the LinkedIn profile to extract company information
+- Multiple domains may be tested based on current and previous companies
+- If no email is found, the `email` field will be `null`
+- The `catchall` field indicates if the domain accepts all email addresses
+- Alternative email addresses may be provided when multiple options are found
+- Success depends on the availability of company domain information in the profile

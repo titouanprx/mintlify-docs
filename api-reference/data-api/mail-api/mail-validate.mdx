@@ -1,0 +1,87 @@
+---
+title: 'Email Validation'
+api: 'POST /v1/data/mail/validate'
+description: 'Validate if an email address is valid and deliverable'
+---
+
+Validate an email address to check if it's valid, deliverable, and whether the domain has catch-all functionality enabled.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="email" type="string" required>
+  Email address to validate (e.g., yoan@limova.ai)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="email" type="string">
+      Email address that was validated
+    </ResponseField>
+    
+    <ResponseField name="is_valid" type="boolean">
+      Whether the email address is valid and deliverable
+    </ResponseField>
+    
+    <ResponseField name="is_catch_all" type="boolean">
+      Whether the domain has catch-all email functionality enabled
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Valid Email
+{
+  "status": "success",
+  "data": {
+    "email": "yoan@limova.ai",
+    "is_valid": true,
+    "is_catch_all": false
+  }
+}
+```
+
+```json Invalid Email
+{
+  "status": "success",
+  "data": {
+    "email": "invalid@nonexistentdomain.xyz",
+    "is_valid": false,
+    "is_catch_all": false
+  }
+}
+```
+
+```json Catch-All Domain
+{
+  "status": "success",
+  "data": {
+    "email": "test@catchalldomain.com",
+    "is_valid": true,
+    "is_catch_all": true
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The validation checks both email format and deliverability
+- Catch-all domains accept emails to any address at that domain
+- A valid email means it can receive messages
+- The validation process may take a few seconds for thorough checking
+- Some corporate domains may have catch-all enabled for security reasons

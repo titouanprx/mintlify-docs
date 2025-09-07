@@ -1,0 +1,211 @@
+---
+title: 'Email Reverse Lookup'
+api: 'POST /v1/data/mail/reverse'
+description: 'Find LinkedIn profile information from an email address'
+---
+
+Find and extract LinkedIn profile information using an email address. This endpoint parses the email, extracts company information, and searches for the corresponding LinkedIn profile.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="email" type="string" required>
+  Email address to reverse lookup (e.g., yoan@limova.ai)
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="email_parsed" type="object">
+      <Expandable title="Email Parsing Results">
+        <ResponseField name="original_email" type="string">
+          Original email address provided
+        </ResponseField>
+        
+        <ResponseField name="first_name" type="string">
+          Extracted first name from email
+        </ResponseField>
+        
+        <ResponseField name="last_name" type="string">
+          Extracted last name from email
+        </ResponseField>
+        
+        <ResponseField name="company_domain" type="string">
+          Company domain extracted from email
+        </ResponseField>
+        
+        <ResponseField name="parsing_confidence" type="string">
+          Confidence level of the parsing (high/medium/low)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="person_found" type="object">
+      <Expandable title="LinkedIn Profile Information">
+        <ResponseField name="public_id" type="string">
+          Public identifier of the LinkedIn profile
+        </ResponseField>
+        
+        <ResponseField name="first_name" type="string">
+          First name from LinkedIn profile
+        </ResponseField>
+        
+        <ResponseField name="last_name" type="string">
+          Last name from LinkedIn profile
+        </ResponseField>
+        
+        <ResponseField name="headline" type="string">
+          Professional headline from LinkedIn
+        </ResponseField>
+        
+        <ResponseField name="location" type="string">
+          Geographic location
+        </ResponseField>
+        
+        <ResponseField name="summary" type="string">
+          Profile summary (may be empty)
+        </ResponseField>
+        
+        <ResponseField name="industry" type="string">
+          Industry sector
+        </ResponseField>
+        
+        <ResponseField name="experience" type="array">
+          <Expandable title="Experience Object">
+            <ResponseField name="company" type="string">
+              Company name
+            </ResponseField>
+            
+            <ResponseField name="title" type="string">
+              Job title
+            </ResponseField>
+            
+            <ResponseField name="description" type="string">
+              Job description
+            </ResponseField>
+            
+            <ResponseField name="start_date" type="string">
+              Start date (MM/YYYY format)
+            </ResponseField>
+            
+            <ResponseField name="end_date" type="string">
+              End date (MM/YYYY format, empty if current)
+            </ResponseField>
+            
+            <ResponseField name="company_url" type="string">
+              LinkedIn company URL
+            </ResponseField>
+            
+            <ResponseField name="company_logo_url" type="string">
+              Company logo URL
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        
+        <ResponseField name="education" type="array">
+          Array of education objects (may be empty)
+        </ResponseField>
+        
+        <ResponseField name="skills" type="array">
+          Array of professional skills
+        </ResponseField>
+        
+        <ResponseField name="profile_picture_url" type="string">
+          URL to profile picture
+        </ResponseField>
+        
+        <ResponseField name="email" type="string">
+          Email address (if publicly available)
+        </ResponseField>
+        
+        <ResponseField name="phone" type="string">
+          Phone number (if publicly available)
+        </ResponseField>
+        
+        <ResponseField name="website" type="string">
+          Personal website (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "email_parsed": {
+      "original_email": "yoan@limova.ai",
+      "first_name": "yoan",
+      "last_name": "Drahy",
+      "company_domain": "limova.ai",
+      "parsing_confidence": "high"
+    },
+    "person_found": {
+      "public_id": "yoan-drahy-624652333",
+      "first_name": "Yoan",
+      "last_name": "Drahy",
+      "headline": "Co-fondateur chez Limova.ai",
+      "location": "France",
+      "summary": "",
+      "industry": "Logiciels informatiques",
+      "experience": [
+        {
+          "company": "Limova.ai",
+          "title": "Co-fondateur",
+          "description": "",
+          "start_date": "12/2023",
+          "end_date": "",
+          "company_url": "https://linkedin.com/company/limova-ai",
+          "company_logo_url": "https://media.licdn.com/dms/image/v2/D4E0BAQHtmCHJiCE8ww/company-logo_400_400/B4EZXTc4ApG0Ag-/0/1743009317399/limova_ai_logo?e=1759968000&v=beta&t=bmdZbi4PaSNALb8mJHMf3BTnOvDNqvGJ-YNe_F0qAFs"
+        }
+      ],
+      "education": [],
+      "skills": ["Leadership fonctionnel", "Management", "Start-up", "Business-to-Business (BtoB)"],
+      "profile_picture_url": "https://media.licdn.com/dms/image/v2/D4D03AQFpHVE1IXVGjw/profile-displayphoto-shrink_800_800/B4DZVLuarwHAAk-/0/1740732214475?e=1759968000&v=beta&t=QYSoUmXY9g1KcRccohKXrcSOeEsvce1osmDGRO5BU18",
+      "email": "",
+      "phone": "",
+      "website": ""
+    }
+  }
+}
+```
+
+```json Profile Not Found
+{
+  "status": "success",
+  "data": {
+    "email_parsed": {
+      "original_email": "unknown@example.com",
+      "first_name": "unknown",
+      "last_name": "",
+      "company_domain": "example.com",
+      "parsing_confidence": "low"
+    },
+    "person_found": null
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The endpoint attempts to parse names and company information from the email address
+- If no LinkedIn profile is found, `person_found` will be `null`
+- Parsing confidence indicates how reliable the name extraction was
+- Profile data depends on LinkedIn privacy settings
+- Contact information may be empty based on profile visibility settings
