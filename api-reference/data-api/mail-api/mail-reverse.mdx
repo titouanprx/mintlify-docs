@@ -19,7 +19,7 @@ Find and extract LinkedIn profile information using an email address. This endpo
 ### Body Parameters
 
 <ParamField body="email" type="string" required>
-  Email address to reverse lookup (e.g., yoan@limova.ai)
+  Email address to reverse lookup (e.g., satya.nadella@microsoft.com)
 </ParamField>
 
 ### Response
@@ -150,34 +150,40 @@ Find and extract LinkedIn profile information using an email address. This endpo
   "status": "success",
   "data": {
     "email_parsed": {
-      "original_email": "yoan@limova.ai",
-      "first_name": "yoan",
-      "last_name": "Drahy",
-      "company_domain": "limova.ai",
+      "original_email": "satya.nadella@microsoft.com",
+      "first_name": "satya",
+      "last_name": "nadella",
+      "company_domain": "microsoft.com",
       "parsing_confidence": "high"
     },
     "person_found": {
-      "public_id": "yoan-drahy-624652333",
-      "first_name": "Yoan",
-      "last_name": "Drahy",
-      "headline": "Co-fondateur chez Limova.ai",
-      "location": "France",
-      "summary": "",
-      "industry": "Logiciels informatiques",
+      "public_id": "satya-nadella-3145678",
+      "first_name": "Satya",
+      "last_name": "Nadella",
+      "headline": "Chairman and CEO at Microsoft",
+      "location": "Redmond, Washington, United States",
+      "summary": "Passionate about empowering every person and organization on the planet to achieve more.",
+      "industry": "Technology",
       "experience": [
         {
-          "company": "Limova.ai",
-          "title": "Co-fondateur",
-          "description": "",
-          "start_date": "12/2023",
+          "company": "Microsoft",
+          "title": "Chairman and CEO",
+          "description": "Leading Microsoft's mission to empower every person and every organization on the planet to achieve more.",
+          "start_date": "02/2014",
           "end_date": "",
-          "company_url": "https://linkedin.com/company/limova-ai",
-          "company_logo_url": "https://media.licdn.com/dms/image/v2/D4E0BAQHtmCHJiCE8ww/company-logo_400_400/B4EZXTc4ApG0Ag-/0/1743009317399/limova_ai_logo?e=1759968000&v=beta&t=bmdZbi4PaSNALb8mJHMf3BTnOvDNqvGJ-YNe_F0qAFs"
+          "company_url": "https://linkedin.com/company/microsoft",
+          "company_logo_url": "https://media.licdn.com/dms/image/C560BAQE88xCsONDULQ/company-logo_400_400/0/1630652622688/microsoft_logo?e=1759968000&v=beta&t=example"
         }
       ],
-      "education": [],
-      "skills": ["Leadership fonctionnel", "Management", "Start-up", "Business-to-Business (BtoB)"],
-      "profile_picture_url": "https://media.licdn.com/dms/image/v2/D4D03AQFpHVE1IXVGjw/profile-displayphoto-shrink_800_800/B4DZVLuarwHAAk-/0/1740732214475?e=1759968000&v=beta&t=QYSoUmXY9g1KcRccohKXrcSOeEsvce1osmDGRO5BU18",
+      "education": [
+        {
+          "school": "University of Chicago Booth School of Business",
+          "degree": "MBA",
+          "field_of_study": "Business Administration"
+        }
+      ],
+      "skills": ["Leadership", "Cloud Computing", "Digital Transformation", "Strategic Planning"],
+      "profile_picture_url": "https://media.licdn.com/dms/image/example/satya-nadella-profile.jpg",
       "email": "",
       "phone": "",
       "website": ""
@@ -191,11 +197,11 @@ Find and extract LinkedIn profile information using an email address. This endpo
   "status": "success",
   "data": {
     "email_parsed": {
-      "original_email": "unknown@example.com",
-      "first_name": "unknown",
-      "last_name": "",
-      "company_domain": "example.com",
-      "parsing_confidence": "low"
+      "original_email": "tim.cook@unknowndomain.com",
+      "first_name": "tim",
+      "last_name": "cook",
+      "company_domain": "unknowndomain.com",
+      "parsing_confidence": "medium"
     },
     "person_found": null
   }

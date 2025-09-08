@@ -19,7 +19,7 @@ Validate an email address to check if it's valid, deliverable, and whether the d
 ### Body Parameters
 
 <ParamField body="email" type="string" required>
-  Email address to validate (e.g., yoan@limova.ai)
+  Email address to validate (e.g., elon.musk@tesla.com)
 </ParamField>
 
 ### Response
@@ -49,7 +49,7 @@ Validate an email address to check if it's valid, deliverable, and whether the d
 {
   "status": "success",
   "data": {
-    "email": "yoan@limova.ai",
+    "email": "elon.musk@tesla.com",
     "is_valid": true,
     "is_catch_all": false
   }
@@ -60,7 +60,7 @@ Validate an email address to check if it's valid, deliverable, and whether the d
 {
   "status": "success",
   "data": {
-    "email": "invalid@nonexistentdomain.xyz",
+    "email": "steve.jobs@nonexistentdomain.xyz",
     "is_valid": false,
     "is_catch_all": false
   }
@@ -71,7 +71,7 @@ Validate an email address to check if it's valid, deliverable, and whether the d
 {
   "status": "success",
   "data": {
-    "email": "test@catchalldomain.com",
+    "email": "bill.gates@microsoft.com",
     "is_valid": true,
     "is_catch_all": true
   }

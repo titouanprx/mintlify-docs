@@ -19,7 +19,7 @@ Find the email address associated with a LinkedIn profile. This endpoint analyze
 ### Body Parameters
 
 <ParamField body="linkedin_url" type="string">
-  LinkedIn profile URL (e.g., https://www.linkedin.com/in/jason-trinka-74aba9312/)
+  LinkedIn profile URL (e.g., https://www.linkedin.com/in/jeffbezos/)
   Required if first_name and last_name are not provided
 </ParamField>
 
@@ -130,27 +130,33 @@ Find the email address associated with a LinkedIn profile. This endpoint analyze
 {
   "status": "success",
   "data": {
-    "email": "jason@raynmaker.ai",
-    "alternatives": [],
+    "email": "jeff@amazon.com",
+    "alternatives": ["jbezos@amazon.com"],
     "catchall": false,
-    "domain_used": "raynmaker.ai",
-    "domains_tested": ["raynmaker.ai"],
-    "domains_filtered": ["raynmaker.ai"],
+    "domain_used": "amazon.com",
+    "domains_tested": ["amazon.com", "blueorigin.com"],
+    "domains_filtered": ["amazon.com"],
     "companies_found": [
       {
-        "name": "RaYnmaker",
-        "linkedin_url": "https://linkedin.com/company/raynmaker",
-        "domain": "raynmaker.ai",
+        "name": "Amazon",
+        "linkedin_url": "https://linkedin.com/company/amazon",
+        "domain": "amazon.com",
+        "is_current": false
+      },
+      {
+        "name": "Blue Origin",
+        "linkedin_url": "https://linkedin.com/company/blue-origin",
+        "domain": "blueorigin.com",
         "is_current": true
       }
     ],
-    "domains_extracted": ["raynmaker.ai"],
+    "domains_extracted": ["amazon.com", "blueorigin.com"],
     "person_info": {
-      "full_name": "Jason Trinka",
-      "first_name": "Jason",
-      "last_name": "Trinka",
-      "headline": "Spend Less. Sell More. Predictably.",
-      "location": "Etats-Unis"
+      "full_name": "Jeff Bezos",
+      "first_name": "Jeff",
+      "last_name": "Bezos",
+      "headline": "Executive Chairman at Amazon, Founder of Blue Origin",
+      "location": "Seattle, Washington, United States"
     }
   }
 }
@@ -164,23 +170,23 @@ Find the email address associated with a LinkedIn profile. This endpoint analyze
     "alternatives": [],
     "catchall": false,
     "domain_used": null,
-    "domains_tested": ["example.com"],
-    "domains_filtered": ["example.com"],
+    "domains_tested": ["meta.com"],
+    "domains_filtered": ["meta.com"],
     "companies_found": [
       {
-        "name": "Example Company",
-        "linkedin_url": "https://linkedin.com/company/example",
-        "domain": "example.com",
+        "name": "Meta",
+        "linkedin_url": "https://linkedin.com/company/meta",
+        "domain": "meta.com",
         "is_current": true
       }
     ],
-    "domains_extracted": ["example.com"],
+    "domains_extracted": ["meta.com"],
     "person_info": {
-      "full_name": "John Doe",
-      "first_name": "John",
-      "last_name": "Doe",
-      "headline": "Professional at Example Company",
-      "location": "United States"
+      "full_name": "Mark Zuckerberg",
+      "first_name": "Mark",
+      "last_name": "Zuckerberg",
+      "headline": "Founder and CEO at Meta",
+      "location": "Menlo Park, California"
     }
   }
 }
