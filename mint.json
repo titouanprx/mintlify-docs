@@ -95,13 +95,13 @@
         {
           "group": "Webhook Messaging API",
           "pages": [
-            "api-reference/linkup/authentication/webhook/create-account",
-            "api-reference/linkup/authentication/webhook/list-account",
-            "api-reference/linkup/authentication/webhook/update-account",
-            "api-reference/linkup/authentication/webhook/delete-account",
-            "api-reference/linkup/authentication/webhook/start-monitoring",
-            "api-reference/linkup/authentication/webhook/stop-monitoring",
-            "api-reference/linkup/authentication/webhook/monitoring-status"
+            "api-reference/linkup/authentication/webhook/create_account",
+            "api-reference/linkup/authentication/webhook/list_account",
+            "api-reference/linkup/authentication/webhook/update_account",
+            "api-reference/linkup/authentication/webhook/delete_account",
+            "api-reference/linkup/authentication/webhook/start_monitoring",
+            "api-reference/linkup/authentication/webhook/stop_monitoring",
+            "api-reference/linkup/authentication/webhook/monitoring_status"
           ]
         },
         {
