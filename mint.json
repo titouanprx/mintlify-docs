@@ -96,7 +96,7 @@
           "group": "Webhook Messaging API",
           "pages": [
             "api-reference/linkup/authentication/webhook/create-account",
-            "api-reference/linkup/authentication/webhook/list-accounts",
+            "api-reference/linkup/authentication/webhook/list-account",
             "api-reference/linkup/authentication/webhook/update-account",
             "api-reference/linkup/authentication/webhook/delete-account",
             "api-reference/linkup/authentication/webhook/start-monitoring",
