@@ -1,10 +1,10 @@
 ---
 title: 'Create Webhook Account'
-api: 'POST /linkedin/webhook/accounts'
+api: 'POST /webhooks/accounts'
 description: 'Register a LinkedIn account for webhook monitoring'
 ---
 
-Register a new LinkedIn account to receive real-time webhook notifications for messages and activities.
+Register a new LinkedIn account to receive real-time webhook notifications for messages.
 
 <Note>
   After creating an account, monitoring must be started separately using the start monitoring endpoint.
@@ -84,7 +84,5 @@ Register a new LinkedIn account to receive real-time webhook notifications for m
 </ResponseExample>
 
 ### Notes
-- Each user can create multiple LinkedIn accounts for monitoring
 - The account will be created with `is_active: false` by default
 - Use the start monitoring endpoint to begin receiving webhooks
-- The webhook URL must be accessible and respond with 2xx status codes
