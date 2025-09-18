@@ -1,0 +1,48 @@
+---
+title: 'Stop Webhook Monitoring'
+api: 'POST /linkedin/webhook/accounts/{account_id}/stop'
+description: 'Stop real-time monitoring for a LinkedIn account'
+---
+
+Stop real-time monitoring for a LinkedIn account to cease webhook notifications.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  The ID of the account to stop monitoring
+</ParamField>
+
+### Response
+
+<ResponseField name="account_id" type="string">
+  The account ID that was deactivated
+</ResponseField>
+
+<ResponseField name="is_active" type="boolean">
+  Monitoring status (false when stopped)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success confirmation message
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "account_id": "60f7b3b3e4b0c8a2d8e9f1a2",
+  "is_active": false,
+  "message": "Monitoring stopped successfully"
+}
+```
+</ResponseExample>
+
+### Notes
+- Stopping monitoring immediately disconnects from LinkedIn and stops all webhook delivery
+- The account configuration remains saved and can be restarted later
+- No webhooks will be sent while monitoring is stopped

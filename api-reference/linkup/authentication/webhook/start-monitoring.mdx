@@ -1,0 +1,53 @@
+---
+title: 'Start Webhook Monitoring'
+api: 'POST /linkedin/webhook/accounts/{account_id}/start'
+description: 'Start real-time monitoring for a LinkedIn account'
+---
+
+Begin real-time monitoring for a registered LinkedIn account to receive webhook notifications.
+
+<Note>
+  Monitoring must be explicitly started after creating an account. Only active accounts will send webhooks.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  The ID of the account to start monitoring
+</ParamField>
+
+### Response
+
+<ResponseField name="account_id" type="string">
+  The account ID that was activated
+</ResponseField>
+
+<ResponseField name="is_active" type="boolean">
+  Monitoring status (true when started)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Success confirmation message
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "account_id": "60f7b3b3e4b0c8a2d8e9f1a2",
+  "is_active": true,
+  "message": "Monitoring started successfully"
+}
+```
+</ResponseExample>
+
+### Notes
+- Starting monitoring establishes a persistent connection to LinkedIn
+- Webhooks will be sent to the configured webhook URL in real-time
+- The system automatically handles reconnections if the connection drops
+- Each account maintains its own monitoring process

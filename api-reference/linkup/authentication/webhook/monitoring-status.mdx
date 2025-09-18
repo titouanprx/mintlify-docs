@@ -1,0 +1,56 @@
+---
+title: 'Check Monitoring Status'
+api: 'GET /linkedin/webhook/accounts/{account_id}/status'
+description: 'Check the current monitoring status of a LinkedIn account'
+---
+
+Retrieve the current monitoring status for a registered LinkedIn webhook account.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  The ID of the account to check
+</ParamField>
+
+### Response
+
+<ResponseField name="account_id" type="string">
+  The account ID being checked
+</ResponseField>
+
+<ResponseField name="is_active" type="boolean">
+  Current monitoring status
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Status description message
+</ResponseField>
+
+<ResponseExample>
+```json Active Status
+{
+  "account_id": "60f7b3b3e4b0c8a2d8e9f1a2",
+  "is_active": true,
+  "message": "Monitoring is active"
+}
+```
+
+```json Inactive Status
+{
+  "account_id": "60f7b3b3e4b0c8a2d8e9f1a2",
+  "is_active": false,
+  "message": "Monitoring is stopped"
+}
+```
+</ResponseExample>
+
+### Notes
+- Use this endpoint to verify if monitoring is currently active
+- `is_active: true` means webhooks are being sent in real-time
+- `is_active: false` means no webhooks will be delivered

@@ -1,0 +1,90 @@
+---
+title: 'List Webhook Accounts'
+api: 'GET /linkedin/webhook/accounts'
+description: 'Retrieve all registered LinkedIn webhook accounts'
+---
+
+Get a list of all LinkedIn accounts registered for webhook monitoring under your API key.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Response
+
+<ResponseField name="accounts" type="array">
+  <Expandable title="Account Object">
+    <ResponseField name="id" type="string">
+      Unique identifier for the account
+    </ResponseField>
+
+    <ResponseField name="login_token" type="string">
+      LinkedIn authentication token
+    </ResponseField>
+
+    <ResponseField name="country" type="string">
+      Country code for proxy selection
+    </ResponseField>
+
+    <ResponseField name="webhook_url" type="string">
+      URL where webhooks are sent
+    </ResponseField>
+
+    <ResponseField name="account_name" type="string">
+      Account name if provided
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether monitoring is currently active
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      Account creation timestamp
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="string">
+      Last update timestamp
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="total" type="integer">
+  Total number of accounts
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "accounts": [
+    {
+      "id": "60f7b3b3e4b0c8a2d8e9f1a2",
+      "login_token": "AQEDARCvKg...",
+      "country": "FR",
+      "webhook_url": "https://your-webhook.com/linkedin",
+      "account_name": "My Pro Account",
+      "is_active": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "60f7b3b3e4b0c8a2d8e9f1a3",
+      "login_token": "AQEDARCvKh...",
+      "country": "US",
+      "webhook_url": "https://your-webhook.com/linkedin-us",
+      "account_name": "US Account",
+      "is_active": false,
+      "created_at": "2024-01-02T00:00:00Z",
+      "updated_at": "2024-01-02T00:00:00Z"
+    }
+  ],
+  "total": 2
+}
+```
+</ResponseExample>
+
+### Notes
+- Returns all accounts associated with your API key
+- Use the `is_active` field to identify which accounts are currently being monitored
+- Account tokens are included in the response for reference

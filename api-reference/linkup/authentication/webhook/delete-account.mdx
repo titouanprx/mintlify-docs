@@ -1,0 +1,42 @@
+---
+title: 'Delete Webhook Account'
+api: 'DELETE /linkedin/webhook/accounts/{account_id}'
+description: 'Delete a LinkedIn webhook account'
+---
+
+Permanently delete a LinkedIn webhook account and stop all monitoring.
+
+<Note>
+  This action cannot be undone. Deleting an account will automatically stop monitoring and remove all associated data.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  The ID of the account to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="message" type="string">
+  Confirmation message
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "message": "Account deleted successfully"
+}
+```
+</ResponseExample>
+
+### Notes
+- Deleting an account automatically stops monitoring if it was active
+- All webhook configurations and monitoring data for this account will be permanently removed
+- This action cannot be undone - you will need to recreate the account if needed later

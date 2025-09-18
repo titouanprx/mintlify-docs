@@ -1,0 +1,90 @@
+---
+title: 'Create Webhook Account'
+api: 'POST /linkedin/webhook/accounts'
+description: 'Register a LinkedIn account for webhook monitoring'
+---
+
+Register a new LinkedIn account to receive real-time webhook notifications for messages and activities.
+
+<Note>
+  After creating an account, monitoring must be started separately using the start monitoring endpoint.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie (li_at) obtained from the login process
+</ParamField>
+
+<ParamField body="webhook_url" type="string" required>
+  URL where webhook notifications will be sent
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR)
+</ParamField>
+
+<ParamField body="account_name" type="string">
+  Optional name to identify this account
+</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string">
+  Unique identifier for the created account
+</ResponseField>
+
+<ResponseField name="login_token" type="string">
+  The LinkedIn authentication token
+</ResponseField>
+
+<ResponseField name="country" type="string">
+  Country code used for this account
+</ResponseField>
+
+<ResponseField name="webhook_url" type="string">
+  URL where webhooks will be sent
+</ResponseField>
+
+<ResponseField name="account_name" type="string">
+  Account name if provided
+</ResponseField>
+
+<ResponseField name="is_active" type="boolean">
+  Whether monitoring is currently active (false by default)
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Account creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Last update timestamp
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "id": "60f7b3b3e4b0c8a2d8e9f1a2",
+  "login_token": "AQEDARCvKg...",
+  "country": "FR",
+  "webhook_url": "https://your-webhook.com/linkedin",
+  "account_name": "My Pro Account",
+  "is_active": false,
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-01T00:00:00Z"
+}
+```
+</ResponseExample>
+
+### Notes
+- Each user can create multiple LinkedIn accounts for monitoring
+- The account will be created with `is_active: false` by default
+- Use the start monitoring endpoint to begin receiving webhooks
+- The webhook URL must be accessible and respond with 2xx status codes
