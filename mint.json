@@ -53,19 +53,7 @@
           "pages": [
             "api-reference/linkedin-engagement-api/getting-linkedin-cookie",
             "api-reference/linkup/authentication/login",
-            "api-reference/linkup/authentication/verify",
-            {
-              "group": "Webhook Messaging API",
-              "pages": [
-                "api-reference/linkup/authentication/webhook/create-account",
-                "api-reference/linkup/authentication/webhook/list-accounts",
-                "api-reference/linkup/authentication/webhook/update-account",
-                "api-reference/linkup/authentication/webhook/delete-account",
-                "api-reference/linkup/authentication/webhook/start-monitoring",
-                "api-reference/linkup/authentication/webhook/stop-monitoring",
-                "api-reference/linkup/authentication/webhook/monitoring-status"
-              ]
-            }
+            "api-reference/linkup/authentication/verify"
           ]
         },
         {
@@ -102,6 +90,18 @@
             "api-reference/linkup/Messages/send",
             "api-reference/linkup/Messages/inbox-conversations",
             "api-reference/linkup/Messages/conversation"
+          ]
+        },
+        {
+          "group": "Webhook Messaging API",
+          "pages": [
+            "api-reference/linkup/authentication/webhook/create-account",
+            "api-reference/linkup/authentication/webhook/list-accounts",
+            "api-reference/linkup/authentication/webhook/update-account",
+            "api-reference/linkup/authentication/webhook/delete-account",
+            "api-reference/linkup/authentication/webhook/start-monitoring",
+            "api-reference/linkup/authentication/webhook/stop-monitoring",
+            "api-reference/linkup/authentication/webhook/monitoring-status"
           ]
         },
         {
