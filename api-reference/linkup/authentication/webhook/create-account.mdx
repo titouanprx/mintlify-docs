@@ -10,6 +10,10 @@ Register a new LinkedIn account to receive real-time webhook notifications for m
   After creating an account, monitoring must be started separately using the start monitoring endpoint.
 </Note>
 
+<Warning>
+  **Credit Usage:** Real-time monitoring consumes **10 credits per day** (1 credit every 144 minutes) per active account. This is a resource-intensive feature but extremely powerful for real-time LinkedIn messaging. We are continuously working to optimize costs.
+</Warning>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
@@ -86,3 +90,5 @@ Register a new LinkedIn account to receive real-time webhook notifications for m
 ### Notes
 - The account will be created with `is_active: false` by default
 - Use the start monitoring endpoint to begin receiving webhooks
+- Credit consumption only begins when monitoring is started (not when account is created)
+- Each active account consumes credits independently
