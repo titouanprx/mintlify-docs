@@ -54,8 +54,8 @@
             "api-reference/linkedin-engagement-api/getting-linkedin-cookie",
             "api-reference/linkup/authentication/login",
             "api-reference/linkup/authentication/verify",
-{
-              "group": "Webhook API",
+            {
+              "group": "Webhook Messaging API",
               "pages": [
                 "api-reference/linkup/authentication/webhook/create-account",
                 "api-reference/linkup/authentication/webhook/list-accounts",
