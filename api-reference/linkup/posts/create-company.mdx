@@ -1,0 +1,97 @@
+---
+title: 'Create Company Post'
+api: 'POST /v1/posts/create-company'
+description: 'Create a new LinkedIn post on behalf of a company with optional media attachments'
+---
+
+Create a new post on LinkedIn as a company with text content and optional image/media attachments.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="message" type="string" required>
+  Text content of the post
+</ParamField>
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+<ParamField body="company_url" type="string" required>
+  LinkedIn company page URL. Must start with `https://www.linkedin.com/company/`
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US,UK,FR,IN)
+</ParamField>
+
+<ParamField body="file" type="string">
+  Optional single image file URL. Direct link to the image file you want to attach to the post.
+</ParamField>
+
+<ParamField body="files" type="array">
+  Optional multiple image file URLs. Array of direct links to image files.
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed status message about the post creation
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Company post created successfully"
+}
+```
+
+```json Error Response - Invalid Cookie
+{
+  "status": "error",
+  "message": "LinkedIn cookie invalid or expired"
+}
+```
+
+```json Error Response - No Permission
+{
+  "status": "error",
+  "message": "No permission to post as company"
+}
+```
+
+```json Error Response - Company Not Found
+{
+  "status": "error",
+  "message": "Company not found or no admin access to this company"
+}
+```
+
+</ResponseExample>
+
+### Notes
+
+#### Company Requirements
+- You must have admin access to the company page
+- The company URL must be in the correct format: `https://www.linkedin.com/company/[company-name]`
+
+#### Image Requirements
+- Image must be provided as a direct URL to the file
+- Supported formats: PNG, JPEG/JPG
+- Must comply with LinkedIn's maximum file size limits
+
+
