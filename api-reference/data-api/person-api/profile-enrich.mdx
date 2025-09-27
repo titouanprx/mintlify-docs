@@ -1,10 +1,10 @@
 ---
 title: 'Profile Enrichment'
 api: 'POST /v1/data/profil/enrich'
-description: 'Find and extract comprehensive LinkedIn profile information using name and company'
+description: 'Find and extract comprehensive profile information using name and company'
 ---
 
-Automatically find a person's LinkedIn profile using their name and company, then extract complete profile information in a single request. This endpoint combines profile search and data extraction in one seamless process.
+Automatically find a person's profile using their name and company, then extract complete profile information in a single request. This endpoint combines profile search and data extraction in one seamless process.
 
 <Note>
   This endpoint costs **1 credit** per request.
@@ -242,6 +242,4 @@ Automatically find a person's LinkedIn profile using their name and company, the
 ### Notes
 - The endpoint tries multiple search methods to maximize success rate
 - If no profile is found, `linkedin_profile` and `full_profile_data` will be `null`
-- Profile data extraction depth depends on the profile's privacy settings
-- The response includes all publicly available information when a profile is found
-- Contact information (email, phone) may be empty depending on profile privacy settings
+- Contact information (email, phone) may be empty
