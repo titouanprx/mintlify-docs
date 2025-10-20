@@ -1,0 +1,15 @@
+# Mintlify Configuration
+
+# Default version (latest)
+default_version=v2
+
+# Available versions
+versions=v1,v2
+
+# Version paths
+v1_path=v1/
+v2_path=v2/
+
+# Build configuration
+build_command=mintlify build
+dev_command=mintlify dev

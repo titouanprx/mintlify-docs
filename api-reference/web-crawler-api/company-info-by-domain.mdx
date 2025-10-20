@@ -1,0 +1,188 @@
+---
+title: 'Get Company Information by Domain'
+api: 'POST /v1/data/company/info-by-domain'
+description: 'Search and extract company information from LinkedIn using a domain name'
+---
+
+Search for a company on LinkedIn using its domain name and extract comprehensive information including description, size, locations, and other business details.
+<Note>
+  This endpoint costs **1 credits** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="domain" type="string" required>
+  Company domain name (e.g., "equans.com", "stripe.com")
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="name" type="string">
+      Company name
+    </ResponseField>
+
+    <ResponseField name="universalName" type="string">
+      Company URL identifier
+    </ResponseField>
+
+    <ResponseField name="description" type="string">
+      Company description
+    </ResponseField>
+
+    <ResponseField name="tagline" type="string">
+      Company tagline (can be null)
+    </ResponseField>
+
+    <ResponseField name="websiteUrl" type="string">
+      Company website URL
+    </ResponseField>
+
+    <ResponseField name="industry" type="string">
+      Company industry
+    </ResponseField>
+
+    <ResponseField name="employeeCount" type="integer">
+      Total number of employees
+    </ResponseField>
+
+    <ResponseField name="employeeCountRange" type="object">
+      <Expandable title="Range Properties">
+        <ResponseField name="start" type="integer">Minimum range</ResponseField>
+        <ResponseField name="end" type="integer">Maximum range (can be null)</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="headquarter" type="object">
+      <Expandable title="Address Properties">
+        <ResponseField name="country" type="string">Country code</ResponseField>
+        <ResponseField name="geographicArea" type="string">State/Region</ResponseField>
+        <ResponseField name="city" type="string">City</ResponseField>
+        <ResponseField name="line1" type="string">Street address</ResponseField>
+        <ResponseField name="line2" type="string">Additional address line (can be null)</ResponseField>
+        <ResponseField name="postalCode" type="string">Postal code</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="logoUrl" type="string">
+      Company logo URL
+    </ResponseField>
+
+    <ResponseField name="coverImageUrl" type="string">
+      Company cover image URL (can be null)
+    </ResponseField>
+
+    <ResponseField name="callToAction" type="object">
+      <Expandable title="Call to Action Properties">
+        <ResponseField name="displayText" type="string">Display text for the call to action</ResponseField>
+        <ResponseField name="visible" type="boolean">Whether the call to action is visible</ResponseField>
+        <ResponseField name="type" type="string">Type of call to action</ResponseField>
+        <ResponseField name="url" type="string">URL for the call to action</ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="locations" type="array">
+      Array of company office locations with detailed address information
+    </ResponseField>
+
+    <ResponseField name="organizationType" type="string">
+      Type of organization
+    </ResponseField>
+
+    <ResponseField name="defaultLocale" type="string">
+      Default locale for the company page
+    </ResponseField>
+
+    <ResponseField name="followersCount" type="integer">
+      Number of LinkedIn followers
+    </ResponseField>
+
+    <ResponseField name="pageMailbox" type="boolean">
+      Whether the company page has a mailbox
+    </ResponseField>
+
+    <ResponseField name="verified" type="boolean">
+      Whether the company page is verified
+    </ResponseField>
+
+    <ResponseField name="linkedin_url" type="string">
+      LinkedIn URL of the company that was found and scraped
+    </ResponseField>
+
+    <ResponseField name="searched_domain" type="string">
+      The domain that was used for the search
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "name": "Apple",
+    "universalName": "apple",
+    "description": "We're a diverse collective of thinkers and doers, continually reimagining what's possible to help us all do what we love in new ways. And the same innovation that goes into our products also applies to our practices — strengthening our commitment to leave the world better than we found it. This is where your work can make a difference in people's lives. Including your own.\n\nApple is an equal opportunity employer that is committed to inclusion and diversity. Visit apple.com/careers to learn more.",
+    "tagline": null,
+    "websiteUrl": "http://www.apple.com/careers",
+    "industry": "Fabrication de produits informatiques et électroniques",
+    "employeeCount": 162425,
+    "employeeCountRange": {
+      "start": 10001,
+      "end": null
+    },
+    "headquarter": {
+      "country": "US",
+      "geographicArea": "California",
+      "city": "Cupertino",
+      "line2": null,
+      "line1": "1 Apple Park Way",
+      "postalCode": "95014"
+    },
+    "logoUrl": "https://media.licdn.com/dms/image/v2/C560BAQHdAaarsO-eyA/company-logo_200_200/company-logo_200_200/0/1630637844948/apple_logo?e=1756944000&v=beta&t=wLEZ5E4-Tbe_Iip10HmTOc7OWiczVhpnjeLlwBuK76s",
+    "coverImageUrl": null,
+    "callToAction": {
+      "displayText": "Consulter le site web",
+      "visible": true,
+      "type": "VIEW_WEBSITE",
+      "url": "http://www.apple.com/careers"
+    },
+    "locations": [
+      {
+        "streetAddressOptOut": false,
+        "description": "Corporate Headquarters",
+        "address": {
+          "country": "US",
+          "geographicArea": "California",
+          "city": "Cupertino",
+          "line2": null,
+          "line1": "1 Apple Park Way",
+          "postalCode": "95014"
+        },
+        "headquarter": true
+      }
+    ],
+    "organizationType": "Entreprise cotée en bourse",
+    "defaultLocale": "en",
+    "followersCount": 17872675,
+    "pageMailbox": false,
+    "verified": true,
+    "linkedin_url": "https://www.linkedin.com/company/apple",
+    "searched_domain": "apple.com"
+  }
+}
+```
+
+</ResponseExample>
+

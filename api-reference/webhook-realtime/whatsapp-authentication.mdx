@@ -1,0 +1,30 @@
+---
+title: 'WhatsApp QR Authentication'
+description: 'Authenticate WhatsApp accounts using QR code'
+---
+
+
+## Authentication Flow
+
+<Steps>
+  <Step title="Create WhatsApp Account">
+    QR code generation starts immediately after account creation
+  </Step>
+  <Step title="Receive QR Code">
+    Your `qr_webhook_url` receives the QR code image automatically
+  </Step>
+  <Step title="Scan QR Code">
+    User scans the QR code with their WhatsApp mobile app (20 sec window)
+  </Step>
+  <Step title="Authentication Complete">
+    Account becomes authenticated and monitoring begins
+  </Step>
+</Steps>
+
+
+## QR Code Lifecycle
+
+- QR codes are generated immediately after account creation
+- Each QR code expires after 20 sec
+- New QR codes are automatically generated and sent to your webhook
+- Display the latest QR code received

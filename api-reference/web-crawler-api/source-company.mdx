@@ -1,0 +1,332 @@
+---
+title: "Search Companies"
+api: "POST /v1/data/search/companies"
+description: "Search company pages with advanced filters"
+---
+
+## Description
+
+This endpoint allows you to search company pages using various advanced filtering criteria.
+
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+
+  Enrichment (if enrich: true): +1 credit per company
+
+</Note>
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="keyword" type="string" required>
+  Keyword to search for (company name, industry, etc.)
+  
+</ParamField>
+
+<ParamField body="industry" type="string or array">
+  Industry sector(s) (e.g., "technology" or ["technology", "finance", "healthcare"])
+</ParamField>
+
+<ParamField body="location" type="string or array">
+  Location(s) (e.g., "Paris" or ["Paris", "Lyon", "Marseille"])
+</ParamField>
+
+<ParamField body="employee_range" type="string or array">
+  Employee range(s) (e.g., "1-50" or ["1-50", "51-200", "201-1000"])
+</ParamField>
+
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of results to return
+  
+  - Minimum: 1
+  - Maximum: 50,000
+  - Default: 10
+</ParamField>
+
+<ParamField body="enrich" type="boolean" default="false">
+  Retrieve enriched company data with detailed information
+  
+  When set to `true`, returns comprehensive company details including:
+  - Complete company profile information
+  - Employee count and ranges
+  - Headquarters and locations
+  - Logo and cover images
+  - Funding information
+  - Organization type
+  - And more...
+  
+  Default: `false` (returns basic information only)
+</ParamField>
+
+
+
+## Response
+
+<ResponseField name="status" type="string">
+  Response status ("success" or "error")
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Response Data">
+    <ResponseField name="total_results" type="integer">
+      Total count of all matching results
+    </ResponseField>
+    
+    <ResponseField name="companies" type="array">
+      List of found companies
+      <Expandable title="Company Structure (Basic)">
+        <ResponseField name="url" type="string">
+          Company LinkedIn profile URL
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Company title/name from LinkedIn
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Company description
+        </ResponseField>
+      </Expandable>
+      
+      <Expandable title="Company Structure (Enriched - when enrich=true)">
+        <ResponseField name="name" type="string">
+          Company name
+        </ResponseField>
+        <ResponseField name="universalName" type="string">
+          LinkedIn universal name/identifier
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Detailed company description
+        </ResponseField>
+        <ResponseField name="tagline" type="string">
+          Company tagline/slogan
+        </ResponseField>
+        <ResponseField name="websiteUrl" type="string">
+          Official company website URL
+        </ResponseField>
+        <ResponseField name="industry" type="string">
+          Company industry sector
+        </ResponseField>
+        <ResponseField name="employeeCount" type="integer">
+          Current employee count
+        </ResponseField>
+        <ResponseField name="employeeCountRange" type="object">
+          Employee count range (start and end)
+        </ResponseField>
+        <ResponseField name="headquarter" type="object">
+          Headquarters location details (country, city, etc.)
+        </ResponseField>
+        <ResponseField name="logoUrl" type="string">
+          Company logo image URL
+        </ResponseField>
+        <ResponseField name="coverImageUrl" type="string">
+          Company cover/banner image URL
+        </ResponseField>
+        <ResponseField name="callToAction" type="object">
+          Call to action information
+        </ResponseField>
+        <ResponseField name="locations" type="array">
+          List of company locations
+        </ResponseField>
+        <ResponseField name="organizationType" type="string">
+          Organization type (e.g., "Privately Held", "Self-Employed")
+        </ResponseField>
+        <ResponseField name="defaultLocale" type="string">
+          Default language locale
+        </ResponseField>
+        <ResponseField name="followersCount" type="integer">
+          Number of LinkedIn followers
+        </ResponseField>
+        <ResponseField name="pageMailbox" type="boolean">
+          Whether page mailbox is enabled
+        </ResponseField>
+        <ResponseField name="verified" type="boolean">
+          Whether the company is verified
+        </ResponseField>
+        <ResponseField name="funding" type="object">
+          Funding information
+          <Expandable title="Funding Details">
+            <ResponseField name="isFunded" type="boolean">
+              Whether the company is funded
+            </ResponseField>
+            <ResponseField name="totalRounds" type="integer">
+              Total number of funding rounds
+            </ResponseField>
+            <ResponseField name="lastRound" type="object">
+              Last funding round details (type, date, amount)
+            </ResponseField>
+            <ResponseField name="investors" type="array">
+              List of investors
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="company_url" type="string">
+          Full LinkedIn company profile URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="enriched" type="boolean">
+      Indicates if results are enriched (true when enrich=true)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Error message (if status = "error")
+</ResponseField>
+
+
+<ResponseExample>
+```json Response (Enriched)
+{
+  "status": "success",
+  "data": {
+    "total_results": 2,
+    "companies": [
+      {
+        "name": "AI Agents",
+        "universalName": "buildanaiagent",
+        "description": "🌐 Build an AI Agent – GPT Automation & Custom Solutions\n\nWe help businesses build custom AI agents to automate repetitive tasks and optimize workflows using GPT and API integrations.\n\n💡 Our mission:\nEmpower entrepreneurs, startups, and companies to save time and scale their operations with tailored AI solutions.\n\n🚀 What We Offer:\n\nCustom GPT-powered AI agents\nAPI-driven task automation\nWorkflow optimization with AI\n🧑‍💻 Build your first AI agent today",
+        "tagline": "Build AI-Powered Agents – Automate, Optimize, and Scale Your Business 24/7",
+        "websiteUrl": "https://createagentai.co",
+        "industry": "Information Services",
+        "employeeCount": 2,
+        "employeeCountRange": null,
+        "headquarter": {
+          "country": "CA",
+          "geographicArea": null,
+          "city": "Québec",
+          "line2": null,
+          "line1": null,
+          "postalCode": null
+        },
+        "logoUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGhEJ-wfzNQHg/company-logo_200_200/B4DZV0PvhqHkAM-/0/1741412039022/buildanaiagent_logo?e=2147483647&v=beta&t=jlXqKwQcaB1UPYaeghB0_WLT2TZxeJTaZocSIn_-ymc",
+        "coverImageUrl": "https://media.licdn.com/dms/image/v2/D4D3DAQFr87Z8ObqpWw/image-scale_191_1128/B4DZV2QzunGkAk-/0/1741445872827/buildanaiagent_cover?e=2147483647&v=beta&t=qSRP_pEEEmVazEJKqIRKkGg7TyFROVIW_WQHdcYzxT8",
+        "callToAction": null,
+        "locations": [
+          {
+            "streetAddressOptOut": false,
+            "description": "Primary",
+            "address": {
+              "country": null,
+              "geographicArea": null,
+              "city": null,
+              "line2": null,
+              "line1": "Québec, CA",
+              "postalCode": null
+            },
+            "headquarter": true
+          }
+        ],
+        "organizationType": "Self-Employed",
+        "defaultLocale": "en",
+        "followersCount": 355,
+        "pageMailbox": false,
+        "verified": false,
+        "funding": {
+          "isFunded": false,
+          "totalRounds": null,
+          "lastRound": null,
+          "investors": []
+        },
+        "company_url": "https://www.linkedin.com/company/buildanaiagent"
+      },
+      {
+        "name": "The AI Agent",
+        "universalName": "the-ai-agent",
+        "description": "Our real estate SaaS platform is designed to give agents the tools they need to succeed in today's competitive market. With our easy-to-use 3-click setup, automated lead acquisition, and unlimited follow up capabilities - you'll be able to save hundreds of hours per year and gain 10-20 more sales while you're at it.",
+        "tagline": "Helping Realtors Automate Their Entire Lead Generation Processes",
+        "websiteUrl": "https://theaiagent.io/",
+        "industry": "Real Estate",
+        "employeeCount": 1,
+        "employeeCountRange": {
+          "start": 2,
+          "end": 10
+        },
+        "headquarter": {
+          "country": "CA",
+          "geographicArea": null,
+          "city": "Calgary",
+          "line2": null,
+          "line1": null,
+          "postalCode": null
+        },
+        "logoUrl": "https://media.licdn.com/dms/image/v2/C560BAQEVPK6jyLrySw/company-logo_200_200/company-logo_200_200/0/1673860422851?e=2147483647&v=beta&t=ogKjT_J156h9gNYqSODy0KhXFjeyWRlo6czi7zMdYDI",
+        "coverImageUrl": "https://static.licdn.com/aero-v1/sc/h/5q92mjc5c51bjlwaj3rs9aa82",
+        "callToAction": null,
+        "locations": [
+          {
+            "streetAddressOptOut": false,
+            "description": "Primary",
+            "address": {
+              "country": null,
+              "geographicArea": null,
+              "city": null,
+              "line2": null,
+              "line1": "Calgary, CA",
+              "postalCode": null
+            },
+            "headquarter": true
+          }
+        ],
+        "organizationType": "Privately Held",
+        "defaultLocale": "en",
+        "followersCount": 269,
+        "pageMailbox": false,
+        "verified": false,
+        "funding": {
+          "isFunded": false,
+          "totalRounds": null,
+          "lastRound": null,
+          "investors": []
+        },
+        "company_url": "https://www.linkedin.com/company/the-ai-agent"
+      }
+    ],
+    "enriched": true
+  }
+}
+```
+
+```json Response (Basic)
+{
+  "status": "success",
+  "data": {
+    "total_results": 2847,
+    "companies": [
+      {
+        "url": "https://uk.linkedin.com/company/crm.com",
+        "title": "CRM.COM - LinkedIn",
+        "description": "CRM.COM is a global specialist in designing and developing commerce, fintech and subscription-based solutions, ideal for the new generation digital consumers."
+      },
+      {
+        "url": "https://www.linkedin.com/company/recruitcrm",
+        "title": "Recruit CRM - LinkedIn",
+        "description": "Recruit CRM builds cloud-based software for the global Recruitment & Staffing industry. We are on a mission to help recruitment firms grow faster with cutting ..."
+      },
+      {
+        "url": "https://www.linkedin.com/company/aesthetix-crm",
+        "title": "Aesthetix CRM - LinkedIn",
+        "description": "The #1 CRM platform for plastic surgeons and medical spas. Aesthetix CRM gives your practice access to all the tools you need to grow."
+      }
+    ]
+  }
+}
+```
+
+</ResponseExample>
+
+
+## Important Notes
+
+- Credit consumption is based on the number of results: 1 credit for 1-10 results, 2 credits for 11-20 results, etc.
+- Credits are only deducted on successful searches
+

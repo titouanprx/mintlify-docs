@@ -1,0 +1,399 @@
+---
+title: "Source Hiring Companies"
+api: "POST /v1/data/companies/hiring"
+description: "Search for companies actively hiring by scraping job boards (Indeed and LinkedIn)"
+---
+
+## Overview
+
+This endpoint retrieves companies that are actively hiring with their job listings, company details, and enriched data.
+
+**At least one** of `job_title`, `job_description`, or `location` is required.
+
+<Note>
+  **Pricing:** Total Cost = Base + Description + Enrichment
+  
+  - **Base**: 1 credit = 10 companies
+  - **Description** (if `fetch_description: true`): +1 credit per 10 companies
+  - **Enrichment** (if `enrich_company: true`): +1 credit per company
+  
+  **Examples for 10 companies:**
+  - Base only: **1 credit**
+  - Base + Description: **2 credits**
+  - Base + Enrichment: **11 credits**
+  - Full (Base + Description + Enrichment): **12 credits**
+</Note>
+
+## Body Parameters
+
+<ParamField body="job_title" type="array">
+  Keywords for job title (e.g., `["developer", "engineer"]`)
+</ParamField>
+
+<ParamField body="job_title_include_all" type="boolean" default="false">
+  If `true`: all keywords required (AND logic). If `false`: at least one keyword (OR logic)
+</ParamField>
+
+<ParamField body="job_title_excluded" type="array">
+  Keywords to exclude from job title (e.g., `["senior", "manager"]`)
+</ParamField>
+
+
+<ParamField body="location" type="string">
+  Location (city, region). Example: `"Paris, France"` or `"San Francisco, CA"`
+</ParamField>
+
+
+<ParamField body="is_remote" type="boolean" default="false">
+  Filter only remote jobs
+</ParamField>
+
+<ParamField body="country" type="string" default="france">
+  Country for Indeed. Values: `france`, `usa`, `uk`, `germany`, `spain`, `italy`, `canada`
+</ParamField>
+
+<ParamField body="job_type" type="string">
+  Type of contract. Values: `fulltime`, `parttime`, `internship`, `contract`
+</ParamField>
+
+<ParamField body="hours_old" type="integer">
+  Jobs posted within the last X hours (e.g., `72` for 3 days)
+</ParamField>
+
+<ParamField body="site_names" type="array" default='["indeed", "linkedin"]'>
+  Job boards to scrape. Values: `linkedin`, `indeed`
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="100">
+  Number of companies to retrieve
+</ParamField>
+
+<ParamField body="fetch_description" type="boolean" default="true">
+  Fetch complete job descriptions. **Cost: +1 credit per 10 companies**
+</ParamField>
+
+<ParamField body="enrich_company" type="boolean" default="false">
+  Enrich with LinkedIn data (tagline, followers, HQ, locations). **Cost: +1 credit per company**
+</ParamField>
+
+<ParamField body="start_page" type="integer" default="1">
+  Start page for pagination
+</ParamField>
+
+<ParamField body="end_page" type="integer">
+  End page for pagination
+</ParamField>
+
+## Response
+
+<ResponseField name="companies" type="array">
+  <Expandable title="Company Object">
+    <ResponseField name="name" type="string">
+      Company name
+    </ResponseField>
+    
+    <ResponseField name="website" type="string">
+      Company website
+    </ResponseField>
+    
+    <ResponseField name="linkedin_url" type="string">
+      LinkedIn company page
+    </ResponseField>
+    
+    <ResponseField name="indeed_url" type="string">
+      Indeed company profile
+    </ResponseField>
+    
+    <ResponseField name="tagline" type="string">
+      Company tagline (with enrichment)
+    </ResponseField>
+    
+    <ResponseField name="logo" type="string">
+      Company logo URL
+    </ResponseField>
+    
+    <ResponseField name="industry" type="string">
+      Industry sector
+    </ResponseField>
+    
+    <ResponseField name="employee_count" type="integer">
+      Employee count (with enrichment)
+    </ResponseField>
+    
+    <ResponseField name="followers_count" type="integer">
+      LinkedIn followers (with enrichment)
+    </ResponseField>
+    
+    <ResponseField name="jobs_count" type="integer">
+      Number of jobs found
+    </ResponseField>
+    
+    <ResponseField name="jobs" type="array">
+      List of job postings
+      <Expandable title="Job Object">
+        <ResponseField name="job_title" type="string">
+          Job title
+        </ResponseField>
+        
+        <ResponseField name="location" type="string">
+          Job location
+        </ResponseField>
+        
+        <ResponseField name="job_type" type="string">
+          Contract type
+        </ResponseField>
+        
+        <ResponseField name="job_board" type="string">
+          Source (linkedin or indeed)
+        </ResponseField>
+        
+        <ResponseField name="job_board_url" type="string">
+          Job posting URL
+        </ResponseField>
+        
+        <ResponseField name="date_posted" type="string">
+          Date posted (ISO format)
+        </ResponseField>
+        
+        <ResponseField name="description" type="string">
+          Job description (markdown)
+        </ResponseField>
+        
+        <ResponseField name="is_remote" type="boolean">
+          Remote job flag
+        </ResponseField>
+        
+        <ResponseField name="salary" type="object">
+          Salary information (min, max, currency, type)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="credits_cost" type="integer">
+  Credits consumed for this request
+</ResponseField>
+
+<ResponseField name="credits_remaining" type="integer">
+  Remaining credits in your account
+</ResponseField>
+
+<ResponseField name="nb_companies" type="integer">
+  Number of companies returned
+</ResponseField>
+
+<ResponseField name="nb_jobs" type="integer">
+  Total number of jobs found
+</ResponseField>
+
+<RequestExample>
+
+```bash Basic Search (1 credit)
+curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/source-hiring-company" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "job_title": ["developer"],
+    "location": "Paris, France",
+    "total_results": 10,
+    "fetch_description": false,
+    "enrich_company": false
+  }'
+```
+
+```bash With Enrichment (12 credits)
+curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/source-hiring-company" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "job_title": ["frontend developer"],
+    "job_title_excluded": ["senior", "lead"],
+    "location": "Berlin, Germany",
+    "country": "germany",
+    "is_remote": true,
+    "job_type": "fulltime",
+    "hours_old": 168,
+    "site_names": ["linkedin", "indeed"],
+    "total_results": 10,
+    "fetch_description": true,
+    "enrich_company": true
+  }'
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json With Enrichment Only (fetch_description: false, enrich_company: true)
+{
+  "status": "success",
+  "data": {
+    "companies": [
+      {
+        "name": "Alpic",
+        "website": "https://www.alpic.ai",
+        "indeed_url": null,
+        "linkedin_url": "https://fr.linkedin.com/company/alpic-ai",
+        "tagline": "Bring your product into the agent era.",
+        "description": "Alpic provides the infrastructure and tools to turn your product into an AI-native experience...",
+        "logo": "https://media.licdn.com/dms/image/.../alpic_ai_logo...",
+        "cover_image": "https://media.licdn.com/dms/image/.../alpic_ai_cover...",
+        "industry": "Technology, Information and Internet",
+        "employee_count": 8,
+        "employee_count_range": {
+          "start": 2,
+          "end": 10
+        },
+        "organization_type": "Privately Held",
+        "headquarter": {
+          "country": "FR",
+          "city": "Paris"
+        },
+        "locations": [
+          {
+            "address": {
+              "line1": "Paris, FR"
+            },
+            "headquarter": true
+          }
+        ],
+        "followers_count": 1178,
+        "jobs_count": 1,
+        "jobs": [
+          {
+            "job_title": "Junior Software Engineer",
+            "location": "Paris, Île-de-France, France",
+            "job_type": null,
+            "job_seniority": "",
+            "job_board": "linkedin",
+            "job_board_url": "https://www.linkedin.com/jobs/view/4300503473",
+            "date_posted": "2025-09-13",
+            "description": null,
+            "is_remote": false,
+            "salary": null
+          }
+        ]
+      }
+    ]
+  },
+  "pagination": {
+    "start_page": 1,
+    "end_page": 2,
+    "results_per_page": 10,
+    "pages_fetched": 2
+  }
+}
+```
+
+```json Full Data (fetch_description: true, enrich_company: true)
+{
+  "status": "success",
+  "data": {
+    "companies": [
+      {
+        "name": "Alpic",
+        "website": "https://www.alpic.ai",
+        "indeed_url": null,
+        "linkedin_url": "https://fr.linkedin.com/company/alpic-ai",
+        "tagline": "Bring your product into the agent era.",
+        "description": "Alpic provides the infrastructure and tools...",
+        "logo": "https://media.licdn.com/dms/image/.../alpic_ai_logo...",
+        "cover_image": "https://media.licdn.com/dms/image/.../alpic_ai_cover...",
+        "industry": "Technology, Information and Internet",
+        "employee_count": 8,
+        "employee_count_range": {
+          "start": 2,
+          "end": 10
+        },
+        "organization_type": "Privately Held",
+        "headquarter": {
+          "country": "FR",
+          "city": "Paris"
+        },
+        "locations": [
+          {
+            "address": {
+              "line1": "Paris, FR"
+            },
+            "headquarter": true
+          }
+        ],
+        "followers_count": 1178,
+        "jobs_count": 1,
+        "jobs": [
+          {
+            "job_title": "Junior Software Engineer",
+            "location": "Paris, Île-de-France, France",
+            "job_type": "fulltime",
+            "job_seniority": "entry level",
+            "job_board": "linkedin",
+            "job_board_url": "https://www.linkedin.com/jobs/view/4300503473",
+            "date_posted": "2025-09-13",
+            "description": "<div>\n <strong>About Us</strong><br/><br/>\n <strong>Alpic is the all-in-one MCP hosting platform.</strong><br/><br/>\n We're entering a major technological shift where AI is replacing traditional search...\n</div>",
+            "is_remote": false,
+            "salary": null,
+            "sectors": ["Technology, Information and Internet"]
+          }
+        ]
+      }
+    ]
+  },
+  "pagination": {
+    "start_page": 1,
+    "end_page": 1,
+    "results_per_page": 10,
+    "pages_fetched": 1
+  }
+}
+```
+
+```json Basic Data (fetch_description: false, enrich_company: false)
+{
+  "status": "success",
+  "data": {
+    "companies": [
+      {
+        "name": "Alpic",
+        "website": null,
+        "indeed_url": null,
+        "linkedin_url": "https://fr.linkedin.com/company/alpic-ai",
+        "tagline": null,
+        "description": null,
+        "logo": null,
+        "cover_image": null,
+        "industry": null,
+        "employee_count": null,
+        "employee_count_range": null,
+        "organization_type": null,
+        "headquarter": null,
+        "locations": null,
+        "followers_count": null,
+        "jobs_count": 1,
+        "jobs": [
+          {
+            "job_title": "Junior Software Engineer",
+            "location": "Paris, Île-de-France, France",
+            "job_type": null,
+            "job_seniority": "",
+            "job_board": "linkedin",
+            "job_board_url": "https://www.linkedin.com/jobs/view/4300503473",
+            "date_posted": "2025-09-13",
+            "description": null,
+            "is_remote": false,
+            "salary": null
+          }
+        ]
+      }
+    ]
+  },
+  "pagination": {
+    "start_page": 1,
+    "end_page": 1,
+    "results_per_page": 10,
+    "pages_fetched": 1
+  }
+}
+```
+
+</ResponseExample>

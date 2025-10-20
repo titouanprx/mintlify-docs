@@ -1,0 +1,104 @@
+---
+title: 'Send Message'
+api: 'POST /messages/send'
+description: 'Send a message to a WhatsApp user'
+---
+
+Send a direct message to any WhatsApp user. You can send a simple message or reply to an existing message.
+
+<Note>
+  This endpoint costs **1 credit** per message sent.
+</Note>
+
+<Info>
+  To get your `account_id`, you need to first authenticate your WhatsApp account. See [WhatsApp Authentication](/api-reference/webhook-realtime/whatsapp-authentication) for details on how to log your WhatsApp account and obtain the account ID.
+</Info>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="account_id" type="string" required>
+  The ID of your WhatsApp account
+</ParamField>
+
+<ParamField body="to" type="string" required>
+  The recipient's phone number (international format without +)
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  The text message to send
+</ParamField>
+
+<ParamField body="quoted_message_id" type="string">
+  The ID of the message you're replying to
+</ParamField>
+
+<ParamField body="quoted_text" type="string">
+  The text of the quoted message
+</ParamField>
+
+<ParamField body="quoted_timestamp" type="number">
+  Unix timestamp in milliseconds of the quoted message
+</ParamField>
+
+<ParamField body="quoted_from_me" type="boolean">
+  true if the quoted message is from you, false if from the recipient
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Detailed message about the sending status
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Additional data returned when message is sent successfully
+</ResponseField>
+
+<ResponseExample>
+```json Simple Message
+{
+  "account_id": "68e63a4fe364c1ce41688865",
+  "to": "33673748743",
+  "message": "Hello from API!"
+}
+```
+
+```json Reply to Received Message
+{
+  "account_id": "68e63a4fe364c1ce41688865",
+  "to": "33673748743",
+  "message": "This is a reply!",
+  "quoted_message_id": "3A08D06E227129496664",
+  "quoted_text": "Bonjour!",
+  "quoted_timestamp": 1672567200000,
+  "quoted_from_me": false
+}
+```
+
+```json Reply to Your Own Message
+{
+  "account_id": "68e63a4fe364c1ce41688865",
+  "to": "33673748743",
+  "message": "Correction!",
+  "quoted_message_id": "3B828C18BCB5EE8A174F",
+  "quoted_text": "Mon message précédent",
+  "quoted_timestamp": 1672567100000,
+  "quoted_from_me": true
+}
+```
+</ResponseExample>
+
+### Notes
+- Phone numbers must be in international format without the + prefix
+- All quoted parameters must be provided together when replying to a message
+- The `quoted_from_me` parameter helps distinguish between replies to your messages vs received messages

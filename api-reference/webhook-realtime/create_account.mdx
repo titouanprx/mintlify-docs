@@ -1,0 +1,159 @@
+---
+title: 'Create Webhook Account'
+api: 'POST /v1/webhooks/accounts'
+description: 'Register a LinkedIn or WhatsApp account for webhook monitoring'
+---
+
+Register a new LinkedIn or WhatsApp account to receive real-time webhook notifications.
+
+<Note>
+  **LinkedIn**: After creating an account, monitoring must be started separately using the start monitoring endpoint.
+  
+  **WhatsApp**: QR code generation starts immediately after account creation. QR codes expire after 20 sec and are regenerated automatically.
+</Note>
+
+<Warning>
+  **Credit Usage:** Real-time monitoring consumes **10 credits per day** (1 credit every 144 minutes) per active LinkedIn account. WhatsApp pricing may differ - contact support for details.
+</Warning>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="plateforme" type="string" required>
+  Platform type: `"linkedin"` or `"whatsapp"`
+</ParamField>
+
+<ParamField body="account_name" type="string" required>
+  Name to identify this account
+</ParamField>
+
+<ParamField body="webhook_url" type="string" required>
+  URL where webhook notifications will be sent
+</ParamField>
+
+<ResponseField name="country" type="string">
+  Country code used for this account
+</ResponseField>
+
+#### LinkedIn-specific Parameters
+
+<ParamField body="login_token" type="string" required="LinkedIn only">
+  LinkedIn authentication token obtained from the login process
+</ParamField>
+
+
+
+#### WhatsApp-specific Parameters
+
+<ParamField body="phone_number" type="string" required="WhatsApp only">
+  Phone number in international format (e.g., +33612345678)
+</ParamField>
+
+<ParamField body="qr_webhook_url" type="string">
+  URL for QR code notifications (defaults to webhook_url if not provided)
+</ParamField>
+
+### Response
+
+<ResponseField name="id" type="string">
+  Unique identifier for the created account
+</ResponseField>
+
+<ResponseField name="plateforme" type="string">
+  Platform type (linkedin or whatsapp)
+</ResponseField>
+
+<ResponseField name="account_name" type="string">
+  Account name
+</ResponseField>
+
+<ResponseField name="webhook_url" type="string">
+  URL where webhooks will be sent
+</ResponseField>
+
+<ResponseField name="is_active" type="boolean">
+  Whether monitoring is currently active (false by default)
+</ResponseField>
+
+<ResponseField name="is_authenticated" type="boolean">
+  Whether the account is authenticated (WhatsApp only)
+</ResponseField>
+
+<ResponseField name="needs_qr" type="boolean">
+  Whether QR code authentication is needed (WhatsApp only)
+</ResponseField>
+
+<ResponseField name="country" type="string">
+  Country code used for this account (LinkedIn only)
+</ResponseField>
+
+#### LinkedIn-specific Response Fields
+
+<ResponseField name="login_token" type="string">
+  The LinkedIn authentication token (LinkedIn only)
+</ResponseField>
+
+
+
+#### WhatsApp-specific Response Fields
+
+<ResponseField name="phone_number" type="string">
+  Phone number in international format (WhatsApp only)
+</ResponseField>
+
+<ResponseField name="qr_webhook_url" type="string">
+  URL for QR code notifications (WhatsApp only)
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Account creation timestamp
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Last update timestamp
+</ResponseField>
+
+<ResponseExample>
+```json LinkedIn Account
+{
+  "id": "60f7b3b3e4b0c8a2d8e9f1a2",
+  "plateforme": "linkedin",
+  "account_name": "My LinkedIn Account",
+  "login_token": "AQEDARCvKg...",
+  "country": "FR",
+  "webhook_url": "https://your-webhook.com/linkedin",
+  "is_active": false,
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-01T00:00:00Z"
+}
+```
+
+```json WhatsApp Account
+{
+  "id": "507f1f77bcf86cd799439011",
+  "plateforme": "whatsapp",
+  "account_name": "My WhatsApp",
+  "phone_number": "+33612345678",
+  "webhook_url": "https://your-webhook.com/whatsapp",
+  "qr_webhook_url": "https://your-webhook.com/qr",
+  "is_active": false,
+  "is_authenticated": false,
+  "needs_qr": true,
+  "country": "FR",
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-01T00:00:00Z"
+}
+```
+</ResponseExample>
+
+### Notes
+- **LinkedIn**: Account created with `is_active: false`. Use start monitoring endpoint to begin receiving webhooks
+- **WhatsApp**: QR code generation starts immediately after account creation. QR codes expire after 20 sec and regenerate automatically
+- **LinkedIn**: Credit consumption only begins when monitoring is started
+- **WhatsApp**: To stop monitoring, delete the account entirely
+- Each active account consumes credits independently

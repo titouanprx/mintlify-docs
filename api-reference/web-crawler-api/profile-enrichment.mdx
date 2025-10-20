@@ -1,0 +1,245 @@
+---
+title: 'Profile Enrichment'
+api: 'POST /v1/data/profil/enrich'
+description: 'Find and extract comprehensive profile information using name and company'
+---
+
+Automatically find a person's profile using their name and company, then extract complete profile information in a single request.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="first_name" type="string" required>
+  Person's first name
+</ParamField>
+
+<ParamField body="last_name" type="string" required>
+  Person's last name
+</ParamField>
+
+<ParamField body="company_name" type="string" required>
+  Current company name where the person works
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="person_searched" type="object">
+      <Expandable title="Search Criteria">
+        <ResponseField name="first_name" type="string">
+          First name that was searched
+        </ResponseField>
+        
+        <ResponseField name="last_name" type="string">
+          Last name that was searched
+        </ResponseField>
+        
+        <ResponseField name="company_name" type="string">
+          Company name that was searched
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="linkedin_profile" type="object">
+      <Expandable title="Found Profile Basic Info">
+        <ResponseField name="linkedin_url" type="string">
+          URL of the found LinkedIn profile
+        </ResponseField>
+        
+        <ResponseField name="profile_title" type="string">
+          Title/headline from search results
+        </ResponseField>
+        
+        <ResponseField name="profile_description" type="string">
+          Description snippet from search results
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="full_profile_data" type="object">
+      <Expandable title="Complete Profile Information">
+        <ResponseField name="public_id" type="string">
+          Public identifier of the LinkedIn profile
+        </ResponseField>
+        
+        <ResponseField name="first_name" type="string">
+          First name of the profile owner
+        </ResponseField>
+        
+        <ResponseField name="last_name" type="string">
+          Last name of the profile owner
+        </ResponseField>
+        
+        <ResponseField name="headline" type="string">
+          Professional headline/title
+        </ResponseField>
+        
+        <ResponseField name="location" type="string">
+          Geographic location
+        </ResponseField>
+        
+        <ResponseField name="summary" type="string">
+          Profile summary/about section
+        </ResponseField>
+        
+        <ResponseField name="industry" type="string">
+          Industry sector
+        </ResponseField>
+        
+        <ResponseField name="experience" type="array">
+          <Expandable title="Experience Object">
+            <ResponseField name="company" type="string">
+              Company name
+            </ResponseField>
+            
+            <ResponseField name="title" type="string">
+              Job title
+            </ResponseField>
+            
+            <ResponseField name="description" type="string">
+              Job description
+            </ResponseField>
+            
+            <ResponseField name="start_date" type="string">
+              Start date of employment (MM/YYYY format)
+            </ResponseField>
+            
+            <ResponseField name="end_date" type="string">
+              End date of employment (MM/YYYY format, empty string if current position)
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        
+        <ResponseField name="education" type="array">
+          <Expandable title="Education Object">
+            <ResponseField name="school" type="string">
+              School or institution name
+            </ResponseField>
+            
+            <ResponseField name="degree" type="string">
+              Degree obtained
+            </ResponseField>
+            
+            <ResponseField name="field_of_study" type="string">
+              Field of study or specialization
+            </ResponseField>
+            
+            <ResponseField name="start_date" type="string">
+              Start year
+            </ResponseField>
+            
+            <ResponseField name="end_date" type="string">
+              End year (empty string if ongoing)
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        
+        <ResponseField name="skills" type="array">
+          Array of professional skills (strings)
+        </ResponseField>
+        
+        <ResponseField name="profile_picture_url" type="string">
+          URL to the profile picture
+        </ResponseField>
+        
+        <ResponseField name="email" type="string">
+          Email address (if publicly available)
+        </ResponseField>
+        
+        <ResponseField name="phone" type="string">
+          Phone number (if publicly available)
+        </ResponseField>
+        
+        <ResponseField name="website" type="string">
+          Personal or professional website (if available)
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "data": {
+    "person_searched": {
+      "first_name": "Jeremy",
+      "last_name": "Goillot",
+      "company_name": "The Mobile-First Company"
+    },
+    "linkedin_profile": {
+      "linkedin_url": "https://www.linkedin.com/in/jeremygoillot",
+      "profile_title": "Jeremy Goillot - CEO @The Mobile-First Company",
+      "profile_description": "CEO & Co-Founder at The Mobile-First Company"
+    },
+    "full_profile_data": {
+      "public_id": "jeremygoillot",
+      "first_name": "Jeremy",
+      "last_name": "Goillot",
+      "headline": "CEO @The Mobile-First Company \n Your Business, in your Pocket |  Angel Investor in +40 startups",
+      "location": "France",
+      "summary": "NO EMAIL \nPhone Call Only >> 06 44 60 39 99\n\nBuilding @The Mobile-First Company\nOur goal is clear: Turn your phone into your primary business tool...",
+      "industry": "Technologie, information et Internet",
+      "experience": [
+        {
+          "company": "The Mobile-First Company",
+          "title": "CEO & Co-Founder",
+          "description": "Your Business, in your Pocket. Mobile Apps for Every Need...",
+          "start_date": "9/2023",
+          "end_date": ""
+        }
+      ],
+      "education": [
+        {
+          "school": "Le Wagon",
+          "degree": "FullStack Developer",
+          "field_of_study": "Web Development",
+          "start_date": "2016",
+          "end_date": "2016"
+        }
+      ],
+      "skills": ["Allo", " Build a Fintech Unicorn (from 0 to 1B$)", " Build Growth Team for Early Stage Startups"],
+      "profile_picture_url": "https://media.licdn.com/dms/image/v2/D4E03AQGNeGf5rNxHfw/profile-displayphoto-shrink_800_800/...",
+      "email": "",
+      "phone": "",
+      "website": ""
+    }
+  }
+}
+```
+
+```json Profile Not Found
+{
+  "status": "success",
+  "data": {
+    "person_searched": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "company_name": "Unknown Company"
+    },
+    "linkedin_profile": null,
+    "full_profile_data": null
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The endpoint tries multiple search methods to maximize success rate
+- If no profile is found, `linkedin_profile` and `full_profile_data` will be `null`
+- Contact information (email, phone) may be empty

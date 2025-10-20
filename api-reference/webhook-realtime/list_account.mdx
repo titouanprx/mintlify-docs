@@ -1,10 +1,10 @@
 ---
 title: 'List Webhook Accounts'
 api: 'GET /v1/webhooks/accounts'
-description: 'Retrieve all registered LinkedIn webhook accounts'
+description: 'Retrieve all registered webhook accounts'
 ---
 
-Get a list of all LinkedIn accounts registered for webhook monitoring under your API key.
+Get a list of all LinkedIn and WhatsApp accounts registered for webhook monitoring under your API key.
 
 ### Header Parameters
 
@@ -20,24 +20,40 @@ Get a list of all LinkedIn accounts registered for webhook monitoring under your
       Unique identifier for the account
     </ResponseField>
 
-    <ResponseField name="login_token" type="string">
-      LinkedIn authentication token
+    <ResponseField name="plateforme" type="string">
+      Platform type (linkedin or whatsapp)
     </ResponseField>
 
-    <ResponseField name="country" type="string">
-      Country code for proxy selection
+    <ResponseField name="account_name" type="string">
+      Account name
     </ResponseField>
 
     <ResponseField name="webhook_url" type="string">
       URL where webhooks are sent
     </ResponseField>
 
-    <ResponseField name="account_name" type="string">
-      Account name if provided
-    </ResponseField>
-
     <ResponseField name="is_active" type="boolean">
       Whether monitoring is currently active
+    </ResponseField>
+
+    <ResponseField name="login_token" type="string">
+      LinkedIn authentication token (LinkedIn only)
+    </ResponseField>
+
+    <ResponseField name="country" type="string">
+      Country code for proxy selection (LinkedIn only)
+    </ResponseField>
+
+    <ResponseField name="phone_number" type="string">
+      Phone number (WhatsApp only)
+    </ResponseField>
+
+    <ResponseField name="is_authenticated" type="boolean">
+      Whether account is authenticated (WhatsApp only)
+    </ResponseField>
+
+    <ResponseField name="needs_qr" type="boolean">
+      Whether QR authentication is needed (WhatsApp only)
     </ResponseField>
 
     <ResponseField name="created_at" type="string">
@@ -60,21 +76,24 @@ Get a list of all LinkedIn accounts registered for webhook monitoring under your
   "accounts": [
     {
       "id": "60f7b3b3e4b0c8a2d8e9f1a2",
+      "plateforme": "linkedin",
+      "account_name": "My LinkedIn Account",
       "login_token": "AQEDARCvKg...",
       "country": "FR",
       "webhook_url": "https://your-webhook.com/linkedin",
-      "account_name": "My Pro Account",
       "is_active": true,
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z"
     },
     {
-      "id": "60f7b3b3e4b0c8a2d8e9f1a3",
-      "login_token": "AQEDARCvKh...",
-      "country": "US",
-      "webhook_url": "https://your-webhook.com/linkedin-us",
-      "account_name": "US Account",
-      "is_active": false,
+      "id": "507f1f77bcf86cd799439011",
+      "plateforme": "whatsapp",
+      "account_name": "My WhatsApp",
+      "phone_number": "+33612345678",
+      "webhook_url": "https://your-webhook.com/whatsapp",
+      "is_active": true,
+      "is_authenticated": true,
+      "needs_qr": false,
       "created_at": "2024-01-02T00:00:00Z",
       "updated_at": "2024-01-02T00:00:00Z"
     }

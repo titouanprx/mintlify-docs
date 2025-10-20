@@ -1,0 +1,320 @@
+---
+title: "Search Funded Companies"
+api: "POST /v1/data/search/funded-companies"
+description: "Search funded company pages with advanced filters"
+---
+
+## Description
+
+This endpoint allows you to search specifically for **funded companies** using various advanced filtering criteria. Only companies with funding information will be returned.
+
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+
+  Enrichment (if enrich: true): +1 credit per company
+</Note>
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="keyword" type="string" required>
+  Keyword to search for (company name, industry, etc.)
+  
+</ParamField>
+
+<ParamField body="industry" type="string or array">
+  Industry sector(s) (e.g., "technology" or ["technology", "finance", "healthcare"])
+</ParamField>
+
+<ParamField body="location" type="string or array">
+  Location(s) (e.g., "Paris" or ["Paris", "Lyon", "Marseille"])
+</ParamField>
+
+<ParamField body="employee_range" type="string or array">
+  Employee range(s) (e.g., "1-50" or ["1-50", "51-200", "201-1000"])
+</ParamField>
+
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of results to return
+  
+  - Minimum: 1
+  - Maximum: 50,000
+  - Default: 10
+</ParamField>
+
+<ParamField body="enrich" type="boolean" default="false">
+  Retrieve enriched company data with detailed information
+  
+  When set to `true`, returns comprehensive company details including:
+  - Complete company profile information
+  - Employee count and ranges
+  - Headquarters and locations
+  - Logo and cover images
+  - **Detailed funding information** (rounds, investors, amounts)
+  - Organization type
+  - And more...
+  
+  Default: `false` (returns basic information only)
+</ParamField>
+
+
+
+## Response
+
+<ResponseField name="status" type="string">
+  Response status ("success" or "error")
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Response Data">
+    <ResponseField name="total_results" type="integer">
+      Total count of all matching results
+    </ResponseField>
+    
+    <ResponseField name="companies" type="array">
+      List of found funded companies
+      <Expandable title="Company Structure (Basic)">
+        <ResponseField name="url" type="string">
+          Company LinkedIn profile URL
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Company title/name from LinkedIn
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Company description
+        </ResponseField>
+      </Expandable>
+      
+      <Expandable title="Company Structure (Enriched - when enrich=true)">
+        <ResponseField name="name" type="string">
+          Company name
+        </ResponseField>
+        <ResponseField name="universalName" type="string">
+          LinkedIn universal name/identifier
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Detailed company description
+        </ResponseField>
+        <ResponseField name="tagline" type="string">
+          Company tagline/slogan
+        </ResponseField>
+        <ResponseField name="websiteUrl" type="string">
+          Official company website URL
+        </ResponseField>
+        <ResponseField name="industry" type="string">
+          Company industry sector
+        </ResponseField>
+        <ResponseField name="employeeCount" type="integer">
+          Current employee count
+        </ResponseField>
+        <ResponseField name="employeeCountRange" type="object">
+          Employee count range (start and end)
+        </ResponseField>
+        <ResponseField name="headquarter" type="object">
+          Headquarters location details (country, city, etc.)
+        </ResponseField>
+        <ResponseField name="logoUrl" type="string">
+          Company logo image URL
+        </ResponseField>
+        <ResponseField name="coverImageUrl" type="string">
+          Company cover/banner image URL
+        </ResponseField>
+        <ResponseField name="callToAction" type="object">
+          Call to action information
+        </ResponseField>
+        <ResponseField name="locations" type="array">
+          List of company locations
+        </ResponseField>
+        <ResponseField name="organizationType" type="string">
+          Organization type (e.g., "Privately Held", "Self-Employed")
+        </ResponseField>
+        <ResponseField name="defaultLocale" type="string">
+          Default language locale
+        </ResponseField>
+        <ResponseField name="followersCount" type="integer">
+          Number of LinkedIn followers
+        </ResponseField>
+        <ResponseField name="pageMailbox" type="boolean">
+          Whether page mailbox is enabled
+        </ResponseField>
+        <ResponseField name="verified" type="boolean">
+          Whether the company is verified
+        </ResponseField>
+        <ResponseField name="funding" type="object">
+          Funding information
+          <Expandable title="Funding Details">
+            <ResponseField name="isFunded" type="boolean">
+              Whether the company is funded (always true for this endpoint)
+            </ResponseField>
+            <ResponseField name="totalRounds" type="integer">
+              Total number of funding rounds
+            </ResponseField>
+            <ResponseField name="lastRound" type="object">
+              Last funding round details
+              <Expandable title="Last Round Details">
+                <ResponseField name="type" type="string">
+                  Type of funding round (e.g., "Series A", "Series B", "Convertible note")
+                </ResponseField>
+                <ResponseField name="date" type="string">
+                  Date of funding round (format: YYYY-MM-DD)
+                </ResponseField>
+                <ResponseField name="amount" type="string">
+                  Funding amount (e.g., "US$ 305.0M")
+                </ResponseField>
+              </Expandable>
+            </ResponseField>
+            <ResponseField name="investors" type="array">
+              List of investors
+              <Expandable title="Investor Details">
+                <ResponseField name="name" type="string">
+                  Investor name
+                </ResponseField>
+                <ResponseField name="company_url" type="string">
+                  LinkedIn URL of investor company
+                </ResponseField>
+              </Expandable>
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="company_url" type="string">
+          Full LinkedIn company profile URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    
+    <ResponseField name="enriched" type="boolean">
+      Indicates if results are enriched (true when enrich=true)
+    </ResponseField>
+    
+    <ResponseField name="funded_only" type="boolean">
+      Always true for this endpoint - indicates that only funded companies are returned
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Error message (if status = "error")
+</ResponseField>
+
+<ResponseExample>
+```json Response (Enriched)
+{
+  "status": "success",
+  "data": {
+    "total_results": 1,
+    "companies": [
+      {
+        "name": "Together AI",
+        "universalName": "togethercomputer",
+        "description": "Together AI is a research-driven AI cloud infrastructure provider. Our purpose-built GPU cloud platform empowers AI engineers and researchers to train, fine-tune, and run frontier class AI models.\n\nOur customers include leading SaaS companies such as Salesforce, Zoom, and Zomato, as well as pioneering AI startups like ElevenLabs, Hedra, and Cartesia.\n\nWe advocate for open source AI and believe that transparent AI systems will drive innovation and create the best outcomes for society.",
+        "tagline": "AI pioneers train, fine-tune, and run frontier models on our GPU cloud platform.",
+        "websiteUrl": "https://together.ai",
+        "industry": "Software Development",
+        "employeeCount": 271,
+        "employeeCountRange": {
+          "start": 201,
+          "end": 500
+        },
+        "headquarter": {
+          "country": "US",
+          "geographicArea": "California",
+          "city": "San Francisco",
+          "line2": null,
+          "line1": "251 Rhode Island St",
+          "postalCode": "94103"
+        },
+        "logoUrl": "https://media.licdn.com/dms/image/v2/D560BAQEoABGv7fhdYw/company-logo_200_200/B56ZaIpAzHHAAI-/0/1746049174960/togethercomputer_logo?e=2147483647&v=beta&t=qIf249H-TFompFSzYNg4WLlPOD5g0nj7yS2OuV8r7-s",
+        "coverImageUrl": "https://media.licdn.com/dms/image/v2/D563DAQFveGHB6u2ToQ/image-scale_191_1128/B56ZaIowNLHAAg-/0/1746049107098/togethercomputer_cover?e=2147483647&v=beta&t=p1YPtC7jYTkDkFhUZXfUsFmT6HoR8BIjrxjCLOUL1wI",
+        "callToAction": null,
+        "locations": [
+          {
+            "streetAddressOptOut": false,
+            "description": "Primary",
+            "address": {
+              "country": null,
+              "geographicArea": null,
+              "city": null,
+              "line2": null,
+              "line1": "251 Rhode Island St",
+              "postalCode": null
+            },
+            "headquarter": true
+          }
+        ],
+        "organizationType": "Privately Held",
+        "defaultLocale": "en",
+        "followersCount": 69137,
+        "pageMailbox": false,
+        "verified": false,
+        "funding": {
+          "isFunded": true,
+          "totalRounds": 4,
+          "lastRound": {
+            "type": "Series B",
+            "date": "2025-03-20",
+            "amount": "US$ 305.0M"
+          },
+          "investors": [
+            {
+              "name": "Prosperity7 Ventures",
+              "company_url": "https://www.linkedin.com/company/prosperity7-ventures-d527"
+            },
+            {
+              "name": "General Catalyst",
+              "company_url": "https://www.linkedin.com/company/general-catalyst-partners"
+            },
+            {
+              "name": "+ 19 Other investors",
+              "company_url": null
+            }
+          ]
+        },
+        "company_url": "https://www.linkedin.com/company/togethercomputer"
+      }
+    ],
+    "enriched": true,
+    "funded_only": true
+  }
+}
+```
+
+```json Response (Basic)
+{
+  "status": "success",
+  "data": {
+    "total_results": 1247,
+    "companies": [
+      {
+        "url": "https://www.linkedin.com/company/openai",
+        "title": "OpenAI - LinkedIn",
+        "description": "OpenAI is an AI research and deployment company dedicated to ensuring that artificial general intelligence benefits all of humanity."
+      },
+      {
+        "url": "https://www.linkedin.com/company/anthropic",
+        "title": "Anthropic - LinkedIn",
+        "description": "Anthropic is an AI safety and research company working to build reliable, interpretable, and steerable AI systems."
+      }
+    ],
+    "funded_only": true
+  }
+}
+```
+
+</ResponseExample>
+
+
+## Important Notes
+
+- **Funded Companies Only**: This endpoint exclusively returns companies that have received funding
+- Credit consumption is based on the number of results: 1 credit for 1-10 results, 2 credits for 11-20 results, etc.
+- Credits are only deducted on successful searches
+

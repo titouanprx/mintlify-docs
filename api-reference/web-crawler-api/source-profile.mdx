@@ -1,0 +1,145 @@
+---
+title: "Search Profiles"
+api: "POST /v1/data/search/profiles"
+description: "Search LinkedIn profiles with multiple criteria"
+---
+
+## Description
+
+This endpoint allows you to search LinkedIn profiles using different search criteria.
+
+<Note>
+  **Credit Usage:** 1 credit per 10 results (or fraction thereof). For example:
+  - 1-10 results = 1 credit
+  - 11-20 results = 2 credits
+  - 300 results = 30 credits
+</Note>
+
+<Tip>
+  **Need full profile enrichment?** Use the [Profile Info endpoint](/api-reference/linkup/Profile/profile-info) to get complete profile details including work experience, education, skills, and more.
+</Tip>
+
+<Info>
+  **Coming Soon:** New advanced filters are being developed, including:
+  - Recent job changes
+  - Years of experience
+  
+  If these features interest you, please contact us at [dev@linkupapi.com](mailto:dev@linkupapi.com) and we can prioritize their implementation.
+</Info>
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="keyword" type="string">
+  Main search keyword (name, position, skills, etc.)
+</ParamField>
+
+<ParamField body="job_title" type="string or array">
+  Job title(s) to search for (e.g., "Software Engineer" or ["Software Engineer", "Senior Developer", "Tech Lead"])
+</ParamField>
+
+<ParamField body="industry" type="string or array">
+  Industry sector(s) (e.g., "technology" or ["technology", "finance", "healthcare"])
+</ParamField>
+
+<ParamField body="school" type="string or array">
+  School(s) or university(ies) (e.g., "Stanford University" or ["Stanford University", "MIT", "Harvard"])
+</ParamField>
+
+<ParamField body="location" type="string or array">
+  Location(s) (e.g., "San Francisco" or ["San Francisco", "New York", "Austin"])
+</ParamField>
+
+<ParamField body="current_company" type="string or array">
+  Current company(ies) (e.g., "Google" or ["Google", "Microsoft", "Amazon"])
+</ParamField>
+
+<ParamField body="total_results" type="integer" default="10">
+  Number of results to return
+  
+  - Minimum: 1
+  - Maximum: 50,000
+  - Default: 10
+</ParamField>
+
+
+
+
+
+<Note>
+At least one search criteria must be provided among: `keyword`, `job_title`, `industry`, `school`, `location`, or `current_company`.
+</Note>
+
+## Response
+
+<ResponseField name="status" type="string">
+  Response status ("success" or "error")
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Response Data">
+    <ResponseField name="total_results" type="integer">
+      Total count of all matching results
+    </ResponseField>
+    
+    <ResponseField name="profiles" type="array">
+      List of found profiles
+      <Expandable title="Profile Structure">
+        <ResponseField name="url" type="string">
+          LinkedIn profile URL
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Profile title/name from LinkedIn
+        </ResponseField>
+        <ResponseField name="description" type="string">
+          Profile description/summary
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Error message (if status = "error")
+</ResponseField>
+
+
+
+
+## Response Example
+
+<ResponseExample>
+```json
+{
+  "status": "success",
+  "data": {
+    "total_results": 1523,
+    "profiles": [
+      {
+        "url": "https://www.linkedin.com/in/johnperez",
+        "title": "John M P. - CRM Experts Online - LinkedIn",
+        "description": "As the founder of CRM Experts Online, I leverage my 19+ years of experience in enterprise… · Experience: CRM Experts Online · Education: New York College Of ..."
+      },
+      {
+        "url": "https://www.linkedin.com/in/brentleary",
+        "title": "Brent Leary - CRM Essentials - LinkedIn",
+        "description": "Brent Leary is Co-founder and Partner of CRM Essentials LLC, a CRM consulting/advisory… · Experience: CRM Essentials · Location: Stockbridge · 500+ ..."
+      },
+      {
+        "url": "https://www.linkedin.com/in/jsrosenth",
+        "title": "Jeff Rosenthal - Head of CRM GTM, North America - monday.com",
+        "description": "I lead GTM for an emerging portfolio of CRM & AI products at monday.com. Deep expertise in CRM & AI GTM as a trusted advisor to global go to market, sales, ..."
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+
+

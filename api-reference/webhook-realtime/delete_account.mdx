@@ -1,14 +1,18 @@
 ---
 title: 'Delete Webhook Account'
 api: 'DELETE  /v1/webhooks/accounts/{account_id}'
-description: 'Delete a LinkedIn webhook account'
+description: 'Delete a webhook account'
 ---
 
-Permanently delete a LinkedIn webhook account and stop all monitoring.
+Permanently delete a LinkedIn or WhatsApp webhook account and stop all monitoring.
 
 <Note>
   This action cannot be undone. Deleting an account will automatically stop monitoring and remove all associated data.
 </Note>
+
+<Warning>
+  **WhatsApp**: This is the only way to stop WhatsApp monitoring. The stop monitoring endpoint only works for LinkedIn accounts.
+</Warning>
 
 ### Header Parameters
 

@@ -1,0 +1,74 @@
+---
+title: 'Webhook API Introduction'
+description: 'Real-time notifications for LinkedIn and WhatsApp'
+---
+
+The Webhook API enables real-time monitoring and notifications for both **LinkedIn** and **WhatsApp** platforms.
+
+## Supported Platforms
+
+<CardGroup cols={2}>
+  <Card title="LinkedIn" icon="linkedin" href="#linkedin-webhooks">
+    Monitor LinkedIn messages, invitations, and notifications in real-time
+  </Card>
+  <Card title="WhatsApp" icon="whatsapp" href="#whatsapp-webhooks">
+    Receive WhatsApp messages instantly with QR code authentication
+  </Card>
+</CardGroup>
+
+## How It Works
+
+1. **Create Account**: Register your LinkedIn or WhatsApp account
+2. **Start Monitoring**: Begin real-time monitoring 
+3. **Receive Webhooks**: Get instant notifications at your webhook URL
+
+## LinkedIn Webhooks
+
+Perfect for LinkedIn automation and real-time messaging:
+
+- **Messages**: Direct messages sent and received
+
+**Requirements:**
+- LinkedIn login_token
+- Webhook URL for notifications
+
+## WhatsApp Webhooks
+
+Monitor WhatsApp messages with QR code authentication:
+
+- **Messages**: Messages sent and received
+- **QR Code**: QR code generation for authentication
+- **Authentication**: Authentication success notifications
+
+**Requirements:**
+- Phone number (international format)
+- Webhook URL for messages
+- QR webhook URL (optional)
+
+## Credit Usage
+
+<Note>
+  **LinkedIn**: 10 credits per day per active account (1 credit every 144 minutes)
+  
+  **WhatsApp**: 10 credits per day per active account (1 credit every 144 minutes)
+</Note>
+## Quick Start
+
+<Steps>
+  <Step title="Choose Platform">
+    Select LinkedIn or WhatsApp based on your needs
+  </Step>
+  <Step title="Create Account">
+    Use the create account endpoint with platform-specific parameters
+  </Step>
+  <Step title="Start Monitoring">
+    Begin receiving real-time notifications
+  </Step>
+</Steps>
+
+
+## Next Steps
+
+- [Create Account](/api-reference/webhook-realtime/create_account) - Register your first account
+- [Start Monitoring](/api-reference/webhook-realtime/start_monitoring) - Begin receiving webhooks
+- [List Accounts](/api-reference/webhook-realtime/list_account) - Manage your accounts

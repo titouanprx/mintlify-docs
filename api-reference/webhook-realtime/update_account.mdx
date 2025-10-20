@@ -1,10 +1,10 @@
 ---
 title: 'Update Webhook Account'
 api: 'PUT /v1/webhooks/accounts/{account_id}'
-description: 'Update an existing LinkedIn webhook account'
+description: 'Update an existing webhook account'
 ---
 
-Update the configuration of an existing LinkedIn webhook account.
+Update the configuration of an existing LinkedIn or WhatsApp webhook account.
 
 ### Header Parameters
 
@@ -20,20 +20,28 @@ Update the configuration of an existing LinkedIn webhook account.
 
 ### Body Parameters
 
-<ParamField body="login_token" type="string">
-  New LinkedIn authentication token
+<ParamField body="account_name" type="string">
+  New account name
 </ParamField>
 
 <ParamField body="webhook_url" type="string">
   New webhook URL for notifications
 </ParamField>
 
+#### LinkedIn-specific Parameters
+
+<ParamField body="login_token" type="string">
+  New LinkedIn authentication token
+</ParamField>
+
 <ParamField body="country" type="string">
   New country code for proxy selection. Available: (US, UK, FR)
 </ParamField>
 
-<ParamField body="account_name" type="string">
-  New account name
+#### WhatsApp-specific Parameters
+
+<ParamField body="qr_webhook_url" type="string">
+  New QR webhook URL for WhatsApp authentication
 </ParamField>
 
 ### Response

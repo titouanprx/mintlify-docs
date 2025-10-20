@@ -1,6 +1,6 @@
 {
   "name": "linkup-docs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "LinkUp API Documentation",
   "devDependencies": {
     "mintlify": "^4.0.322",
@@ -8,10 +8,17 @@
   },
   "scripts": {
     "dev": "mintlify dev",
-    "build": "mintlify build"
+    "dev:v1": "cd v1 && mintlify dev",
+    "dev:v2": "cd v2 && mintlify dev",
+    "build": "mintlify build",
+    "build:v1": "cd v1 && mintlify build",
+    "build:v2": "cd v2 && mintlify build",
+    "preview": "mintlify dev --port 3000",
+    "preview:v1": "cd v1 && mintlify dev --port 3001",
+    "preview:v2": "cd v2 && mintlify dev --port 3002"
   },
   "main": "index.js",
-  "keywords": [],
-  "author": "",
+  "keywords": ["api", "documentation", "linkup", "linkedin"],
+  "author": "LinkUp API Team",
   "license": "ISC"
 }
