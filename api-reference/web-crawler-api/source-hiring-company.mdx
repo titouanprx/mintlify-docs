@@ -26,6 +26,14 @@ This endpoint retrieves companies that are actively hiring with their job listin
 
 ## Body Parameters
 
+<ParamField body="company_names" type="array">
+  Target specific companies by name (e.g., `["Google", "Amazon"]`)
+  
+  <Note>
+    When this parameter is provided, only **LinkedIn** will be scraped as the job board, regardless of the `site_names` parameter.
+  </Note>
+</ParamField>
+
 <ParamField body="job_title" type="array">
   Keywords for job title (e.g., `["developer", "engineer"]`)
 </ParamField>
@@ -216,6 +224,21 @@ curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/source-hiring-company
     "hours_old": 168,
     "site_names": ["linkedin", "indeed"],
     "total_results": 10,
+    "fetch_description": true,
+    "enrich_company": true
+  }'
+```
+
+```bash Target Specific Companies (LinkedIn only)
+curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/source-hiring-company" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "company_names": ["Google", "Amazon", "Meta"],
+    "job_title": ["software engineer"],
+    "location": "San Francisco, CA",
+    "is_remote": true,
+    "total_results": 50,
     "fetch_description": true,
     "enrich_company": true
   }'
