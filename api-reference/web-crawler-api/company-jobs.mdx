@@ -1,32 +1,36 @@
 ---
-title: "Source Hiring Companies"
-api: "POST /v1/data/companies/hiring"
-description: "Search for companies actively hiring by scraping job boards (Indeed and LinkedIn)"
+title: "Get All Company Jobs"
+api: "POST /v1/data/companies/jobs"
+description: "Extract ALL job postings from specific companies on LinkedIn (up to 2000 jobs per company)"
 ---
 
 ## Overview
 
-This endpoint retrieves companies that are actively hiring with their job listings, company details, and enriched data.
+This endpoint retrieves **all active job postings** from specified companies. Unlike `/companies/hiring` which returns 1 job per company for discovery, this endpoint extracts **every available job** from the target companies.
 
-**At least one** of `job_title`, `job_description`, or `location` is required.
+<Warning>
+  The `company_names` parameter is **required**. Only **LinkedIn** will be scraped as the job board.
+</Warning>
 
 <Note>
   **Pricing:** Total Cost = Base + Description + Enrichment
   
-  - **Base**: 1 credit = 10 companies
-  - **Description** (if `fetch_description: true`): +1 credit per 10 companies
+  - **Base**: ⌈jobs / 10⌉ credits (1 credit = 10 jobs)
+  - **Description** (if `fetch_description: true`): +1 credit = 10 description
   - **Enrichment** (if `enrich_company: true`): +1 credit per company
   
-  **Examples for 10 companies:**
-  - Base only: **1 credit**
-  - Base + Description: **2 credits**
-  - Base + Enrichment: **11 credits**
-  - Full (Base + Description + Enrichment): **12 credits**
+  **Examples for 50 jobs from 2 companies:**
+  - Base only: **5 credits**
+  - Base + Description: **6 credits**
+  - Base + Enrichment: **7 credits**
+  - Full (Base + Description + Enrichment): **8 credits**
 </Note>
 
 ## Body Parameters
 
-
+<ParamField body="company_names" type="array" required>
+  List of company names to extract jobs from (e.g., `["Google", "Amazon"]`)
+</ParamField>
 
 <ParamField body="job_title" type="array">
   Keywords for job title (e.g., `["developer", "engineer"]`)
@@ -40,18 +44,12 @@ This endpoint retrieves companies that are actively hiring with their job listin
   Keywords to exclude from job title (e.g., `["senior", "manager"]`)
 </ParamField>
 
-
 <ParamField body="location" type="string">
   Location (city, region). Example: `"Paris, France"` or `"San Francisco, CA"`
 </ParamField>
 
-
 <ParamField body="is_remote" type="boolean" default="false">
   Filter only remote jobs
-</ParamField>
-
-<ParamField body="country" type="string" default="france">
-  Country for Indeed. Values: `france`, `usa`, `uk`, `germany`, `spain`, `italy`, `canada`
 </ParamField>
 
 <ParamField body="job_type" type="string">
@@ -62,16 +60,12 @@ This endpoint retrieves companies that are actively hiring with their job listin
   Jobs posted within the last X hours (e.g., `72` for 3 days)
 </ParamField>
 
-<ParamField body="site_names" type="array" default='["indeed", "linkedin"]'>
-  Job boards to scrape. Values: `linkedin`, `indeed`
-</ParamField>
-
 <ParamField body="total_results" type="integer" default="100">
-  Number of companies to retrieve
+  Maximum number of jobs to retrieve per company
 </ParamField>
 
 <ParamField body="fetch_description" type="boolean" default="true">
-  Fetch complete job descriptions. **Cost: +1 credit per 10 companies**
+  Fetch complete job descriptions. **Cost: +⌈companies / 10⌉ credits**
 </ParamField>
 
 <ParamField body="enrich_company" type="boolean" default="false">
@@ -131,7 +125,7 @@ This endpoint retrieves companies that are actively hiring with their job listin
     </ResponseField>
     
     <ResponseField name="jobs" type="array">
-      List of job postings
+      List of all job postings
       <Expandable title="Job Object">
         <ResponseField name="job_title" type="string">
           Job title
@@ -146,7 +140,7 @@ This endpoint retrieves companies that are actively hiring with their job listin
         </ResponseField>
         
         <ResponseField name="job_board" type="string">
-          Source (linkedin or indeed)
+          Source (linkedin)
         </ResponseField>
         
         <ResponseField name="job_board_url" type="string">
@@ -158,7 +152,7 @@ This endpoint retrieves companies that are actively hiring with their job listin
         </ResponseField>
         
         <ResponseField name="description" type="string">
-          Job description (markdown)
+          Job description (HTML)
         </ResponseField>
         
         <ResponseField name="is_remote" type="boolean">
@@ -188,6 +182,38 @@ This endpoint retrieves companies that are actively hiring with their job listin
 <ResponseField name="nb_jobs" type="integer">
   Total number of jobs found
 </ResponseField>
+
+<RequestExample>
+
+```bash Basic Search (5 credits)
+curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/company-jobs" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "company_names": ["Google", "Microsoft"],
+    "total_results": 50,
+    "fetch_description": false,
+    "enrich_company": false
+  }'
+```
+
+```bash With Filters and Enrichment
+curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/company-jobs" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "company_names": ["Google", "Microsoft", "Amazon"],
+    "job_title": ["software engineer", "developer"],
+    "location": "San Francisco, CA",
+    "job_type": "fulltime",
+    "hours_old": 168,
+    "total_results": 100,
+    "fetch_description": true,
+    "enrich_company": true
+  }'
+```
+
+</RequestExample>
 
 
 <ResponseExample>

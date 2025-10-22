@@ -143,6 +143,7 @@
       "pages": [
         "api-reference/web-crawler-api/source-funding-company",
         "api-reference/web-crawler-api/source-hiring-company",
+        "api-reference/web-crawler-api/company-jobs",
         "api-reference/web-crawler-api/source-company",
         "api-reference/web-crawler-api/company-info",
         "api-reference/web-crawler-api/company-info-by-domain",
