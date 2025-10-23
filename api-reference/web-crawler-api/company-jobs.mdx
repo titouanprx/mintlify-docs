@@ -6,7 +6,7 @@ description: "Extract ALL job postings from specific companies on LinkedIn (up t
 
 ## Overview
 
-This endpoint retrieves **all active job postings** from specified companies. Unlike `/companies/hiring` which returns 1 job per company for discovery, this endpoint extracts **every available job** from the target companies.
+This endpoint retrieves **all active job postings** from specified companies.
 
 <Warning>
   The `company_names` parameter is **required**. Only **LinkedIn** will be scraped as the job board.
@@ -19,11 +19,6 @@ This endpoint retrieves **all active job postings** from specified companies. Un
   - **Description** (if `fetch_description: true`): +1 credit = 10 description
   - **Enrichment** (if `enrich_company: true`): +1 credit per company
   
-  **Examples for 50 jobs from 2 companies:**
-  - Base only: **5 credits**
-  - Base + Description: **6 credits**
-  - Base + Enrichment: **7 credits**
-  - Full (Base + Description + Enrichment): **8 credits**
 </Note>
 
 ## Body Parameters
@@ -183,37 +178,7 @@ This endpoint retrieves **all active job postings** from specified companies. Un
   Total number of jobs found
 </ResponseField>
 
-<RequestExample>
 
-```bash Basic Search (5 credits)
-curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/company-jobs" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "company_names": ["Google", "Microsoft"],
-    "total_results": 50,
-    "fetch_description": false,
-    "enrich_company": false
-  }'
-```
-
-```bash With Filters and Enrichment
-curl -X POST "https://api.linkupapi.com/api/v2/web-crawler/company-jobs" \
-  -H "x-api-key: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "company_names": ["Google", "Microsoft", "Amazon"],
-    "job_title": ["software engineer", "developer"],
-    "location": "San Francisco, CA",
-    "job_type": "fulltime",
-    "hours_old": 168,
-    "total_results": 100,
-    "fetch_description": true,
-    "enrich_company": true
-  }'
-```
-
-</RequestExample>
 
 
 <ResponseExample>
