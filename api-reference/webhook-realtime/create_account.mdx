@@ -24,7 +24,7 @@ Register a new LinkedIn or WhatsApp account to receive real-time webhook notific
 
 ### Body Parameters
 
-<ParamField body="plateforme" type="string" required>
+<ParamField body="platform" type="string" required>
   Platform type: `"linkedin"` or `"whatsapp"`
 </ParamField>
 
@@ -64,7 +64,7 @@ Register a new LinkedIn or WhatsApp account to receive real-time webhook notific
   Unique identifier for the created account
 </ResponseField>
 
-<ResponseField name="plateforme" type="string">
+<ResponseField name="platform" type="string">
   Platform type (linkedin or whatsapp)
 </ResponseField>
 
@@ -122,7 +122,7 @@ Register a new LinkedIn or WhatsApp account to receive real-time webhook notific
 ```json LinkedIn Account
 {
   "id": "60f7b3b3e4b0c8a2d8e9f1a2",
-  "plateforme": "linkedin",
+  "platform": "linkedin",
   "account_name": "My LinkedIn Account",
   "login_token": "AQEDARCvKg...",
   "country": "FR",
@@ -136,7 +136,7 @@ Register a new LinkedIn or WhatsApp account to receive real-time webhook notific
 ```json WhatsApp Account
 {
   "id": "507f1f77bcf86cd799439011",
-  "plateforme": "whatsapp",
+  "platform": "whatsapp",
   "account_name": "My WhatsApp",
   "phone_number": "+33612345678",
   "webhook_url": "https://your-webhook.com/whatsapp",
