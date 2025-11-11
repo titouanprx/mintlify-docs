@@ -144,6 +144,14 @@ Extract comprehensive information from any LinkedIn profile, including personal 
     <ResponseField name="connection_date" type="string">
       Date when connection was established (if connected)
     </ResponseField>
+    
+    <ResponseField name="isOpenToWork" type="boolean">
+      Indicates if the profile owner is open to job opportunities
+    </ResponseField>
+    
+    <ResponseField name="isHiring" type="boolean">
+      Indicates if the profile owner is currently hiring
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -197,7 +205,9 @@ Extract comprehensive information from any LinkedIn profile, including personal 
     "phone": "",
     "website": "",
     "relationship": "2nd degree",
-    "connection_date": ""
+    "connection_date": "",
+    "isOpenToWork": false,
+    "isHiring": true
   }
 }
 ```
