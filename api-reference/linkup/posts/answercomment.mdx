@@ -50,6 +50,7 @@ Reply to an existing comment on a LinkedIn post using the comment URN.
   Country code for proxy selection. Available: (US, UK, FR, DE, NL, IT, IL, CA, BR, ES, IN)
 </ParamField>
 
+
 ### Response
 
 <ResponseField name="status" type="string">
@@ -68,3 +69,12 @@ Reply to an existing comment on a LinkedIn post using the comment URN.
 }
 ```
 </ResponseExample>
+
+### Notes
+- The comment URN must be valid and accessible with the provided login token
+- Replies are posted with the identity associated with the login token
+- **Company Page Replies**: When `company_url` is provided, the reply will be posted on behalf of the company page. You must have admin rights on the company page to use this feature.
+- Reply text supports plain text only
+- When `mention_user` is true, the `commenter_name` parameter is required
+- LinkedIn's rate limits and spam detection apply to comment replies
+- Some posts or comments may have replies disabled by their authors

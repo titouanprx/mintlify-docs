@@ -30,6 +30,10 @@ Add a new comment to any LinkedIn post using the post URL.
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
 
+<ParamField body="company_url" type="string">
+  URL of the LinkedIn company page to comment as (e.g., "https://www.linkedin.com/company/your-company"). If provided, the comment will be posted on behalf of the company page instead of the personal profile.
+</ParamField>
+
 ### Response
 
 <ResponseField name="status" type="string">
@@ -59,6 +63,7 @@ Add a new comment to any LinkedIn post using the post URL.
   - `https://www.linkedin.com/feed/update/urn:li:activity:...`
   - `https://www.linkedin.com/posts/user-activity-...`
 - Comments are posted with the identity associated with the login token
+- **Company Page Comments**: When `company_url` is provided, the comment will be posted on behalf of the company page. You must have admin rights on the company page to use this feature.
 - Comment text supports plain text only
 - No formatting or special characters are supported in comments
 - The post must be accessible with the provided login token
