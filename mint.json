@@ -70,6 +70,7 @@
               "pages": [
                 "api-reference/linkup/Profile/me",
                 "api-reference/linkup/Profile/profile-info",
+                "api-reference/linkup/Profile/visit",
                 "api-reference/linkup/Profile/search"
               ]
             },
