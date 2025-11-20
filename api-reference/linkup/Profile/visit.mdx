@@ -1,0 +1,65 @@
+---
+title: 'Visit Profile'
+api: 'POST /v1/profile/visit'
+description: 'Visit a LinkedIn profile to appear in their profile viewers'
+---
+
+Visit any LinkedIn profile to register your view in their profile viewers list. This simulates a genuine profile visit.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="linkedin_url" type="string" required>
+  URL of the LinkedIn profile to visit
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: (US, UK, FR, DE, NL, IT, IL, CA, BR, ES, IN)
+</ParamField>
+
+<ParamField body="login_token" type="string" required>
+  LinkedIn authentication cookie obtained from the login/verify process
+</ParamField>
+
+### Response
+
+<ResponseField name="status" type="string">
+  Request status (success/error)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Descriptive message about the operation result
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Profile visited successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Failed to visit profile: Invalid LinkedIn URL"
+}
+```
+</ResponseExample>
+
+### Notes
+- The visit will appear in the target profile's "Who's viewed your profile" section
+- The visit is performed using the authenticated account associated with the `login_token`
+- Profile visits respect LinkedIn's rate limiting and fair usage policies
+- Visiting a profile does not extract or return any data from the profile
+- The operation may take a few seconds to complete as it simulates a real profile view
+
