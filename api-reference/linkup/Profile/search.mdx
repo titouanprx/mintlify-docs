@@ -76,6 +76,32 @@ Search for LinkedIn profiles using multiple filters including company, location,
   Title text parameter in advanced keyword
 </ParamField>
 
+<ParamField body="connection_of" type="string">
+  LinkedIn profile URL(s) to filter by their connections.
+  Use semicolon (;) as separator for multiple profiles (e.g., "https://www.linkedin.com/in/john-doe;https://www.linkedin.com/in/jane-doe").
+</ParamField>
+
+<Warning>
+  **Important for `connection_of` filter:** You must be connected (1st degree) with the target profile to use this filter effectively. If you are not connected, the API will return profiles that you have in common as mutual connections with that person, not their full connection list.
+</Warning>
+
+<ParamField body="industry" type="string">
+  Industry to filter profiles by.
+  Use semicolon (;) as separator for multiple industries (e.g., "software;marketing;finance").
+  
+  Get the full list of available industries at: `api.linkupapi.com/v1/tool/industries`
+</ParamField>
+
+<ParamField body="past_company" type="string">
+  LinkedIn company URL or identifier to filter by past/previous company.
+  Use semicolon (;) as separator for multiple companies (e.g., "Google;Microsoft;Amazon").
+</ParamField>
+
+<ParamField body="follower_of" type="string">
+  LinkedIn profile URL(s) to filter by followers of that profile.
+  Use semicolon (;) as separator for multiple profiles (e.g., "https://www.linkedin.com/in/john-doe;https://www.linkedin.com/in/jane-doe").
+</ParamField>
+
 <ParamField body="login_token" type="string" required>
   LinkedIn authentication cookie obtained from the login/verify process
 </ParamField>
@@ -217,19 +243,5 @@ Search for LinkedIn profiles using multiple filters including company, location,
 - Profile pictures may be null if not available or restricted
 - The `total_available_results` field shows the total number of profiles that match your search criteria on LinkedIn
 - Results are paginated with a maximum of 50 profiles per page
-- **Pagination Mode vs. Total Results Mode**:
-  - **Total Results Mode**: Use the `total_results` parameter to specify how many profiles you want (default)
-  - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
-  - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
-  - When using pagination mode, `total_results` parameter is ignored
-- **Invitation State Feature**:
-  - When `fetch_invitation_state` is enabled (default), the API makes additional requests to determine the current invitation/connection status
-  - This feature helps you understand whether you can send connection requests to specific profiles
-  - Setting `fetch_invitation_state` to false will improve response time but won't include invitation status information
-  - Invitation states are determined in real-time and reflect the current LinkedIn relationship status
-- Search results may be limited by:
-  - LinkedIn's visibility settings
-  - Your network connection level
-  - Profile privacy settings
 - Search restrictions:
   - Rate limits apply
