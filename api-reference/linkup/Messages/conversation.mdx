@@ -30,15 +30,11 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
 </ParamField>
 
 <ParamField body="total_results" type="integer" default="10">
-  Number of messages to retrieve (used when not in pagination mode)
+  Number of messages per page
 </ParamField>
 
-<ParamField body="start_page" type="integer">
-  First page to fetch when using pagination mode (default: 1)
-</ParamField>
-
-<ParamField body="end_page" type="integer">
-  Last page to fetch when using pagination mode (default: same as start_page)
+<ParamField body="cursor" type="string">
+  Timestamp of the last message for pagination. Omit for the first request to get the most recent messages.
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -127,20 +123,16 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
 
     <ResponseField name="pagination" type="object">
       <Expandable title="Pagination Object">
-        <ResponseField name="start_page" type="integer">
-          First page fetched in the current request
+        <ResponseField name="count" type="integer">
+          Number of messages returned in the current response
         </ResponseField>
 
-        <ResponseField name="end_page" type="integer">
-          Last page fetched in the current request
+        <ResponseField name="has_next_page" type="boolean">
+          Indicates if there are more messages to fetch
         </ResponseField>
 
-        <ResponseField name="messages_per_page" type="integer">
-          Number of messages per page (typically 10)
-        </ResponseField>
-
-        <ResponseField name="pages_fetched" type="integer">
-          Total number of pages fetched in the current request
+        <ResponseField name="next_cursor" type="string">
+          Cursor to use for fetching the next page of messages. Only present if `has_next_page` is true.
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -155,7 +147,7 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
   "data": {
     "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-OTFjNWU3YWMtN2IwNi00ZWUwLWE1YzYtNTg4OGNkMGU2ZGRhXzAxMw==)",
     "profile_url": "https://www.linkedin.com/in/al%C3%A9s-pr%C3%A9w-aa0262324/",
-    "total_results": 20,
+    "total_results": 5,
     "total_other_member_message_count": 32,
     "unread_count": 0,
     "last_seen_message": true,
@@ -196,10 +188,9 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
       }
     ],
     "pagination": {
-      "start_page": 2,
-      "end_page": 3,
-      "messages_per_page": 10,
-      "pages_fetched": 2
+      "count": 5,
+      "has_next_page": true,
+      "next_cursor": "1745266498889"
     }
   }
 }
@@ -225,16 +216,25 @@ Get detailed messages from a LinkedIn conversation using either a LinkedIn profi
   - **LinkedIn Profile URL**: The API will first find the conversation ID associated with that profile
   - **Direct Conversation ID**: Skip the profile lookup and access the conversation directly
 - **Parameter Requirements**: Either `linkedin_url` OR `conversation_id` must be provided (not both required)
-- Messages are returned in chronological order (recent first)
+- Messages are returned in chronological order (most recent first)
 - The `timestamp` is in milliseconds since epoch
-- **Pagination Mode vs. Total Results Mode**:
-  - **Total Results Mode**: Use the `total_results` parameter to specify how many messages you want (default)
-  - **Pagination Mode**: Use `start_page` and `end_page` parameters to fetch specific pages of results
-  - Credit usage in pagination mode is based on the number of pages fetched (1 credit per page)
-  - When using pagination mode, `total_results` parameter is ignored
-- Messages per page is fixed at 10
+- **Cursor-based Pagination**:
+  - **First request**: Omit the `cursor` parameter to get the most recent messages
+  - **Subsequent requests**: Pass the `next_cursor` value from the previous response as the `cursor` parameter
+  - **End of results**: When `has_next_page` is `false`, there are no more messages to fetch
+  - Use `total_results` to control how many messages are returned per request (default: 10)
 - When using `linkedin_url`, the API first retrieves the conversation ID for the specified profile, then fetches the messages
 - When using `conversation_id`, the API directly fetches messages from that conversation
 - This endpoint can only retrieve messages with profiles you've already had a conversation with
 - Historical messages may be limited by LinkedIn's data retention policies
 - The `profile_url` field is only included in the response when it was provided in the request
+
+### Pagination Example
+
+```json
+// First request - get most recent messages
+{"linkedin_url": "https://linkedin.com/in/example", "total_results": 5}
+
+// Next page - use cursor from previous response
+{"linkedin_url": "https://linkedin.com/in/example", "total_results": 5, "cursor": "1745266498889"}
+```
