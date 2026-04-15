@@ -1,0 +1,91 @@
+---
+title: "MCP Setup"
+description: "Connect Linkup API to Claude, ChatGPT, Gemini, Cursor, or any MCP-compatible LLM in under 2 minutes."
+---
+
+## What is MCP?
+
+The **Model Context Protocol (MCP)** lets LLMs call Linkup API directly — all LinkedIn and B2B intelligence tools become native capabilities of your AI assistant.
+
+## Endpoint
+
+```
+https://mcp.linkupapi.com/mcp
+```
+
+Authenticate with your API key via the `x-api-key` header. Get your key at [app.linkupapi.com](https://app.linkupapi.com).
+
+## Claude (Desktop / Code)
+
+Run this in your terminal:
+
+```bash
+claude mcp add --transport http linkupapi https://mcp.linkupapi.com/mcp --header "x-api-key: YOUR_API_KEY"
+```
+
+Restart Claude — all Linkup API tools are now available.
+
+## ChatGPT (Custom Connectors)
+
+In ChatGPT → **Settings → Connectors → Add custom connector**:
+
+- **Name:** Linkup API
+- **Server URL:** `https://mcp.linkupapi.com/mcp`
+- **Authentication:** Custom header
+- **Header name:** `x-api-key`
+- **Header value:** `YOUR_API_KEY`
+
+Save and enable the connector in your chat.
+
+## Gemini (gemini-cli / Gemini Code Assist)
+
+Add to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "linkupapi": {
+      "httpUrl": "https://mcp.linkupapi.com/mcp",
+      "headers": {
+        "x-api-key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+Restart Gemini.
+
+## Cursor / Windsurf / Other MCP Clients
+
+Add this to your MCP config (e.g. `~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "linkupapi": {
+      "url": "https://mcp.linkupapi.com/mcp",
+      "transport": "http",
+      "headers": {
+        "x-api-key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+## Verify it works
+
+Ask your LLM: *"Validate the email elon.musk@tesla.com using Linkup API"*. It should call the `validate_email` tool and return a result.
+
+## Available tool categories
+
+- **LinkedIn Engagement** — login, search, connect, message, post, react, comment
+- **LinkedIn Data** — profile enrichment, company info, search
+- **Mail Intelligence** — find, validate, reverse lookup
+- **B2B Intelligence** — funded companies, hiring signals
+- **Recruiting** — candidates, CVs, job posts
+
+## Support
+
+Issues? Reach us at [support@linkupapi.com](mailto:support@linkupapi.com) or via the [dashboard support page](https://app.linkupapi.com/support).

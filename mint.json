@@ -41,7 +41,8 @@
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["api-reference/introduction"
+      "pages": ["api-reference/introduction",
+        "api-reference/mcp-setup"
     ]
     },
 
