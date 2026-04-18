@@ -15,8 +15,8 @@ https://mcp.linkupapi.com/mcp
 
 Two ways to authenticate:
 
-- **API key** — pass your key via the `x-api-key` header. Simplest option, works everywhere.
-- **OAuth 2.1** — for clients that support it (Claude, ChatGPT). You approve access from the LinkupAPI dashboard — no need to paste your key into the client.
+- **OAuth 2.1** (recommended) — approve access from the LinkupAPI dashboard, no key to paste. Supported by Claude, ChatGPT, Cursor, Gemini, VS Code, and most modern MCP clients.
+- **API key** — pass your key via the `x-api-key` header. Works everywhere, useful for headless setups or clients without OAuth.
 
 Get your API key at [app.linkupapi.com](https://app.linkupapi.com).
 
@@ -48,6 +48,22 @@ In ChatGPT → **Settings → Connectors → Add custom connector**:
 
 Save and enable the connector in your chat.
 
+## Cursor
+
+Add to `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project):
+
+```json
+{
+  "mcpServers": {
+    "linkupapi": {
+      "url": "https://mcp.linkupapi.com/mcp"
+    }
+  }
+}
+```
+
+Cursor auto-discovers OAuth on first use and opens the LinkupAPI authorize page. To skip OAuth and use an API key, add `"headers": { "x-api-key": "YOUR_API_KEY" }`.
+
 ## Gemini (gemini-cli / Gemini Code Assist)
 
 Add to `~/.gemini/settings.json`:
@@ -56,20 +72,34 @@ Add to `~/.gemini/settings.json`:
 {
   "mcpServers": {
     "linkupapi": {
-      "httpUrl": "https://mcp.linkupapi.com/mcp",
-      "headers": {
-        "x-api-key": "YOUR_API_KEY"
-      }
+      "httpUrl": "https://mcp.linkupapi.com/mcp"
     }
   }
 }
 ```
 
-Restart Gemini.
+Restart Gemini — it triggers the OAuth flow automatically. For API key auth, add `"headers": { "x-api-key": "YOUR_API_KEY" }`.
 
-## Cursor / Windsurf / Other MCP Clients
+## VS Code (GitHub Copilot)
 
-Add this to your MCP config (e.g. `~/.cursor/mcp.json`):
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "linkupapi": {
+      "type": "http",
+      "url": "https://mcp.linkupapi.com/mcp"
+    }
+  }
+}
+```
+
+Click **Auth** above the server entry to trigger OAuth in your browser. Tokens are stored in the OS keychain.
+
+## Windsurf / other clients without OAuth
+
+Windsurf's Cascade doesn't implement the MCP OAuth flow natively. Use API key auth:
 
 ```json
 {
@@ -84,6 +114,8 @@ Add this to your MCP config (e.g. `~/.cursor/mcp.json`):
   }
 }
 ```
+
+Or wrap the server with [`mcp-remote`](https://github.com/geelen/mcp-remote) to get OAuth via a stdio bridge.
 
 ## Verify it works
 
