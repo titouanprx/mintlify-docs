@@ -1,11 +1,11 @@
 ---
 title: "MCP Setup"
-description: "Connect Linkup API to Claude, ChatGPT, Gemini, Cursor, or any MCP-compatible LLM in under 2 minutes."
+description: "Connect LinkupAPI to Claude, ChatGPT, Gemini, Cursor, or any MCP-compatible LLM in under 2 minutes."
 ---
 
 ## What is MCP?
 
-The **Model Context Protocol (MCP)** lets LLMs call Linkup API directly — all LinkedIn and B2B intelligence tools become native capabilities of your AI assistant.
+The **Model Context Protocol (MCP)** lets LLMs call LinkupAPI directly — all LinkedIn and B2B intelligence tools become native capabilities of your AI assistant.
 
 ## Endpoint
 
@@ -13,27 +13,38 @@ The **Model Context Protocol (MCP)** lets LLMs call Linkup API directly — all 
 https://mcp.linkupapi.com/mcp
 ```
 
-Authenticate with your API key via the `x-api-key` header. Get your key at [app.linkupapi.com](https://app.linkupapi.com).
+Two ways to authenticate:
+
+- **API key** — pass your key via the `x-api-key` header. Simplest option, works everywhere.
+- **OAuth 2.1** — for clients that support it (Claude, ChatGPT). You approve access from the LinkupAPI dashboard — no need to paste your key into the client.
+
+Get your API key at [app.linkupapi.com](https://app.linkupapi.com).
 
 ## Claude (Desktop / Code)
 
-Run this in your terminal:
+### Option 1 — OAuth (recommended)
+
+```bash
+claude mcp add --transport http linkupapi https://mcp.linkupapi.com/mcp
+```
+
+On first use, Claude opens `app.linkupapi.com/mcp/authorize` in your browser. Sign in and click **Authorize** — Claude is connected.
+
+### Option 2 — API key
 
 ```bash
 claude mcp add --transport http linkupapi https://mcp.linkupapi.com/mcp --header "x-api-key: YOUR_API_KEY"
 ```
 
-Restart Claude — all Linkup API tools are now available.
+Restart Claude — all LinkupAPI tools are now available.
 
 ## ChatGPT (Custom Connectors)
 
 In ChatGPT → **Settings → Connectors → Add custom connector**:
 
-- **Name:** Linkup API
+- **Name:** LinkupAPI
 - **Server URL:** `https://mcp.linkupapi.com/mcp`
-- **Authentication:** Custom header
-- **Header name:** `x-api-key`
-- **Header value:** `YOUR_API_KEY`
+- **Authentication:** choose **OAuth** to authorize from the dashboard, or **Custom header** with `x-api-key: YOUR_API_KEY`
 
 Save and enable the connector in your chat.
 
@@ -76,7 +87,7 @@ Add this to your MCP config (e.g. `~/.cursor/mcp.json`):
 
 ## Verify it works
 
-Ask your LLM: *"Validate the email elon.musk@tesla.com using Linkup API"*. It should call the `validate_email` tool and return a result.
+Ask your LLM: *"Validate the email elon.musk@tesla.com using LinkupAPI"*. It should call the `validate_email` tool and return a result.
 
 ## Available tool categories
 
