@@ -14,7 +14,7 @@ Here's the full lifecycle of an automated LinkedIn campaign:
     Authenticate a LinkedIn account via the Login endpoint.
   </Step>
   <Step title="Setup Webhooks">
-    Configure `new_relation` and `new_message` events to receive real-time notifications.
+    Configure `accepted_invitation` and `message_received` events to receive real-time notifications.
   </Step>
   <Step title="Search Leads">
     Find your target audience using profile search.
@@ -23,13 +23,13 @@ Here's the full lifecycle of an automated LinkedIn campaign:
     Send personalized connection requests with proper pacing.
   </Step>
   <Step title="Detect Accepted Invitations">
-    Your webhook receives a `new_relation` event when someone accepts.
+    Your webhook receives an `accepted_invitation` event when someone accepts.
   </Step>
   <Step title="Send Message">
     Message the new connection after a natural delay.
   </Step>
   <Step title="Track Replies">
-    Your webhook receives a `new_message` event when they respond.
+    Your webhook receives a `message_received` event when they respond.
   </Step>
   <Step title="Follow-Up Sequence">
     Automatically follow up if no reply after a few days.
@@ -82,7 +82,7 @@ curl -X POST https://api.linkupapi.com/v2/webhooks \
   -d '{
     "account_id": "acc_abc123",
     "url": "https://your-app.com/webhooks/linkup",
-    "events": ["new_relation", "new_message"]
+    "events": ["accepted_invitation", "message_received"]
   }'
 ```
 
@@ -96,8 +96,8 @@ curl -X POST https://api.linkupapi.com/v2/webhooks/{webhook_id}/start \
 **Key events for campaigns:**
 | Event | When it fires |
 |---|---|
-| `new_relation` | A connection request is accepted |
-| `new_message` | A new message is received in any conversation |
+| `accepted_invitation` | One or more connection requests you sent were accepted (detected every ~6h) |
+| `message_received` | A new message is received in any conversation (real-time) |
 
 ---
 
@@ -168,37 +168,47 @@ for lead in leads:
 
 ## Step 5 — Detect Accepted Invitations
 
-When someone accepts your invitation, your webhook receives a `new_relation` event:
+When someone accepts your invitation, your webhook receives an `accepted_invitation` event. The check runs every ~6 hours and batches all new connections detected in the same poll:
 
 ```json
 {
-  "event": "new_relation",
   "account_id": "acc_abc123",
-  "data": {
-    "profile_url": "https://www.linkedin.com/in/johndoe",
-    "name": "John Doe",
-    "headline": "CTO at Acme Corp"
+  "account_name": "My Account",
+  "event": {
+    "type": "accepted_invitation",
+    "count": 1,
+    "new_connections": [
+      {
+        "profile_url": "https://www.linkedin.com/in/johndoe",
+        "name": "John Doe",
+        "headline": "CTO at Acme Corp",
+        "connected_at": "2026-03-26T14:30:00Z"
+      }
+    ]
   },
   "timestamp": "2026-03-26T14:30:00Z"
 }
 ```
 
-**In your webhook handler**, mark this lead as "connected" and trigger the next step:
+**In your webhook handler**, iterate over `new_connections`, mark each lead as "connected" and trigger the next step:
 
 ```python
 @app.post("/webhooks/linkup")
 async def handle_webhook(payload: dict):
-    if payload["event"] == "new_relation":
-        profile_url = payload["data"]["profile_url"]
+    event = payload["event"]
 
-        # Mark lead as connected in your database
-        await db.leads.update(
-            {"profile_url": profile_url},
-            {"status": "connected", "connected_at": payload["timestamp"]}
-        )
+    if event["type"] == "accepted_invitation":
+        for conn in event["new_connections"]:
+            profile_url = conn["profile_url"]
 
-        # Schedule the first message (with a delay)
-        await schedule_message(profile_url, delay_hours=random.uniform(1, 4))
+            # Mark lead as connected in your database
+            await db.leads.update(
+                {"profile_url": profile_url},
+                {"status": "connected", "connected_at": conn["connected_at"]}
+            )
+
+            # Schedule the first message (with a delay)
+            await schedule_message(profile_url, delay_hours=random.uniform(1, 4))
 
     return {"status": "ok"}
 ```
@@ -231,19 +241,26 @@ curl -X POST https://api.linkupapi.com/v2/messages \
 
 ## Step 7 — Track Replies
 
-When the lead responds, your webhook receives a `new_message` event:
+When the lead responds, your webhook receives a `message_received` event (inner `event.type` is `"message"`):
 
 ```json
 {
-  "event": "new_message",
   "account_id": "acc_abc123",
-  "data": {
-    "conversation_id": "conv_xyz789",
+  "account_name": "My Account",
+  "event": {
+    "type": "message",
+    "timestamp": "2026-03-26T18:45:00Z",
+    "message_text": "Hey, thanks for reaching out! Tell me more.",
     "sender": {
-      "profile_url": "https://www.linkedin.com/in/johndoe",
-      "name": "John Doe"
+      "name": "John Doe",
+      "profile_url": "https://www.linkedin.com/in/johndoe"
     },
-    "message": "Hey, thanks for reaching out! Tell me more."
+    "conversation": {
+      "entityUrn": "urn:li:messagingThread:2-xyz789",
+      "participants": [
+        { "name": "John Doe", "profile_url": "https://www.linkedin.com/in/johndoe" }
+      ]
+    }
   },
   "timestamp": "2026-03-26T18:45:00Z"
 }
@@ -257,9 +274,11 @@ When the lead responds, your webhook receives a `new_message` event:
 ```python
 @app.post("/webhooks/linkup")
 async def handle_webhook(payload: dict):
-    if payload["event"] == "new_message":
-        sender = payload["data"]["sender"]["profile_url"]
-        message = payload["data"]["message"]
+    event = payload["event"]
+
+    if event["type"] == "message":
+        sender = event["sender"]["profile_url"]
+        message = event["message_text"]
 
         # Update lead status
         await db.leads.update(

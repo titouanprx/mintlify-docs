@@ -70,9 +70,8 @@ Webhooks support two delivery modes depending on your setup:
 
 | Event Type | Description |
 |---|---|
-| `message_received` | A new message was received in your inbox |
-| `accepted_invitation` | A connection request you sent was accepted |
-| `network_update` | Network badge count changed (new connection detected) |
+| `message_received` | A new LinkedIn message was received |
+| `accepted_invitation` | One or more connection requests you sent were accepted |
 | `all` | Subscribe to all event types |
 
 <Note>
@@ -97,7 +96,7 @@ All events share the same wrapper structure:
 
 ### Message Received
 
-Triggered when a new LinkedIn message is received.
+Triggered in real-time when a new LinkedIn message is received. The inner event `type` is `"message"`.
 
 ```json
 {
@@ -105,26 +104,27 @@ Triggered when a new LinkedIn message is received.
   "account_name": "My Account",
   "event": {
     "type": "message",
-    "sender_name": "John Doe",
+    "timestamp": "2025-01-15T10:30:00Z",
     "message_text": "Hello! I'd love to connect.",
-    "sender_profile": "https://www.linkedin.com/in/johndoe",
-    "raw_data": {
-      "conversation": {
-        "entityUrn": "urn:li:messagingThread:2-abc123",
-        "participants": [
-          { "name": "John Doe", "profile_url": "https://www.linkedin.com/in/johndoe" }
-        ],
-        "groupChat": false,
-        "unreadCount": 1,
-        "read": false
-      },
-      "reply_to": null,
-      "metadata": {
-        "entity_urn": "urn:li:messagingMessage:abc123",
-        "conversation_urn": "urn:li:messagingThread:2-abc123",
-        "delivered_at": 1705312200000,
-        "read_status": false
-      }
+    "sender": {
+      "name": "John Doe",
+      "profile_url": "https://www.linkedin.com/in/johndoe"
+    },
+    "conversation": {
+      "entityUrn": "urn:li:messagingThread:2-abc123",
+      "participants": [
+        { "name": "John Doe", "profile_url": "https://www.linkedin.com/in/johndoe" }
+      ],
+      "groupChat": false,
+      "unreadCount": 1,
+      "read": false
+    },
+    "reply_to": null,
+    "metadata": {
+      "entity_urn": "urn:li:messagingMessage:abc123",
+      "conversation_urn": "urn:li:messagingThread:2-abc123",
+      "delivered_at": 1705312200000,
+      "read_status": false
     }
   },
   "timestamp": "2025-01-15T10:30:00Z"
@@ -135,26 +135,38 @@ Triggered when a new LinkedIn message is received.
   The `reply_to` field is populated when the message is a reply to a previous message. It contains the original message text, sender name, and profile URL.
 </Tip>
 
-### Network Update (Accepted Invitation)
+### Accepted Invitation
 
-Triggered when your network badge count increases, typically meaning a connection request was accepted.
+Triggered when one or more connection requests you sent are accepted. Detected by polling the connections list every ~6 hours and diffing against the previously stored snapshot. The payload batches all new connections detected in the same check.
 
 ```json
 {
   "account_id": "69c127c37cae0494dd827286",
   "account_name": "My Account",
   "event": {
-    "type": "network_update",
-    "previous_count": 542,
-    "new_count": 543,
-    "my_network_count": 543
+    "type": "accepted_invitation",
+    "count": 2,
+    "new_connections": [
+      {
+        "profile_url": "https://www.linkedin.com/in/johndoe",
+        "name": "John Doe",
+        "headline": "CTO at Acme Corp",
+        "connected_at": "2025-01-15T10:30:00Z"
+      },
+      {
+        "profile_url": "https://www.linkedin.com/in/janedoe",
+        "name": "Jane Doe",
+        "headline": "VP Engineering at Globex",
+        "connected_at": "2025-01-15T10:30:00Z"
+      }
+    ]
   },
   "timestamp": "2025-01-15T10:30:00Z"
 }
 ```
 
 <Note>
-  When subscribing to `accepted_invitation`, the API performs an initial sync of your connections. When a network update is detected, it compares against the stored connections to identify who is new.
+  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. The first detection check then runs ~6 hours later and every 6 hours thereafter.
 </Note>
 
 ### Disconnection

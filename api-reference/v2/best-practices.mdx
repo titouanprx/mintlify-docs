@@ -68,7 +68,7 @@ There are **two separate limits** to consider:
 If you need to detect accepted invitations, **avoid polling at fixed intervals** (e.g., every hour or at 8:00 AM daily) — this pattern is easily flagged as automation.
 
 **Recommended approach:**
-1. Use the [Webhook](/api-reference/v2/webhooks/introduction) `new_relation` event to detect accepted invitations in real-time
+1. Use the [Webhook](/api-reference/v2/webhooks/introduction) `accepted_invitation` event to detect accepted invitations
 2. For initial sync, you can call the endpoint multiple times
 3. After sync, retrieve the first page only a few times per day with **randomly spaced intervals** of several hours
 
