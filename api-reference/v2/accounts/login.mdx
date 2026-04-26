@@ -1,0 +1,135 @@
+---
+title: 'Connect Account'
+api: 'POST /v2/login'
+description: 'Connect a channel account to start using the API'
+---
+
+Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once connected, you receive an `account_id` to use in all subsequent requests.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="platform" type="string" required>
+  The channel platform to connect. Available: `linkedin`, `whatsapp` (more coming soon)
+</ParamField>
+
+<ParamField body="email" type="string">
+  Account email address (required for credential-based login)
+</ParamField>
+
+<ParamField body="password" type="string">
+  Account password (required for credential-based login)
+</ParamField>
+
+<ParamField body="login_token" type="string">
+  Authentication token/cookie for direct token-based connection. Alternative to email+password.
+</ParamField>
+
+<ParamField body="country" type="string" default="FR">
+  Country code for proxy selection. Available: US, UK, FR, DE, NL, IT, IL, CA, BR, ES, IN
+</ParamField>
+
+<ParamField body="account_name" type="string">
+  Optional display name for the account. Defaults to the email address.
+</ParamField>
+
+<ParamField body="webhook_url" type="string">
+  Optional webhook URL to receive real-time notifications for this account.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="account_id" type="string">
+      The unique identifier for the connected account. Use this in all future requests.
+    </ResponseField>
+    <ResponseField name="platform" type="string">
+      The platform that was connected
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      Account status: `connected` (ready to use) or `checkpoint_required` (needs 2FA verification)
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Additional information (present when checkpoint is required)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Connected Successfully
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "platform": "linkedin",
+    "status": "connected"
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 1,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Checkpoint Required (2FA)
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "platform": "linkedin",
+    "status": "checkpoint_required",
+    "message": "Check your email for verification code"
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 1,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error Response
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "Bad username or password"
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Login Methods
+
+There are two ways to connect an account:
+
+1. **Credential-based login** — provide `email` + `password`. If 2FA is enabled, you'll receive a `checkpoint_required` status and need to call `/v2/checkpoint`.
+
+2. **Token-based login** — provide a `login_token` directly. The token is encrypted and stored securely. No 2FA step needed.
+
+### Notes
+- The `account_id` returned is permanent — store it and reuse it for all API calls
+- Tokens are encrypted at rest using AES-256
+- If you receive `checkpoint_required`, use the `/v2/checkpoint` endpoint to complete verification
+- The `country` parameter determines which proxy is used for the connection
+- Each platform may require different parameters (e.g. WhatsApp uses `phone_number`)

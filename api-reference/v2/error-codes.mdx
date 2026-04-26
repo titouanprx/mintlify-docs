@@ -1,0 +1,208 @@
+---
+title: 'Error Codes'
+description: 'Complete reference of V2 API error codes and their meanings'
+---
+
+All V2 API error responses follow a standardized format:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable description of the error"
+  },
+  "metadata": {
+    "action": "the_action_attempted",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+<Note>
+  Error responses **never consume credits**. The `credits_consumed` field will always be `0` on errors.
+</Note>
+
+## Error Codes Reference
+
+| Error Code | HTTP Status | Description |
+|---|---|---|
+| `INVALID_API_KEY` | 403 Forbidden | The provided API key is invalid, expired, or missing from the `x-api-key` header. |
+| `INVALID_ACCOUNT` | 404 Not Found | The specified `account_id` does not exist or does not belong to your API key. |
+| `ACCOUNT_INACTIVE` | 403 Forbidden | The account exists but is currently inactive or suspended. Reactivate the account before making requests. |
+| `INVALID_ACTION` | 400 Bad Request | The requested `action` is not supported for this category endpoint. Check the available actions in the documentation. |
+| `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid. Check the `message` field for details. |
+| `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
+| `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
+| `INTERNAL_ERROR` | 500 Internal Server Error | An unexpected server error occurred. If this persists, contact support. |
+
+## Error Code Details
+
+### INVALID_API_KEY (403)
+
+Returned when the `x-api-key` header is missing or contains an invalid key.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_API_KEY",
+    "message": "The provided API key is invalid or missing"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Verify your API key in the [dashboard](https://app.linkupapi.com) and ensure it is included in the `x-api-key` header.
+
+### INVALID_ACCOUNT (404)
+
+Returned when the `account_id` in the request body does not match any account under your API key.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACCOUNT",
+    "message": "The specified account_id does not exist"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Call `GET /v2/accounts` to list your available accounts and use a valid `account_id`.
+
+### ACCOUNT_INACTIVE (403)
+
+Returned when the account exists but is not currently active.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ACCOUNT_INACTIVE",
+    "message": "This account is currently inactive"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Check the account status with `GET /v2/accounts/{account_id}`. Reactivate the account if needed.
+
+### INVALID_ACTION (400)
+
+Returned when the `action` field contains an unsupported action for the category endpoint.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACTION",
+    "message": "Unknown action 'foo_bar' for category 'profiles'"
+  },
+  "metadata": {
+    "action": "foo_bar",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Refer to the documentation for the category you are calling to see available actions.
+
+### INVALID_PARAMS (400)
+
+Returned when required parameters are missing or parameter values are invalid.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Missing required parameter: profile_url"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Check the `message` field for the specific parameter issue and refer to the action's documentation.
+
+### RATE_LIMITED (429)
+
+Returned when you exceed the API rate limit.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMITED",
+    "message": "Rate limit exceeded. Please try again later"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Implement exponential backoff in your requests. Wait a few seconds before retrying.
+
+### INSUFFICIENT_CREDITS (402)
+
+Returned when your account does not have enough credits for the requested action.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INSUFFICIENT_CREDITS",
+    "message": "Insufficient credits. This action requires 3 credits, but you have 1 remaining"
+  },
+  "metadata": {
+    "action": "search_profiles",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Top up your credits at [app.linkupapi.com](https://app.linkupapi.com).
+
+### INTERNAL_ERROR (500)
+
+Returned when an unexpected error occurs on the server.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred while processing your request"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Retry after a few seconds. If the error persists, contact [support@linkupapi.com](mailto:support@linkupapi.com).

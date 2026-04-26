@@ -1,0 +1,86 @@
+---
+title: 'List Webhooks'
+api: 'GET /v2/webhooks'
+description: 'List all webhooks for your account'
+---
+
+Retrieve all webhook configurations associated with your API key.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="items" type="array">
+      List of webhook objects
+      <Expandable title="Webhook Object">
+        <ResponseField name="webhook_id" type="string">
+          Unique identifier for the webhook
+        </ResponseField>
+        <ResponseField name="account_id" type="string">
+          The account this webhook is attached to
+        </ResponseField>
+        <ResponseField name="platform" type="string">
+          Platform of the associated account (e.g. `linkedin`, `whatsapp`)
+        </ResponseField>
+        <ResponseField name="url" type="string">
+          The webhook URL
+        </ResponseField>
+        <ResponseField name="events" type="array">
+          Event types this webhook listens for
+        </ResponseField>
+        <ResponseField name="is_active" type="boolean">
+          Whether the webhook is active
+        </ResponseField>
+        <ResponseField name="created_at" type="string">
+          ISO 8601 creation timestamp
+        </ResponseField>
+        <ResponseField name="updated_at" type="string">
+          ISO 8601 last update timestamp
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total" type="integer">
+      Total number of webhooks
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "webhook_id": "6789abcdef0123456789abcd",
+        "account_id": "69c127c37cae0494dd827286",
+        "platform": "linkedin",
+        "url": "https://your-server.com/webhook",
+        "events": ["all"],
+        "is_active": true,
+        "created_at": "2025-01-15T10:30:00.000000",
+        "updated_at": "2025-01-15T10:30:00.000000"
+      }
+    ],
+    "total": 1,
+    "limit": 1,
+    "offset": 0
+  },
+  "metadata": {
+    "action": "list_webhooks",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>

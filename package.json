@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "LinkUp API Documentation",
   "devDependencies": {
-    "mintlify": "^4.0.322",
+    "mintlify": "^4.2.452",
     "sharp": "^0.33.5"
   },
   "scripts": {
@@ -18,7 +18,12 @@
     "preview:v2": "cd v2 && mintlify dev --port 3002"
   },
   "main": "index.js",
-  "keywords": ["api", "documentation", "linkup", "linkedin"],
+  "keywords": [
+    "api",
+    "documentation",
+    "linkup",
+    "linkedin"
+  ],
   "author": "LinkUp API Team",
   "license": "ISC"
 }

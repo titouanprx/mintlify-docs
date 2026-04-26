@@ -1,0 +1,97 @@
+---
+title: 'Verify Checkpoint (2FA)'
+api: 'POST /v2/checkpoint'
+description: 'Submit a verification code to complete account connection'
+---
+
+Submit a 2FA or verification code for an account that returned `checkpoint_required` during login.
+
+<Note>
+  This endpoint costs **1 credit** per request.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="account_id" type="string" required>
+  The account ID returned from the `/v2/login` endpoint with `checkpoint_required` status
+</ParamField>
+
+<ParamField body="code" type="string" required>
+  The verification code received via email or authenticator app
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the verification was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="account_id" type="string">
+      The account ID, now fully connected
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      `connected` — the account is ready to use
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "status": "connected"
+  },
+  "metadata": {
+    "action": "checkpoint",
+    "credits_consumed": 1,
+    "timestamp": "2025-01-15T10:32:00.000000"
+  }
+}
+```
+
+```json Error — Invalid Code
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "Verification failed"
+  },
+  "metadata": {
+    "action": "checkpoint",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:32:00.000000"
+  }
+}
+```
+
+```json Error — Session Expired
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "Session expired, please login again"
+  },
+  "metadata": {
+    "action": "checkpoint",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:32:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The verification code is typically sent to the email associated with the account
+- If the session has expired, you need to call `/v2/login` again to restart the process
+- Once verified, the account status changes to `connected` and is ready for use
+- The `account_id` remains the same — no need to update your integration

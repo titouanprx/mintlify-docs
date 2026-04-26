@@ -1,0 +1,467 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "LinkUp API",
+  "domain": "docs.linkupapi.com",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "theme": "mint",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373"
+  },
+  "openapi": "openapi.json",
+  "api": {
+    "baseUrl": "https://api.linkupapi.com",
+    "playground": {
+      "mode": "show"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "https://app.linkupapi.com/support"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://app.linkupapi.com"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "navigation": {
+    "versions": [
+      {
+        "version": "v2.0",
+        "default": true,
+        "tag": "Latest",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "icon": "book",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": [
+                  "api-reference/v2/introduction",
+                  "api-reference/v2/best-practices",
+                  "api-reference/v2/migration",
+                  "api-reference/v2/error-codes"
+                ]
+              },
+              {
+                "group": "Accounts",
+                "pages": [
+                  "api-reference/v2/accounts/login",
+                  "api-reference/v2/accounts/checkpoint",
+                  "api-reference/v2/accounts/list-accounts",
+                  "api-reference/v2/accounts/get-account"
+                ]
+              },
+              {
+                "group": "Profiles",
+                "pages": [
+                  "api-reference/v2/profiles/get-me",
+                  "api-reference/v2/profiles/get-profile",
+                  "api-reference/v2/profiles/get-contact",
+                  "api-reference/v2/profiles/visit",
+                  "api-reference/v2/profiles/search-people",
+                  "api-reference/v2/profiles/search-companies",
+                  "api-reference/v2/profiles/get-company",
+                  "api-reference/v2/profiles/get-viewers",
+                  "api-reference/v2/profiles/get-reactions",
+                  "api-reference/v2/profiles/get-comments"
+                ]
+              },
+              {
+                "group": "Messaging",
+                "pages": [
+                  "api-reference/v2/messages/send",
+                  "api-reference/v2/messages/list-inbox",
+                  "api-reference/v2/messages/get-conversation"
+                ]
+              },
+              {
+                "group": "Network",
+                "pages": [
+                  "api-reference/v2/network/invite",
+                  "api-reference/v2/network/accept",
+                  "api-reference/v2/network/list-connections",
+                  "api-reference/v2/network/list-invitations",
+                  "api-reference/v2/network/list-sent",
+                  "api-reference/v2/network/withdraw",
+                  "api-reference/v2/network/check-invitation",
+                  "api-reference/v2/network/recommendations"
+                ]
+              },
+              {
+                "group": "Content",
+                "pages": [
+                  "api-reference/v2/content/create",
+                  "api-reference/v2/content/create-company",
+                  "api-reference/v2/content/search",
+                  "api-reference/v2/content/get-feed",
+                  "api-reference/v2/content/react",
+                  "api-reference/v2/content/comment",
+                  "api-reference/v2/content/answer-comment",
+                  "api-reference/v2/content/repost",
+                  "api-reference/v2/content/get-comments",
+                  "api-reference/v2/content/get-reactions"
+                ]
+              },
+              {
+                "group": "Recruiting",
+                "pages": [
+                  "api-reference/v2/recruiter/get-posts",
+                  "api-reference/v2/recruiter/get-candidates",
+                  "api-reference/v2/recruiter/get-cv",
+                  "api-reference/v2/recruiter/close-job",
+                  "api-reference/v2/recruiter/publish-job"
+                ]
+              },
+              {
+                "group": "Credits",
+                "pages": [
+                  "api-reference/v2/credits/get-balance"
+                ]
+              },
+              {
+                "group": "Email Enrichment",
+                "pages": [
+                  "api-reference/v2/enrich/find-email",
+                  "api-reference/v2/enrich/validate-email",
+                  "api-reference/v2/enrich/reverse-email"
+                ]
+              },
+              {
+                "group": "Webhooks (Real-Time)",
+                "pages": [
+                  "api-reference/v2/webhooks/introduction",
+                  "api-reference/v2/webhooks/create",
+                  "api-reference/v2/webhooks/list",
+                  "api-reference/v2/webhooks/update",
+                  "api-reference/v2/webhooks/delete",
+                  "api-reference/v2/webhooks/start",
+                  "api-reference/v2/webhooks/stop"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Tutorials",
+            "icon": "graduation-cap",
+            "groups": [
+              {
+                "group": "Tutorials",
+                "pages": [
+                  "tutorials/linkedin-campaign"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "v1.5",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "icon": "book",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": ["api-reference/introduction"]
+              },
+              {
+                "group": "Error Handling",
+                "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"]
+              },
+              {
+                "group": "Engagement API",
+                "pages": [
+                  {
+                    "group": "LinkedIn Engagement API",
+                    "pages": [
+                      {
+                        "group": "Authentication",
+                        "pages": [
+                          "api-reference/linkedin-engagement-api/getting-linkedin-cookie",
+                          "api-reference/linkup/authentication/login",
+                          "api-reference/linkup/authentication/verify"
+                        ]
+                      },
+                      {
+                        "group": "Profile Management",
+                        "pages": [
+                          "api-reference/linkup/Profile/me",
+                          "api-reference/linkup/Profile/profile-info",
+                          "api-reference/linkup/Profile/visit",
+                          "api-reference/linkup/Profile/search"
+                        ]
+                      },
+                      {
+                        "group": "Company Management",
+                        "pages": [
+                          "api-reference/linkup/Companies/search",
+                          "api-reference/linkup/Companies/company-info"
+                        ]
+                      },
+                      {
+                        "group": "Network Management",
+                        "pages": [
+                          "api-reference/linkup/Network/connect",
+                          "api-reference/linkup/Network/get-connections",
+                          "api-reference/linkup/Network/accept-invitations",
+                          "api-reference/linkup/Network/get-invitations",
+                          "api-reference/linkup/Network/get-sent-invitations",
+                          "api-reference/linkup/Network/withdraw-invitation",
+                          "api-reference/linkup/Network/get-network-recomandations",
+                          "api-reference/linkup/Network/get_invitations_status"
+                        ]
+                      },
+                      {
+                        "group": "Messaging",
+                        "pages": [
+                          "api-reference/linkup/Messages/send",
+                          "api-reference/linkup/Messages/inbox-conversations",
+                          "api-reference/linkup/Messages/conversation"
+                        ]
+                      },
+                      {
+                        "group": "Content & Posts",
+                        "pages": [
+                          "api-reference/linkup/posts/get-reactions",
+                          "api-reference/linkup/posts/like",
+                          "api-reference/linkup/posts/repost",
+                          "api-reference/linkup/posts/comment",
+                          "api-reference/linkup/posts/get-comments",
+                          "api-reference/linkup/posts/answercomment",
+                          "api-reference/linkup/posts/search",
+                          "api-reference/linkup/posts/create",
+                          "api-reference/linkup/posts/create-company",
+                          "api-reference/linkup/posts/get-feed"
+                        ]
+                      },
+                      {
+                        "group": "Recruiting",
+                        "pages": [
+                          "api-reference/linkup/recruiter/get-candidate",
+                          "api-reference/linkup/recruiter/get-cv",
+                          "api-reference/linkup/recruiter/get-posts",
+                          "api-reference/linkup/recruiter/publish-job",
+                          "api-reference/linkup/recruiter/close-job-offer",
+                          "api-reference/linkup/recruiter/create-job-post"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "WhatsApp Engagement API",
+                    "pages": [
+                      "api-reference/whatsapp-engagement-api/send-message"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Web Crawler API",
+                "pages": [
+                  "api-reference/web-crawler-api/source-funding-company",
+                  "api-reference/web-crawler-api/source-hiring-company",
+                  "api-reference/web-crawler-api/company-jobs",
+                  "api-reference/web-crawler-api/source-company",
+                  "api-reference/web-crawler-api/company-info",
+                  "api-reference/web-crawler-api/company-info-by-domain",
+                  "api-reference/web-crawler-api/source-profile",
+                  "api-reference/web-crawler-api/profile-enrichment"
+                ]
+              },
+              {
+                "group": "Mail API",
+                "pages": [
+                  "api-reference/data-api/mail-api/mail-finder",
+                  "api-reference/data-api/mail-api/mail-reverse",
+                  "api-reference/data-api/mail-api/mail-validate"
+                ]
+              },
+              {
+                "group": "Webhook (Real Time)",
+                "pages": [
+                  "api-reference/webhook-realtime/introduction",
+                  "api-reference/webhook-realtime/whatsapp-authentication",
+                  "api-reference/webhook-realtime/create_account",
+                  "api-reference/webhook-realtime/list_account",
+                  "api-reference/webhook-realtime/update_account",
+                  "api-reference/webhook-realtime/delete_account",
+                  "api-reference/webhook-realtime/start_monitoring",
+                  "api-reference/webhook-realtime/stop_monitoring",
+                  "api-reference/webhook-realtime/monitoring_status"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "version": "v1.0",
+        "tabs": [
+          {
+            "tab": "Documentation",
+            "icon": "book",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "pages": ["api-reference/introduction"]
+              },
+              {
+                "group": "Error Handling",
+                "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"]
+              },
+              {
+                "group": "LinkedIn Engagement API",
+                "pages": [
+                  {
+                    "group": "Authentication",
+                    "pages": [
+                      "api-reference/linkedin-engagement-api/getting-linkedin-cookie",
+                      "api-reference/linkup/authentication/login",
+                      "api-reference/linkup/authentication/verify"
+                    ]
+                  },
+                  {
+                    "group": "Profile Management",
+                    "pages": [
+                      "api-reference/linkup/Profile/me",
+                      "api-reference/linkup/Profile/profile-info",
+                      "api-reference/linkup/Profile/search"
+                    ]
+                  },
+                  {
+                    "group": "Company Management",
+                    "pages": [
+                      "api-reference/linkup/Companies/search",
+                      "api-reference/linkup/Companies/company-info"
+                    ]
+                  },
+                  {
+                    "group": "Network Management",
+                    "pages": [
+                      "api-reference/linkup/Network/connect",
+                      "api-reference/linkup/Network/get-connections",
+                      "api-reference/linkup/Network/accept-invitations",
+                      "api-reference/linkup/Network/get-invitations",
+                      "api-reference/linkup/Network/get-sent-invitations",
+                      "api-reference/linkup/Network/withdraw-invitation",
+                      "api-reference/linkup/Network/get-network-recomandations",
+                      "api-reference/linkup/Network/get_invitations_status"
+                    ]
+                  },
+                  {
+                    "group": "Messaging",
+                    "pages": [
+                      "api-reference/linkup/Messages/send",
+                      "api-reference/linkup/Messages/inbox-conversations",
+                      "api-reference/linkup/Messages/conversation"
+                    ]
+                  },
+                  {
+                    "group": "Content & Posts",
+                    "pages": [
+                      "api-reference/linkup/posts/get-reactions",
+                      "api-reference/linkup/posts/like",
+                      "api-reference/linkup/posts/repost",
+                      "api-reference/linkup/posts/comment",
+                      "api-reference/linkup/posts/get-comments",
+                      "api-reference/linkup/posts/answercomment",
+                      "api-reference/linkup/posts/search",
+                      "api-reference/linkup/posts/create",
+                      "api-reference/linkup/posts/create-company",
+                      "api-reference/linkup/posts/get-feed",
+                      "api-reference/linkup/posts/time-spent"
+                    ]
+                  },
+                  {
+                    "group": "Recruiting",
+                    "pages": [
+                      "api-reference/linkup/recruiter/get-candidate",
+                      "api-reference/linkup/recruiter/get-cv",
+                      "api-reference/linkup/recruiter/get-posts",
+                      "api-reference/linkup/recruiter/publish-job",
+                      "api-reference/linkup/recruiter/close-job-offer",
+                      "api-reference/linkup/recruiter/create-job-post"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Data API",
+                "pages": [
+                  {
+                    "group": "Signal API",
+                    "pages": [
+                      "api-reference/data-api/signal-api/posts-reactions",
+                      "api-reference/data-api/signal-api/posts-comments",
+                      "api-reference/data-api/signal-api/profile-reactions",
+                      "api-reference/data-api/signal-api/profile-comments",
+                      "api-reference/data-api/signal-api/profile-posts",
+                      "api-reference/data-api/signal-api/company-posts"
+                    ]
+                  },
+                  {
+                    "group": "Company API",
+                    "pages": [
+                      "api-reference/data-api/company-api/companies-search",
+                      "api-reference/data-api/company-api/company-info-direct",
+                      "api-reference/data-api/company-api/company-info-by-domain"
+                    ]
+                  },
+                  {
+                    "group": "Person API",
+                    "pages": [
+                      "api-reference/data-api/person-api/profiles-search",
+                      "api-reference/data-api/person-api/profile-info-direct",
+                      "api-reference/data-api/person-api/profile-enrich"
+                    ]
+                  },
+                  {
+                    "group": "Mail API",
+                    "pages": [
+                      "api-reference/data-api/mail-api/mail-finder",
+                      "api-reference/data-api/mail-api/mail-reverse",
+                      "api-reference/data-api/mail-api/mail-validate"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footerSocials": {
+    "twitter": "https://twitter.com/linkupapi",
+    "github": "https://github.com/linkupapi",
+    "linkedin": "https://linkedin.com/company/linkupapi"
+  },
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-XXXXXXXXXX"
+    }
+  },
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true
+  },
+  "search": {
+    "prompt": "Search the docs..."
+  }
+}

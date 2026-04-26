@@ -1,0 +1,149 @@
+---
+title: 'Get My Profile'
+api: 'POST /v2/profiles'
+description: 'Retrieve the profile information of the authenticated account.'
+---
+
+## Overview
+
+Returns the full profile data for the account associated with the provided `account_id`. No additional parameters are needed beyond the required `account_id` and `action`.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_me"`.
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "get_me"
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The profile data of the authenticated account.
+  <Expandable title="data properties">
+    <ResponseField name="public_id" type="string">Public identifier (vanity name).</ResponseField>
+    <ResponseField name="first_name" type="string">First name.</ResponseField>
+    <ResponseField name="last_name" type="string">Last name.</ResponseField>
+    <ResponseField name="headline" type="string">Profile headline.</ResponseField>
+    <ResponseField name="location" type="string">Location text.</ResponseField>
+    <ResponseField name="summary" type="string">About / bio section.</ResponseField>
+    <ResponseField name="industry" type="string">Industry associated with the profile.</ResponseField>
+    <ResponseField name="experience" type="array">
+      Work experience entries. Each item: `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"1/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`.
+    </ResponseField>
+    <ResponseField name="education" type="array">
+      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date`, `school_url`, `school_logo_url`.
+    </ResponseField>
+    <ResponseField name="skills" type="array">List of skills (array of strings).</ResponseField>
+    <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
+    <ResponseField name="email" type="string">Email address (when available).</ResponseField>
+    <ResponseField name="phone" type="string">Phone number (when available).</ResponseField>
+    <ResponseField name="website" type="string">Website URL (when available).</ResponseField>
+    <ResponseField name="connection_count" type="integer">Number of connections.</ResponseField>
+    <ResponseField name="is_premium" type="boolean">`true` if the account has a LinkedIn Premium subscription.</ResponseField>
+    <ResponseField name="profile_views" type="integer">Profile views in the last 90 days (Premium analytics; `0` when not exposed).</ResponseField>
+    <ResponseField name="post_impressions" type="integer">Post impressions in the last 7 days (Premium analytics; `0` when not exposed).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get_me"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "public_id": "jane-doe-12345",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "headline": "Senior Software Engineer at Acme Corp",
+    "location": "San Francisco Bay Area",
+    "summary": "Engineer focused on distributed systems.",
+    "industry": "Computer Software",
+    "experience": [
+      {
+        "company": "Acme Corp",
+        "title": "Senior Software Engineer",
+        "description": "Leading the platform team.",
+        "start_date": "1/2023",
+        "end_date": "",
+        "company_url": "https://linkedin.com/company/acme-corp",
+        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo.jpg"
+      }
+    ],
+    "education": [
+      {
+        "school": "Stanford University",
+        "degree": "B.S.",
+        "field_of_study": "Computer Science",
+        "start_date": "9/2014",
+        "end_date": "6/2018"
+      }
+    ],
+    "skills": ["Python", "Distributed Systems", "Kubernetes"],
+    "profile_picture_url": "https://media.licdn.com/dms/image/v2/.../profile.jpg",
+    "email": "jane.doe@example.com",
+    "phone": "",
+    "website": "",
+    "connection_count": 842,
+    "is_premium": false,
+    "profile_views": 0,
+    "post_impressions": 0
+  },
+  "metadata": {
+    "action": "get_me",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "account_id is required."
+  },
+  "metadata": {
+    "action": "get_me",
+    "account_id": null,
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

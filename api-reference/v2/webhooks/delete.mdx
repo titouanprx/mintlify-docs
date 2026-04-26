@@ -1,0 +1,73 @@
+---
+title: 'Delete Webhook'
+api: 'DELETE /v2/webhooks/{webhook_id}'
+description: 'Permanently delete a webhook'
+---
+
+Delete a webhook configuration. If monitoring is active, it will be stopped automatically.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="webhook_id" type="string" required>
+  The unique identifier of the webhook to delete
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the deletion was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="webhook_id" type="string">
+      The deleted webhook ID
+    </ResponseField>
+    <ResponseField name="deleted" type="boolean">
+      Always `true` on success
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "deleted": true
+  },
+  "metadata": {
+    "action": "delete_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Webhook Not Found
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Webhook not found"
+  },
+  "metadata": {
+    "action": "delete_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- This action is **permanent** and cannot be undone
+- Deleting a webhook does **not** delete the associated account
+- The account remains connected and can be used for other webhooks or API calls

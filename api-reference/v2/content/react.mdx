@@ -1,0 +1,126 @@
+---
+title: 'React to Post'
+api: 'POST /v2/content'
+description: 'React to a post with a specific reaction type.'
+---
+
+## Overview
+
+React to a post with a specific reaction type. You can also react as a company page by providing the `company_url` parameter.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"react"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="post_url" type="string" required>
+      The URL of the post to react to.
+    </ParamField>
+    <ParamField body="reaction_type" type="string" default="LIKE">
+      The type of reaction. One of: `"LIKE"`, `"CELEBRATE"`, `"SUPPORT"`, `"FUNNY"`, `"LOVE"`, `"INSIGHTFUL"`. Default is `"LIKE"`.
+    </ParamField>
+    <ParamField body="company_url" type="string">
+      Optional. The URL of a company page to react as. You must be an admin of the company page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json Personal Reaction
+{
+  "account_id": "your-account-id",
+  "action": "react",
+  "params": {
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "reaction_type": "CELEBRATE"
+  }
+}
+```
+
+```json Company Reaction
+{
+  "account_id": "your-account-id",
+  "action": "react",
+  "params": {
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "reaction_type": "LOVE",
+    "company_url": "https://www.linkedin.com/company/acme-corp"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="reacted" type="boolean">`true` when the reaction was successfully applied.</ResponseField>
+    <ResponseField name="post_url" type="string">The post URL that was reacted to (echo of the input).</ResponseField>
+    <ResponseField name="reaction_type" type="string">The reaction type that was applied.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"react"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "reacted": true,
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "reaction_type": "CELEBRATE"
+  },
+  "metadata": {
+    "action": "react",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "post_url is required."
+  },
+  "metadata": {
+    "action": "react",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

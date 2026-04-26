@@ -1,0 +1,211 @@
+---
+title: 'Search People'
+api: 'POST /v2/profiles'
+description: 'Search for profiles using various filters.'
+---
+
+## Overview
+
+Search for profiles using a combination of keyword, company, location, school, and other filters. Supports pagination for retrieving large result sets.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search_people"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="keyword" type="string">
+      General keyword to search for across profiles.
+    </ParamField>
+    <ParamField body="first_name" type="string">
+      Filter by first name.
+    </ParamField>
+    <ParamField body="last_name" type="string">
+      Filter by last name.
+    </ParamField>
+    <ParamField body="title" type="string">
+      Filter by current job title.
+    </ParamField>
+    <ParamField body="company_name" type="string">
+      Filter by current company name.
+    </ParamField>
+    <ParamField body="company_url" type="string">
+      Filter by company page URL.
+    </ParamField>
+    <ParamField body="past_company" type="string">
+      Filter by past company name or URL.
+    </ParamField>
+    <ParamField body="location" type="string">
+      Filter by location (e.g., `"San Francisco"`, `"France"`).
+    </ParamField>
+    <ParamField body="school_url" type="string">
+      Filter by school page URL.
+    </ParamField>
+    <ParamField body="industry" type="string">
+      Filter by industry.
+    </ParamField>
+    <ParamField body="network" type="string">
+      Filter by network relationship. Accepted values: `"F"` (1st degree), `"S"` (2nd degree), `"O"` (3rd degree and beyond).
+    </ParamField>
+    <ParamField body="connection_of" type="string">
+      Filter to show connections of a specific profile (profile URL or identifier).
+    </ParamField>
+    <ParamField body="follower_of" type="string">
+      Filter to show followers of a specific company or profile.
+    </ParamField>
+    <ParamField body="fetch_invitation_state" type="boolean" default={true}>
+      Whether to include invitation state for each result. Defaults to `true`.
+    </ParamField>
+    <ParamField body="total_results" type="integer" default={10}>
+      Total number of results to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="start_page" type="integer">
+      Start page for pagination (1-indexed). Use with `end_page` for pagination mode.
+    </ParamField>
+    <ParamField body="end_page" type="integer">
+      End page for pagination (inclusive). Use with `start_page` for pagination mode.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "search_people",
+  "params": {
+    "keyword": "software engineer",
+    "location": "San Francisco",
+    "network": "S",
+    "total_results": 20
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="results" type="array">
+      List of matching profiles.
+      <Expandable title="result item properties">
+        <ResponseField name="public_id" type="string">
+          The public identifier.
+        </ResponseField>
+        <ResponseField name="first_name" type="string">
+          First name.
+        </ResponseField>
+        <ResponseField name="last_name" type="string">
+          Last name.
+        </ResponseField>
+        <ResponseField name="headline" type="string">
+          Profile headline.
+        </ResponseField>
+        <ResponseField name="location" type="string">
+          Location.
+        </ResponseField>
+        <ResponseField name="profile_picture_url" type="string">
+          URL of the profile picture.
+        </ResponseField>
+        <ResponseField name="linkedin_url" type="string">
+          Full profile URL.
+        </ResponseField>
+        <ResponseField name="invitation_state" type="string">
+          Connection invitation state (if `fetch_invitation_state` is `true`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of results returned.
+    </ResponseField>
+    <ResponseField name="total_available_results" type="integer">
+      Total number of matching results available.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"search_people"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 results).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "public_id": "janedoe",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "headline": "Software Engineer at TechCo",
+        "location": "San Francisco, CA",
+        "profile_picture_url": "https://media.licdn.com/dms/image/example.jpg",
+        "linkedin_url": "https://www.linkedin.com/in/janedoe",
+        "invitation_state": "CONNECTED"
+      },
+      {
+        "public_id": "bobsmith",
+        "first_name": "Bob",
+        "last_name": "Smith",
+        "headline": "Senior Developer at StartupXYZ",
+        "location": "San Francisco Bay Area",
+        "profile_picture_url": "https://media.licdn.com/dms/image/example2.jpg",
+        "linkedin_url": "https://www.linkedin.com/in/bobsmith",
+        "invitation_state": "PENDING"
+      }
+    ],
+    "total_results": 2,
+    "total_available_results": 15400
+  },
+  "metadata": {
+    "action": "search_people",
+    "account_id": "your-account-id",
+    "credits_consumed": 2,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "At least one search parameter is required."
+  },
+  "metadata": {
+    "action": "search_people",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

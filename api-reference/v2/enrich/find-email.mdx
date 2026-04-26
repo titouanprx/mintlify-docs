@@ -1,0 +1,154 @@
+---
+title: 'Find Email'
+api: 'POST /v2/enrich'
+description: 'Find a professional email address from name + company.'
+---
+
+## Overview
+
+Finds a professional email address by combining first name + last name + company information. The service generates email patterns, queries the company's MX records, and probes each candidate via SMTP until a valid address is found.
+
+You can identify the target either by:
+- **First name + last name + company** (`company_name` or `company_domain`)
+- **LinkedIn profile URL** — the service auto-extracts name and current company from the profile
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="action" type="string" required>
+  Must be `"find_email"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="first_name" type="string">
+      Person's first name. Required unless `linkedin_url` is provided.
+    </ParamField>
+    <ParamField body="last_name" type="string">
+      Person's last name. Required unless `linkedin_url` is provided.
+    </ParamField>
+    <ParamField body="company_domain" type="string">
+      Company root domain (e.g. `"acme-corp.com"`). Provide either this or `company_name`. Also accepts `domain` as an alias.
+    </ParamField>
+    <ParamField body="company_name" type="string">
+      Company display name (the service resolves it to a domain via Google search). Also accepts `company` as an alias.
+    </ParamField>
+    <ParamField body="linkedin_url" type="string">
+      LinkedIn profile URL. When provided, name and current company are extracted automatically and `first_name`/`last_name`/`company_*` become optional. Also accepts `profile_url` as an alias.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json By name + domain
+{
+  "action": "find_email",
+  "params": {
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "company_domain": "acme-corp.com"
+  }
+}
+```
+
+```json By name + company name
+{
+  "action": "find_email",
+  "params": {
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "company_name": "Acme Corp"
+  }
+}
+```
+
+```json By LinkedIn URL
+{
+  "action": "find_email",
+  "params": {
+    "linkedin_url": "https://www.linkedin.com/in/jane-doe-42"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="email" type="string">The validated email address found, or `null` if no valid pattern matched.</ResponseField>
+    <ResponseField name="alternatives" type="array">Other potential emails (typically empty when a primary match is locked, or populated when the domain is catch-all).</ResponseField>
+    <ResponseField name="catchall" type="boolean">`true` if the company domain is catch-all (deliverability not guaranteed).</ResponseField>
+    <ResponseField name="domain_used" type="string">The domain on which the matching email was found.</ResponseField>
+    <ResponseField name="domains_tested" type="array">List of domains tested in order before stopping.</ResponseField>
+    <ResponseField name="domains_filtered" type="array">All candidate domains after blacklist filtering (social platforms, free providers, etc.).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"find_email"`).</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "email": "jane.doe@acme-corp.com",
+    "alternatives": [],
+    "catchall": true,
+    "domain_used": "acme-corp.com",
+    "domains_tested": ["acme-corp.com"],
+    "domains_filtered": ["acme-corp.com"]
+  },
+  "metadata": {
+    "action": "find_email",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 — Not found
+{
+  "success": true,
+  "data": {
+    "email": null,
+    "alternatives": [],
+    "catchall": false,
+    "domain_used": null,
+    "domains_tested": ["acme-corp.com"],
+    "domains_filtered": ["acme-corp.com"]
+  },
+  "metadata": {
+    "action": "find_email",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Provide either linkedin_url, or first_name + last_name + (company_name or company_domain)"
+  },
+  "metadata": {
+    "action": "find_email",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

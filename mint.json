@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "LinkUp API",
-  "domain": "docs.linkupapi.com", 
+  "domain": "docs.linkupapi.com",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -9,6 +9,7 @@
   "favicon": "/favicon.svg",
   "versions": [
     "v2.0",
+    "v1.5",
     "v1.0"
   ],
   "colors": {
@@ -26,7 +27,6 @@
     "playground": {
       "mode": "show"
     }
-    
   },
   "topbarLinks": [
     {
@@ -38,21 +38,155 @@
     "name": "Dashboard",
     "url": "https://app.linkupapi.com"
   },
+  "tabs": [
+    {
+      "name": "Tutorials",
+      "url": "tutorials"
+    }
+  ],
   "navigation": [
     {
       "group": "Getting Started",
-      "pages": ["api-reference/introduction"
-    ]
+      "version": "v1.5",
+      "pages": ["api-reference/introduction"]
+    },
+    {
+      "group": "Getting Started",
+      "version": "v1.0",
+      "pages": ["api-reference/introduction"]
+    },
+    {
+      "group": "Getting Started",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/introduction",
+        "api-reference/v2/best-practices",
+        "api-reference/v2/migration",
+        "api-reference/v2/error-codes"
+      ]
     },
 
     {
       "group": "Error Handling",
-      "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"
-    ] 
+      "version": "v1.5",
+      "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"]
     },
     {
-      "group": "Engagement API",
+      "group": "Error Handling",
+      "version": "v1.0",
+      "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"]
+    },
+    {
+      "group": "Accounts",
       "version": "v2.0",
+      "pages": [
+        "api-reference/v2/accounts/login",
+        "api-reference/v2/accounts/checkpoint",
+        "api-reference/v2/accounts/list-accounts",
+        "api-reference/v2/accounts/get-account"
+      ]
+    },
+    {
+      "group": "Profiles",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/profiles/get-me",
+        "api-reference/v2/profiles/get-profile",
+        "api-reference/v2/profiles/get-contact",
+        "api-reference/v2/profiles/visit",
+        "api-reference/v2/profiles/search-people",
+        "api-reference/v2/profiles/search-companies",
+        "api-reference/v2/profiles/get-company",
+        "api-reference/v2/profiles/get-viewers",
+        "api-reference/v2/profiles/get-reactions",
+        "api-reference/v2/profiles/get-comments"
+      ]
+    },
+    {
+      "group": "Messaging",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/messages/send",
+        "api-reference/v2/messages/list-inbox",
+        "api-reference/v2/messages/get-conversation"
+      ]
+    },
+    {
+      "group": "Network",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/network/invite",
+        "api-reference/v2/network/accept",
+        "api-reference/v2/network/list-connections",
+        "api-reference/v2/network/list-invitations",
+        "api-reference/v2/network/list-sent",
+        "api-reference/v2/network/withdraw",
+        "api-reference/v2/network/check-invitation",
+        "api-reference/v2/network/recommendations"
+      ]
+    },
+    {
+      "group": "Content",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/content/create",
+        "api-reference/v2/content/create-company",
+        "api-reference/v2/content/search",
+        "api-reference/v2/content/get-feed",
+        "api-reference/v2/content/react",
+        "api-reference/v2/content/comment",
+        "api-reference/v2/content/answer-comment",
+        "api-reference/v2/content/repost",
+        "api-reference/v2/content/get-comments",
+        "api-reference/v2/content/get-reactions"
+      ]
+    },
+    {
+      "group": "Recruiting",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/recruiter/get-posts",
+        "api-reference/v2/recruiter/get-candidates",
+        "api-reference/v2/recruiter/get-cv",
+        "api-reference/v2/recruiter/close-job",
+        "api-reference/v2/recruiter/publish-job"
+      ]
+    },
+    {
+      "group": "Credits",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/credits/get-balance"
+      ]
+    },
+    {
+      "group": "Email Enrichment",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/enrich/find-email",
+        "api-reference/v2/enrich/validate-email",
+        "api-reference/v2/enrich/reverse-email"
+      ]
+    },
+    {
+      "group": "Webhooks (Real-Time)",
+      "version": "v2.0",
+      "pages": [
+        "api-reference/v2/webhooks/introduction",
+        "api-reference/v2/webhooks/create",
+        "api-reference/v2/webhooks/list",
+        "api-reference/v2/webhooks/update",
+        "api-reference/v2/webhooks/delete",
+        "api-reference/v2/webhooks/start",
+        "api-reference/v2/webhooks/stop",
+        "api-reference/v2/webhooks/stream",
+        "api-reference/v2/webhooks/events"
+      ]
+    },
+
+    {
+      "group": "Engagement API",
+      "version": "v1.5",
       "pages": [
         {
           "group": "LinkedIn Engagement API",
@@ -140,7 +274,7 @@
     },
     {
       "group": "Web Crawler API",
-      "version": "v2.0",
+      "version": "v1.5",
       "pages": [
         "api-reference/web-crawler-api/source-funding-company",
         "api-reference/web-crawler-api/source-hiring-company",
@@ -150,12 +284,11 @@
         "api-reference/web-crawler-api/company-info-by-domain",
         "api-reference/web-crawler-api/source-profile",
         "api-reference/web-crawler-api/profile-enrichment"
-  
       ]
     },
     {
       "group": "Mail API",
-      "version": "v2.0",
+      "version": "v1.5",
       "pages": [
         "api-reference/data-api/mail-api/mail-finder",
         "api-reference/data-api/mail-api/mail-reverse",
@@ -164,7 +297,7 @@
     },
     {
       "group": "Webhook (Real Time)",
-      "version": "v2.0",
+      "version": "v1.5",
       "pages": [
         "api-reference/webhook-realtime/introduction",
         "api-reference/webhook-realtime/whatsapp-authentication",
@@ -174,8 +307,10 @@
         "api-reference/webhook-realtime/delete_account",
         "api-reference/webhook-realtime/start_monitoring",
         "api-reference/webhook-realtime/stop_monitoring",
-        "api-reference/webhook-realtime/monitoring_status"      ]
+        "api-reference/webhook-realtime/monitoring_status"
+      ]
     },
+
     {
       "group": "LinkedIn Engagement API",
       "version": "v1.0",
@@ -292,6 +427,13 @@
             "api-reference/data-api/mail-api/mail-validate"
           ]
         }
+      ]
+    },
+
+    {
+      "group": "Tutorials",
+      "pages": [
+        "tutorials/linkedin-campaign"
       ]
     }
   ],

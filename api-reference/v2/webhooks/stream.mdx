@@ -1,0 +1,49 @@
+---
+title: 'SSE Stream'
+api: 'GET /v2/webhooks/{webhook_id}/stream'
+description: 'Receive webhook events in real-time via Server-Sent Events (SSE)'
+---
+
+Open a persistent SSE connection to receive events in real time. This is the recommended way to consume webhook events in **hosted mode** (no webhook URL).
+
+<Note>
+  This endpoint is only available for **hosted** webhooks (created without a `url`). For custom webhooks, events are sent directly to your URL via `POST`.
+</Note>
+
+### Query Parameters
+
+<ParamField query="api_key" type="string" required>
+  Your API key. SSE connections use query parameter authentication instead of headers.
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="webhook_id" type="string" required>
+  The unique identifier of the webhook to stream events from
+</ParamField>
+
+### How It Works
+
+The connection stays open indefinitely. The server pushes events as they happen:
+
+1. **On connect** — you receive a `connected` event confirming the stream is active
+2. **On event** — you receive a `webhook` event with the full payload
+3. **Keepalive** — the server sends a keepalive comment (`: keepalive`) every 30 seconds to prevent timeouts
+
+### SSE Event Format
+
+```
+event: connected
+data: {"webhook_id": "abc123", "account_id": "69c127c3..."}
+
+event: webhook
+data: {"account_id": "69c127c3...", "event": {"type": "message", ...}, "timestamp": "..."}
+
+: keepalive
+```
+
+### Notes
+- The stream automatically reconnects if the connection drops (browsers handle this natively with `EventSource`)
+- You must call `POST /v2/webhooks/{webhook_id}/start` before the stream will emit events
+- Multiple clients can connect to the same stream simultaneously
+- The stream does **not** consume additional credits beyond the monitoring cost (10 credits/day)

@@ -1,0 +1,107 @@
+---
+title: 'Send Time Spent Signal'
+api: 'POST /v2/content'
+description: 'Simulate viewing time on a post.'
+---
+
+## Overview
+
+Send a time-spent signal, simulating the amount of time the authenticated user spent viewing a specific post. This can influence the platform's feed algorithm.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"time_spent"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="post_url" type="string" required>
+      The URL of the post.
+    </ParamField>
+    <ParamField body="duration" type="integer" required>
+      Time spent viewing the post, in milliseconds.
+    </ParamField>
+    <ParamField body="duration_start_time" type="integer">
+      Optional. Unix timestamp in milliseconds indicating when the viewing started.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "time_spent",
+  "params": {
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "duration": 15000,
+    "duration_start_time": 1711274400000
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Confirmation of the time-spent signal.
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"time_spent"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {},
+  "metadata": {
+    "action": "time_spent",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "post_url and duration are required."
+  },
+  "metadata": {
+    "action": "time_spent",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

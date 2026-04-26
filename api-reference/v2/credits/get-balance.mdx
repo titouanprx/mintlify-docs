@@ -1,0 +1,63 @@
+---
+title: 'Get Credit Balance'
+api: 'GET /v2/credits'
+description: 'Check your current credit balance'
+---
+
+Retrieve the number of credits remaining on your account.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="credits" type="integer">
+      The number of credits remaining on your account
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "credits": 4825
+  },
+  "metadata": {
+    "action": "get_credits",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Invalid API Key
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_API_KEY",
+    "message": "Invalid API Key"
+  },
+  "metadata": {
+    "action": "get_credits",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- This endpoint does **not** consume any credits
+- Use this to monitor your usage and implement low-credit alerts in your application
+- Credits are consumed by most API actions — see the [Introduction](/api-reference/v2/introduction#credit-system) for details on the credit system

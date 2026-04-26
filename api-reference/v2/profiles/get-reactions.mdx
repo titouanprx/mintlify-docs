@@ -1,0 +1,213 @@
+---
+title: 'Get Profile Reactions'
+api: 'POST /v2/profiles'
+description: 'Retrieve the reactions (likes, celebrates, etc.) made by a user.'
+---
+
+## Overview
+
+Fetches the list of reactions made by a specified user on posts and comments. Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch the next page.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 reactions per internal request**, so requesting `count: 100` triggers only 2 upstream calls.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_reactions"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      Profile URL of the target user. Also accepts `linkedin_url` as an alias.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of reactions to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="cursor" type="string">
+      Pagination cursor returned by a previous request as `pagination.next_cursor`. Omit for the first page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "get_reactions",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "count": 50
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "get_reactions",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "count": 50,
+    "cursor": "dXJuOmxpOmFjdGl2aXR5Ojc0NDg0ODQ5NDgyODc3Mzc4NTYtMTc3NTg1NzE5Nzc2Nw=="
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="reactions" type="array">
+      List of reactions made by the user.
+      <Expandable title="reaction item properties">
+        <ResponseField name="reaction_id" type="string">
+          Internal identifier of the reaction update.
+        </ResponseField>
+        <ResponseField name="reaction_type" type="string">
+          Type of reaction: `LIKE`, `LOVE`, `CELEBRATE`, `SUPPORT`, `INSIGHTFUL`, or `FUNNY`.
+        </ResponseField>
+        <ResponseField name="reaction_target" type="string">
+          Target of the reaction: `POST` or `COMMENT`.
+        </ResponseField>
+        <ResponseField name="reaction_time" type="string">
+          Relative time of the reaction (e.g. `"6h"`, `"3d"`).
+        </ResponseField>
+        <ResponseField name="reaction_time_days" type="integer">
+          Age of the reaction expressed in days.
+        </ResponseField>
+        <ResponseField name="reactor" type="object">
+          The author of the reaction (name, profile_url, profile_picture, entity_urn, headline).
+        </ResponseField>
+        <ResponseField name="post" type="object">
+          The post that was reacted to (urn, url, content, author).
+        </ResponseField>
+        <ResponseField name="comment" type="object">
+          When `reaction_target == "COMMENT"`, the comment that was reacted to (content, author).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of reactions returned in this response.
+    </ResponseField>
+    <ResponseField name="profile_url" type="string">
+      The LinkedIn profile URL that was queried.
+    </ResponseField>
+    <ResponseField name="entity_urn" type="string">
+      The LinkedIn entity URN of the queried profile.
+    </ResponseField>
+    <ResponseField name="profile_urn" type="string">
+      The full `urn:li:fsd_profile:...` URN of the queried profile.
+    </ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="results_per_page" type="integer">
+          Maximum batch size used per upstream request (50).
+        </ResponseField>
+        <ResponseField name="pages_fetched" type="integer">
+          Number of internal upstream batches consumed to assemble this response.
+        </ResponseField>
+        <ResponseField name="has_more" type="boolean">
+          `true` if more results are available — pass `next_cursor` in the next request.
+        </ResponseField>
+        <ResponseField name="next_cursor" type="string">
+          Cursor to send as `cursor` in the next request to resume pagination. `null` when the end is reached.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get_reactions"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 results).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "reactions": [
+      {
+        "reaction_id": "urn:li:fsd_update:(urn:li:activity:7453841996378718208,PROFILE_REACTIONS,DEBUG_REASON,DEFAULT,false)",
+        "reaction_type": "LIKE",
+        "reaction_target": "POST",
+        "reaction_time": "2d",
+        "reaction_time_days": 2,
+        "reactor": {
+          "name": "Jane Doe",
+          "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+          "profile_picture": "https://media.licdn.com/dms/image/...",
+          "entity_urn": "ACoAA...",
+          "headline": "Product Manager at Acme Corp"
+        },
+        "post": {
+          "urn": "urn:li:ugcPost:7000000000000000001",
+          "url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7000000000000000001",
+          "content": "Excited to announce our new product launch...",
+          "author": {
+            "name": "John Smith",
+            "profile_url": "https://www.linkedin.com/in/john-smith-99",
+            "entity_urn": "urn:li:fsd_profile:ACoAA..."
+          }
+        }
+      }
+    ],
+    "total_results": 1,
+    "profile_url": "https://www.linkedin.com/in/jane-doe-42/",
+    "entity_urn": "ACoAA...",
+    "profile_urn": "urn:li:fsd_profile:ACoAA...",
+    "pagination": {
+      "results_per_page": 50,
+      "pages_fetched": 1,
+      "has_more": true,
+      "next_cursor": "dXJuOmxpOmFjdGl2aXR5Ojc0NDg0ODQ5NDgyODc3Mzc4NTYtMTc3NTg1NzE5Nzc2Nw=="
+    }
+  },
+  "metadata": {
+    "action": "get_reactions",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T08:40:31Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "profile_url is required."
+  },
+  "metadata": {
+    "action": "get_reactions",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T08:40:31Z"
+  }
+}
+```
+</ResponseExample>

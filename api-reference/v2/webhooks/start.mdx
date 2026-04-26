@@ -1,0 +1,97 @@
+---
+title: 'Start Monitoring'
+api: 'POST /v2/webhooks/{webhook_id}/start'
+description: 'Start real-time monitoring for a webhook'
+---
+
+Begin real-time monitoring for a webhook's associated account. Events will be sent to the webhook URL as they occur.
+
+<Note>
+  Monitoring consumes **10 credits per day** per active account (1 credit every 144 minutes). Credit consumption begins as soon as monitoring starts.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="webhook_id" type="string" required>
+  The unique identifier of the webhook to start monitoring for
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether monitoring was started successfully
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="webhook_id" type="string">
+      The webhook ID
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account being monitored
+    </ResponseField>
+    <ResponseField name="monitoring" type="boolean">
+      Always `true` on success
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "account_id": "69c127c37cae0494dd827286",
+    "monitoring": true
+  },
+  "metadata": {
+    "action": "start_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Account Not Found
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACCOUNT",
+    "message": "Account not found"
+  },
+  "metadata": {
+    "action": "start_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Monitoring Failed
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "Failed to start monitoring"
+  },
+  "metadata": {
+    "action": "start_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The account must be in a `connected` state for monitoring to start
+- If monitoring is already active for this account (via another webhook), it will not create a duplicate connection
+- If the account's token expires during monitoring, you will receive a disconnection event on your webhook URL
+- You need at least **1 credit** available to start monitoring

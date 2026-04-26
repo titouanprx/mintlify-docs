@@ -1,0 +1,161 @@
+---
+title: 'Create Post'
+api: 'POST /v2/content'
+description: 'Create a new post with text, images, video, or carousel content.'
+---
+
+## Overview
+
+Create a post from the authenticated account. Supports plain text posts, single image or video attachments, and multi-image carousels.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"create"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="message" type="string">
+      The text content of the post. Supports mentions, hashtags, and line breaks.
+    </ParamField>
+    <ParamField body="file" type="string | object">
+      A single file to attach. Can be a URL string (image or video) or an object with `filename` and `data` properties.
+      <Expandable title="file object properties">
+        <ParamField body="filename" type="string">
+          The name of the file including extension (e.g. `"photo.jpg"`).
+        </ParamField>
+        <ParamField body="data" type="string">
+          Base64-encoded file data.
+        </ParamField>
+      </Expandable>
+    </ParamField>
+    <ParamField body="files" type="array">
+      An array of files for carousel posts. Each element can be a URL string or an object with `filename`, `data`, and optional `altText` properties.
+      <Expandable title="file object properties">
+        <ParamField body="filename" type="string">
+          The name of the file including extension.
+        </ParamField>
+        <ParamField body="data" type="string">
+          Base64-encoded file data.
+        </ParamField>
+        <ParamField body="altText" type="string">
+          Alternative text for the image (accessibility).
+        </ParamField>
+      </Expandable>
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json Text Post
+{
+  "account_id": "your-account-id",
+  "action": "create",
+  "params": {
+    "message": "Excited to share my latest project! #innovation"
+  }
+}
+```
+
+```json Image Post (URL)
+{
+  "account_id": "your-account-id",
+  "action": "create",
+  "params": {
+    "message": "Check out this photo!",
+    "file": "https://example.com/photo.jpg"
+  }
+}
+```
+
+```json Carousel Post
+{
+  "account_id": "your-account-id",
+  "action": "create",
+  "params": {
+    "message": "Swipe through my carousel!",
+    "files": [
+      "https://example.com/slide1.jpg",
+      "https://example.com/slide2.jpg",
+      { "filename": "slide3.png", "data": "base64...", "altText": "Slide 3" }
+    ]
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The created post data.
+  <Expandable title="data properties">
+    <ResponseField name="post_url" type="string">
+      The URL of the newly created post.
+    </ResponseField>
+    <ResponseField name="post_urn" type="string">
+      The platform URN of the post (e.g. LinkedIn URN).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"create"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "post_urn": "urn:li:activity:7654321098765432100"
+  },
+  "metadata": {
+    "action": "create",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "message or file is required to create a post."
+  },
+  "metadata": {
+    "action": "create",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

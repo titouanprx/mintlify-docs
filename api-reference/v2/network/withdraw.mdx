@@ -1,0 +1,115 @@
+---
+title: 'Withdraw Invitation'
+api: 'POST /v2/network'
+description: 'Withdraw a pending sent connection invitation.'
+---
+
+## Overview
+
+Withdraws a previously sent connection invitation that is still pending. The invitation is identified by its `invitation_id`, which can be obtained from the [List Sent Invitations](/api-reference/v2/network/list-sent) endpoint or from [Check Invitation Status](/api-reference/v2/network/check-invitation).
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"withdraw"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="invitation_id" type="string" required>
+      The numeric ID of the invitation to withdraw (e.g. `"7453486530700017665"`). Accepts string or integer.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "withdraw",
+  "params": {
+    "invitation_id": "7453486530700017665"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="withdrawn" type="boolean">
+      `true` when the invitation was successfully withdrawn.
+    </ResponseField>
+    <ResponseField name="invitation_id" type="string">
+      The ID of the withdrawn invitation (echo of the input).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"withdraw"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "withdrawn": true,
+    "invitation_id": "7453486530700017665"
+  },
+  "metadata": {
+    "action": "withdraw",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400 — Missing invitation_id
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Invalid parameter"
+  },
+  "metadata": {
+    "action": "withdraw",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400 — Invalid invitation_id
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Failed to withdraw invitation: HTTP 500"
+  },
+  "metadata": {
+    "action": "withdraw",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

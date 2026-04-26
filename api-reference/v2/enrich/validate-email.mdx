@@ -1,0 +1,97 @@
+---
+title: 'Validate Email'
+api: 'POST /v2/enrich'
+description: 'Verify whether an email address is valid and deliverable.'
+---
+
+## Overview
+
+Verifies an email address through an SMTP-based check (syntax validation, MX lookup, deliverability probe, catch-all detection). No LinkedIn account is required for this action.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="action" type="string" required>
+  Must be `"validate_email"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="email" type="string" required>
+      The email address to validate.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "action": "validate_email",
+  "params": {
+    "email": "jane.doe@acme-corp.com"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="email" type="string">The email that was validated (echo of input).</ResponseField>
+    <ResponseField name="is_valid" type="boolean">`true` when the email passes syntax + MX + deliverability checks.</ResponseField>
+    <ResponseField name="is_catch_all" type="boolean">`true` if the domain accepts all addresses (deliverability is not a guarantee).</ResponseField>
+    <ResponseField name="reachability" type="string">SMTP probe verdict: `"safe"`, `"risky"`, or `"unknown"`.</ResponseField>
+    <ResponseField name="is_deliverable" type="boolean">`true` if the SMTP server accepts mail for this address.</ResponseField>
+    <ResponseField name="syntax_valid" type="boolean">`true` if the address has valid RFC syntax.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"validate_email"`).</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "email": "jane.doe@acme-corp.com",
+    "is_valid": true,
+    "is_catch_all": true,
+    "reachability": "risky",
+    "is_deliverable": true,
+    "syntax_valid": true
+  },
+  "metadata": {
+    "action": "validate_email",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "email is required"
+  },
+  "metadata": {
+    "action": "validate_email",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>
