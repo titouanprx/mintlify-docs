@@ -52,6 +52,7 @@
                 "group": "Getting Started",
                 "pages": [
                   "api-reference/v2/introduction",
+                  "api-reference/v2/mcp-setup",
                   "api-reference/v2/best-practices",
                   "api-reference/v2/migration",
                   "api-reference/v2/error-codes"
