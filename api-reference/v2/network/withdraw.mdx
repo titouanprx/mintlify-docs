@@ -12,6 +12,10 @@ Withdraws a previously sent connection invitation that is still pending. The inv
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -28,17 +32,6 @@ Withdraws a previously sent connection invitation that is still pending. The inv
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "withdraw",
-  "params": {
-    "invitation_id": "7453486530700017665"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

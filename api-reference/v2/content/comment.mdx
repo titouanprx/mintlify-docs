@@ -12,6 +12,10 @@ Post a comment on a post. You can also comment as a company page by providing th
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,30 +38,6 @@ Post a comment on a post. You can also comment as a company page by providing th
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json Personal Comment
-{
-  "account_id": "your-account-id",
-  "action": "comment",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "comment_text": "Great insights! Thanks for sharing."
-  }
-}
-```
-
-```json Company Comment
-{
-  "account_id": "your-account-id",
-  "action": "comment",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "comment_text": "We appreciate the mention! Excited to collaborate.",
-    "company_url": "https://www.linkedin.com/company/acme-corp"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

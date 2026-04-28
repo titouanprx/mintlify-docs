@@ -12,6 +12,10 @@ Send a time-spent signal, simulating the amount of time the authenticated user s
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,19 +38,6 @@ Send a time-spent signal, simulating the amount of time the authenticated user s
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "time_spent",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "duration": 15000,
-    "duration_start_time": 1711274400000
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

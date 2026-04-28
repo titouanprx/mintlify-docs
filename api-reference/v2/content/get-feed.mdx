@@ -12,6 +12,10 @@ Returns the home feed posts for the authenticated account. Pagination is **curso
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -31,28 +35,6 @@ Returns the home feed posts for the authenticated account. Pagination is **curso
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json First page
-{
-  "account_id": "your-account-id",
-  "action": "get_feed",
-  "params": {
-    "count": 20
-  }
-}
-```
-
-```json Next page
-{
-  "account_id": "your-account-id",
-  "action": "get_feed",
-  "params": {
-    "count": 20,
-    "cursor": "20|1013432138-1777199560305-f3e028f30691a0c579cd6dbdfaacf5dd"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

@@ -12,6 +12,10 @@ Returns messages from a specific conversation, ordered from most recent to oldes
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -37,41 +41,6 @@ Returns messages from a specific conversation, ordered from most recent to oldes
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json By conversation ID
-{
-  "account_id": "your-account-id",
-  "action": "get_conversation",
-  "params": {
-    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAA...,2-MDZiY2E...)",
-    "count": 20
-  }
-}
-```
-
-```json By profile URL
-{
-  "account_id": "your-account-id",
-  "action": "get_conversation",
-  "params": {
-    "profile_url": "https://www.linkedin.com/in/johndoe",
-    "count": 10
-  }
-}
-```
-
-```json Next page (older messages)
-{
-  "account_id": "your-account-id",
-  "action": "get_conversation",
-  "params": {
-    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAA...,2-MDZiY2E...)",
-    "count": 10,
-    "cursor": "1777146285823"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

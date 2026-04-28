@@ -12,6 +12,10 @@ Returns the full profile data for the account associated with the provided `acco
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -20,14 +24,6 @@ Returns the full profile data for the account associated with the provided `acco
   Must be `"get_me"`.
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "get_me"
-}
-```
-</RequestExample>
 
 ## Response
 

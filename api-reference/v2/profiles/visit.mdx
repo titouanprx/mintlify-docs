@@ -12,6 +12,10 @@ Simulates a profile visit. This will appear in the target user's "Who viewed you
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -31,17 +35,6 @@ Simulates a profile visit. This will appear in the target user's "Who viewed you
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "visit",
-  "params": {
-    "profile_url": "https://www.linkedin.com/in/johndoe"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

@@ -14,6 +14,10 @@ Reply to a specific comment on a post. This creates a threaded reply under the t
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -45,22 +49,6 @@ Reply to a specific comment on a post. This creates a threaded reply under the t
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "answer_comment",
-  "params": {
-    "tracking_id": "abc123def456",
-    "profile_urn": "urn:li:fsd_profile:ACoAABxxxxxx",
-    "comment_urn": "urn:li:comment:(activity:7654321098765432100,7654321098765432101)",
-    "comment_text": "Thanks for your feedback! We're working on it.",
-    "mention_user": true,
-    "commenter_name": "Jane Smith"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

@@ -12,6 +12,10 @@ Accepts a pending connection invitation using the invitation's `shared_secret` a
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -31,18 +35,6 @@ Accepts a pending connection invitation using the invitation's `shared_secret` a
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "accept",
-  "params": {
-    "shared_secret": "abcdef12-3456-7890-abcd-ef1234567890",
-    "entity_urn": "urn:li:invitation:123456789"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

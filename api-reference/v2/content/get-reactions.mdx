@@ -12,6 +12,10 @@ Returns the users who reacted to a specific LinkedIn post. Pagination is **offse
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,31 +38,6 @@ Returns the users who reacted to a specific LinkedIn post. Pagination is **offse
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json First page
-{
-  "account_id": "your-account-id",
-  "action": "get_reactions",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "count": 50,
-    "offset": 0
-  }
-}
-```
-
-```json Next page
-{
-  "account_id": "your-account-id",
-  "action": "get_reactions",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "count": 50,
-    "offset": 50
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

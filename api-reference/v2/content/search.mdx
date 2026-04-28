@@ -12,6 +12,10 @@ Search for posts using keywords with optional filters by author, company, indust
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -45,34 +49,6 @@ Search for posts using keywords with optional filters by author, company, indust
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json First page
-{
-  "account_id": "your-account-id",
-  "action": "search",
-  "params": {
-    "keyword": "artificial intelligence",
-    "sort_by": "date_posted",
-    "count": 50,
-    "offset": 0,
-    "author_industry": "Technology",
-    "post_date": "past-week"
-  }
-}
-```
-
-```json Next page
-{
-  "account_id": "your-account-id",
-  "action": "search",
-  "params": {
-    "keyword": "artificial intelligence",
-    "count": 50,
-    "offset": 50
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

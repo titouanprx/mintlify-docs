@@ -12,6 +12,10 @@ Returns the current connection / invitation status with a specific user. Useful 
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -28,17 +32,6 @@ Returns the current connection / invitation status with a specific user. Useful 
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "check_invitation",
-  "params": {
-    "profile_url": "https://www.linkedin.com/in/johndoe"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

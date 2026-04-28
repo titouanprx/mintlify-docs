@@ -12,6 +12,10 @@ Retrieve job postings from your LinkedIn recruiter account. Pass `job_id` to fet
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -37,28 +41,6 @@ Retrieve job postings from your LinkedIn recruiter account. Pass `job_id` to fet
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json List jobs
-{
-  "account_id": "your-account-id",
-  "action": "get_posts",
-  "params": {
-    "count": 10,
-    "fetch_details": false
-  }
-}
-```
-
-```json Specific job
-{
-  "account_id": "your-account-id",
-  "action": "get_posts",
-  "params": {
-    "job_id": "4178681638"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

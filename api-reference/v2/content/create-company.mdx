@@ -14,6 +14,10 @@ Create a post on a company page. The authenticated account must be an admin of t
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -58,19 +62,6 @@ Create a post on a company page. The authenticated account must be an admin of t
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "create_company",
-  "params": {
-    "company_url": "https://www.linkedin.com/company/acme-corp",
-    "message": "We are hiring! Check out our open positions. #hiring",
-    "file": "https://example.com/hiring-banner.jpg"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

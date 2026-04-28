@@ -12,6 +12,10 @@ Search for company pages using keyword, location, sector, and size filters. Supp
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -49,20 +53,6 @@ Search for company pages using keyword, location, sector, and size filters. Supp
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "search_companies",
-  "params": {
-    "keyword": "artificial intelligence",
-    "location": "San Francisco",
-    "company_size": "51-200",
-    "total_results": 20
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

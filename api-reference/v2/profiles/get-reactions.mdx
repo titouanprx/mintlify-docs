@@ -12,6 +12,10 @@ Fetches the list of reactions made by a specified user on posts and comments. Pa
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,30 +38,6 @@ Fetches the list of reactions made by a specified user on posts and comments. Pa
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json First page
-{
-  "account_id": "your-account-id",
-  "action": "get_reactions",
-  "params": {
-    "profile_url": "https://www.linkedin.com/in/johndoe",
-    "count": 50
-  }
-}
-```
-
-```json Next page
-{
-  "account_id": "your-account-id",
-  "action": "get_reactions",
-  "params": {
-    "profile_url": "https://www.linkedin.com/in/johndoe",
-    "count": 50,
-    "cursor": "dXJuOmxpOmFjdGl2aXR5Ojc0NDg0ODQ5NDgyODc3Mzc4NTYtMTc3NTg1NzE5Nzc2Nw=="
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

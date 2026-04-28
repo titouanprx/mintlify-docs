@@ -12,6 +12,10 @@ Publish a draft job posting, making it visible to candidates and open for applic
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -28,17 +32,6 @@ Publish a draft job posting, making it visible to candidates and open for applic
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "publish_job",
-  "params": {
-    "job_id": "3456789012"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

@@ -12,6 +12,10 @@ Search for profiles using a combination of keyword, company, location, school, a
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -76,20 +80,6 @@ Search for profiles using a combination of keyword, company, location, school, a
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "search_people",
-  "params": {
-    "keyword": "software engineer",
-    "location": "San Francisco",
-    "network": "S",
-    "total_results": 20
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

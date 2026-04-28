@@ -12,6 +12,10 @@ Create a post from the authenticated account. Supports plain text posts, single 
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -53,43 +57,6 @@ Create a post from the authenticated account. Supports plain text posts, single 
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json Text Post
-{
-  "account_id": "your-account-id",
-  "action": "create",
-  "params": {
-    "message": "Excited to share my latest project! #innovation"
-  }
-}
-```
-
-```json Image Post (URL)
-{
-  "account_id": "your-account-id",
-  "action": "create",
-  "params": {
-    "message": "Check out this photo!",
-    "file": "https://example.com/photo.jpg"
-  }
-}
-```
-
-```json Carousel Post
-{
-  "account_id": "your-account-id",
-  "action": "create",
-  "params": {
-    "message": "Swipe through my carousel!",
-    "files": [
-      "https://example.com/slide1.jpg",
-      "https://example.com/slide2.jpg",
-      { "filename": "slide3.png", "data": "base64...", "altText": "Slide 3" }
-    ]
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

@@ -12,6 +12,10 @@ Fetches detailed information about a company page (description, industry, employ
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -28,17 +32,6 @@ Fetches detailed information about a company page (description, industry, employ
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "get_company",
-  "params": {
-    "company_url": "https://www.linkedin.com/company/anthropicresearch/"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

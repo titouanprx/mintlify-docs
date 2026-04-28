@@ -12,6 +12,10 @@ Returns a paginated list of pending connection invitations received by the accou
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,29 +38,6 @@ Returns a paginated list of pending connection invitations received by the accou
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json First page
-{
-  "account_id": "your-account-id",
-  "action": "list_invitations",
-  "params": {
-    "count": 50,
-    "offset": 0
-  }
-}
-```
-
-```json Next page
-{
-  "account_id": "your-account-id",
-  "action": "list_invitations",
-  "params": {
-    "count": 50,
-    "offset": 50
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

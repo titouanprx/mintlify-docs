@@ -12,6 +12,10 @@ React to a post with a specific reaction type. You can also react as a company p
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,30 +38,6 @@ React to a post with a specific reaction type. You can also react as a company p
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json Personal Reaction
-{
-  "account_id": "your-account-id",
-  "action": "react",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "reaction_type": "CELEBRATE"
-  }
-}
-```
-
-```json Company Reaction
-{
-  "account_id": "your-account-id",
-  "action": "react",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "reaction_type": "LOVE",
-    "company_url": "https://www.linkedin.com/company/acme-corp"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

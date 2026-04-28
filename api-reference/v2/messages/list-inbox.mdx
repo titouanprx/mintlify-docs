@@ -12,6 +12,10 @@ Returns a paginated list of conversations from the inbox. Filter by category and
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -34,29 +38,6 @@ Returns a paginated list of conversations from the inbox. Filter by category and
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json First page
-{
-  "account_id": "your-account-id",
-  "action": "list_inbox",
-  "params": {
-    "count": 20,
-    "category": "INBOX"
-  }
-}
-```
-
-```json Next page
-{
-  "account_id": "your-account-id",
-  "action": "list_inbox",
-  "params": {
-    "count": 20,
-    "cursor": "REVTQ0VORElORyYxNzc0OTU4MDE2NjQzJjItWlRFMk1qazBaV1F0Wm1JMFlpMDBNR1k1TFRrMlptTXRaRGcwWVRjM05qUTJZakExWHpFd01BPT0="
-  }
-}
-```
-</RequestExample>
 
 ## Response
 

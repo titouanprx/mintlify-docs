@@ -12,6 +12,10 @@ Like a specific post from the authenticated account.
 
 ## Request
 
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
 <ParamField body="account_id" type="string" required>
   The unique identifier of the account to use.
 </ParamField>
@@ -28,17 +32,6 @@ Like a specific post from the authenticated account.
   </Expandable>
 </ParamField>
 
-<RequestExample>
-```json
-{
-  "account_id": "your-account-id",
-  "action": "like",
-  "params": {
-    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100"
-  }
-}
-```
-</RequestExample>
 
 ## Response
 
