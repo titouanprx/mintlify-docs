@@ -1,0 +1,138 @@
+---
+title: 'Create Webhook'
+api: 'POST /v2/webhooks'
+description: 'Register a webhook to receive real-time events for an account'
+---
+
+Create a webhook listener for one of your connected accounts. The delivery mode is determined by whether you provide a `url`:
+
+- **With `url`** — Custom mode: events are sent as `POST` requests to your URL
+- **Without `url`** — Hosted mode: events are available via [SSE stream](/api-reference/v2/webhooks/stream) or [polling](/api-reference/v2/webhooks/events)
+
+<Note>
+  **Monitoring starts automatically.** As soon as the webhook is created, the account's real-time SSE stream is opened and credit billing begins (≈10 credits/day per account). You don't need to call [`/start`](/api-reference/v2/webhooks/start) — that endpoint is only used to resume a webhook that was previously stopped via [`/stop`](/api-reference/v2/webhooks/stop).
+
+  Calling `POST /v2/webhooks` itself costs **0 credits**; the running cost comes from the live monitoring it enables.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="account_id" type="string" required>
+  The ID of the account to monitor. Must be an account you own (created via `/v2/login`).
+</ParamField>
+
+<ParamField body="url" type="string">
+  The URL where events will be sent as `POST` requests. Must be a publicly accessible HTTPS endpoint.
+
+  **Omit this field** to create a hosted webhook (SSE/polling).
+</ParamField>
+
+<ParamField body="events" type="array" default='["all"]'>
+  List of event types to listen for. Defaults to `["all"]` which receives every event.
+
+  Available event types: `message_received`, `accepted_invitation`, `all`.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the webhook was created successfully
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="webhook_id" type="string">
+      Unique identifier for the webhook
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account this webhook is attached to
+    </ResponseField>
+    <ResponseField name="mode" type="string">
+      `"hosted"` or `"custom"` depending on whether `url` was provided
+    </ResponseField>
+    <ResponseField name="url" type="string">
+      The webhook URL (custom mode only)
+    </ResponseField>
+    <ResponseField name="stream_url" type="string">
+      SSE stream endpoint (hosted mode only)
+    </ResponseField>
+    <ResponseField name="events_url" type="string">
+      Polling endpoint (hosted mode only)
+    </ResponseField>
+    <ResponseField name="events" type="array">
+      Event types this webhook listens for
+    </ResponseField>
+    <ResponseField name="is_active" type="boolean">
+      Whether the webhook is active
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Hosted Mode (no URL)
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "account_id": "69c127c37cae0494dd827286",
+    "mode": "hosted",
+    "stream_url": "/v2/webhooks/6789abcdef0123456789abcd/stream",
+    "events_url": "/v2/webhooks/6789abcdef0123456789abcd/events",
+    "events": ["accepted_invitation", "message_received"],
+    "is_active": true
+  },
+  "metadata": {
+    "action": "create_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Custom Mode (with URL)
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "account_id": "69c127c37cae0494dd827286",
+    "mode": "custom",
+    "url": "https://your-server.com/webhook",
+    "events": ["all"],
+    "is_active": true
+  },
+  "metadata": {
+    "action": "create_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Account Not Found
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACCOUNT",
+    "message": "Account not found"
+  },
+  "metadata": {
+    "action": "create_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The webhook is created in an **active and monitoring** state — events start flowing immediately, no extra call required.
+- You can create multiple webhooks for the same account with different event filters. Billing is per-account (not per-webhook), so adding a second webhook to the same account doesn't double the credit cost.
+- Stopping the **last** active webhook on an account (via [`/stop`](/api-reference/v2/webhooks/stop) or [`DELETE`](/api-reference/v2/webhooks/delete)) halts monitoring and stops the credit billing automatically. Other webhooks on the same account are unaffected.
+- For custom mode, the webhook URL must return a `200` status code to acknowledge receipt.
+- When `accepted_invitation` is in the events list, the API performs an initial sync of your connections to enable detection of new acceptances.

@@ -1,0 +1,103 @@
+---
+title: 'Accept Invitation'
+api: 'POST /v2/network'
+description: 'Accept a pending connection invitation.'
+---
+
+## Overview
+
+Accepts a pending connection invitation using the invitation's `shared_secret` and `entity_urn`. These values can be obtained from the [List Invitations](/api-reference/v2/network/list-invitations) endpoint.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"accept"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="shared_secret" type="string" required>
+      The shared secret associated with the invitation. Obtained from the invitation data.
+    </ParamField>
+    <ParamField body="entity_urn" type="string" required>
+      The entity URN of the invitation to accept.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "accept",
+  "params": {
+    "shared_secret": "abcdef12-3456-7890-abcd-ef1234567890",
+    "entity_urn": "urn:li:invitation:123456789"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Confirmation of the accepted invitation.
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"accept"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {},
+  "metadata": {
+    "action": "accept",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "shared_secret and entity_urn are required."
+  },
+  "metadata": {
+    "action": "accept",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

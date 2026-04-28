@@ -1,0 +1,185 @@
+---
+title: 'Get Job Posts'
+api: 'POST /v2/recruiter'
+description: 'Retrieve job postings from your recruiter account.'
+---
+
+## Overview
+
+Retrieve job postings from your LinkedIn recruiter account. Pass `job_id` to fetch a specific job (with full details) or omit it to list all jobs (offset-based pagination).
+
+<Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_posts"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="job_id" type="string">
+      Fetch a single specific job posting by ID. When provided, `count` and `offset` are ignored and `fetch_details` is forced to `true`.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of job posts to return. Defaults to `10`. **Capped at `1000`** per call.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Zero-indexed offset into the job posts list. Defaults to `0`. Use `pagination.next_offset` from a previous response to fetch the next page.
+    </ParamField>
+    <ParamField body="fetch_details" type="boolean" default={true}>
+      Include full job details (description, budget, talent_questions, etc.). Set to `false` for a faster lightweight listing.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json List jobs
+{
+  "account_id": "your-account-id",
+  "action": "get_posts",
+  "params": {
+    "count": 10,
+    "fetch_details": false
+  }
+}
+```
+
+```json Specific job
+{
+  "account_id": "your-account-id",
+  "action": "get_posts",
+  "params": {
+    "job_id": "4178681638"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="posts" type="array">
+      List of job postings.
+      <Expandable title="post properties">
+        <ResponseField name="linkedin_job_id" type="string">LinkedIn numeric job ID.</ResponseField>
+        <ResponseField name="title" type="string">Job title.</ResponseField>
+        <ResponseField name="company_name" type="string">Hiring company name.</ResponseField>
+        <ResponseField name="location" type="string">Job location.</ResponseField>
+        <ResponseField name="job_state" type="string">Job state: `"LISTED"`, `"CLOSED"`, `"DRAFT"`, etc.</ResponseField>
+        <ResponseField name="description" type="string">Plain-text job description (only when `fetch_details: true`).</ResponseField>
+        <ResponseField name="editableDescription" type="string">HTML-rich job description (only when `fetch_details: true`).</ResponseField>
+        <ResponseField name="employment_status" type="string">e.g. `"Full-time"`, `"Part-time"`, `"Contract"`, `"Internship"`.</ResponseField>
+        <ResponseField name="workplace_type" type="string">e.g. `"Remote"`, `"On-site"`, `"Hybrid"`.</ResponseField>
+        <ResponseField name="created_at" type="integer">Unix epoch (ms) when the job was created.</ResponseField>
+        <ResponseField name="listed_at" type="integer">Unix epoch (ms) when the job became live.</ResponseField>
+        <ResponseField name="closed_at" type="integer">Unix epoch (ms) when the job was closed (null if still open).</ResponseField>
+        <ResponseField name="num_views" type="integer">Total view count.</ResponseField>
+        <ResponseField name="num_applies" type="integer">Total applicant count.</ResponseField>
+        <ResponseField name="job_url" type="string">Public LinkedIn job URL.</ResponseField>
+        <ResponseField name="contact_email" type="string">Contact email associated with the job.</ResponseField>
+        <ResponseField name="industry" type="array">List of industry categories (strings).</ResponseField>
+        <ResponseField name="talent_questions" type="array">Screening questions configured on the post.</ResponseField>
+        <ResponseField name="budget" type="object">
+          Budget data when the job is sponsored: `total_charge`, `currency`, `buffered_total_charge`, `daily_budget`.
+        </ResponseField>
+        <ResponseField name="suspend_reasons" type="array">Reasons the post was suspended (empty when active).</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of job posts returned in this response.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of job posts on the recruiter account.</ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="offset" type="integer">Offset of the first post in this response.</ResponseField>
+        <ResponseField name="count" type="integer">Number of posts returned (mirrors `total_results`).</ResponseField>
+        <ResponseField name="next_offset" type="integer">Offset to send as `offset` in the next request. `null` when exhausted.</ResponseField>
+        <ResponseField name="has_more" type="boolean">`true` if more posts are available beyond this batch.</ResponseField>
+        <ResponseField name="results_per_page" type="integer">Maximum batch size used per upstream request (25).</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_posts"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1 per 10 results).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "posts": [
+      {
+        "linkedin_job_id": "4178681638",
+        "title": "Growth Hacker",
+        "company_name": "Acme Corp",
+        "location": "France",
+        "job_state": "CLOSED",
+        "employment_status": "Full-time",
+        "workplace_type": "",
+        "created_at": 1741369464000,
+        "listed_at": 1761591723000,
+        "closed_at": 1762167565000,
+        "num_views": 962,
+        "num_applies": 100,
+        "job_url": "https://www.linkedin.com/jobs/view/4178681638/",
+        "contact_email": "hiring@example.com",
+        "industry": ["Software Development"],
+        "budget": {
+          "total_charge": "277.20",
+          "currency": "EUR",
+          "buffered_total_charge": "417.00",
+          "daily_budget": "88.0"
+        }
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 1,
+    "pagination": {
+      "offset": 0,
+      "count": 1,
+      "next_offset": null,
+      "has_more": false,
+      "results_per_page": 25
+    }
+  },
+  "metadata": {
+    "action": "get_posts",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "account_id is required."
+  },
+  "metadata": {
+    "action": "get_posts",
+    "account_id": null,
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

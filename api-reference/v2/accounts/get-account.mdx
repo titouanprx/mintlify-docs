@@ -1,0 +1,129 @@
+---
+title: 'Get Account Details'
+api: 'GET /v2/accounts/{account_id}'
+description: 'Get detailed information about a specific account'
+---
+
+Retrieve detailed information about a specific account, including its configuration and current status.
+
+<Note>
+  This endpoint costs **0 credits**.
+</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  The unique identifier of the account to retrieve
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the request was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="account_id" type="string">
+      Unique identifier for the account
+    </ResponseField>
+
+    <ResponseField name="platform" type="string">
+      Platform type (e.g. "linkedin")
+    </ResponseField>
+
+    <ResponseField name="account_name" type="string">
+      Display name of the account
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether the account is currently active and usable
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Account status (e.g. "active", "inactive", "suspended")
+    </ResponseField>
+
+    <ResponseField name="country" type="string">
+      Country code associated with the account
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      ISO 8601 timestamp of when the account was created
+    </ResponseField>
+
+    <ResponseField name="updated_at" type="string">
+      ISO 8601 timestamp of the last account update
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="action" type="string">
+      The action performed ("get_account")
+    </ResponseField>
+
+    <ResponseField name="account_id" type="string">
+      The account_id that was queried
+    </ResponseField>
+
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (always 0 for this endpoint)
+    </ResponseField>
+
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "account_id": "acc_abc123",
+    "platform": "linkedin",
+    "account_name": "John Doe",
+    "is_active": true,
+    "status": "active",
+    "country": "FR",
+    "created_at": "2025-10-15T08:30:00Z",
+    "updated_at": "2026-03-20T14:22:00Z"
+  },
+  "metadata": {
+    "action": "get_account",
+    "account_id": "acc_abc123",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json Error Response
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACCOUNT",
+    "message": "The specified account_id does not exist"
+  },
+  "metadata": {
+    "action": "get_account",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- This endpoint is free and does not consume any credits
+- Use this to check if an account is active before making action requests
+- Use the dedicated webhook endpoints to configure webhooks for your accounts

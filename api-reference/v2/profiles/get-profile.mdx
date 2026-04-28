@@ -1,0 +1,160 @@
+---
+title: 'Get Profile Info'
+api: 'POST /v2/profiles'
+description: 'Retrieve the profile information of any user.'
+---
+
+## Overview
+
+Fetches detailed profile data for a specified user. You can identify the target profile using a profile URL, a public identifier, or a profile URN.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      Profile URL of the target user. Also accepts `linkedin_url` as an alias. Required if `identifier` and `profile_urn` are not provided.
+    </ParamField>
+    <ParamField body="identifier" type="string">
+      The public identifier (vanity name) of the target profile. Can be used instead of `profile_url`.
+    </ParamField>
+    <ParamField body="profile_urn" type="string">
+      The URN of the target profile. Can be used instead of `profile_url`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "get",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The profile data of the target user.
+  <Expandable title="data properties">
+    <ResponseField name="public_id" type="string">Public identifier (vanity name).</ResponseField>
+    <ResponseField name="profile_urn" type="string">LinkedIn entity URN of the profile (e.g. `ACoAA...`).</ResponseField>
+    <ResponseField name="profile_url" type="string">Canonical profile URL.</ResponseField>
+    <ResponseField name="first_name" type="string">First name.</ResponseField>
+    <ResponseField name="last_name" type="string">Last name.</ResponseField>
+    <ResponseField name="headline" type="string">Profile headline.</ResponseField>
+    <ResponseField name="location" type="string">Location text.</ResponseField>
+    <ResponseField name="summary" type="string">About / bio section.</ResponseField>
+    <ResponseField name="industry" type="string">Industry associated with the profile.</ResponseField>
+    <ResponseField name="experience" type="array">
+      Work experience entries. Each item: `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"10/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`.
+    </ResponseField>
+    <ResponseField name="education" type="array">
+      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date`, `school_url`, `school_logo_url`.
+    </ResponseField>
+    <ResponseField name="skills" type="array">List of skills (array of strings).</ResponseField>
+    <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
+    <ResponseField name="connection_count" type="integer">Number of connections.</ResponseField>
+    <ResponseField name="follower_count" type="integer">Number of followers.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "public_id": "john-smith-42",
+    "profile_urn": "ACoAABCgruIBcpBVBLKMJQD2Do7tIBxKFIQNvss",
+    "profile_url": "https://www.linkedin.com/in/john-smith-42",
+    "first_name": "John",
+    "last_name": "Smith",
+    "headline": "Product Manager @Acme Corp | Lecturer @Sample University",
+    "location": "Greater Paris, France",
+    "summary": "",
+    "industry": "Internet",
+    "experience": [
+      {
+        "company": "Acme Corp",
+        "title": "Product Manager",
+        "description": "",
+        "start_date": "10/2023",
+        "end_date": "",
+        "company_url": "https://linkedin.com/company/acme-corp",
+        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo.jpg"
+      }
+    ],
+    "education": [
+      {
+        "school": "Sample University",
+        "degree": "MBA",
+        "field_of_study": "Business",
+        "start_date": "9/2018",
+        "end_date": "6/2020"
+      }
+    ],
+    "skills": ["Product Strategy", "User Research"],
+    "profile_picture_url": "https://media.licdn.com/dms/image/v2/.../profile.jpg",
+    "connection_count": 500,
+    "follower_count": 1234
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "One of profile_url, identifier, or profile_urn is required."
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

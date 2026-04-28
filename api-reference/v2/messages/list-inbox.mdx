@@ -1,0 +1,192 @@
+---
+title: 'List Inbox'
+api: 'POST /v2/messages'
+description: 'Retrieve a list of conversations from the inbox.'
+---
+
+## Overview
+
+Returns a paginated list of conversations from the inbox. Filter by category and paginate with the `next_cursor` value.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **25 conversations per internal request**, so larger `total_results` values trigger multiple upstream calls automatically.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"list_inbox"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="count" type="integer" default={10}>
+      Maximum number of conversations to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="category" type="string" default="INBOX">
+      Filter conversations by category. One of: `"INBOX"`, `"UNREAD"`, `"MY_CONNECTIONS"`, `"INMAIL"`, `"STARRED"`. Defaults to `"INBOX"`.
+    </ParamField>
+    <ParamField body="cursor" type="string">
+      Cursor returned by a previous response as `data.next_cursor`. Omit for the first page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "list_inbox",
+  "params": {
+    "count": 20,
+    "category": "INBOX"
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "list_inbox",
+  "params": {
+    "count": 20,
+    "cursor": "REVTQ0VORElORyYxNzc0OTU4MDE2NjQzJjItWlRFMk1qazBaV1F0Wm1JMFlpMDBNR1k1TFRrMlptTXRaRGcwWVRjM05qUTJZakExWHpFd01BPT0="
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="conversations" type="array">
+      List of conversation objects.
+      <Expandable title="conversation properties">
+        <ResponseField name="conversation_id" type="string">
+          LinkedIn conversation URN, of the form `urn:li:msg_conversation:(urn:li:fsd_profile:...,2-...)`.
+        </ResponseField>
+        <ResponseField name="participant" type="object">
+          The other side of the conversation. Can be a member, a company page, or — for notes-to-self — your own profile.
+          <Expandable title="participant properties">
+            <ResponseField name="name" type="string">Display name (member full name or company name).</ResponseField>
+            <ResponseField name="headline" type="string">LinkedIn headline (or company tagline if `is_organization`).</ResponseField>
+            <ResponseField name="profile_url" type="string">LinkedIn profile URL (or company page URL if `is_organization`).</ResponseField>
+            <ResponseField name="profile_picture" type="string">Profile picture URL (or company logo if `is_organization`).</ResponseField>
+            <ResponseField name="is_organization" type="boolean">Present and `true` when the participant is a LinkedIn company page (e.g. Sponsored InMail, brand outreach). Absent for human members.</ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="last_message" type="object">
+          The most recent message in the conversation.
+          <Expandable title="last_message properties">
+            <ResponseField name="text" type="string">Plain-text content of the message.</ResponseField>
+            <ResponseField name="time" type="integer">Unix epoch timestamp in **milliseconds** when the message was sent.</ResponseField>
+            <ResponseField name="sender" type="object">
+              Author of the last message.
+              <Expandable title="sender properties">
+                <ResponseField name="name" type="string">Display name of the sender.</ResponseField>
+                <ResponseField name="headline" type="string">LinkedIn headline of the sender.</ResponseField>
+                <ResponseField name="profile_url" type="string">LinkedIn profile URL of the sender.</ResponseField>
+                <ResponseField name="profile_picture" type="string">URL of the sender's profile picture.</ResponseField>
+                <ResponseField name="is_me" type="boolean">`true` when the sender is the authenticated account.</ResponseField>
+              </Expandable>
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="unread" type="integer">
+          Number of unread messages in the conversation. `0` when fully read.
+        </ResponseField>
+        <ResponseField name="type" type="string">
+          Conversation type. Common values: `"normal"`, `"inmail"`, `"Sponsored"`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of conversations returned in this response.
+    </ResponseField>
+    <ResponseField name="next_cursor" type="string">
+      Cursor to send as `next_cursor` in the next request to resume pagination. `null` when the end is reached.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"list_inbox"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 results).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "conversations": [
+      {
+        "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAA...,2-MDZiY2ExOTgtM2NjNy00OTU4LTgyNjUtZWFlMmIwZjM1NTlmXzEwMA==)",
+        "participant": {
+          "name": "Jane Doe",
+          "headline": "Founder at Acme Corp",
+          "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+          "profile_picture": "https://media.licdn.com/dms/image/v2/.../profile.jpg"
+        },
+        "last_message": {
+          "text": "Sounds good, talk soon!",
+          "time": 1777147641366,
+          "sender": {
+            "name": "Jane Doe",
+            "headline": "Founder at Acme Corp",
+            "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+            "profile_picture": "https://media.licdn.com/dms/image/v2/.../profile.jpg",
+            "is_me": false
+          }
+        },
+        "unread": 0,
+        "type": "normal"
+      }
+    ],
+    "total_results": 1,
+    "next_cursor": "REVTQ0VORElORyYxNzc0OTU4MDE2NjQzJjItWlRFMk1qazBaV1F0Wm1JMFlpMDBNR1k1TFRrMlptTXRaRGcwWVRjM05qUTJZakExWHpFd01BPT0="
+  },
+  "metadata": {
+    "action": "list_inbox",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "account_id is required."
+  },
+  "metadata": {
+    "action": "list_inbox",
+    "account_id": null,
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

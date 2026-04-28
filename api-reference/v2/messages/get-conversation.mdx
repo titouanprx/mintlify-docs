@@ -1,0 +1,201 @@
+---
+title: 'Get Conversation'
+api: 'POST /v2/messages'
+description: 'Retrieve messages from a specific conversation.'
+---
+
+## Overview
+
+Returns messages from a specific conversation, ordered from most recent to oldest. Identify the conversation by `conversation_id` or by passing a `profile_url` (the conversation with that user is resolved automatically). Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch older messages.
+
+<Note>This endpoint consumes **1 credit per 10 messages** returned.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_conversation"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="conversation_id" type="string">
+      LinkedIn conversation URN. **Required if `profile_url` is not provided.**
+    </ParamField>
+    <ParamField body="profile_url" type="string">
+      The profile URL of the other participant. Also accepts `linkedin_url` as an alias. When provided, the conversation with this user is resolved automatically. **Required if `conversation_id` is not provided.**
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of messages to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="cursor" type="string">
+      Cursor returned by a previous response as `data.next_cursor`. Omit for the first page (most recent messages).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json By conversation ID
+{
+  "account_id": "your-account-id",
+  "action": "get_conversation",
+  "params": {
+    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAA...,2-MDZiY2E...)",
+    "count": 20
+  }
+}
+```
+
+```json By profile URL
+{
+  "account_id": "your-account-id",
+  "action": "get_conversation",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "count": 10
+  }
+}
+```
+
+```json Next page (older messages)
+{
+  "account_id": "your-account-id",
+  "action": "get_conversation",
+  "params": {
+    "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAA...,2-MDZiY2E...)",
+    "count": 10,
+    "cursor": "1777146285823"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="total_message_count" type="integer">
+      Total number of messages in the conversation (across all pages).
+    </ResponseField>
+    <ResponseField name="unread_count" type="integer">
+      Number of unread messages in the conversation.
+    </ResponseField>
+    <ResponseField name="last_seen_message" type="boolean">
+      `true` when the most recent message in this batch has been read by the recipient.
+    </ResponseField>
+    <ResponseField name="last_seen_at" type="integer">
+      Unix epoch timestamp in **milliseconds** when the recipient last read the conversation. Omitted if no read receipt is available.
+    </ResponseField>
+    <ResponseField name="messages" type="array">
+      Messages from the conversation, sorted **most recent first**.
+      <Expandable title="message properties">
+        <ResponseField name="text" type="string">Plain-text body of the message.</ResponseField>
+        <ResponseField name="timestamp" type="integer">Unix epoch timestamp in **milliseconds** when the message was delivered.</ResponseField>
+        <ResponseField name="sender" type="string">Display name of the sender.</ResponseField>
+        <ResponseField name="sender_info" type="object">
+          <Expandable title="sender_info properties">
+            <ResponseField name="first_name" type="string">Sender's first name.</ResponseField>
+            <ResponseField name="last_name" type="string">Sender's last name.</ResponseField>
+            <ResponseField name="profile_url" type="string">Sender's LinkedIn profile URL.</ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="message_type" type="string">
+          Message type. Common values: `"TEXT"`, `"INVITATION"`, `"SHARED_POST"`.
+        </ResponseField>
+        <ResponseField name="entity_urn" type="string">
+          LinkedIn URN of the message.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="next_cursor" type="string">
+      Cursor (epoch-ms timestamp of the oldest message in this batch) to send as `cursor` in the next request to fetch older messages. Omitted when there are no more messages.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get_conversation"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 messages).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "total_message_count": 55,
+    "unread_count": 0,
+    "last_seen_message": true,
+    "last_seen_at": 1777147641366,
+    "messages": [
+      {
+        "text": "Sounds good, talk soon!",
+        "timestamp": 1777147641366,
+        "sender": "Jane Doe",
+        "sender_info": {
+          "first_name": "Jane",
+          "last_name": "Doe",
+          "profile_url": "https://www.linkedin.com/in/jane-doe-42/"
+        },
+        "message_type": "TEXT",
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)"
+      },
+      {
+        "text": "Hey, are you available for a call tomorrow?",
+        "timestamp": 1777146492678,
+        "sender": "John Smith",
+        "sender_info": {
+          "first_name": "John",
+          "last_name": "Smith",
+          "profile_url": "https://www.linkedin.com/in/john-smith-99/"
+        },
+        "message_type": "TEXT",
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)"
+      }
+    ],
+    "next_cursor": "1777146285823"
+  },
+  "metadata": {
+    "action": "get_conversation",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "Either conversation_id or profile_url is required."
+  },
+  "metadata": {
+    "action": "get_conversation",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

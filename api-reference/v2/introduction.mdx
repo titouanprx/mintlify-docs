@@ -1,0 +1,149 @@
+---
+title: 'Introduction'
+description: 'Connect your AI agent to B2B channels'
+---
+
+LinkupAPI connects your product or AI agent to LinkedIn, WhatsApp, and real-time B2B intelligence. One unified API to automate outreach, find contacts, and gather market insights for **sales** and **recruitment**.
+
+## What You Can Build
+
+<CardGroup cols={2}>
+  <Card title="Sales Automation" icon="chart-line">
+    Generate leads, automate outreach on LinkedIn/WhatsApp, track funding signals, and enrich company data in real-time.
+  </Card>
+  <Card title="Recruitment Automation" icon="users">
+    Source candidates, track hiring companies, and connect with talent on LinkedIn and WhatsApp at scale.
+  </Card>
+</CardGroup>
+
+## What's New in V2
+
+<CardGroup cols={2}>
+  <Card title="Action-Based Endpoints" icon="bolt">
+    Each category has a single endpoint. Send the `action` in the request body instead of calling different URLs.
+  </Card>
+  <Card title="Account Management" icon="id-card">
+    Manage your accounts via the API. List accounts, get details, and use `account_id` in all requests.
+  </Card>
+  <Card title="Standardized Responses" icon="check">
+    Every response follows the same format with `success`, `data`/`error`, and `metadata` fields.
+  </Card>
+</CardGroup>
+
+## Quick Start
+
+### 1. Get Your API Key
+Sign up at [linkupapi.com](https://app.linkupapi.com/signup)
+
+### 2. Connect Your Account
+```bash
+curl -X POST https://api.linkupapi.com/v2/login \
+  -H "x-api-key: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"platform": "linkedin", "login_token": "your_token", "country": "FR"}'
+```
+
+### 3. Make Your First Request
+```bash
+curl -X POST https://api.linkupapi.com/v2/profiles \
+  -H "x-api-key: your_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{"account_id": "your_account_id", "action": "get_me"}'
+```
+
+## Authentication
+
+All V2 endpoints require your API key in the `x-api-key` header.
+
+## Request Format
+
+All action endpoints use `POST` with the following body structure:
+
+```json
+{
+  "account_id": "acc_123",
+  "action": "action_name",
+  "params": {
+    "key": "value"
+  }
+}
+```
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use for this action.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  The action to perform. Each category has its own set of available actions.
+</ParamField>
+
+<ParamField body="params" type="object">
+  Action-specific parameters. See each action's documentation for required and optional fields.
+</ParamField>
+
+## Response Format
+
+Every V2 response follows a standardized format.
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "..."
+  },
+  "metadata": {
+    "action": "get_profile",
+    "account_id": "acc_123",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Missing required parameter: profile_url"
+  },
+  "metadata": {
+    "action": "get_profile",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+## Credit System
+
+Most actions consume **1 credit** per request. Actions that return lists (search, get connections, etc.) consume **1 credit per 10 results**, rounded up.
+
+For example:
+- Fetching a single profile: **1 credit**
+- Searching with 25 results: **3 credits** (25 / 10 = 2.5, rounded up to 3)
+- Listing 10 connections: **1 credit**
+
+The exact number of credits consumed is always returned in the `metadata.credits_consumed` field of the response.
+
+## Available Categories
+
+| Category | Endpoint | Description |
+|---|---|---|
+| **Profiles** | `POST /v2/profiles` | Get profile info, search profiles, visit profiles, get contact info |
+| **Messages** | `POST /v2/messages` | Send messages, get conversations, list inbox |
+| **Network** | `POST /v2/network` | Send connection requests, manage invitations, get connections |
+| **Content** | `POST /v2/content` | Create posts, comment, like, repost, get feed |
+| **Recruiter** | `POST /v2/recruiter` | Create job posts, get candidates, manage job offers |
+| **Credits** | `GET /v2/credits` | Check your credit balance |
+| **Webhooks** | `POST/GET /v2/webhooks` | Real-time event notifications via webhook URLs |
+| **Mail** | `POST /v2/mail` | Find, reverse-lookup, and validate email addresses |
+
+## Need Help?
+
+- Check our [Migration Guide](/api-reference/v2/migration) if you're coming from V1
+- Email: [support@linkupapi.com](mailto:support@linkupapi.com)

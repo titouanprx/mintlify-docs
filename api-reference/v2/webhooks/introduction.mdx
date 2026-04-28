@@ -1,0 +1,247 @@
+---
+title: 'Webhooks Introduction'
+description: 'Receive real-time notifications for account activity'
+---
+
+Webhooks allow you to receive real-time notifications when events happen on your connected accounts — new messages, connection acceptances, and more.
+
+## Delivery Modes
+
+Webhooks support two delivery modes depending on your setup:
+
+<CardGroup cols={2}>
+  <Card title="Hosted Mode" icon="cloud">
+    No server needed. Events are delivered via **SSE stream** or **polling**. Perfect for bots, scripts, and local apps.
+
+    Create a webhook **without** a `url` to use hosted mode.
+  </Card>
+  <Card title="Custom Mode" icon="server">
+    Events are sent as `POST` requests to your server. Requires a publicly accessible HTTPS endpoint.
+
+    Create a webhook **with** a `url` to use custom mode.
+  </Card>
+</CardGroup>
+
+| | Hosted | Custom |
+|---|---|---|
+| **Setup** | No server required | HTTPS endpoint required |
+| **Real-time delivery** | SSE stream (`GET /stream`) | HTTP POST to your URL |
+| **Event history** | 24h stored events (`GET /events`) | Fire-and-forget |
+| **Best for** | Bots, scripts, local dev | Production servers |
+
+## How It Works
+
+<Tabs>
+  <Tab title="Hosted Mode">
+    <Steps>
+      <Step title="Connect your account">
+        Use `POST /v2/login` to connect an account and get an `account_id`.
+      </Step>
+      <Step title="Create a hosted webhook">
+        Call `POST /v2/webhooks` **without** a `url`. You'll receive a `webhook_id`, `stream_url`, and `events_url`.
+      </Step>
+      <Step title="Start monitoring">
+        Call `POST /v2/webhooks/{webhook_id}/start` to begin real-time monitoring.
+      </Step>
+      <Step title="Receive events">
+        Connect to the SSE stream or poll the events endpoint.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Custom Mode">
+    <Steps>
+      <Step title="Connect your account">
+        Use `POST /v2/login` to connect an account and get an `account_id`.
+      </Step>
+      <Step title="Create a webhook with URL">
+        Call `POST /v2/webhooks` with your server's `url`.
+      </Step>
+      <Step title="Start monitoring">
+        Call `POST /v2/webhooks/{webhook_id}/start` to begin real-time monitoring.
+      </Step>
+      <Step title="Receive events">
+        Events are sent as `POST` requests to your URL in real time.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Event Types
+
+| Subscription filter | Emitted `event.type` | Description |
+|---|---|---|
+| `message_received` | `"message"` | A new LinkedIn message was received |
+| `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
+| `all` | — | Subscribe to all event types |
+
+<Note>
+  By default, webhooks listen to **all** event types. You can filter specific events when creating the webhook by passing an `events` array.
+</Note>
+
+<Warning>
+  The subscription filter `message_received` is intentionally different from the actual `event.type` field, which is `"message"`. Filter against `message_received` when creating the webhook, but check `event.type === "message"` when parsing the payload.
+</Warning>
+
+<Note>
+  In addition to subscribed events, **every webhook also receives `disconnection` events** — this is not filterable. They fire whenever the underlying LinkedIn session expires so you can react (re-auth, alert, etc.).
+</Note>
+
+## Event Payload Format
+
+All events share the same wrapper structure. Note that the outer `timestamp` is when the API emitted the event, while `event.timestamp` is when the underlying LinkedIn activity happened — they differ slightly (latency).
+
+```json
+{
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "event": {
+    "type": "...",
+    "timestamp": "2026-04-28T08:07:45.525693"
+    // event-specific fields below
+  },
+  "timestamp": "2026-04-28T08:07:45.525853"
+}
+```
+
+### Message Received
+
+Triggered in real-time when a new LinkedIn message is received via the LinkedIn realtime stream (sub-second latency). The inner event `type` is `"message"`.
+
+```json
+{
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "event": {
+    "type": "message",
+    "timestamp": "2026-04-28T10:07:45.525693",
+    "message_text": "Hello! I'd love to connect.",
+    "sender": {
+      "name": "John Doe",
+      "profile_url": "https://www.linkedin.com/in/ACoAAEMT_nsB5U1uon01_EjK9Yf4En52jDd2hGE"
+    },
+    "conversation": {
+      "participants": [
+        {
+          "name": "Your Name",
+          "profile_url": "https://www.linkedin.com/in/ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o"
+        },
+        {
+          "name": "John Doe",
+          "profile_url": "https://www.linkedin.com/in/ACoAAEMT_nsB5U1uon01_EjK9Yf4En52jDd2hGE"
+        }
+      ],
+      "is_group_chat": false,
+      "unread_count": 1
+    },
+    "metadata": {
+      "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MTc3NzM2MzY2NDkyMGI4MzE3Mi0xMDAmMDZiY2ExOTgtM2NjNy00OTU4LTgyNjUtZWFlMmIwZjM1NTlmXzEwMA==)",
+      "conversation_urn": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MDZiY2ExOTgtM2NjNy00OTU4LTgyNjUtZWFlMmIwZjM1NTlmXzEwMA==)",
+      "delivered_at": 1777363664920,
+      "read_status": false
+    }
+  },
+  "timestamp": "2026-04-28T08:07:45.525853"
+}
+```
+
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.message_text` | `string` | Plain text content of the message |
+| `event.sender.name` | `string` | Display name of the sender |
+| `event.sender.profile_url` | `string` | LinkedIn URL of the sender (URN-style, not vanity) |
+| `event.conversation.participants` | `array` | All participants of the thread, sender included |
+| `event.conversation.is_group_chat` | `boolean` | `true` if 3+ participants |
+| `event.conversation.unread_count` | `integer` | Number of unread messages in the thread |
+| `event.reply_to` | `object?` | **Only present when the message is a reply.** Contains `message_text`, `sender_name`, `sender_profile_url`, `timestamp` of the original message. Omitted (not `null`) for non-reply messages. |
+| `event.metadata.entity_urn` | `string` | LinkedIn URN of the message |
+| `event.metadata.conversation_urn` | `string` | LinkedIn URN of the conversation thread |
+| `event.metadata.delivered_at` | `integer` | Unix milliseconds delivery time |
+| `event.metadata.read_status` | `boolean` | Whether the conversation is marked read |
+
+<Tip>
+  When the message is a reply, an additional `event.reply_to` object is included with the original message details. For non-reply messages, the field is **omitted entirely** from the payload — don't expect a `null`.
+</Tip>
+
+### Accepted Invitation
+
+Triggered when one or more connection requests you sent are accepted. Detected by a background worker that polls the connections list every ~6 hours and diffs against the previously stored snapshot. The payload batches all new connections detected in the same check.
+
+```json
+{
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "event": {
+    "type": "accepted_invitation",
+    "new_connections": [
+      {
+        "profile_url": "https://www.linkedin.com/in/maruthigudi/",
+        "name": "Maruthi Gudi",
+        "job_title": "Building High-Performance Tech & FinTech Teams | Headhunter @ HackerTrail",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/D4E03AQEEUE9iAq2LXA/profile-displayphoto-shrink_100_100/B4EZYY8bulGYAU-/0/1744175218426"
+      },
+      {
+        "profile_url": "https://www.linkedin.com/in/musokeshaibu/",
+        "name": "Musoke Shaibu",
+        "job_title": "Building the definitive operating system for sales, marketing, and research.",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/D4D03AQGCOZ3SrVT5Tg/profile-displayphoto-shrink_200_200/B4DZZtP29UGcAY-/0/1745589597790"
+      }
+    ],
+    "count": 2,
+    "timestamp": "2026-04-27T14:52:59.970134"
+  },
+  "timestamp": "2026-04-27T14:52:59.970144"
+}
+```
+
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.new_connections` | `array` | Profiles that accepted your connection request since the last check |
+| `event.new_connections[].profile_url` | `string` | LinkedIn vanity URL of the connection |
+| `event.new_connections[].name` | `string` | Display name |
+| `event.new_connections[].job_title` | `string \| null` | Headline / current role as shown on LinkedIn |
+| `event.new_connections[].profile_picture` | `string \| null` | CDN URL of the profile picture (may expire) |
+| `event.count` | `integer` | Length of `new_connections` |
+
+<Note>
+  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. The first detection check then runs ~6 hours later and every 6 hours thereafter.
+</Note>
+
+### Disconnection
+
+Triggered when the account's LinkedIn session expires, the cookie is invalidated, or the user logs out. Sent to **every** webhook attached to the account regardless of subscription filters.
+
+```json
+{
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "event": {
+    "type": "disconnection",
+    "reason": "LinkedIn cookie invalid or expired",
+    "timestamp": "2026-04-28T09:15:30.123456"
+  },
+  "timestamp": "2026-04-28T09:15:30.123456"
+}
+```
+
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.reason` | `string` | Human-readable cause (e.g. `"Token expired (detected after 10 reconnections)"`, `"LinkedIn cookie invalid or expired"`) |
+
+<Warning>
+  When you receive a disconnection event, monitoring stops automatically and every webhook attached to the account is paused (with `auto_paused: true`). You need to re-authenticate the account via `POST /v2/login` (or `POST /v2/checkpoint` if a 2FA is required) — paused webhooks are auto-restarted on a successful re-login.
+</Warning>
+
+## Architecture
+
+Unlike the V1 webhook system which required creating a separate "webhook account", the V2 system works with your existing accounts:
+
+- **V2 accounts** are created via `POST /v2/login` (profiles, messages, network, etc.)
+- **Webhooks** are configurations that attach to those accounts
+- One account can have multiple webhooks with different event filters
+- Starting/stopping monitoring is done per webhook

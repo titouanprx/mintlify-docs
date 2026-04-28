@@ -1,0 +1,147 @@
+---
+title: 'Send Connection Request'
+api: 'POST /v2/network'
+description: 'Send a connection request to a user.'
+---
+
+## Overview
+
+Sends a connection request (invitation) to a user. You can identify the target by their profile URL or a unique identifier. Optionally include a personalized message with the invitation.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"invite"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string">
+      The profile URL of the person to invite. Also accepts `linkedin_url` as an alias. **Required if `identifier` is not provided.**
+    </ParamField>
+    <ParamField body="identifier" type="string">
+      A unique identifier for the person to invite. **Required if `profile_url` is not provided.**
+    </ParamField>
+    <ParamField body="message" type="string">
+      An optional personalized message to include with the connection request.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json With profile URL
+{
+  "account_id": "your-account-id",
+  "action": "invite",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "message": "Hi John, I'd love to connect!"
+  }
+}
+```
+
+```json With identifier
+{
+  "account_id": "your-account-id",
+  "action": "invite",
+  "params": {
+    "identifier": "johndoe"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Details of the sent invitation.
+  <Expandable title="data properties">
+    <ResponseField name="invitation_urn" type="string">
+      The unique URN of the invitation.
+    </ResponseField>
+    <ResponseField name="profile_urn" type="string">
+      The URN of the invited profile.
+    </ResponseField>
+    <ResponseField name="first_name" type="string">
+      First name of the invited person.
+    </ResponseField>
+    <ResponseField name="last_name" type="string">
+      Last name of the invited person.
+    </ResponseField>
+    <ResponseField name="headline" type="string">
+      Headline of the invited person.
+    </ResponseField>
+    <ResponseField name="public_identifier" type="string">
+      Public identifier (vanity name) of the invited person.
+    </ResponseField>
+    <ResponseField name="profile_picture_url" type="string">
+      URL of the invited person's profile picture.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"invite"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "invitation_urn": "urn:li:invitation:123456789",
+    "profile_urn": "urn:li:fsd_profile:ACoAABxxxxxxx",
+    "first_name": "John",
+    "last_name": "Doe",
+    "headline": "Senior Software Engineer at Acme Corp",
+    "public_identifier": "johndoe",
+    "profile_picture_url": "https://media.licdn.com/dms/image/example.jpg"
+  },
+  "metadata": {
+    "action": "invite",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "Either profile_url or identifier is required."
+  },
+  "metadata": {
+    "action": "invite",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

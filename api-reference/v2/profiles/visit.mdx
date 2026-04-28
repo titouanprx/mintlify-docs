@@ -1,0 +1,112 @@
+---
+title: 'Visit Profile'
+api: 'POST /v2/profiles'
+description: 'Visit a profile to trigger a profile view notification.'
+---
+
+## Overview
+
+Simulates a profile visit. This will appear in the target user's "Who viewed your profile" section. You can identify the target profile using a profile URL or a public identifier.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"visit"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string">
+      Profile URL of the target user. Also accepts `linkedin_url` as an alias. Required if `identifier` is not provided.
+    </ParamField>
+    <ParamField body="identifier" type="string">
+      The public identifier (vanity name) of the target profile. Can be used instead of `profile_url`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "visit",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="visited" type="boolean">
+      `true` when the profile visit was successfully tracked.
+    </ResponseField>
+    <ResponseField name="profile_url" type="string">
+      The profile URL that was visited (echo of the input).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"visit"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "visited": true,
+    "profile_url": "https://www.linkedin.com/in/johndoe"
+  },
+  "metadata": {
+    "action": "visit",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "One of profile_url or identifier is required."
+  },
+  "metadata": {
+    "action": "visit",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

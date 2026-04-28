@@ -1,0 +1,179 @@
+---
+title: 'Search Companies'
+api: 'POST /v2/profiles'
+description: 'Search for company pages using various filters.'
+---
+
+## Overview
+
+Search for company pages using keyword, location, sector, and size filters. Supports pagination for retrieving large result sets.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search_companies"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="keyword" type="string">
+      General keyword to search for across company profiles.
+    </ParamField>
+    <ParamField body="location" type="string | string[]">
+      Filter by company location. Accepts a single string or an array (e.g., `["New York", "Germany"]`).
+    </ParamField>
+    <ParamField body="sector" type="string | string[]">
+      Filter by industry sector. Accepts a single string or an array.
+    </ParamField>
+    <ParamField body="company_size" type="string | string[]">
+      Filter by company size range. Accepts a single string or an array (e.g., `["11-50", "201-500"]`).
+    </ParamField>
+    <ParamField body="total_results" type="integer" default={10}>
+      Total number of results to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="results_per_page" type="integer">
+      Number of results per page.
+    </ParamField>
+    <ParamField body="start_page" type="integer">
+      Start page for pagination (1-indexed). Use with `end_page` for pagination mode.
+    </ParamField>
+    <ParamField body="end_page" type="integer">
+      End page for pagination (inclusive). Use with `start_page` for pagination mode.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "search_companies",
+  "params": {
+    "keyword": "artificial intelligence",
+    "location": "San Francisco",
+    "company_size": "51-200",
+    "total_results": 20
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="companies" type="array">
+      List of matching companies.
+      <Expandable title="company item properties">
+        <ResponseField name="name" type="string">
+          Company name.
+        </ResponseField>
+        <ResponseField name="linkedin_url" type="string">
+          Full company page URL.
+        </ResponseField>
+        <ResponseField name="headline" type="string">
+          Company tagline or headline.
+        </ResponseField>
+        <ResponseField name="location" type="string">
+          Company headquarters location.
+        </ResponseField>
+        <ResponseField name="industry" type="string">
+          Industry sector.
+        </ResponseField>
+        <ResponseField name="company_size" type="string">
+          Size range of the company.
+        </ResponseField>
+        <ResponseField name="logo_url" type="string">
+          URL of the company logo.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of results returned.
+    </ResponseField>
+    <ResponseField name="total_available_results" type="integer">
+      Total number of matching results available.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"search_companies"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 results).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "companies": [
+      {
+        "name": "AI Solutions Inc.",
+        "linkedin_url": "https://www.linkedin.com/company/ai-solutions-inc",
+        "headline": "Building the future of AI",
+        "location": "San Francisco, CA",
+        "industry": "Artificial Intelligence",
+        "company_size": "51-200",
+        "logo_url": "https://media.licdn.com/dms/image/company-logo.jpg"
+      },
+      {
+        "name": "DeepTech Labs",
+        "linkedin_url": "https://www.linkedin.com/company/deeptech-labs",
+        "headline": "Deep learning research and applications",
+        "location": "San Francisco, CA",
+        "industry": "Computer Software",
+        "company_size": "11-50",
+        "logo_url": "https://media.licdn.com/dms/image/company-logo2.jpg"
+      }
+    ],
+    "total_results": 2,
+    "total_available_results": 840
+  },
+  "metadata": {
+    "action": "search_companies",
+    "account_id": "your-account-id",
+    "credits_consumed": 2,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "At least one search parameter is required."
+  },
+  "metadata": {
+    "action": "search_companies",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

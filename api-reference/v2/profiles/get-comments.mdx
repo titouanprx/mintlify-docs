@@ -1,0 +1,209 @@
+---
+title: 'Get Profile Comments'
+api: 'POST /v2/profiles'
+description: 'Retrieve the comments made by a user on posts and articles.'
+---
+
+## Overview
+
+Fetches the list of comments made by a specified user on posts and articles. Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch the next page.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 comments per internal request**, so requesting `count: 100` triggers only 2 upstream calls.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_comments"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      Profile URL of the target user. Also accepts `linkedin_url` as an alias.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of comments to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="cursor" type="string">
+      Pagination cursor returned by a previous request as `pagination.next_cursor`. Omit for the first page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "get_comments",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "count": 50
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "get_comments",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "count": 50,
+    "cursor": "dXJuOmxpOmFjdGl2aXR5OjcyODE5ODI4NTAwOTMwMDI3NTItMTczNjE1OTk5MDE2OA=="
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="comments" type="array">
+      List of comments made by the user.
+      <Expandable title="comment item properties">
+        <ResponseField name="comment_id" type="string">
+          Internal identifier of the comment update.
+        </ResponseField>
+        <ResponseField name="comment_content" type="string">
+          The text content of the comment.
+        </ResponseField>
+        <ResponseField name="comment_time" type="string">
+          Relative time of the comment (e.g. `"6h"`, `"3d"`).
+        </ResponseField>
+        <ResponseField name="comment_time_days" type="integer">
+          Age of the comment expressed in days.
+        </ResponseField>
+        <ResponseField name="commenter" type="object">
+          The author of the comment (name, profile_url, profile_picture, entity_urn, headline).
+        </ResponseField>
+        <ResponseField name="post" type="object">
+          The post the comment was made on (urn, url, content, author).
+        </ResponseField>
+        <ResponseField name="reply_to" type="object">
+          When the comment is a reply, holds the parent comment's author info.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of comments returned in this response.
+    </ResponseField>
+    <ResponseField name="profile_url" type="string">
+      The LinkedIn profile URL that was queried.
+    </ResponseField>
+    <ResponseField name="entity_urn" type="string">
+      The LinkedIn entity URN of the queried profile.
+    </ResponseField>
+    <ResponseField name="profile_urn" type="string">
+      The full `urn:li:fsd_profile:...` URN of the queried profile.
+    </ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="results_per_page" type="integer">
+          Maximum batch size used per upstream request (50).
+        </ResponseField>
+        <ResponseField name="pages_fetched" type="integer">
+          Number of internal upstream batches consumed to assemble this response.
+        </ResponseField>
+        <ResponseField name="has_more" type="boolean">
+          `true` if more results are available — pass `next_cursor` in the next request.
+        </ResponseField>
+        <ResponseField name="next_cursor" type="string">
+          Cursor to send as `cursor` in the next request to resume pagination. `null` when the end is reached.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get_comments"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 results).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "comments": [
+      {
+        "comment_id": "urn:li:fsd_update:(urn:li:activity:7421592107020185600,PROFILE_COMMENTS,DEBUG_REASON,DEFAULT,false)",
+        "comment_content": "Great insights! Completely agree.",
+        "comment_time": "89d",
+        "comment_time_days": 89,
+        "commenter": {
+          "name": "Jane Doe",
+          "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+          "profile_picture": "https://media.licdn.com/dms/image/...",
+          "entity_urn": "ACoAA...",
+          "headline": "Product Manager at Acme Corp"
+        },
+        "post": {
+          "urn": "urn:li:ugcPost:7421567698184323073",
+          "url": "https://www.linkedin.com/feed/update/urn:li:ugcPost:7421567698184323073",
+          "content": "After 6 years as a consultant, I'm thrilled to share...",
+          "author": {
+            "name": "John Smith",
+            "profile_url": "https://www.linkedin.com/in/john-smith-99",
+            "entity_urn": "urn:li:fsd_profile:ACoAA..."
+          }
+        }
+      }
+    ],
+    "total_results": 1,
+    "profile_url": "https://www.linkedin.com/in/jane-doe-42/",
+    "entity_urn": "ACoAA...",
+    "profile_urn": "urn:li:fsd_profile:ACoAA...",
+    "pagination": {
+      "results_per_page": 50,
+      "pages_fetched": 1,
+      "has_more": true,
+      "next_cursor": "dXJuOmxpOmFjdGl2aXR5OjcyODE5ODI4NTAwOTMwMDI3NTItMTczNjE1OTk5MDE2OA=="
+    }
+  },
+  "metadata": {
+    "action": "get_comments",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T08:35:34Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "profile_url is required."
+  },
+  "metadata": {
+    "action": "get_comments",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T08:35:34Z"
+  }
+}
+```
+</ResponseExample>

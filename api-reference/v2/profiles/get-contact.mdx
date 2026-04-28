@@ -1,0 +1,133 @@
+---
+title: 'Get Contact Info'
+api: 'POST /v2/profiles'
+description: 'Retrieve the contact information of a user.'
+---
+
+## Overview
+
+Fetches the contact details for a specified profile, including email, phone number, Twitter handle, and websites.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_contact"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      Profile URL of the target user. Also accepts `linkedin_url` as an alias.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "get_contact",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The contact information of the target user.
+  <Expandable title="data properties">
+    <ResponseField name="email" type="string">
+      Email address of the user (if available).
+    </ResponseField>
+    <ResponseField name="phone" type="string">
+      Phone number of the user (if available).
+    </ResponseField>
+    <ResponseField name="twitter" type="string">
+      Twitter handle (if available).
+    </ResponseField>
+    <ResponseField name="websites" type="array">
+      List of websites associated with the profile.
+    </ResponseField>
+    <ResponseField name="address" type="string">
+      Physical address (if available).
+    </ResponseField>
+    <ResponseField name="birthday" type="string">
+      Birthday (if available).
+    </ResponseField>
+    <ResponseField name="connected_at" type="string">
+      Date when the connection was established (if connected).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get_contact"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "email": "john.doe@example.com",
+    "phone": "+1234567890",
+    "twitter": "johndoe",
+    "websites": [
+      "https://johndoe.dev",
+      "https://blog.johndoe.dev"
+    ],
+    "address": "San Francisco, CA",
+    "birthday": null,
+    "connected_at": "2023-06-15"
+  },
+  "metadata": {
+    "action": "get_contact",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "profile_url is required."
+  },
+  "metadata": {
+    "action": "get_contact",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,126 @@
+---
+title: 'Comment on Post'
+api: 'POST /v2/content'
+description: 'Add a comment to a post.'
+---
+
+## Overview
+
+Post a comment on a post. You can also comment as a company page by providing the `company_url` parameter.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"comment"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="post_url" type="string" required>
+      The URL of the post to comment on.
+    </ParamField>
+    <ParamField body="comment_text" type="string" required>
+      The text content of the comment. Also accepts `message` as an alias.
+    </ParamField>
+    <ParamField body="company_url" type="string">
+      Optional. The URL of a company page to comment as. You must be an admin of the company page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json Personal Comment
+{
+  "account_id": "your-account-id",
+  "action": "comment",
+  "params": {
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "comment_text": "Great insights! Thanks for sharing."
+  }
+}
+```
+
+```json Company Comment
+{
+  "account_id": "your-account-id",
+  "action": "comment",
+  "params": {
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "comment_text": "We appreciate the mention! Excited to collaborate.",
+    "company_url": "https://www.linkedin.com/company/acme-corp"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="commented" type="boolean">`true` when the comment was successfully posted.</ResponseField>
+    <ResponseField name="post_url" type="string">The post URL that was commented on (echo of the input).</ResponseField>
+    <ResponseField name="comment_text" type="string">The comment text that was posted (echo of the input).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"comment"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "commented": true,
+    "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
+    "comment_text": "Great insights! Thanks for sharing."
+  },
+  "metadata": {
+    "action": "comment",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "post_url and comment_text are required."
+  },
+  "metadata": {
+    "action": "comment",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

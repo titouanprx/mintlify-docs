@@ -1,0 +1,157 @@
+---
+title: 'Check Invitation Status'
+api: 'POST /v2/network'
+description: 'Check the connection status with a specific user.'
+---
+
+## Overview
+
+Returns the current connection / invitation status with a specific user. Useful to know whether you're already connected, have a pending sent or received invitation, or have no relationship yet.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"check_invitation"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      The profile URL of the person to check. Also accepts `linkedin_url` as an alias.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "check_invitation",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="invitation_state" type="string">
+      One of:
+      - `"ACCEPTED"` — you are already connected with this person
+      - `"PENDING"` — an invitation is pending (sent or received)
+      - `"NO_INVITATION"` — no invitation has been exchanged
+    </ResponseField>
+    <ResponseField name="invitation_type" type="string">
+      Direction of the invitation when applicable. One of:
+      - `"CONNECTED"` (when `invitation_state` is `ACCEPTED`)
+      - `"SENT"` (you sent the invitation)
+      - `"RECEIVED"` (the other person sent it)
+      - `null` when `invitation_state` is `NO_INVITATION`
+    </ResponseField>
+    <ResponseField name="invitation_id" type="integer">
+      Numeric ID of the invitation when one exists (use it with the `withdraw` action). `null` otherwise.
+    </ResponseField>
+    <ResponseField name="member_distance" type="integer">
+      LinkedIn network distance to the target profile (`1`, `2`, `3`, …).
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Human-readable description of the state.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"check_invitation"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 — Already connected
+{
+  "success": true,
+  "data": {
+    "invitation_state": "ACCEPTED",
+    "invitation_type": "CONNECTED",
+    "invitation_id": null,
+    "member_distance": 1,
+    "message": "You are connected with this person"
+  },
+  "metadata": {
+    "action": "check_invitation",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 — Pending sent invitation
+{
+  "success": true,
+  "data": {
+    "invitation_state": "PENDING",
+    "invitation_type": "SENT",
+    "invitation_id": 7453486530700017665,
+    "member_distance": 2,
+    "message": "Invitation pending"
+  },
+  "metadata": {
+    "action": "check_invitation",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 — No invitation
+{
+  "success": true,
+  "data": {
+    "invitation_state": "NO_INVITATION",
+    "invitation_type": null,
+    "invitation_id": null,
+    "member_distance": 3,
+    "message": "No invitation found"
+  },
+  "metadata": {
+    "action": "check_invitation",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Invalid LinkedIn URL format"
+  },
+  "metadata": {
+    "action": "check_invitation",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,155 @@
+---
+title: 'Get Profile Viewers'
+api: 'POST /v2/profiles'
+description: 'Retrieve the list of people who recently viewed your profile.'
+---
+
+## Overview
+
+Returns the list of users who recently viewed the authenticated account's profile (Premium "Who Viewed My Profile" data). Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Some viewers can be **blurred** (LinkedIn anonymizes non-Premium-tier visitors when out of quota); they appear with `is_blurred: true` and lack `profile_url`.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_viewers"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="count" type="integer" default={10}>
+      Number of viewers to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Zero-indexed offset into the viewers list. Defaults to `0`. Use `pagination.next_offset` from a previous response to fetch the next page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "get_viewers",
+  "params": {
+    "count": 20,
+    "offset": 0
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "get_viewers",
+  "params": {
+    "count": 20,
+    "offset": 20
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="viewers" type="array">
+      List of viewer objects.
+      <Expandable title="viewer item properties">
+        <ResponseField name="title" type="string">Display label (e.g. `"Public Speaker in the Staffing and Recruiting industry from London"` for blurred viewers, or the person's full name when revealed).</ResponseField>
+        <ResponseField name="image_url" type="string">URL of the profile picture (or generic blurred avatar).</ResponseField>
+        <ResponseField name="is_blurred" type="boolean">`true` when LinkedIn has anonymized the viewer (Premium quota exceeded or visitor used Private mode).</ResponseField>
+        <ResponseField name="cta_action" type="string">Action label LinkedIn proposes (e.g. `"View"`, `"Connect"`).</ResponseField>
+        <ResponseField name="profile_url" type="string">LinkedIn profile URL — `null` when `is_blurred` is `true`.</ResponseField>
+        <ResponseField name="entity_urn" type="string">LinkedIn URN — `null` when `is_blurred` is `true`.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of viewers returned in this response.</ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="offset" type="integer">Offset of the first viewer in this response.</ResponseField>
+        <ResponseField name="count" type="integer">Number of viewers returned (mirrors `total_results`).</ResponseField>
+        <ResponseField name="total" type="integer">Total number of viewers reported by LinkedIn (may be `0` when not exposed).</ResponseField>
+        <ResponseField name="has_more" type="boolean">`true` if more viewers are available beyond this batch.</ResponseField>
+        <ResponseField name="next_offset" type="integer">Offset to send as `offset` in the next request. `null` when exhausted.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_viewers"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1 per 10 results).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "viewers": [
+      {
+        "title": "Someone at The Hive Company",
+        "image_url": "https://media.licdn.com/media/AAYQBAT4...",
+        "is_blurred": true,
+        "cta_action": "View",
+        "profile_url": null,
+        "entity_urn": null
+      },
+      {
+        "title": "Jane Doe",
+        "image_url": "https://media.licdn.com/dms/image/v2/...",
+        "is_blurred": false,
+        "cta_action": "Connect",
+        "profile_url": "https://www.linkedin.com/in/janedoe",
+        "entity_urn": "urn:li:fsd_profile:ACoAA..."
+      }
+    ],
+    "total_results": 2,
+    "pagination": {
+      "offset": 0,
+      "count": 2,
+      "total": 87,
+      "has_more": true,
+      "next_offset": 10
+    }
+  },
+  "metadata": {
+    "action": "get_viewers",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "account_id is required."
+  },
+  "metadata": {
+    "action": "get_viewers",
+    "account_id": null,
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

@@ -1,0 +1,86 @@
+---
+title: 'Update Webhook'
+api: 'PUT /v2/webhooks/{webhook_id}'
+description: 'Update a webhook configuration'
+---
+
+Update the URL, events, or active status of an existing webhook.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="webhook_id" type="string" required>
+  The unique identifier of the webhook to update
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="url" type="string">
+  New webhook URL. Must be a publicly accessible HTTPS endpoint.
+</ParamField>
+
+<ParamField body="events" type="array">
+  New list of event types to listen for (e.g. `["message_received", "accepted_invitation"]`).
+</ParamField>
+
+<ParamField body="is_active" type="boolean">
+  Set to `false` to pause the webhook without deleting it.
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the update was successful
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="webhook_id" type="string">
+      The updated webhook ID
+    </ResponseField>
+    <ResponseField name="updated" type="boolean">
+      Always `true` on success
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "updated": true
+  },
+  "metadata": {
+    "action": "update_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Webhook Not Found
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Webhook not found"
+  },
+  "metadata": {
+    "action": "update_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- Only the fields you include in the request body will be updated
+- Setting `is_active` to `false` does **not** stop monitoring — use `POST /v2/webhooks/{webhook_id}/stop` for that

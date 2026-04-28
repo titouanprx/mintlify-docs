@@ -1,0 +1,140 @@
+---
+title: 'Get Company Info'
+api: 'POST /v2/profiles'
+description: 'Retrieve detailed information about a LinkedIn company page.'
+---
+
+## Overview
+
+Fetches detailed information about a company page (description, industry, employee count, follower count, logo, cover image, etc.).
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_company"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="company_url" type="string" required>
+      The LinkedIn company page URL (e.g., `https://www.linkedin.com/company/anthropicresearch/`).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "get_company",
+  "params": {
+    "company_url": "https://www.linkedin.com/company/anthropicresearch/"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="name" type="string">Company name.</ResponseField>
+    <ResponseField name="universalName" type="string">LinkedIn vanity slug (last segment of the company URL).</ResponseField>
+    <ResponseField name="description" type="string">Company description / about section.</ResponseField>
+    <ResponseField name="tagline" type="string">Short tagline for the company.</ResponseField>
+    <ResponseField name="websiteUrl" type="string">Company website URL.</ResponseField>
+    <ResponseField name="industry" type="string">Industry sector.</ResponseField>
+    <ResponseField name="employeeCount" type="integer">Total employee count reported by LinkedIn.</ResponseField>
+    <ResponseField name="employeeCountRange" type="object">
+      Range of declared headcount (e.g. `{ "start": 501, "end": 1000 }`).
+    </ResponseField>
+    <ResponseField name="headquarter" type="object">Headquarters object (or `null` when not provided).</ResponseField>
+    <ResponseField name="logoUrl" type="string">URL of the company logo.</ResponseField>
+    <ResponseField name="coverImageUrl" type="string">URL of the cover image.</ResponseField>
+    <ResponseField name="callToAction" type="object">
+      Primary call-to-action button. Contains `displayText`, `visible`, `type`, `url`.
+    </ResponseField>
+    <ResponseField name="locations" type="array">List of office locations.</ResponseField>
+    <ResponseField name="organizationType" type="string">Type of organization (e.g. `"Privately Held"`, `"Public Company"`, `"Nonprofit"`).</ResponseField>
+    <ResponseField name="defaultLocale" type="string">Default page locale (e.g. `"en"`).</ResponseField>
+    <ResponseField name="followersCount" type="integer">Number of followers.</ResponseField>
+    <ResponseField name="pageMailbox" type="boolean">Whether the page accepts inbound messages.</ResponseField>
+    <ResponseField name="verified" type="boolean">Whether the page is verified.</ResponseField>
+    <ResponseField name="socialProofText" type="string">Connection-based social proof string (e.g. `"Tridia & 162 other connections follow this page"`).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_company"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "name": "Anthropic",
+    "universalName": "anthropicresearch",
+    "description": "We're an AI research company that builds reliable, interpretable, and steerable AI systems...",
+    "tagline": "Anthropic is an AI safety and research company...",
+    "websiteUrl": "https://www.anthropic.com/",
+    "industry": "Research Services",
+    "employeeCount": 4670,
+    "employeeCountRange": { "start": 501, "end": 1000 },
+    "headquarter": null,
+    "logoUrl": "https://media.licdn.com/dms/image/v2/...",
+    "coverImageUrl": "https://media.licdn.com/dms/image/v2/...",
+    "callToAction": {
+      "displayText": "Visit website",
+      "visible": true,
+      "type": "VIEW_WEBSITE",
+      "url": "https://www.anthropic.com/"
+    },
+    "locations": [],
+    "organizationType": "Privately Held",
+    "defaultLocale": "en",
+    "followersCount": 3054760,
+    "pageMailbox": false,
+    "verified": true,
+    "socialProofText": "Tridia & 162 other connections follow this page"
+  },
+  "metadata": {
+    "action": "get_company",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "company_url is required."
+  },
+  "metadata": {
+    "action": "get_company",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

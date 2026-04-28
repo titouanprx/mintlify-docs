@@ -1,0 +1,158 @@
+---
+title: 'Get Feed'
+api: 'POST /v2/content'
+description: 'Retrieve the home feed of the authenticated account.'
+---
+
+## Overview
+
+Returns the home feed posts for the authenticated account. Pagination is **cursor-based** because the feed is a dynamic, time-ordered stream — pass the `next_cursor` returned by a previous call to fetch older posts.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **10 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_feed"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="count" type="integer" default={10}>
+      Number of feed posts to return. Defaults to `10`.
+    </ParamField>
+    <ParamField body="cursor" type="string">
+      Cursor returned by a previous response as `pagination.next_cursor`. Omit for the first page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "get_feed",
+  "params": {
+    "count": 20
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "get_feed",
+  "params": {
+    "count": 20,
+    "cursor": "20|1013432138-1777199560305-f3e028f30691a0c579cd6dbdfaacf5dd"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="Feed" type="array">
+      List of feed posts.
+      <Expandable title="post properties">
+        <ResponseField name="type" type="string">Post type: `"regular"`, `"sponsored"`, `"reshared"`, etc.</ResponseField>
+        <ResponseField name="actor" type="object">
+          Author of the post: `name`, `description`, `image_url`, `profile_url`.
+        </ResponseField>
+        <ResponseField name="content" type="object">
+          Content payload (e.g. `{ "type": "image", "images": [...] }`, `{ "type": "video", ... }`).
+        </ResponseField>
+        <ResponseField name="commentary" type="string">Plain-text body of the post.</ResponseField>
+        <ResponseField name="social_stats" type="object">Engagement counts: `reactions`, `comments`, `shares`.</ResponseField>
+        <ResponseField name="reshared" type="boolean">Whether this is a reshared post.</ResponseField>
+        <ResponseField name="url" type="string">Public URL of the post.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of posts returned in this response.</ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="results_per_page" type="integer">LinkedIn batch size used internally (typically 10).</ResponseField>
+        <ResponseField name="pages_fetched" type="integer">Number of internal upstream batches consumed.</ResponseField>
+        <ResponseField name="has_more" type="boolean">`true` if more feed posts are available.</ResponseField>
+        <ResponseField name="next_cursor" type="string">Cursor to send as `cursor` in the next request. `null` when exhausted.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_feed"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1 per 10 results).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "Feed": [
+      {
+        "type": "regular",
+        "actor": {
+          "name": "Jane Doe",
+          "description": "Founder @ Acme Corp",
+          "image_url": "https://media.licdn.com/dms/image/v2/.../profile.jpg",
+          "profile_url": "https://www.linkedin.com/in/jane-doe-42"
+        },
+        "content": {
+          "type": "image",
+          "images": ["https://media.licdn.com/dms/image/v2/.../share.jpg"]
+        },
+        "commentary": "Thrilled to share our latest milestone...",
+        "social_stats": { "reactions": 224, "comments": 10, "shares": 14 },
+        "reshared": false,
+        "url": "https://www.linkedin.com/posts/jane-doe-42_announcement-activity-7453382311909445632-TZ0m"
+      }
+    ],
+    "total_results": 1,
+    "pagination": {
+      "results_per_page": 10,
+      "pages_fetched": 1,
+      "has_more": true,
+      "next_cursor": "10|1013432138-1777199560305-f3e028f30691a0c579cd6dbdfaacf5dd"
+    }
+  },
+  "metadata": {
+    "action": "get_feed",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "account_id is required."
+  },
+  "metadata": {
+    "action": "get_feed",
+    "account_id": null,
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

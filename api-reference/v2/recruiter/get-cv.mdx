@@ -1,0 +1,168 @@
+---
+title: 'Get Candidate CV'
+api: 'POST /v2/recruiter'
+description: 'Retrieve the CV/resume of a specific job candidate.'
+---
+
+## Overview
+
+Returns the CV/resume submitted by a candidate for a specific job application. The file content is returned **inline as base64-encoded bytes** alongside the candidate metadata — decode and write to disk to obtain the original file.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_cv"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="application_id" type="string" required>
+      Application ID obtained from the [Get Job Candidates](/api-reference/v2/recruiter/get-candidates) response.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "get_cv",
+  "params": {
+    "application_id": "26905743894"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="application_id" type="string">Echo of the requested `application_id`.</ResponseField>
+    <ResponseField name="candidate" type="object">
+      Candidate identity and contact info.
+      <Expandable title="candidate properties">
+        <ResponseField name="name" type="string">Candidate full name.</ResponseField>
+        <ResponseField name="email" type="string">Candidate email (when shared on the application).</ResponseField>
+        <ResponseField name="phone" type="string">Candidate phone (when shared).</ResponseField>
+        <ResponseField name="profile_url" type="string">LinkedIn profile URL.</ResponseField>
+        <ResponseField name="resume_url" type="string">Pre-signed LinkedIn URL to the original resume (short-lived).</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="cv" type="object">
+      The CV file payload.
+      <Expandable title="cv properties">
+        <ResponseField name="content" type="string">Base64-encoded file bytes.</ResponseField>
+        <ResponseField name="encoding" type="string">Always `"base64"`.</ResponseField>
+        <ResponseField name="filename" type="string">Original filename (e.g. `"Jane_Doe_CV.pdf"`).</ResponseField>
+        <ResponseField name="content_type" type="string">MIME type (`"application/pdf"`, `"application/vnd.openxmlformats-officedocument.wordprocessingml.document"`, etc.).</ResponseField>
+        <ResponseField name="size_bytes" type="integer">Size of the decoded file in bytes.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_cv"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "application_id": "26905743894",
+    "candidate": {
+      "name": "Jane Doe",
+      "email": "jane.doe@example.com",
+      "phone": "+33 6 12 34 56 78",
+      "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+      "resume_url": "https://media.licdn.com/dms/document/..."
+    },
+    "cv": {
+      "content": "JVBERi0xLjQKJfbk/N8KMSAwIG9iago8PAovVHlwZSAvQ2F0YW...",
+      "encoding": "base64",
+      "filename": "Jane_Doe_CV.pdf",
+      "content_type": "application/pdf",
+      "size_bytes": 126451
+    }
+  },
+  "metadata": {
+    "action": "get_cv",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "application_id is required."
+  },
+  "metadata": {
+    "action": "get_cv",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Saving the CV to disk
+
+The `cv.content` field is base64-encoded. Decode it and write it to a file using the `cv.filename`:
+
+```python Python
+import base64, json, requests
+
+resp = requests.post(
+    "https://api.linkupapi.com/v2/recruiter",
+    headers={"x-api-key": "YOUR_API_KEY", "Content-Type": "application/json"},
+    json={
+        "action": "get_cv",
+        "account_id": "your-account-id",
+        "params": {"application_id": "26905743894"},
+    },
+).json()
+
+cv = resp["data"]["cv"]
+with open(cv["filename"], "wb") as f:
+    f.write(base64.b64decode(cv["content"]))
+```
+
+```javascript Node.js
+import fs from "fs";
+
+const resp = await fetch("https://api.linkupapi.com/v2/recruiter", {
+  method: "POST",
+  headers: { "x-api-key": "YOUR_API_KEY", "Content-Type": "application/json" },
+  body: JSON.stringify({
+    action: "get_cv",
+    account_id: "your-account-id",
+    params: { application_id: "26905743894" },
+  }),
+}).then(r => r.json());
+
+const { filename, content } = resp.data.cv;
+fs.writeFileSync(filename, Buffer.from(content, "base64"));
+```

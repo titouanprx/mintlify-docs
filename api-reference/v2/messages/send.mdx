@@ -1,0 +1,164 @@
+---
+title: 'Send Message'
+api: 'POST /v2/messages'
+description: 'Send a direct message to a user, optionally with media attachments.'
+---
+
+## Overview
+
+Sends a message to a user identified by their profile URL. You can include text only, or attach media via a URL, base64-encoded file, or server-side path.
+
+<Note>This endpoint consumes **1 credit** for text-only messages and **2 credits** when media is attached.</Note>
+
+<Note>When multiple media options are provided, the priority order is: `media_link` > `media_file` > `media_path`. Only one media attachment will be used.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"send"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      The profile URL of the recipient. Also accepts `linkedin_url` as an alias.
+    </ParamField>
+    <ParamField body="message_text" type="string" required>
+      The text content of the message.
+    </ParamField>
+    <ParamField body="media_link" type="string">
+      A publicly accessible URL to a media file to attach.
+    </ParamField>
+    <ParamField body="media_file" type="object">
+      A base64-encoded media file to attach.
+      <Expandable title="media_file properties">
+        <ParamField body="data" type="string" required>
+          The base64-encoded file content.
+        </ParamField>
+        <ParamField body="filename" type="string" required>
+          The filename including extension (e.g. `"document.pdf"`).
+        </ParamField>
+      </Expandable>
+    </ParamField>
+    <ParamField body="media_path" type="string">
+      A server-side file path to a media file to attach.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json Text only
+{
+  "account_id": "your-account-id",
+  "action": "send",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "message_text": "Hi John, I'd love to connect!"
+  }
+}
+```
+
+```json With media URL
+{
+  "account_id": "your-account-id",
+  "action": "send",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "message_text": "Please find the document attached.",
+    "media_link": "https://example.com/brochure.pdf"
+  }
+}
+```
+
+```json With base64 file
+{
+  "account_id": "your-account-id",
+  "action": "send",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/johndoe",
+    "message_text": "Here is the file you requested.",
+    "media_file": {
+      "data": "JVBERi0xLjQK...",
+      "filename": "report.pdf"
+    }
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Details of the sent message.
+  <Expandable title="data properties">
+    <ResponseField name="entityUrn" type="string">
+      The unique URN of the sent message entity.
+    </ResponseField>
+    <ResponseField name="conversation_id" type="string">
+      The ID of the conversation the message was sent in.
+    </ResponseField>
+    <ResponseField name="deliveredAt" type="string">
+      ISO 8601 timestamp of when the message was delivered.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"send"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 for text, 2 with media).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "entityUrn": "urn:li:messagingMessage:abc123",
+    "conversation_id": "2-YWJjMTIz",
+    "deliveredAt": "2026-03-24T12:00:00Z"
+  },
+  "metadata": {
+    "action": "send",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "profile_url and message_text are required."
+  },
+  "metadata": {
+    "action": "send",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

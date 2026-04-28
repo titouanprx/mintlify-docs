@@ -1,0 +1,168 @@
+---
+title: 'Reverse Email Lookup'
+api: 'POST /v2/enrich'
+description: 'Identify a person from their professional email address.'
+---
+
+## Overview
+
+Reverse-resolves a professional email address into the matching LinkedIn profile, returning the person's full identity (name, headline, current company, profile URL, etc.).
+
+<Note>
+Only **professional** email addresses are accepted. Personal providers (Gmail, Yahoo, Hotmail, Outlook, iCloud, ProtonMail, free.fr, orange.fr, etc.) are rejected with `INVALID_PARAMS`.
+
+This endpoint consumes **1 credit** per request.
+</Note>
+
+## Request
+
+<ParamField body="action" type="string" required>
+  Must be `"reverse_email"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="email" type="string" required>
+      Professional email address to reverse-resolve.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "action": "reverse_email",
+  "params": {
+    "email": "jane.doe@acme-corp.com"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="email_parsed" type="object">
+      Output of the GPT parsing step.
+      <Expandable title="email_parsed properties">
+        <ResponseField name="original_email" type="string">The input email (echo).</ResponseField>
+        <ResponseField name="first_name" type="string">First name extracted from the local part.</ResponseField>
+        <ResponseField name="last_name" type="string">Last name extracted (may be empty if the local part contained only the first name).</ResponseField>
+        <ResponseField name="company_domain" type="string">The company domain (everything after `@`).</ResponseField>
+        <ResponseField name="parsing_confidence" type="string">GPT's confidence in the parse: `"high"`, `"medium"`, or `"low"`.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="person_found" type="object">
+      The resolved person.
+      - When a LinkedIn profile is matched: full profile object (same shape as [Get Profile Info](/api-reference/v2/profiles/get-profile)) — `full_name`, `first_name`, `last_name`, `headline`, `location`, `summary`, `industry`, `experience`, `education`, `skills`, `profile_picture_url`, `connection_count`, etc.
+      - When no LinkedIn match is found: minimal fallback `{full_name, first_name, last_name}`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"reverse_email"`).</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 — LinkedIn profile matched
+{
+  "success": true,
+  "data": {
+    "email_parsed": {
+      "original_email": "jane.doe@acme-corp.com",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "company_domain": "acme-corp.com",
+      "parsing_confidence": "high"
+    },
+    "person_found": {
+      "full_name": "Jane Doe",
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "headline": "Senior Product Manager at Acme Corp",
+      "location": "San Francisco Bay Area",
+      "industry": "Computer Software",
+      "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+      "experience": [
+        {
+          "company": "Acme Corp",
+          "title": "Senior Product Manager",
+          "start_date": "1/2023",
+          "end_date": ""
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "action": "reverse_email",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 — No LinkedIn match (fallback)
+{
+  "success": true,
+  "data": {
+    "email_parsed": {
+      "original_email": "j.doe@small-shop.io",
+      "first_name": "John",
+      "last_name": "Doe",
+      "company_domain": "small-shop.io",
+      "parsing_confidence": "medium"
+    },
+    "person_found": {
+      "full_name": "John Doe",
+      "first_name": "John",
+      "last_name": "Doe"
+    }
+  },
+  "metadata": {
+    "action": "reverse_email",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400 — Personal email rejected
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Only professional email addresses are accepted. Personal email providers (Gmail, Yahoo, Hotmail, etc.) are not supported."
+  },
+  "metadata": {
+    "action": "reverse_email",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400 — Invalid format
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Invalid email format"
+  },
+  "metadata": {
+    "action": "reverse_email",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

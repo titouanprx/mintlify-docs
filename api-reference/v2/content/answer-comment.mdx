@@ -1,0 +1,128 @@
+---
+title: 'Reply to Comment'
+api: 'POST /v2/content'
+description: 'Reply to a specific comment on a post.'
+---
+
+## Overview
+
+Reply to a specific comment on a post. This creates a threaded reply under the target comment.
+
+<Note>This endpoint consumes **1 credit** per request.</Note>
+
+<Note>The `tracking_id`, `profile_urn`, and `comment_urn` values can be obtained from the [Get Post Comments](/api-reference/v2/content/get-comments) response.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"answer_comment"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="tracking_id" type="string" required>
+      The tracking ID associated with the post. Obtained from the `get_comments` response.
+    </ParamField>
+    <ParamField body="profile_urn" type="string" required>
+      The URN of the profile that owns the post. Obtained from the `get_comments` response.
+    </ParamField>
+    <ParamField body="comment_urn" type="string" required>
+      The URN of the comment to reply to. Obtained from the `get_comments` response.
+    </ParamField>
+    <ParamField body="comment_text" type="string" required>
+      The text content of the reply.
+    </ParamField>
+    <ParamField body="mention_user" type="boolean" default="false">
+      Whether to mention the original commenter in the reply. Default is `false`.
+    </ParamField>
+    <ParamField body="commenter_name" type="string">
+      The name of the original commenter. Used when `mention_user` is `true` to format the mention.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json
+{
+  "account_id": "your-account-id",
+  "action": "answer_comment",
+  "params": {
+    "tracking_id": "abc123def456",
+    "profile_urn": "urn:li:fsd_profile:ACoAABxxxxxx",
+    "comment_urn": "urn:li:comment:(activity:7654321098765432100,7654321098765432101)",
+    "comment_text": "Thanks for your feedback! We're working on it.",
+    "mention_user": true,
+    "commenter_name": "Jane Smith"
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Confirmation of the reply action.
+  <Expandable title="data properties">
+    <ResponseField name="comment_urn" type="string">
+      The platform URN of the created reply (e.g. LinkedIn URN).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"answer_comment"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "comment_urn": "urn:li:comment:(activity:7654321098765432100,7654321098765432102)"
+  },
+  "metadata": {
+    "action": "answer_comment",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "tracking_id, profile_urn, comment_urn, and comment_text are required."
+  },
+  "metadata": {
+    "action": "answer_comment",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

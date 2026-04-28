@@ -1,0 +1,130 @@
+---
+title: 'Platform Best Practices'
+description: 'Limits, guidelines, and recommendations to use LinkupAPI safely'
+---
+
+LinkupAPI connects to third-party platforms like LinkedIn and WhatsApp. Each provider enforces its own limits and restrictions. Understanding these limits is essential to avoid account warnings or suspensions.
+
+<Warning>
+  The limits below are **conservative recommendations**. You may increase them at your own risk. Exceeding provider limits will result in HTTP `429` or `500` errors. Make sure your system handles these errors gracefully.
+</Warning>
+
+## General Principles
+
+These principles apply to **all providers and all routes**:
+
+- **Space out your calls** — Use random delays between requests instead of fixed intervals. Predictable patterns are easily flagged as automation.
+- **Distribute across working hours** — Spread your actions throughout the day during business hours rather than sending everything at once.
+- **Warm up new accounts** — For new or inactive accounts, start with low volumes and increase gradually over 2-3 weeks. Accounts with fewer than ~150 connections may experience delivery issues with invitations.
+- **Use real accounts only** — Fake accounts are well-detected by platforms, even without automation. We strongly recommend using only genuine accounts.
+- **All limits are per account** — They are independent of the API route and do not accumulate across endpoints.
+
+---
+
+## LinkedIn Limits
+
+### Connection Requests (Invitations)
+
+| Account Type | Daily Limit | Weekly Limit | Note Length |
+|---|---|---|---|
+| **Paid LinkedIn** (Premium, Business, etc.) | 80–100 invitations | ~200/week | Up to 300 characters |
+| **Free LinkedIn** | ~5 invitations/month (with note) | ~150/week (without note) | Up to 200 characters |
+
+<Info>
+  When you hit LinkedIn's invitation limit, you'll receive a `422 / cannot_resend_yet` error. We don't enforce any limits on our side — you'll hit the exact same limit as in the LinkedIn UI. You can verify by trying the same action directly in the LinkedIn interface.
+</Info>
+
+**Recommendations:**
+- Withdraw stale invitations older than 2-3 weeks using the [Withdraw](/api-reference/v2/network/withdraw) endpoint
+- Target relevant profiles — random invitations increase rejection rates and trigger LinkedIn restrictions
+
+### Profile Retrieval
+
+| Action | Recommended Daily Limit |
+|---|---|
+| Profile views / profile data | ~100 per account per day |
+
+This is a conservative recommendation. We don't enforce this limit, but exceeding it may trigger LinkedIn restrictions on your account.
+
+### Search Results
+
+There are **two separate limits** to consider:
+
+**Per-search cap (LinkedIn limit):**
+- Standard LinkedIn search: max **1,000 profiles** returned per search query
+- Even if the UI shows more total results, LinkedIn only returns the first 1,000
+
+<Tip>
+  To retrieve more results than the per-search cap, narrow your query using filters (location, industry, company, etc.) and perform multiple searches.
+</Tip>
+
+**Daily usage (recommendation):**
+- We recommend limiting the total number of profiles retrieved to **~1,000 per day** per account
+- This refers to the total result lines actually fetched, not the number of API requests
+
+### Connections & Invitation Lists
+
+If you need to detect accepted invitations, **avoid polling at fixed intervals** (e.g., every hour or at 8:00 AM daily) — this pattern is easily flagged as automation.
+
+**Recommended approach:**
+1. Use the [Webhook](/api-reference/v2/webhooks/introduction) `accepted_invitation` event to detect accepted invitations
+
+### Messaging
+
+**Recommendations:**
+- Space actions randomly throughout the day
+- Limit to **30–50 messages per day** per account for optimal deliverability
+- Personalize every message — generic copy gets flagged and ignored
+- Wait 3-7 days before following up, and limit follow-ups to 2-3 per contact
+
+### InMail
+
+The number of InMails you can send depends on your LinkedIn subscription. Even without remaining credits, you can still send **free InMails to open profiles**.
+
+**Recommendations:**
+- Space sends randomly throughout the day
+- Limit daily sends to **30–50** to maximize your monthly allocation
+
+### Content & Posts
+
+- **1-2 posts per day** maximum — more than that reduces engagement
+- Vary your content format (text, articles, media)
+- For comments and reactions: follow the general limit of ~100 per day per account
+
+### Other LinkedIn Routes
+
+For any route not listed above, follow the same principles:
+- Minimize usage as much as possible
+- Space out calls at random intervals
+- Default limit: **~100 actions per day per account** (e.g., retrieving company profiles, fetching posts, adding reactions, commenting)
+
+---
+
+## WhatsApp Limits
+
+WhatsApp enforces strict anti-spam measures. Follow these guidelines:
+
+| Action | Recommended Limit |
+|---|---|
+| New conversations | 20–30 per day |
+| Messages to existing chats | 100 per day |
+
+- **Don't message contacts who haven't opted in** — WhatsApp bans accounts aggressively for unsolicited messages
+- **Use random delays** between messages (10-30 seconds minimum)
+- **Warm up new numbers** — Start with 5-10 messages/day and increase over several weeks
+
+---
+
+## Architecture Recommendations
+
+<CardGroup cols={2}>
+  <Card title="Use a Job Queue" icon="list-check">
+    Process API calls through a queue (Redis, RabbitMQ, etc.) with random delays between jobs. This prevents bursts and makes retry logic simpler.
+  </Card>
+  <Card title="Cache Aggressively" icon="database">
+    Profile and company data don't change every minute. Cache results locally to save credits and reduce unnecessary API calls.
+  </Card>
+  <Card title="Use Webhooks" icon="bell">
+    Instead of polling for new messages or accepted invitations, set up [Webhooks](/api-reference/v2/webhooks/introduction) for real-time notifications. It's safer and more efficient.
+  </Card>
+</CardGroup>

@@ -1,0 +1,184 @@
+---
+title: 'Search Posts'
+api: 'POST /v2/content'
+description: 'Search for posts using keywords and advanced filters.'
+---
+
+## Overview
+
+Search for posts using keywords with optional filters by author, company, industry, date, mentions, and more. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="keyword" type="string">
+      The search keyword or phrase. Multi-value supported via array (e.g. `["AI", "agents"]`).
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of posts to return. Defaults to `10`. **Capped at `1000`** per call.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Zero-indexed offset into the search results. Defaults to `0`. Use `pagination.next_offset` from a previous response to fetch the next page.
+    </ParamField>
+    <ParamField body="post_type" type="string">Filter by content type (e.g. `"VIDEOS"`, `"IMAGES"`, `"ARTICLES"`).</ParamField>
+    <ParamField body="sort_by" type="string" default="date_posted">Sort order: `"date_posted"` (default) or `"relevance"`.</ParamField>
+    <ParamField body="post_date" type="string">Filter by date range (e.g. `"past-24h"`, `"past-week"`, `"past-month"`).</ParamField>
+    <ParamField body="profile_url" type="string">Filter posts authored by a specific profile. Also accepts `linkedin_url`.</ParamField>
+    <ParamField body="company_url" type="string">Filter posts authored by a specific company page.</ParamField>
+    <ParamField body="author_company" type="string">Filter by the author's current company.</ParamField>
+    <ParamField body="author_industry" type="string">Filter by the author's industry.</ParamField>
+    <ParamField body="author_job_title" type="string">Filter by the author's job title.</ParamField>
+    <ParamField body="mentions_member" type="string">Filter posts that mention a specific member.</ParamField>
+    <ParamField body="mentions_organization" type="string">Filter posts that mention a specific organization.</ParamField>
+    <ParamField body="posted_by" type="string">Filter by author network: `"first"`, `"following"`, or `"first,following"`.</ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "search",
+  "params": {
+    "keyword": "artificial intelligence",
+    "sort_by": "date_posted",
+    "count": 50,
+    "offset": 0,
+    "author_industry": "Technology",
+    "post_date": "past-week"
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "search",
+  "params": {
+    "keyword": "artificial intelligence",
+    "count": 50,
+    "offset": 50
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="posts" type="array">
+      List of matching posts.
+      <Expandable title="post properties">
+        <ResponseField name="backend_urn" type="string">LinkedIn activity URN (e.g. `urn:li:activity:7454082992819519488`).</ResponseField>
+        <ResponseField name="shareUrl" type="string">Public share URL of the post.</ResponseField>
+        <ResponseField name="text" type="string">Plain-text content of the post.</ResponseField>
+        <ResponseField name="numLikes" type="integer">Reaction count.</ResponseField>
+        <ResponseField name="numComments" type="integer">Comment count.</ResponseField>
+        <ResponseField name="numShares" type="integer">Share count.</ResponseField>
+        <ResponseField name="actor_name" type="string">Author display name.</ResponseField>
+        <ResponseField name="actor_description" type="string">Author headline.</ResponseField>
+        <ResponseField name="actor_image" type="string">Author profile picture URL.</ResponseField>
+        <ResponseField name="actor_profile_url" type="string">Author LinkedIn profile URL.</ResponseField>
+        <ResponseField name="created_time" type="integer">Post creation Unix epoch (seconds).</ResponseField>
+        <ResponseField name="post_images" type="array">List of attached image URLs.</ResponseField>
+        <ResponseField name="shareAudience" type="string">Audience scope (e.g. `"PUBLIC"`).</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of posts returned in this response.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of posts matching the query reported by LinkedIn.</ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="offset" type="integer">Offset of the first post in this response.</ResponseField>
+        <ResponseField name="count" type="integer">Number of posts returned (mirrors `total_results`).</ResponseField>
+        <ResponseField name="next_offset" type="integer">Offset to send as `offset` in the next request. `null` when exhausted.</ResponseField>
+        <ResponseField name="has_more" type="boolean">`true` if more posts are available.</ResponseField>
+        <ResponseField name="results_per_page" type="integer">Maximum batch size used per upstream request.</ResponseField>
+        <ResponseField name="pages_fetched" type="integer">Number of internal upstream batches consumed.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"search"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1 per 10 results).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "posts": [
+      {
+        "backend_urn": "urn:li:activity:7454082992819519488",
+        "shareUrl": "https://www.linkedin.com/posts/jane-doe-42_post-activity-7454082992819519488-lXYU",
+        "text": "Exciting developments in artificial intelligence this week...",
+        "numLikes": 234,
+        "numComments": 45,
+        "numShares": 12,
+        "actor_name": "Jane Doe",
+        "actor_description": "AI Researcher at Acme Corp",
+        "actor_image": "https://media.licdn.com/dms/image/v2/.../profile.jpg",
+        "actor_profile_url": "https://www.linkedin.com/in/jane-doe-42",
+        "created_time": 1777191911,
+        "post_images": [],
+        "shareAudience": "PUBLIC"
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 1240,
+    "pagination": {
+      "offset": 0,
+      "count": 1,
+      "next_offset": 1,
+      "has_more": true,
+      "results_per_page": 50,
+      "pages_fetched": 1
+    }
+  },
+  "metadata": {
+    "action": "search",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "At least one search filter is required."
+  },
+  "metadata": {
+    "action": "search",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

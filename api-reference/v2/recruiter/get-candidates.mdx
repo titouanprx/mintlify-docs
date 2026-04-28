@@ -1,0 +1,178 @@
+---
+title: 'Get Job Candidates'
+api: 'POST /v2/recruiter'
+description: 'Retrieve candidates who applied to a specific job posting.'
+---
+
+## Overview
+
+Returns the candidates who applied to a specific job posting. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 candidates per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+
+## Request
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_candidates"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="job_id" type="string" required>
+      The numeric LinkedIn job ID to retrieve candidates for.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of candidates to return. Defaults to `10`. **Capped at `1000`** per call.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Zero-indexed offset into the candidates list. Defaults to `0`. Use `pagination.next_offset` from a previous response to fetch the next page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json First page
+{
+  "account_id": "your-account-id",
+  "action": "get_candidates",
+  "params": {
+    "job_id": "4178681638",
+    "count": 50,
+    "offset": 0
+  }
+}
+```
+
+```json Next page
+{
+  "account_id": "your-account-id",
+  "action": "get_candidates",
+  "params": {
+    "job_id": "4178681638",
+    "count": 50,
+    "offset": 50
+  }
+}
+```
+</RequestExample>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="candidates" type="array">
+      List of candidates.
+      <Expandable title="candidate properties">
+        <ResponseField name="application_id" type="string">Unique application ID — use it with `get_cv`.</ResponseField>
+        <ResponseField name="rating" type="string">Recruiter rating: `"UNRATED"`, `"GOOD"`, `"MAYBE"`, `"NOT_A_FIT"`.</ResponseField>
+        <ResponseField name="is_top_choice" type="boolean">`true` when the candidate marked the job as a top choice.</ResponseField>
+        <ResponseField name="top_choice_message" type="string">Optional message left by the candidate.</ResponseField>
+        <ResponseField name="first_name" type="string">First name.</ResponseField>
+        <ResponseField name="last_name" type="string">Last name.</ResponseField>
+        <ResponseField name="full_name" type="string">Full name.</ResponseField>
+        <ResponseField name="headline" type="string">LinkedIn headline.</ResponseField>
+        <ResponseField name="public_identifier" type="string">Vanity slug.</ResponseField>
+        <ResponseField name="profile_url" type="string">LinkedIn profile URL.</ResponseField>
+        <ResponseField name="location" type="string">Candidate location.</ResponseField>
+        <ResponseField name="experiences" type="array">
+          Work experience entries with `title`, `company`, `company_url`, `date_range` (e.g. `"2/2025 - 7/2025"`), `description`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of candidates returned in this response.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of candidates that applied to the job.</ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="offset" type="integer">Offset of the first candidate in this response.</ResponseField>
+        <ResponseField name="count" type="integer">Number of candidates returned (mirrors `total_results`).</ResponseField>
+        <ResponseField name="next_offset" type="integer">Offset to send as `offset` in the next request. `null` when exhausted.</ResponseField>
+        <ResponseField name="has_more" type="boolean">`true` if more candidates are available.</ResponseField>
+        <ResponseField name="results_per_page" type="integer">Maximum batch size used per upstream request (50).</ResponseField>
+        <ResponseField name="pages_fetched" type="integer">Number of internal upstream batches consumed.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_candidates"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1 per 10 results).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "candidates": [
+      {
+        "application_id": "26905743894",
+        "rating": "UNRATED",
+        "is_top_choice": false,
+        "top_choice_message": "",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "full_name": "Jane Doe",
+        "headline": "Digital Marketing Strategist | SEO, SEM & Analytics",
+        "public_identifier": "jane-doe-42",
+        "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+        "location": "Paris, France",
+        "experiences": [
+          {
+            "title": "Digital Marketing Intern",
+            "company": "Acme Corp",
+            "company_url": "https://www.linkedin.com/company/acme-corp/",
+            "date_range": "2/2025 - 7/2025",
+            "description": ""
+          }
+        ]
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 81,
+    "pagination": {
+      "offset": 0,
+      "count": 1,
+      "next_offset": 1,
+      "has_more": true,
+      "results_per_page": 50,
+      "pages_fetched": 1
+    }
+  },
+  "metadata": {
+    "action": "get_candidates",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "job_id is required."
+  },
+  "metadata": {
+    "action": "get_candidates",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

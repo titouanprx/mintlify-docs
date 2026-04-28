@@ -1,0 +1,42 @@
+---
+title: 'Build a LinkedIn Campaign'
+description: 'How to create automated LinkedIn outreach campaigns using the LinkupAPI'
+---
+
+This tutorial walks you through building a complete LinkedIn outreach campaign — from connecting an account to tracking replies. Whether you're building an AI agent, a SaaS product, or an internal tool, this flow is the foundation of any LinkedIn automation.
+
+<Tip>
+  We provide **Claude Code skills** in the [webapp](https://app.linkupapi.com/agent-skills) to help you integrate the LinkupAPI into your SaaS or solution. Install a skill and let Claude Code guide you through the implementation directly from your terminal.
+</Tip>
+
+## Campaign Flow Overview
+
+Here's the full lifecycle of an automated LinkedIn campaign:
+
+<Steps>
+  <Step title="Connect Account">
+    Authenticate a LinkedIn account via the Login endpoint.
+  </Step>
+  <Step title="Setup Webhooks">
+    Configure `accepted_invitation` and `message_received` events to receive real-time notifications.
+  </Step>
+  <Step title="Search Leads">
+    Find your target audience using profile search.
+  </Step>
+  <Step title="Send Invitations">
+    Send personalized connection requests with proper pacing.
+  </Step>
+  <Step title="Detect Accepted Invitations">
+    Your webhook receives an `accepted_invitation` event when someone accepts.
+  </Step>
+  <Step title="Send Message">
+    Message the new connection after a natural delay.
+  </Step>
+  <Step title="Track Replies">
+    Your webhook receives a `message_received` event when they respond.
+  </Step>
+  <Step title="Follow-Up Sequence">
+    Automatically follow up if no reply after a few days.
+  </Step>
+</Steps>
+

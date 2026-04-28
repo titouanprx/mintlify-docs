@@ -1,0 +1,77 @@
+---
+title: 'Stop Monitoring'
+api: 'POST /v2/webhooks/{webhook_id}/stop'
+description: 'Stop real-time monitoring for a webhook'
+---
+
+Stop real-time monitoring for a webhook's associated account. No more events will be sent to the webhook URL.
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Path Parameters
+
+<ParamField path="webhook_id" type="string" required>
+  The unique identifier of the webhook to stop monitoring for
+</ParamField>
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether monitoring was stopped successfully
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="webhook_id" type="string">
+      The webhook ID
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account that was being monitored
+    </ResponseField>
+    <ResponseField name="monitoring" type="boolean">
+      Always `false` on success
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "account_id": "69c127c37cae0494dd827286",
+    "monitoring": false
+  },
+  "metadata": {
+    "action": "stop_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Webhook Not Found
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Webhook not found"
+  },
+  "metadata": {
+    "action": "stop_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- Credit consumption stops when monitoring is stopped
+- You can restart monitoring at any time by calling `/v2/webhooks/{webhook_id}/start`
+- The webhook configuration is preserved — only monitoring is stopped
