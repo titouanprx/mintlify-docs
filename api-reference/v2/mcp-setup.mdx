@@ -1,0 +1,134 @@
+---
+title: "MCP Setup"
+description: "Connect LinkupAPI to Claude, ChatGPT, Gemini, Cursor, or any MCP-compatible LLM in under 2 minutes."
+---
+
+## What is MCP?
+
+The **Model Context Protocol (MCP)** lets LLMs call LinkupAPI directly — all LinkedIn and B2B intelligence tools become native capabilities of your AI assistant.
+
+## Endpoint
+
+```
+https://mcp.linkupapi.com/mcp
+```
+
+Two ways to authenticate:
+
+- **OAuth 2.1** (recommended) — approve access from the LinkupAPI dashboard, no key to paste. Supported by Claude, ChatGPT, Cursor, Gemini, VS Code, and most modern MCP clients.
+- **API key** — pass your key via the `x-api-key` header. Works everywhere, useful for headless setups or clients without OAuth.
+
+Get your API key at [app.linkupapi.com](https://app.linkupapi.com).
+
+## Claude (Desktop / Code)
+
+### Option 1 — OAuth (recommended)
+
+```bash
+claude mcp add --transport http linkupapi https://mcp.linkupapi.com/mcp
+```
+
+On first use, Claude opens `app.linkupapi.com/mcp/authorize` in your browser. Sign in and click **Authorize** — Claude is connected.
+
+### Option 2 — API key
+
+```bash
+claude mcp add --transport http linkupapi https://mcp.linkupapi.com/mcp --header "x-api-key: YOUR_API_KEY"
+```
+
+Restart Claude — all LinkupAPI tools are now available.
+
+## ChatGPT (Custom Connectors)
+
+In ChatGPT → **Settings → Connectors → Add custom connector**:
+
+- **Name:** LinkupAPI
+- **Server URL:** `https://mcp.linkupapi.com/mcp`
+- **Authentication:** choose **OAuth** to authorize from the dashboard, or **Custom header** with `x-api-key: YOUR_API_KEY`
+
+Save and enable the connector in your chat.
+
+## Cursor
+
+Add to `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project):
+
+```json
+{
+  "mcpServers": {
+    "linkupapi": {
+      "url": "https://mcp.linkupapi.com/mcp"
+    }
+  }
+}
+```
+
+Cursor auto-discovers OAuth on first use and opens the LinkupAPI authorize page. To skip OAuth and use an API key, add `"headers": { "x-api-key": "YOUR_API_KEY" }`.
+
+## Gemini (gemini-cli / Gemini Code Assist)
+
+Add to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "linkupapi": {
+      "httpUrl": "https://mcp.linkupapi.com/mcp"
+    }
+  }
+}
+```
+
+Restart Gemini — it triggers the OAuth flow automatically. For API key auth, add `"headers": { "x-api-key": "YOUR_API_KEY" }`.
+
+## VS Code (GitHub Copilot)
+
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "linkupapi": {
+      "type": "http",
+      "url": "https://mcp.linkupapi.com/mcp"
+    }
+  }
+}
+```
+
+Click **Auth** above the server entry to trigger OAuth in your browser. Tokens are stored in the OS keychain.
+
+## Windsurf / other clients without OAuth
+
+Windsurf's Cascade doesn't implement the MCP OAuth flow natively. Use API key auth:
+
+```json
+{
+  "mcpServers": {
+    "linkupapi": {
+      "url": "https://mcp.linkupapi.com/mcp",
+      "transport": "http",
+      "headers": {
+        "x-api-key": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+Or wrap the server with [`mcp-remote`](https://github.com/geelen/mcp-remote) to get OAuth via a stdio bridge.
+
+## Verify it works
+
+Ask your LLM: *"Validate the email elon.musk@tesla.com using LinkupAPI"*. It should call the `validate_email` tool and return a result.
+
+## Available tool categories
+
+- **LinkedIn Engagement** — login, search, connect, message, post, react, comment
+- **LinkedIn Data** — profile enrichment, company info, search
+- **Mail Intelligence** — find, validate, reverse lookup
+- **B2B Intelligence** — funded companies, hiring signals
+- **Recruiting** — candidates, CVs, job posts
+
+## Support
+
+Issues? Reach us at [support@linkupapi.com](mailto:support@linkupapi.com) or via the [dashboard support page](https://app.linkupapi.com/support).
