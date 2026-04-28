@@ -68,102 +68,143 @@ Webhooks support two delivery modes depending on your setup:
 
 ## Event Types
 
-| Event Type | Description |
-|---|---|
-| `message_received` | A new LinkedIn message was received |
-| `accepted_invitation` | One or more connection requests you sent were accepted |
-| `all` | Subscribe to all event types |
+| Subscription filter | Emitted `event.type` | Description |
+|---|---|---|
+| `message_received` | `"message"` | A new LinkedIn message was received |
+| `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
+| `all` | — | Subscribe to all event types |
 
 <Note>
-  By default, webhooks listen to **all** event types. You can filter specific events when creating the webhook.
+  By default, webhooks listen to **all** event types. You can filter specific events when creating the webhook by passing an `events` array.
+</Note>
+
+<Warning>
+  The subscription filter `message_received` is intentionally different from the actual `event.type` field, which is `"message"`. Filter against `message_received` when creating the webhook, but check `event.type === "message"` when parsing the payload.
+</Warning>
+
+<Note>
+  In addition to subscribed events, **every webhook also receives `disconnection` events** — this is not filterable. They fire whenever the underlying LinkedIn session expires so you can react (re-auth, alert, etc.).
 </Note>
 
 ## Event Payload Format
 
-All events share the same wrapper structure:
+All events share the same wrapper structure. Note that the outer `timestamp` is when the API emitted the event, while `event.timestamp` is when the underlying LinkedIn activity happened — they differ slightly (latency).
 
 ```json
 {
-  "account_id": "69c127c37cae0494dd827286",
-  "account_name": "My Account",
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
   "event": {
     "type": "...",
-    // event-specific fields
+    "timestamp": "2026-04-28T08:07:45.525693"
+    // event-specific fields below
   },
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2026-04-28T08:07:45.525853"
 }
 ```
 
 ### Message Received
 
-Triggered in real-time when a new LinkedIn message is received. The inner event `type` is `"message"`.
+Triggered in real-time when a new LinkedIn message is received via the LinkedIn realtime stream (sub-second latency). The inner event `type` is `"message"`.
 
 ```json
 {
-  "account_id": "69c127c37cae0494dd827286",
-  "account_name": "My Account",
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
   "event": {
     "type": "message",
-    "timestamp": "2025-01-15T10:30:00Z",
+    "timestamp": "2026-04-28T10:07:45.525693",
     "message_text": "Hello! I'd love to connect.",
     "sender": {
       "name": "John Doe",
-      "profile_url": "https://www.linkedin.com/in/johndoe"
+      "profile_url": "https://www.linkedin.com/in/ACoAAEMT_nsB5U1uon01_EjK9Yf4En52jDd2hGE"
     },
     "conversation": {
-      "entityUrn": "urn:li:messagingThread:2-abc123",
       "participants": [
-        { "name": "John Doe", "profile_url": "https://www.linkedin.com/in/johndoe" }
+        {
+          "name": "Your Name",
+          "profile_url": "https://www.linkedin.com/in/ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o"
+        },
+        {
+          "name": "John Doe",
+          "profile_url": "https://www.linkedin.com/in/ACoAAEMT_nsB5U1uon01_EjK9Yf4En52jDd2hGE"
+        }
       ],
-      "groupChat": false,
-      "unreadCount": 1,
-      "read": false
+      "is_group_chat": false,
+      "unread_count": 1
     },
-    "reply_to": null,
     "metadata": {
-      "entity_urn": "urn:li:messagingMessage:abc123",
-      "conversation_urn": "urn:li:messagingThread:2-abc123",
-      "delivered_at": 1705312200000,
+      "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MTc3NzM2MzY2NDkyMGI4MzE3Mi0xMDAmMDZiY2ExOTgtM2NjNy00OTU4LTgyNjUtZWFlMmIwZjM1NTlmXzEwMA==)",
+      "conversation_urn": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAADxnv0oB_dN-NfpvEBlsVPU_W1omM-Xu24o,2-MDZiY2ExOTgtM2NjNy00OTU4LTgyNjUtZWFlMmIwZjM1NTlmXzEwMA==)",
+      "delivered_at": 1777363664920,
       "read_status": false
     }
   },
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2026-04-28T08:07:45.525853"
 }
 ```
 
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.message_text` | `string` | Plain text content of the message |
+| `event.sender.name` | `string` | Display name of the sender |
+| `event.sender.profile_url` | `string` | LinkedIn URL of the sender (URN-style, not vanity) |
+| `event.conversation.participants` | `array` | All participants of the thread, sender included |
+| `event.conversation.is_group_chat` | `boolean` | `true` if 3+ participants |
+| `event.conversation.unread_count` | `integer` | Number of unread messages in the thread |
+| `event.reply_to` | `object?` | **Only present when the message is a reply.** Contains `message_text`, `sender_name`, `sender_profile_url`, `timestamp` of the original message. Omitted (not `null`) for non-reply messages. |
+| `event.metadata.entity_urn` | `string` | LinkedIn URN of the message |
+| `event.metadata.conversation_urn` | `string` | LinkedIn URN of the conversation thread |
+| `event.metadata.delivered_at` | `integer` | Unix milliseconds delivery time |
+| `event.metadata.read_status` | `boolean` | Whether the conversation is marked read |
+
 <Tip>
-  The `reply_to` field is populated when the message is a reply to a previous message. It contains the original message text, sender name, and profile URL.
+  When the message is a reply, an additional `event.reply_to` object is included with the original message details. For non-reply messages, the field is **omitted entirely** from the payload — don't expect a `null`.
 </Tip>
 
 ### Accepted Invitation
 
-Triggered when one or more connection requests you sent are accepted. Detected by polling the connections list every ~6 hours and diffing against the previously stored snapshot. The payload batches all new connections detected in the same check.
+Triggered when one or more connection requests you sent are accepted. Detected by a background worker that polls the connections list every ~6 hours and diffs against the previously stored snapshot. The payload batches all new connections detected in the same check.
 
 ```json
 {
-  "account_id": "69c127c37cae0494dd827286",
-  "account_name": "My Account",
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
   "event": {
     "type": "accepted_invitation",
-    "count": 2,
     "new_connections": [
       {
-        "profile_url": "https://www.linkedin.com/in/johndoe",
-        "name": "John Doe",
-        "headline": "CTO at Acme Corp",
-        "connected_at": "2025-01-15T10:30:00Z"
+        "profile_url": "https://www.linkedin.com/in/maruthigudi/",
+        "name": "Maruthi Gudi",
+        "job_title": "Building High-Performance Tech & FinTech Teams | Headhunter @ HackerTrail",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/D4E03AQEEUE9iAq2LXA/profile-displayphoto-shrink_100_100/B4EZYY8bulGYAU-/0/1744175218426"
       },
       {
-        "profile_url": "https://www.linkedin.com/in/janedoe",
-        "name": "Jane Doe",
-        "headline": "VP Engineering at Globex",
-        "connected_at": "2025-01-15T10:30:00Z"
+        "profile_url": "https://www.linkedin.com/in/musokeshaibu/",
+        "name": "Musoke Shaibu",
+        "job_title": "Building the definitive operating system for sales, marketing, and research.",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/D4D03AQGCOZ3SrVT5Tg/profile-displayphoto-shrink_200_200/B4DZZtP29UGcAY-/0/1745589597790"
       }
-    ]
+    ],
+    "count": 2,
+    "timestamp": "2026-04-27T14:52:59.970134"
   },
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2026-04-27T14:52:59.970144"
 }
 ```
+
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.new_connections` | `array` | Profiles that accepted your connection request since the last check |
+| `event.new_connections[].profile_url` | `string` | LinkedIn vanity URL of the connection |
+| `event.new_connections[].name` | `string` | Display name |
+| `event.new_connections[].job_title` | `string \| null` | Headline / current role as shown on LinkedIn |
+| `event.new_connections[].profile_picture` | `string \| null` | CDN URL of the profile picture (may expire) |
+| `event.count` | `integer` | Length of `new_connections` |
 
 <Note>
   When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. The first detection check then runs ~6 hours later and every 6 hours thereafter.
@@ -171,31 +212,30 @@ Triggered when one or more connection requests you sent are accepted. Detected b
 
 ### Disconnection
 
-Triggered when the account's LinkedIn session expires or becomes invalid.
+Triggered when the account's LinkedIn session expires, the cookie is invalidated, or the user logs out. Sent to **every** webhook attached to the account regardless of subscription filters.
 
 ```json
 {
-  "account_id": "69c127c37cae0494dd827286",
-  "account_name": "My Account",
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
   "event": {
     "type": "disconnection",
-    "reason": "LinkedIn cookie invalid or expired"
+    "reason": "LinkedIn cookie invalid or expired",
+    "timestamp": "2026-04-28T09:15:30.123456"
   },
-  "timestamp": "2025-01-15T10:30:00Z"
+  "timestamp": "2026-04-28T09:15:30.123456"
 }
 ```
 
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.reason` | `string` | Human-readable cause (e.g. `"Token expired (detected after 10 reconnections)"`, `"LinkedIn cookie invalid or expired"`) |
+
 <Warning>
-  When you receive a disconnection event, monitoring stops automatically. You need to re-authenticate the account via `POST /v2/login` and restart monitoring.
+  When you receive a disconnection event, monitoring stops automatically and every webhook attached to the account is paused (with `auto_paused: true`). You need to re-authenticate the account via `POST /v2/login` (or `POST /v2/checkpoint` if a 2FA is required) — paused webhooks are auto-restarted on a successful re-login.
 </Warning>
-
-## Credit Usage
-
-Webhook monitoring consumes **10 credits per day** per active account (1 credit every 144 minutes). Credits are consumed as long as monitoring is active.
-
-- Creating, updating, or deleting webhooks costs **0 credits**
-- SSE streaming and polling cost **0 credits**
-- Only the monitoring itself (the connection to LinkedIn) costs credits
 
 ## Architecture
 

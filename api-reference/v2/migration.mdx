@@ -1,32 +1,57 @@
 ---
-title: 'Migration from V1'
-description: 'Step-by-step guide to migrate your integration from V1 to V2'
+title: 'Migration from V1 to V2'
+description: 'Complete guide to migrate your LinkupAPI integration from V1.x to V2'
 ---
 
 This guide walks you through every change needed to migrate your existing V1 integration to V2. The V2 API is fully backward-compatible in terms of data — the same data is returned, just in a standardized wrapper.
 
-## Overview of Changes
+<Info>
+  **V1 will be deprecated.** We recommend migrating to V2 as soon as possible. V1 endpoints will continue to work during the transition period, but all new features are V2-only.
+</Info>
+
+<Tip>
+  A **Claude Code skill** is available in the [webapp](https://app.linkupapi.com/agent-skills) to automatically migrate your codebase from V1 to V2. Install it and run the migration directly from your terminal.
+</Tip>
+
+## What Changed (TL;DR)
 
 <CardGroup cols={2}>
   <Card title="No more login_token" icon="key">
-    V1 required a `login_token` and `country` in every request. V2 replaces this with a single `account_id` — your credentials are securely stored server-side.
+    V1 required a `login_token` and `country` in every request. V2 replaces this with a single `account_id`.
   </Card>
   <Card title="One endpoint per category" icon="bolt">
-    V1 had a different URL for each action (e.g. `/v1/profile/me`, `/v1/profile/info`). V2 uses one URL per category with the `action` in the request body.
+    V1 had a different URL for each action (e.g. `/v1/profile/me`, `/v1/profile/info`). V2 uses one URL per category with an `action` field in the body.
   </Card>
   <Card title="Standardized responses" icon="check">
     V1 responses varied between endpoints. V2 always returns `success`, `data`/`error`, and `metadata` — no more guessing the format.
   </Card>
   <Card title="Proper HTTP status codes" icon="shield">
-    V1 returned 200 for most errors. V2 uses correct HTTP status codes (400, 403, 404, 402, 429, 500).
+    V1 returned 200 for most errors. V2 uses correct HTTP status codes (400, 402, 403, 404, 429, 500).
   </Card>
 </CardGroup>
 
-## Step 1: Connect Your Account
+### New in V2 Only
 
-In V1, you passed `login_token` in every request. In V2, you connect your account once and get an `account_id`.
+These features have **no V1 equivalent** — they are only available in V2:
 
-**Option A: Login with credentials**
+| Feature | Endpoint | Description |
+|---|---|---|
+| **Webhooks for invitations** | `POST /v2/webhooks` → `accepted_invitation` | Get notified in real-time when someone accepts your invitation |
+| **Account logs** | `GET /v2/accounts/{id}` | Monitor account status, activity, and connection health |
+| **Simplified account management** | `GET /v2/accounts` | List, inspect, and manage all connected accounts from a single endpoint |
+| **Hosted Webhooks** | `POST /v2/webhooks` (no `url`) | Built-in SSE stream + polling — no server required |
+| **Webhook Event Filter** | `POST /v2/webhooks` → `events` | Subscribe to specific event types only |
+
+---
+
+## Step-by-Step Migration
+
+### Step 1 — Connect Your Account
+
+In V1, you obtained a `login_token` from `/v1/auth/login` and passed it in every request along with `country`. In V2, you connect your account **once** and receive a persistent `account_id`.
+
+<Tabs>
+  <Tab title="Option A: Fresh login">
 ```json
 POST /v2/login
 {
@@ -35,10 +60,10 @@ POST /v2/login
   "password": "your_password",
   "country": "FR"
 }
-// Returns: { "data": { "account_id": "69c127...", "status": "connected" } }
+// → { "data": { "account_id": "69c127...", "status": "connected" } }
 ```
-
-**Option B: Import your existing token**
+  </Tab>
+  <Tab title="Option B: Import existing V1 token">
 ```json
 POST /v2/login
 {
@@ -46,14 +71,58 @@ POST /v2/login
   "login_token": "your_existing_v1_token",
   "country": "FR"
 }
-// Returns: { "data": { "account_id": "69c127...", "status": "connected" } }
+// → { "data": { "account_id": "69c127...", "status": "connected" } }
+```
+  </Tab>
+</Tabs>
+
+Save the `account_id` — you'll use it in **all** V2 requests. You no longer need to store or manage `login_token` or `country`.
+
+<Warning>
+  If the response returns `"status": "checkpoint_required"`, call `POST /v2/checkpoint` with the verification code sent to your email. This replaces `POST /v1/auth/verify`.
+</Warning>
+
+<Note>
+  Re-calling `/v2/login` with an already migrated token returns the same `account_id` — the call is idempotent and free.
+</Note>
+
+#### Batch Migration (SaaS with many accounts)
+
+If you have hundreds of `login_token` values stored in your database, migrate them **before** changing code:
+
+1. Add `account_id` and `migration_status` columns to your accounts table
+2. Iterate all rows, call `POST /v2/login` with `{ "login_token": "...", "country": "..." }` for each
+3. Handle outcomes per row:
+   - `connected` → save `account_id`, mark migrated
+   - error (expired token) → mark failed, user must re-auth
+4. Add 0.5–2s random delay between calls
+5. Switch code to use `account_id` only after batch is complete
+6. Drop `login_token` / `country` columns once V2 is fully deployed
+
+---
+
+### Step 2 — Update Request Format
+
+Every V2 action endpoint uses the same structure:
+
+```json
+POST /v2/{category}
+{
+  "account_id": "69c127c37cae0494dd827286",
+  "action": "action_name",
+  "params": {
+    "key": "value"
+  }
+}
 ```
 
-Save the `account_id` — you'll use it in all V2 requests.
-
-## Step 2: Update Request Format
-
-Replace your V1 requests with the V2 action-based format.
+**What to change in your code:**
+1. **Remove** `login_token` and `country` from every request body
+2. **Add** `account_id` at the root level
+3. **Add** `action` to specify what to do
+4. **Move** all other parameters inside a `params` object
+5. **Rename** `linkedin_url` → `profile_url`, `message` → `message_text` (send message)
+6. **Convert search filters from strings to arrays** (see below)
 
 <Tabs>
   <Tab title="V1 (before)">
@@ -80,189 +149,214 @@ POST /v2/profiles
   </Tab>
 </Tabs>
 
-Key differences:
-- **Remove** `login_token` and `country` — replaced by `account_id`
-- **Add** `action` field to specify what to do
-- **Wrap** all other parameters inside `params`
-- **Rename** `linkedin_url` → `profile_url` (the old name still works as an alias)
+#### Search Filters: Strings → Arrays
 
-## Step 3: Update Response Parsing
+In V1, multi-value search filters used semicolons or commas as separators. In V2, pass **proper arrays**.
+
+This applies to `search_people` and `search_companies` — affected parameters: `location`, `company_url`, `school_url`, `industry`, `network`, `past_company`, `sector`, `company_size`.
 
 <Tabs>
-  <Tab title="V1 Response">
+  <Tab title="V1 (before)">
 ```json
 {
-  "status": "success",
-  "data": {
-    "first_name": "John",
-    "last_name": "Doe"
-  }
+  "keyword": "CTO",
+  "location": "Paris;London;New York",
+  "network": "F,S"
 }
 ```
   </Tab>
-  <Tab title="V2 Response">
+  <Tab title="V2 (after)">
 ```json
 {
-  "success": true,
-  "data": {
-    "first_name": "John",
-    "last_name": "Doe"
-  },
-  "metadata": {
-    "action": "get",
-    "account_id": "69c127c37cae0494dd827286",
-    "credits_consumed": 1,
-    "timestamp": "2025-01-15T10:30:00Z"
-  }
+  "keyword": "CTO",
+  "location": ["Paris", "London", "New York"],
+  "network": ["F", "S"]
 }
 ```
   </Tab>
 </Tabs>
 
-Key differences:
-- `"status": "success"` → `"success": true`
-- New `metadata` field with action, credits consumed, and timestamp
-- Errors now always have `"success": false` + `"error": { "code": "...", "message": "..." }`
-- The `data` field contains the same data as V1
+<Tip>
+  Single values still work as plain strings — you only need arrays when passing multiple values.
+</Tip>
 
-## Step 4: Update Error Handling
+---
+
+### Step 3 — Update Response Parsing
+
+V1 responses had inconsistent formats across endpoints. V2 unifies everything:
+
+- Success: `{ "success": true, "data": { ... }, "metadata": { "action", "account_id", "credits_consumed", "timestamp" } }`
+- Error: `{ "success": false, "error": { "code": "...", "message": "..." }, "metadata": { ... } }`
+
+**What to change:**
+- `data["status"] == "success"` → `data["success"] == True`
+- Errors: use `data["error"]["code"]` and `data["error"]["message"]`
+- `metadata.credits_consumed` is always present — use it for credit tracking
+- Remove any per-endpoint parsing workarounds
+
+---
+
+### Step 4 — Update Error Handling
+
+V2 uses real HTTP status codes — V1 returned 200 for almost everything.
+
+| Code | HTTP Status | What To Do |
+|---|---|---|
+| `INVALID_API_KEY` | 403 | Check your API key |
+| `INVALID_ACCOUNT` | 404 | Call `GET /v2/accounts` to list valid IDs |
+| `ACCOUNT_INACTIVE` | 403 | Re-login via `POST /v2/login` |
+| `INVALID_ACTION` | 400 | Check docs for valid actions |
+| `INVALID_PARAMS` | 400 | Read `error.message` for details |
+| `RATE_LIMITED` | 429 | Implement exponential backoff |
+| `INSUFFICIENT_CREDITS` | 402 | Top up at [app.linkupapi.com](https://app.linkupapi.com) |
+| `CHANNEL_ERROR` | varies | Retry or check the platform directly |
+| `INTERNAL_ERROR` | 500 | Retry after a few seconds |
+
+<Note>
+  Errors **never consume credits** in V2.
+</Note>
+
+---
+
+### Step 5 — Migrate Webhooks
+
+In V1, webhooks were standalone "webhook accounts" with their own `login_token`. In V2, webhooks are **configurations attached to existing accounts**.
 
 <Tabs>
-  <Tab title="V1 Error">
+  <Tab title="V1 (before)">
 ```json
-// HTTP 200 (always)
+POST /v1/webhooks/accounts
 {
-  "status": "error",
-  "message": "LinkedIn cookie invalid or expired"
+  "platform": "linkedin",
+  "login_token": "AQED...",
+  "webhook_url": "https://your-server.com/webhook",
+  "country": "FR"
 }
 ```
   </Tab>
-  <Tab title="V2 Error">
+  <Tab title="V2 (after)">
 ```json
-// HTTP 403
+POST /v2/webhooks
 {
-  "success": false,
-  "error": {
-    "code": "ACCOUNT_INACTIVE",
-    "message": "LinkedIn cookie invalid or expired"
-  },
-  "metadata": {
-    "action": "get",
-    "credits_consumed": 0,
-    "timestamp": "2025-01-15T10:30:00Z"
-  }
+  "account_id": "69c127c37cae0494dd827286",
+  "url": "https://your-server.com/webhook",
+  "events": ["message_received", "accepted_invitation"]
 }
 ```
   </Tab>
 </Tabs>
 
-In V2, you can rely on:
-- **HTTP status codes** to detect errors (4xx/5xx)
-- **`success` field** as a boolean check
-- **`error.code`** for programmatic error handling (e.g. `ACCOUNT_INACTIVE`, `INVALID_PARAMS`)
+**Key changes:**
+- No more separate "webhook accounts" — reuse your existing `account_id`
+- `webhook_url` → `url`
+- Filter events with the `events` array: `["message_received", "accepted_invitation", "disconnection"]`
+- Start/stop: `/v1/webhooks/accounts/{id}/start` → `/v2/webhooks/{id}/start`
+- Status: replace `GET .../status` with the `is_active` field on `GET /v2/webhooks`
+- New **hosted mode**: omit `url` to get a built-in SSE stream + polling endpoint (no server needed)
 
-## Endpoint Mapping
+---
 
-### Profiles
-
-| V1 Endpoint | V2 Action | Notes |
-|---|---|---|
-| `POST /v1/profile/me` | `POST /v2/profiles` → `get_me` | |
-| `POST /v1/profile/info` | `POST /v2/profiles` → `get` | `linkedin_url` → `profile_url` |
-| `POST /v1/profile/contact` | `POST /v2/profiles` → `get_contact` | `linkedin_url` → `profile_url` |
-| `POST /v1/profile/visit` | `POST /v2/profiles` → `visit` | `linkedin_url` → `profile_url` |
-| `POST /v1/profile/search` | `POST /v2/profiles` → `search_people` | Same filters |
-| `POST /v1/companies/search` | `POST /v2/profiles` → `search_companies` | |
-| `POST /v1/companies/info` | `POST /v2/profiles` → `get_company` | `company_url` unchanged |
-
-### Messages
-
-| V1 Endpoint | V2 Action | Notes |
-|---|---|---|
-| `POST /v1/messages/send-message` | `POST /v2/messages` → `send` | `linkedin_url` → `profile_url` |
-| `POST /v1/messages/inbox` | `POST /v2/messages` → `list_inbox` | New: `category` filter, cursor pagination |
-| `POST /v1/messages/conversation` | `POST /v2/messages` → `get_conversation` | Can also resolve by `profile_url` |
-
-### Network
-
-| V1 Endpoint | V2 Action | Notes |
-|---|---|---|
-| `POST /v1/network/connect` | `POST /v2/network` → `invite` | `linkedin_url` → `profile_url` |
-| `POST /v1/network/accept-invitation` | `POST /v2/network` → `accept` | |
-| `POST /v1/network/connections` | `POST /v2/network` → `list_connections` | |
-| `POST /v1/network/invitations` | `POST /v2/network` → `list_invitations` | New: `invitation_type` filter |
-| `POST /v1/network/sent-invitations` | `POST /v2/network` → `list_sent` | New: `invitation_type` filter |
-| `POST /v1/network/withdraw` | `POST /v2/network` → `withdraw` | |
-| `POST /v1/network/invitation-status` | `POST /v2/network` → `check_invitation` | `linkedin_url` → `profile_url` |
-| `POST /v1/network/recommendations` | `POST /v2/network` → `recommendations` | |
-
-### Content & Posts
-
-| V1 Endpoint | V2 Action | Notes |
-|---|---|---|
-| `POST /v1/posts/create` | `POST /v2/content` → `create` | |
-| `POST /v1/posts/create-company` | `POST /v2/content` → `create_company` | |
-| `POST /v1/posts/search` | `POST /v2/content` → `search` | |
-| `POST /v1/posts/feed` | `POST /v2/content` → `get_feed` | |
-| `POST /v1/posts/like` | `POST /v2/content` → `like` | |
-| `POST /v1/posts/react` | `POST /v2/content` → `react` | |
-| `POST /v1/posts/comment` | `POST /v2/content` → `comment` | |
-| `POST /v1/posts/answer-comment` | `POST /v2/content` → `answer_comment` | |
-| `POST /v1/posts/repost` | `POST /v2/content` → `repost` | |
-| `POST /v1/posts/extract-comments` | `POST /v2/content` → `get_comments` | |
-| `POST /v1/posts/reactions` | `POST /v2/content` → `get_reactions` | |
-| `POST /v1/posts/time-spent` | `POST /v2/content` → `time_spent` | |
-
-### Recruiter
-
-| V1 Endpoint | V2 Action | Notes |
-|---|---|---|
-| `POST /v1/recruiter/posts` | `POST /v2/recruiter` → `get_posts` | |
-| `POST /v1/recruiter/candidates` | `POST /v2/recruiter` → `get_candidates` | |
-| `POST /v1/recruiter/cv` | `POST /v2/recruiter` → `get_cv` | |
-| `POST /v1/recruiter/close` | `POST /v2/recruiter` → `close_job` | |
-| `POST /v1/recruiter/publish` | `POST /v2/recruiter` → `publish_job` | |
+## Complete Endpoint Mapping
 
 ### Authentication
 
-| V1 Endpoint | V2 Endpoint | Notes |
-|---|---|---|
-| `POST /v1/auth/login` | `POST /v2/login` | Returns `account_id` instead of `login_token` |
-| `POST /v1/auth/verify` | `POST /v2/checkpoint` | Uses `account_id` instead of `email` |
+| V1 Endpoint | V2 Endpoint |
+|---|---|
+| `POST /v1/auth/login` | `POST /v2/login` |
+| `POST /v1/auth/verify` | `POST /v2/checkpoint` |
+| — | `GET /v2/accounts` (new) |
+| — | `GET /v2/accounts/{id}` (new) |
 
-### Webhooks (Real-Time)
+### Profiles
 
-In V1, webhook accounts were standalone resources with their own `login_token`. In V2, webhooks are **configurations attached to existing accounts**.
+| V1 Endpoint | V2 Action |
+|---|---|
+| `POST /v1/profile/me` | `POST /v2/profiles` → `get_me` |
+| `POST /v1/profile/info` | `POST /v2/profiles` → `get` |
+| `POST /v1/profile/contact` | `POST /v2/profiles` → `get_contact` |
+| `POST /v1/profile/visit` | `POST /v2/profiles` → `visit` |
+| `POST /v1/profile/search` | `POST /v2/profiles` → `search_people` |
+| `POST /v1/companies/search` | `POST /v2/profiles` → `search_companies` |
+| `POST /v1/companies/info` | `POST /v2/profiles` → `get_company` |
 
-| V1 Endpoint | V2 Endpoint | Notes |
-|---|---|---|
-| `POST /v1/webhooks/accounts` | `POST /v2/webhooks` | No more `login_token` — uses existing `account_id` |
-| `GET /v1/webhooks/accounts` | `GET /v2/webhooks` | Returns webhook configs, not accounts |
-| `PUT /v1/webhooks/accounts/{id}` | `PUT /v2/webhooks/{id}` | Update URL, events, or active status |
-| `DELETE /v1/webhooks/accounts/{id}` | `DELETE /v2/webhooks/{id}` | Deletes webhook only, not the account |
-| `POST /v1/webhooks/accounts/{id}/start` | `POST /v2/webhooks/{id}/start` | Same behavior |
-| `POST /v1/webhooks/accounts/{id}/stop` | `POST /v2/webhooks/{id}/stop` | Same behavior |
-| `GET /v1/webhooks/accounts/{id}/status` | — | Check `is_active` from `GET /v2/webhooks` |
+### Messages
 
-<Note>
-  In V2, you no longer create a separate "webhook account". Instead, connect your account via `POST /v2/login`, then create a webhook configuration that references that `account_id`.
-</Note>
+| V1 Endpoint | V2 Action |
+|---|---|
+| `POST /v1/messages/send-message` | `POST /v2/messages` → `send` |
+| `POST /v1/messages/inbox` | `POST /v2/messages` → `list_inbox` |
+| `POST /v1/messages/conversation` | `POST /v2/messages` → `get_conversation` |
 
-## Parameter Aliases
+### Network
 
-For an easier migration, all V2 endpoints accept both old and new parameter names:
+| V1 Endpoint | V2 Action |
+|---|---|
+| `POST /v1/network/connect` | `POST /v2/network` → `invite` |
+| `POST /v1/network/accept-invitation` | `POST /v2/network` → `accept` |
+| `POST /v1/network/connections` | `POST /v2/network` → `list_connections` |
+| `POST /v1/network/invitations` | `POST /v2/network` → `list_invitations` |
+| `POST /v1/network/sent-invitations` | `POST /v2/network` → `list_sent` |
+| `POST /v1/network/withdraw` | `POST /v2/network` → `withdraw` |
+| `POST /v1/network/invitation-status` | `POST /v2/network` → `check_invitation` |
+| `POST /v1/network/get-network-recommendations` | `POST /v2/network` → `recommendations` |
 
-| V1 Parameter | V2 Parameter | Both accepted? |
-|---|---|---|
-| `linkedin_url` | `profile_url` | Yes |
-| `total_results` | `total_results` | Same |
-| `start_page` / `end_page` | `start_page` / `end_page` | Same |
+### Content & Posts
+
+| V1 Endpoint | V2 Action |
+|---|---|
+| `POST /v1/posts/create` | `POST /v2/content` → `create` |
+| `POST /v1/posts/create-company` | `POST /v2/content` → `create_company` |
+| `POST /v1/posts/search` | `POST /v2/content` → `search` |
+| `POST /v1/posts/feed` | `POST /v2/content` → `get_feed` |
+| `POST /v1/posts/like` | `POST /v2/content` → `like` |
+| `POST /v1/posts/react` | `POST /v2/content` → `react` |
+| `POST /v1/posts/comment` | `POST /v2/content` → `comment` |
+| `POST /v1/posts/answer-comment` | `POST /v2/content` → `answer_comment` |
+| `POST /v1/posts/repost` | `POST /v2/content` → `repost` |
+| `POST /v1/posts/extract-comments` | `POST /v2/content` → `get_comments` |
+| `POST /v1/posts/reactions` | `POST /v2/content` → `get_reactions` |
+| `POST /v1/posts/time-spent` | `POST /v2/content` → `time_spent` |
+
+### Recruiter
+
+| V1 Endpoint | V2 Action |
+|---|---|
+| `POST /v1/recruiter/posts` | `POST /v2/recruiter` → `get_posts` |
+| `POST /v1/recruiter/get-candidate` | `POST /v2/recruiter` → `get_candidates` |
+| `POST /v1/recruiter/cv` | `POST /v2/recruiter` → `get_cv` |
+| `POST /v1/recruiter/publish` | `POST /v2/recruiter` → `publish_job` |
+| `POST /v1/recruiter/close` | `POST /v2/recruiter` → `close_job` |
+
+### Email / Enrichment
+
+| V1 Endpoint | V2 Action |
+|---|---|
+| `POST /v1/data/mail/finder` | `POST /v2/enrich` → `find_email` |
+| `POST /v1/data/mail/reverse` | `POST /v2/enrich` → `reverse_email` |
+| `POST /v1/data/mail/validate` | `POST /v2/enrich` → `validate_email` |
+
+### Webhooks
+
+| V1 Endpoint | V2 Endpoint |
+|---|---|
+| `POST /v1/webhooks/accounts` | `POST /v2/webhooks` |
+| `GET /v1/webhooks/accounts` | `GET /v2/webhooks` |
+| `PUT /v1/webhooks/accounts/{id}` | `PUT /v2/webhooks/{id}` |
+| `DELETE /v1/webhooks/accounts/{id}` | `DELETE /v2/webhooks/{id}` |
+| `POST /v1/webhooks/.../start` | `POST /v2/webhooks/{id}/start` |
+| `POST /v1/webhooks/.../stop` | `POST /v2/webhooks/{id}/stop` |
+| `GET /v1/webhooks/.../status` | Check `is_active` on `GET /v2/webhooks` |
+| — | `GET /v2/webhooks/{id}/stream` (new: SSE) |
+| — | `GET /v2/webhooks/{id}/events` (new: polling) |
+
+---
 
 ## Quick Migration Checklist
 
 <Steps>
   <Step title="Connect your account">
-    Call `POST /v2/login` with your credentials or existing token to get an `account_id`.
+    Call `POST /v2/login` with your credentials or existing V1 token to get an `account_id`.
   </Step>
   <Step title="Replace login_token with account_id">
     Remove `login_token` and `country` from all requests. Add `account_id` instead.
@@ -273,10 +367,23 @@ For an easier migration, all V2 endpoints accept both old and new parameter name
   <Step title="Wrap params">
     Move all action parameters inside the `params` object.
   </Step>
+  <Step title="Rename parameters">
+    `linkedin_url` → `profile_url`, `message` → `message_text`. Convert search filter strings to arrays.
+  </Step>
   <Step title="Update response parsing">
-    Check `success` (boolean) instead of `status` (string). Access data via `data` field. Handle errors via `error.code`.
+    Check `success` (boolean) instead of `status` (string). Access data via `data` field.
   </Step>
   <Step title="Update error handling">
-    Use HTTP status codes and `error.code` for error handling instead of parsing error strings.
+    Use HTTP status codes and `error.code` for programmatic error handling.
+  </Step>
+  <Step title="Migrate webhooks">
+    Create webhook configs via `POST /v2/webhooks` with your existing `account_id`.
   </Step>
 </Steps>
+
+## Need Help?
+
+- Full V2 reference: [Introduction](/api-reference/v2/introduction)
+- Error codes: [Error Codes](/api-reference/v2/error-codes)
+- Best practices: [Platform Best Practices](/api-reference/v2/best-practices)
+- Email: [support@linkupapi.com](mailto:support@linkupapi.com)

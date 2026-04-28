@@ -6,12 +6,7 @@ description: 'Identify a person from their professional email address.'
 
 ## Overview
 
-Reverse-resolves a professional email address into a person's identity:
-
-1. **Parse** the local part with GPT to extract first name + last name + company domain
-2. **Search Google** if the parse only yielded a first name (e.g. `j.doe@...`) to find the full name
-3. **Locate the LinkedIn profile** via Google search using `name + company`
-4. **Extract the full LinkedIn profile** for the matched URL
+Reverse-resolves a professional email address into the matching LinkedIn profile, returning the person's full identity (name, headline, current company, profile URL, etc.).
 
 <Note>
 Only **professional** email addresses are accepted. Personal providers (Gmail, Yahoo, Hotmail, Outlook, iCloud, ProtonMail, free.fr, orange.fr, etc.) are rejected with `INVALID_PARAMS`.

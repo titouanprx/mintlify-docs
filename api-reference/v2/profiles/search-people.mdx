@@ -37,23 +37,23 @@ Search for profiles using a combination of keyword, company, location, school, a
     <ParamField body="company_name" type="string">
       Filter by current company name.
     </ParamField>
-    <ParamField body="company_url" type="string">
-      Filter by company page URL.
+    <ParamField body="company_url" type="string | string[]">
+      Filter by company page URL. Accepts a single string or an array of strings for multiple companies.
     </ParamField>
-    <ParamField body="past_company" type="string">
-      Filter by past company name or URL.
+    <ParamField body="past_company" type="string | string[]">
+      Filter by past company name or URL. Accepts a single string or an array.
     </ParamField>
-    <ParamField body="location" type="string">
-      Filter by location (e.g., `"San Francisco"`, `"France"`).
+    <ParamField body="location" type="string | string[]">
+      Filter by location (e.g., `"San Francisco"`, `["Paris", "London"]`). Accepts a single string or an array.
     </ParamField>
-    <ParamField body="school_url" type="string">
-      Filter by school page URL.
+    <ParamField body="school_url" type="string | string[]">
+      Filter by school page URL. Accepts a single string or an array.
     </ParamField>
-    <ParamField body="industry" type="string">
-      Filter by industry.
+    <ParamField body="industry" type="string | string[]">
+      Filter by industry. Accepts a single string or an array.
     </ParamField>
-    <ParamField body="network" type="string">
-      Filter by network relationship. Accepted values: `"F"` (1st degree), `"S"` (2nd degree), `"O"` (3rd degree and beyond).
+    <ParamField body="network" type="string | string[]">
+      Filter by network relationship. Accepted values: `"F"` (1st degree), `"S"` (2nd degree), `"O"` (3rd degree and beyond). Accepts a single string or an array (e.g., `["F", "S"]`).
     </ParamField>
     <ParamField body="connection_of" type="string">
       Filter to show connections of a specific profile (profile URL or identifier).

@@ -25,14 +25,14 @@ Search for company pages using keyword, location, sector, and size filters. Supp
     <ParamField body="keyword" type="string">
       General keyword to search for across company profiles.
     </ParamField>
-    <ParamField body="location" type="string">
-      Filter by company location (e.g., `"New York"`, `"Germany"`).
+    <ParamField body="location" type="string | string[]">
+      Filter by company location. Accepts a single string or an array (e.g., `["New York", "Germany"]`).
     </ParamField>
-    <ParamField body="sector" type="string">
-      Filter by industry sector.
+    <ParamField body="sector" type="string | string[]">
+      Filter by industry sector. Accepts a single string or an array.
     </ParamField>
-    <ParamField body="company_size" type="string">
-      Filter by company size range (e.g., `"11-50"`, `"201-500"`, `"10001+"`).
+    <ParamField body="company_size" type="string | string[]">
+      Filter by company size range. Accepts a single string or an array (e.g., `["11-50", "201-500"]`).
     </ParamField>
     <ParamField body="total_results" type="integer" default={10}>
       Total number of results to return. Defaults to `10`.

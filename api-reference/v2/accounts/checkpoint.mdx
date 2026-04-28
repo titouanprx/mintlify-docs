@@ -4,7 +4,7 @@ api: 'POST /v2/checkpoint'
 description: 'Submit a verification code to complete account connection'
 ---
 
-Submit a 2FA or verification code for an account that returned `checkpoint_required` during login.
+Complete 2FA verification for an account that returned `checkpoint_required` during login. Depending on the `challenge_type` used at login, either submit a verification code or simply confirm the app challenge.
 
 <Note>
   This endpoint costs **1 credit** per request.
@@ -22,8 +22,8 @@ Submit a 2FA or verification code for an account that returned `checkpoint_requi
   The account ID returned from the `/v2/login` endpoint with `checkpoint_required` status
 </ParamField>
 
-<ParamField body="code" type="string" required>
-  The verification code received via email or authenticator app
+<ParamField body="code" type="string">
+  The verification code received via email, SMS, or authenticator app. Required when `challenge_type` is `code_challenge`. Not needed for `app_challenge` — the user approves directly from the LinkedIn app.
 </ParamField>
 
 ### Response
@@ -90,8 +90,12 @@ Submit a 2FA or verification code for an account that returned `checkpoint_requi
 ```
 </ResponseExample>
 
+### Challenge Types
+
+- **`code_challenge`** — The user receives a verification code (email, SMS, or authenticator app). Submit the code in the `code` field.
+- **`app_challenge`** — The user approves the login directly from the LinkedIn mobile app. Once approved, call this endpoint with only the `account_id` (no `code` needed).
+
 ### Notes
-- The verification code is typically sent to the email associated with the account
 - If the session has expired, you need to call `/v2/login` again to restart the process
 - Once verified, the account status changes to `connected` and is ready for use
 - The `account_id` remains the same — no need to update your integration

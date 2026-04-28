@@ -10,7 +10,9 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 - **Without `url`** — Hosted mode: events are available via [SSE stream](/api-reference/v2/webhooks/stream) or [polling](/api-reference/v2/webhooks/events)
 
 <Note>
-  This endpoint costs **0 credits** — you only pay when monitoring is active (10 credits/day).
+  **Monitoring starts automatically.** As soon as the webhook is created, the account's real-time SSE stream is opened and credit billing begins (≈10 credits/day per account). You don't need to call [`/start`](/api-reference/v2/webhooks/start) — that endpoint is only used to resume a webhook that was previously stopped via [`/stop`](/api-reference/v2/webhooks/stop).
+
+  Calling `POST /v2/webhooks` itself costs **0 credits**; the running cost comes from the live monitoring it enables.
 </Note>
 
 ### Header Parameters
@@ -129,7 +131,8 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 </ResponseExample>
 
 ### Notes
-- The webhook is created in an **active but not monitoring** state — call `/v2/webhooks/{webhook_id}/start` to begin receiving events
-- You can create multiple webhooks for the same account with different event filters
-- For custom mode, the webhook URL must return a `200` status code to acknowledge receipt
-- When `accepted_invitation` is in the events list, the API performs an initial sync of your connections to enable detection of new acceptances
+- The webhook is created in an **active and monitoring** state — events start flowing immediately, no extra call required.
+- You can create multiple webhooks for the same account with different event filters. Billing is per-account (not per-webhook), so adding a second webhook to the same account doesn't double the credit cost.
+- Stopping the **last** active webhook on an account (via [`/stop`](/api-reference/v2/webhooks/stop) or [`DELETE`](/api-reference/v2/webhooks/delete)) halts monitoring and stops the credit billing automatically. Other webhooks on the same account are unaffected.
+- For custom mode, the webhook URL must return a `200` status code to acknowledge receipt.
+- When `accepted_invitation` is in the events list, the API performs an initial sync of your connections to enable detection of new acceptances.

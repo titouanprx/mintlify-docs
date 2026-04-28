@@ -4,10 +4,10 @@ api: 'GET /v2/accounts'
 description: 'List all accounts associated with your API key'
 ---
 
-Retrieve a paginated list of all accounts linked to your API key. Use the returned `account_id` values in all subsequent V2 action requests.
+Retrieve a paginated list of accounts linked to your API key. Use the returned `account_id` values in all subsequent V2 action requests.
 
 <Note>
-  This endpoint costs **1 credit** per request.
+  This endpoint is **free** — it does not consume any credits.
 </Note>
 
 ### Header Parameters
@@ -18,12 +18,12 @@ Retrieve a paginated list of all accounts linked to your API key. Use the return
 
 ### Query Parameters
 
-<ParamField query="limit" type="integer" default="20">
-  Maximum number of accounts to return (1-100)
+<ParamField query="limit" type="integer" default="50">
+  Maximum number of accounts to return per page (1-500).
 </ParamField>
 
 <ParamField query="offset" type="integer" default="0">
-  Number of accounts to skip for pagination
+  Number of accounts to skip — use with `limit` to paginate (e.g. `offset=50&limit=50` for page 2).
 </ParamField>
 
 ### Response
@@ -71,15 +71,15 @@ Retrieve a paginated list of all accounts linked to your API key. Use the return
     </ResponseField>
 
     <ResponseField name="total" type="integer">
-      Total number of accounts available
+      Total number of accounts matching the query (across all pages)
     </ResponseField>
 
     <ResponseField name="limit" type="integer">
-      The limit used for this request
+      The `limit` used for this request
     </ResponseField>
 
     <ResponseField name="offset" type="integer">
-      The offset used for this request
+      The `offset` used for this request
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -91,7 +91,7 @@ Retrieve a paginated list of all accounts linked to your API key. Use the return
     </ResponseField>
 
     <ResponseField name="credits_consumed" type="integer">
-      Number of credits consumed by this request
+      Always `0` — this endpoint is free
     </ResponseField>
 
     <ResponseField name="timestamp" type="string">
@@ -127,14 +127,14 @@ Retrieve a paginated list of all accounts linked to your API key. Use the return
         "updated_at": "2026-02-10T09:15:00Z"
       }
     ],
-    "total": 2,
-    "limit": 20,
+    "total": 1247,
+    "limit": 50,
     "offset": 0
   },
   "metadata": {
     "action": "list_accounts",
-    "credits_consumed": 1,
-    "timestamp": "2026-03-24T12:00:00Z"
+    "credits_consumed": 0,
+    "timestamp": "2026-04-28T12:00:00Z"
   }
 }
 ```
@@ -149,7 +149,7 @@ Retrieve a paginated list of all accounts linked to your API key. Use the return
   "metadata": {
     "action": "list_accounts",
     "credits_consumed": 0,
-    "timestamp": "2026-03-24T12:00:00Z"
+    "timestamp": "2026-04-28T12:00:00Z"
   }
 }
 ```
@@ -158,4 +158,5 @@ Retrieve a paginated list of all accounts linked to your API key. Use the return
 ### Notes
 - Use the `account_id` from the response in all V2 action requests
 - Only accounts with `is_active: true` can be used for actions
-- Use `limit` and `offset` query parameters to paginate through large account lists
+- Results are sorted by `created_at` descending (newest first)
+- Default page size is `50`; the maximum allowed `limit` is `500`. To page through all accounts, increment `offset` by `limit` until `offset + limit >= total`

@@ -37,7 +37,6 @@ These principles apply to **all providers and all routes**:
 **Recommendations:**
 - Withdraw stale invitations older than 2-3 weeks using the [Withdraw](/api-reference/v2/network/withdraw) endpoint
 - Target relevant profiles — random invitations increase rejection rates and trigger LinkedIn restrictions
-- Personalize your notes — connection requests with a note have significantly higher acceptance rates
 
 ### Profile Retrieval
 
@@ -69,8 +68,6 @@ If you need to detect accepted invitations, **avoid polling at fixed intervals**
 
 **Recommended approach:**
 1. Use the [Webhook](/api-reference/v2/webhooks/introduction) `accepted_invitation` event to detect accepted invitations
-2. For initial sync, you can call the endpoint multiple times
-3. After sync, retrieve the first page only a few times per day with **randomly spaced intervals** of several hours
 
 ### Messaging
 

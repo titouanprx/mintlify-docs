@@ -42,8 +42,11 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
   Optional display name for the account. Defaults to the email address.
 </ParamField>
 
-<ParamField body="webhook_url" type="string">
-  Optional webhook URL to receive real-time notifications for this account.
+<ParamField body="challenge_type" type="string" default="code_challenge">
+  Type of 2FA challenge to use if the account has two-factor authentication enabled.
+
+  - `code_challenge` — receive a verification code via email, SMS, or authenticator app. You must then submit the code via `/v2/checkpoint`.
+  - `app_challenge` — confirm the login directly from the LinkedIn mobile app. No code needed — just call `/v2/checkpoint` with the `account_id` after approving on the app.
 </ParamField>
 
 ### Response
@@ -93,7 +96,8 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     "account_id": "69c127c37cae0494dd827286",
     "platform": "linkedin",
     "status": "checkpoint_required",
-    "message": "Check your email for verification code"
+    "message": "Check your email for verification code",
+    "challenge_type": "code_challenge"
   },
   "metadata": {
     "action": "login",

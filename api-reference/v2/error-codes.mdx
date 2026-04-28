@@ -100,7 +100,7 @@ Returned when the account exists but is not currently active.
 }
 ```
 
-**How to fix:** Check the account status with `GET /v2/accounts/{account_id}`. Reactivate the account if needed.
+**How to fix:** Check the account status with `GET /v2/accounts/{account_id}`. To reactivate the account, log in again via `POST /v2/login` with the same credentials.
 
 ### INVALID_ACTION (400)
 
