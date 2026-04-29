@@ -15,9 +15,11 @@
   },
   "openapi": "openapi.json",
   "api": {
-    "baseUrl": "https://api.linkupapi.com",
+    "mdx": {
+      "server": "https://api.linkupapi.com"
+    },
     "playground": {
-      "mode": "show"
+      "display": "interactive"
     }
   },
   "topbarLinks": [
