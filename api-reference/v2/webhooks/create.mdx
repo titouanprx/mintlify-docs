@@ -39,6 +39,10 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
   Available event types: `message_received`, `accepted_invitation`, `all`.
 </ParamField>
 
+<ParamField body="enable_signature" type="boolean" default="false">
+  Custom mode only. When `true`, every outbound POST is signed with HMAC-SHA256 so you can verify it came from LinkUp. The response returns a `secret` **once** — store it; it cannot be retrieved later. See [Signature Verification](/api-reference/v2/webhooks/signature).
+</ParamField>
+
 ### Response
 
 <ResponseField name="success" type="boolean">
@@ -70,6 +74,9 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
     </ResponseField>
     <ResponseField name="is_active" type="boolean">
       Whether the webhook is active
+    </ResponseField>
+    <ResponseField name="secret" type="string">
+      HMAC secret. Returned **only when `enable_signature: true`** and only at creation. Save it — there is no way to read it back later. Use [`/rotate-secret`](/api-reference/v2/webhooks/signature) to generate a new one.
     </ResponseField>
   </Expandable>
 </ResponseField>

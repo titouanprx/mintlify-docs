@@ -1,0 +1,86 @@
+---
+title: 'Signature Verification'
+description: 'Verify that incoming webhook POSTs come from LinkUp'
+---
+
+Custom-mode webhooks can be signed with HMAC-SHA256 so your server can reject spoofed payloads. Opt in by passing `enable_signature: true` when creating the webhook — backward-compatible, off by default.
+
+## Headers sent on every POST
+
+```
+X-Linkup-Timestamp: 1714386470
+X-Linkup-Signature: v1=<hex(hmac_sha256(secret, "<timestamp>.<raw_body>"))>
+Content-Type: application/json
+```
+
+The signed string is `"{timestamp}.{raw_body}"`, joined with a literal dot. Use the **raw request body** — do not re-serialize the JSON, whitespace differences will break the check.
+
+## Verify on your server
+
+<CodeGroup>
+```python Python
+import hmac, hashlib
+
+def verify(secret: str, headers: dict, raw_body: bytes) -> bool:
+    ts = headers.get("X-Linkup-Timestamp", "")
+    sig = headers.get("X-Linkup-Signature", "")
+    if not sig.startswith("v1="):
+        return False
+    expected = hmac.new(
+        secret.encode(),
+        f"{ts}.".encode() + raw_body,
+        hashlib.sha256,
+    ).hexdigest()
+    return hmac.compare_digest(expected, sig[3:])
+```
+
+```javascript Node.js
+const crypto = require("crypto");
+
+function verify(secret, headers, rawBody) {
+  const ts = headers["x-linkup-timestamp"] || "";
+  const sig = headers["x-linkup-signature"] || "";
+  if (!sig.startsWith("v1=")) return false;
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(`${ts}.`)
+    .update(rawBody)
+    .digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig.slice(3)));
+}
+```
+</CodeGroup>
+
+<Tip>
+  Reject requests where `X-Linkup-Timestamp` is more than ~5 minutes off from your current clock — protects against replay of an old captured payload.
+</Tip>
+
+## Rotate the secret
+
+`POST /v2/webhooks/{webhook_id}/rotate-secret`
+
+Generates a fresh secret. The previous one is invalidated immediately, so deploy the new secret to your verifier before calling this. Returns the new secret in plaintext **once**.
+
+```json
+{
+  "success": true,
+  "data": {
+    "webhook_id": "6789abcdef0123456789abcd",
+    "secret": "kF3p…",
+    "signature_scheme": "HMAC-SHA256 over '<X-Linkup-Timestamp>.<raw_body>'; compare to X-Linkup-Signature header (format: v1=<hex>)"
+  }
+}
+```
+
+## Disable signing
+
+`DELETE /v2/webhooks/{webhook_id}/secret`
+
+Clears the secret. Subsequent POSTs go out without `X-Linkup-Signature` headers.
+
+## Notes
+
+- Hosted-mode webhooks (SSE/polling) are not signed — they are already authenticated by your `api_key` on the stream URL.
+- Legacy V1 webhooks (`webhook_url` on the account doc) are not signed. V2-only feature.
+- `disconnection` events are signed too when signing is enabled on the webhook.
+- `GET /v2/webhooks` returns `signature_enabled: true|false`. The secret itself is never returned by list/get — if you lose it, rotate.

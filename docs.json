@@ -153,7 +153,8 @@
                   "api-reference/v2/webhooks/update",
                   "api-reference/v2/webhooks/delete",
                   "api-reference/v2/webhooks/start",
-                  "api-reference/v2/webhooks/stop"
+                  "api-reference/v2/webhooks/stop",
+                  "api-reference/v2/webhooks/signature"
                 ]
               }
             ]

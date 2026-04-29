@@ -29,6 +29,10 @@ Webhooks support two delivery modes depending on your setup:
 | **Event history** | 24h stored events (`GET /events`) | Fire-and-forget |
 | **Best for** | Bots, scripts, local dev | Production servers |
 
+<Note>
+  **Custom mode** supports optional HMAC-SHA256 [signature verification](/api-reference/v2/webhooks/signature) so your server can reject spoofed payloads. Opt in with `enable_signature: true` at creation time.
+</Note>
+
 ## How It Works
 
 <Tabs>
