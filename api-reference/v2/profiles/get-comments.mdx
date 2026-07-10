@@ -8,7 +8,7 @@ description: 'Retrieve the comments made by a user on posts and articles.'
 
 Fetches the list of comments made by a specified user on posts and articles. Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch the next page.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 comments per internal request**, so requesting `count: 100` triggers only 2 upstream calls.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **50 comments per internal request**, so requesting `count: 100` triggers only 2 upstream calls.</Note>
 
 ## Request
 
@@ -27,7 +27,7 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
 <ParamField body="params" type="object">
   <Expandable title="params properties">
     <ParamField body="profile_url" type="string" required>
-      Profile URL of the target user. Also accepts `linkedin_url` as an alias.
+      URL of the target user's profile on the connected platform.
     </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of comments to return. Defaults to `10`.
@@ -77,13 +77,13 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
       Number of comments returned in this response.
     </ResponseField>
     <ResponseField name="profile_url" type="string">
-      The LinkedIn profile URL that was queried.
+      The profile URL that was queried.
     </ResponseField>
     <ResponseField name="entity_urn" type="string">
-      The LinkedIn entity URN of the queried profile.
+      Unique identifier of the queried profile.
     </ResponseField>
     <ResponseField name="profile_urn" type="string">
-      The full `urn:li:fsd_profile:...` URN of the queried profile.
+      The full URN of the queried profile. Treat it as an opaque string and pass it back exactly as returned.
     </ResponseField>
     <ResponseField name="pagination" type="object">
       <Expandable title="pagination properties">

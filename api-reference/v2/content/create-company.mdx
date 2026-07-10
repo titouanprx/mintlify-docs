@@ -29,7 +29,7 @@ Create a post on a company page. The authenticated account must be an admin of t
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="company_url" type="string" required>
-      The URL of the company page (e.g. `"https://www.linkedin.com/company/acme-corp"` for LinkedIn).
+      The URL of the company page on the connected platform (e.g. `"https://www.linkedin.com/company/acme-corp"`).
     </ParamField>
     <ParamField body="message" type="string">
       The text content of the post. Supports mentions, hashtags, and line breaks.
@@ -76,7 +76,7 @@ Create a post on a company page. The authenticated account must be an admin of t
       The URL of the newly created company post.
     </ResponseField>
     <ResponseField name="post_urn" type="string">
-      The platform URN of the post (e.g. LinkedIn URN).
+      Unique identifier of the post. Treat it as an opaque string and pass it back exactly as returned.
     </ResponseField>
   </Expandable>
 </ResponseField>

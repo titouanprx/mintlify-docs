@@ -8,7 +8,7 @@ description: 'Retrieve the home feed of the authenticated account.'
 
 Returns the home feed posts for the authenticated account. Pagination is **cursor-based** because the feed is a dynamic, time-ordered stream — pass the `next_cursor` returned by a previous call to fetch older posts.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **10 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **10 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
 
 ## Request
 
@@ -63,7 +63,7 @@ Returns the home feed posts for the authenticated account. Pagination is **curso
     <ResponseField name="total_results" type="integer">Number of posts returned in this response.</ResponseField>
     <ResponseField name="pagination" type="object">
       <Expandable title="pagination properties">
-        <ResponseField name="results_per_page" type="integer">LinkedIn batch size used internally (typically 10).</ResponseField>
+        <ResponseField name="results_per_page" type="integer">Batch size used per upstream request (typically 10).</ResponseField>
         <ResponseField name="pages_fetched" type="integer">Number of internal upstream batches consumed.</ResponseField>
         <ResponseField name="has_more" type="boolean">`true` if more feed posts are available.</ResponseField>
         <ResponseField name="next_cursor" type="string">Cursor to send as `cursor` in the next request. `null` when exhausted.</ResponseField>

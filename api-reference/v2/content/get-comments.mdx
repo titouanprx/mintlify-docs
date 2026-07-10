@@ -6,9 +6,9 @@ description: 'Retrieve comments on a specific post.'
 
 ## Overview
 
-Returns the comments on a specific LinkedIn post. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
+Returns the comments on a specific post. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **10 comments per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **10 comments per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
 
 ## Request
 
@@ -27,7 +27,7 @@ Returns the comments on a specific LinkedIn post. Pagination is **offset-based**
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="post_url" type="string" required>
-      The URL of the post to retrieve comments from.
+      The URL of the post to retrieve comments from, as shown on the connected platform.
     </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of comments to return. Defaults to `10`. **Capped at `1000`** per call.
@@ -50,22 +50,22 @@ Returns the comments on a specific LinkedIn post. Pagination is **offset-based**
     <ResponseField name="comments" type="array">
       List of comments.
       <Expandable title="comment properties">
-        <ResponseField name="comment_urn" type="string">LinkedIn URN of the comment. Use this with the `answer_comment` action.</ResponseField>
+        <ResponseField name="comment_urn" type="string">Unique identifier of the comment. Use this with the `answer_comment` action.</ResponseField>
         <ResponseField name="tracking_id" type="string">Tracking ID required to reply to the comment via `answer_comment`.</ResponseField>
         <ResponseField name="comment_text" type="string">Plain-text content of the comment.</ResponseField>
         <ResponseField name="created_time" type="integer">Unix epoch (milliseconds) when the comment was posted.</ResponseField>
         <ResponseField name="commenter" type="object">
           <Expandable title="commenter properties">
             <ResponseField name="name" type="string">Display name.</ResponseField>
-            <ResponseField name="profile_urn" type="string">LinkedIn URN of the commenter (`urn:li:fsd_profile:...`).</ResponseField>
-            <ResponseField name="linkedin_url" type="string">Public LinkedIn profile URL.</ResponseField>
+            <ResponseField name="profile_urn" type="string">Unique identifier of the commenter. Treat it as an opaque string and pass it back exactly as returned.</ResponseField>
+            <ResponseField name="linkedin_url" type="string">Public profile URL.</ResponseField>
             <ResponseField name="occupation" type="string">Headline / current role.</ResponseField>
           </Expandable>
         </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="total_results" type="integer">Number of comments returned in this response.</ResponseField>
-    <ResponseField name="total_available_results" type="integer">Total number of comments on the post reported by LinkedIn.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of comments on the post reported by the platform.</ResponseField>
     <ResponseField name="pagination" type="object">
       <Expandable title="pagination properties">
         <ResponseField name="offset" type="integer">Offset of the first comment in this response.</ResponseField>

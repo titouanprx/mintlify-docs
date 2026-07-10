@@ -10,7 +10,7 @@ Finds a professional email address from a person's name and company.
 
 You can identify the target either by:
 - **First name + last name + company** (`company_name` or `company_domain`)
-- **LinkedIn profile URL** — the service auto-extracts name and current company from the profile
+- **Profile URL** — the service auto-extracts name and current company from the profile
 
 <Note>This endpoint consumes **1 credit** per request.</Note>
 
@@ -23,10 +23,10 @@ You can identify the target either by:
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="first_name" type="string">
-      Person's first name. Required unless `linkedin_url` is provided.
+      Person's first name. Required unless `profile_url` is provided.
     </ParamField>
     <ParamField body="last_name" type="string">
-      Person's last name. Required unless `linkedin_url` is provided.
+      Person's last name. Required unless `profile_url` is provided.
     </ParamField>
     <ParamField body="company_domain" type="string">
       Company root domain (e.g. `"acme-corp.com"`). Provide either this or `company_name`. Also accepts `domain` as an alias.
@@ -34,8 +34,8 @@ You can identify the target either by:
     <ParamField body="company_name" type="string">
       Company display name (the service resolves it to a domain via Google search). Also accepts `company` as an alias.
     </ParamField>
-    <ParamField body="linkedin_url" type="string">
-      LinkedIn profile URL. When provided, name and current company are extracted automatically and `first_name`/`last_name`/`company_*` become optional. Also accepts `profile_url` as an alias.
+    <ParamField body="profile_url" type="string">
+      Public URL of the person's profile (e.g. `"https://www.linkedin.com/in/jane-doe-42"`). When provided, name and current company are extracted automatically and `first_name`/`last_name`/`company_*` become optional.
     </ParamField>
   </Expandable>
 </ParamField>

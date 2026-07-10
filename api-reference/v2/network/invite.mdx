@@ -27,7 +27,7 @@ Sends a connection request (invitation) to a user. You can identify the target b
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="profile_url" type="string">
-      The profile URL of the person to invite. Also accepts `linkedin_url` as an alias. **Required if `identifier` is not provided.**
+      URL of the profile on the connected platform of the person to invite. **Required if `identifier` is not provided.**
     </ParamField>
     <ParamField body="identifier" type="string">
       A unique identifier for the person to invite. **Required if `profile_url` is not provided.**

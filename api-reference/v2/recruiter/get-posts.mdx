@@ -6,7 +6,7 @@ description: 'Retrieve job postings from your recruiter account.'
 
 ## Overview
 
-Retrieve job postings from your LinkedIn recruiter account. Pass `job_id` to fetch a specific job (with full details) or omit it to list all jobs (offset-based pagination).
+Retrieve job postings from your recruiter account. Pass `job_id` to fetch a specific job (with full details) or omit it to list all jobs (offset-based pagination).
 
 <Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
 
@@ -53,7 +53,7 @@ Retrieve job postings from your LinkedIn recruiter account. Pass `job_id` to fet
     <ResponseField name="posts" type="array">
       List of job postings.
       <Expandable title="post properties">
-        <ResponseField name="linkedin_job_id" type="string">LinkedIn numeric job ID.</ResponseField>
+        <ResponseField name="linkedin_job_id" type="string">Numeric job ID.</ResponseField>
         <ResponseField name="title" type="string">Job title.</ResponseField>
         <ResponseField name="company_name" type="string">Hiring company name.</ResponseField>
         <ResponseField name="location" type="string">Job location.</ResponseField>
@@ -67,7 +67,7 @@ Retrieve job postings from your LinkedIn recruiter account. Pass `job_id` to fet
         <ResponseField name="closed_at" type="integer">Unix epoch (ms) when the job was closed (null if still open).</ResponseField>
         <ResponseField name="num_views" type="integer">Total view count.</ResponseField>
         <ResponseField name="num_applies" type="integer">Total applicant count.</ResponseField>
-        <ResponseField name="job_url" type="string">Public LinkedIn job URL.</ResponseField>
+        <ResponseField name="job_url" type="string">Public job URL.</ResponseField>
         <ResponseField name="contact_email" type="string">Contact email associated with the job.</ResponseField>
         <ResponseField name="industry" type="array">List of industry categories (strings).</ResponseField>
         <ResponseField name="talent_questions" type="array">Screening questions configured on the post.</ResponseField>

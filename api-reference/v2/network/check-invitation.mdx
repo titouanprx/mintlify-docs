@@ -27,7 +27,7 @@ Returns the current connection / invitation status with a specific user. Useful 
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="profile_url" type="string" required>
-      The profile URL of the person to check. Also accepts `linkedin_url` as an alias.
+      URL of the profile on the connected platform of the person to check.
     </ParamField>
   </Expandable>
 </ParamField>
@@ -58,7 +58,7 @@ Returns the current connection / invitation status with a specific user. Useful 
       Numeric ID of the invitation when one exists (use it with the `withdraw` action). `null` otherwise.
     </ResponseField>
     <ResponseField name="member_distance" type="integer">
-      LinkedIn network distance to the target profile (`1`, `2`, `3`, …).
+      Network distance to the target profile (`1`, `2`, `3`, …).
     </ResponseField>
     <ResponseField name="message" type="string">
       Human-readable description of the state.

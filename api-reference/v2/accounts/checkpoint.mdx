@@ -23,7 +23,7 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
 </ParamField>
 
 <ParamField body="code" type="string">
-  The verification code received via email, SMS, or authenticator app. Required when `challenge_type` is `code_challenge`. Not needed for `app_challenge` — the user approves directly from the LinkedIn app.
+  The verification code received via email, SMS, or authenticator app. Required when `challenge_type` is `code_challenge`. Not needed for `app_challenge` — the user approves directly from the platform's mobile app.
 </ParamField>
 
 ### Response
@@ -93,7 +93,7 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
 ### Challenge Types
 
 - **`code_challenge`** — The user receives a verification code (email, SMS, or authenticator app). Submit the code in the `code` field.
-- **`app_challenge`** — The user approves the login directly from the LinkedIn mobile app. Once approved, call this endpoint with only the `account_id` (no `code` needed).
+- **`app_challenge`** — The user approves the login directly from the platform's mobile app. Once approved, call this endpoint with only the `account_id` (no `code` needed).
 
 ### Notes
 - If the session has expired, you need to call `/v2/login` again to restart the process

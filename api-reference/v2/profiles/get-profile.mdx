@@ -27,7 +27,7 @@ Fetches detailed profile data for a specified user. You can identify the target 
 <ParamField body="params" type="object">
   <Expandable title="params properties">
     <ParamField body="profile_url" type="string" required>
-      Profile URL of the target user. Also accepts `linkedin_url` as an alias. Required if `identifier` and `profile_urn` are not provided.
+      URL of the target user's profile on the connected platform. Required if `identifier` and `profile_urn` are not provided.
     </ParamField>
     <ParamField body="identifier" type="string">
       The public identifier (vanity name) of the target profile. Can be used instead of `profile_url`.
@@ -49,7 +49,7 @@ Fetches detailed profile data for a specified user. You can identify the target 
   The profile data of the target user.
   <Expandable title="data properties">
     <ResponseField name="public_id" type="string">Public identifier (vanity name).</ResponseField>
-    <ResponseField name="profile_urn" type="string">LinkedIn entity URN of the profile (e.g. `ACoAA...`).</ResponseField>
+    <ResponseField name="profile_urn" type="string">Unique identifier of the profile. Treat it as an opaque string and pass it back exactly as returned.</ResponseField>
     <ResponseField name="profile_url" type="string">Canonical profile URL.</ResponseField>
     <ResponseField name="first_name" type="string">First name.</ResponseField>
     <ResponseField name="last_name" type="string">Last name.</ResponseField>

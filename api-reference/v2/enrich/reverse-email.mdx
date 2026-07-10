@@ -6,7 +6,7 @@ description: 'Identify a person from their professional email address.'
 
 ## Overview
 
-Reverse-resolves a professional email address into the matching LinkedIn profile, returning the person's full identity (name, headline, current company, profile URL, etc.).
+Reverse-resolves a professional email address into the matching profile, returning the person's full identity (name, headline, current company, profile URL, etc.).
 
 <Note>
 Only **professional** email addresses are accepted. Personal providers (Gmail, Yahoo, Hotmail, Outlook, iCloud, ProtonMail, free.fr, orange.fr, etc.) are rejected with `INVALID_PARAMS`.
@@ -49,8 +49,8 @@ This endpoint consumes **1 credit** per request.
     </ResponseField>
     <ResponseField name="person_found" type="object">
       The resolved person.
-      - When a LinkedIn profile is matched: full profile object (same shape as [Get Profile Info](/api-reference/v2/profiles/get-profile)) — `full_name`, `first_name`, `last_name`, `headline`, `location`, `summary`, `industry`, `experience`, `education`, `skills`, `profile_picture_url`, `connection_count`, etc.
-      - When no LinkedIn match is found: minimal fallback `{full_name, first_name, last_name}`.
+      - When a profile is matched: full profile object (same shape as [Get Profile Info](/api-reference/v2/profiles/get-profile)) — `full_name`, `first_name`, `last_name`, `headline`, `location`, `summary`, `industry`, `experience`, `education`, `skills`, `profile_picture_url`, `connection_count`, etc.
+      - When no profile match is found: minimal fallback `{full_name, first_name, last_name}`.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -64,7 +64,7 @@ This endpoint consumes **1 credit** per request.
 </ResponseField>
 
 <ResponseExample>
-```json 200 — LinkedIn profile matched
+```json 200 — Profile matched
 {
   "success": true,
   "data": {
@@ -101,7 +101,7 @@ This endpoint consumes **1 credit** per request.
 }
 ```
 
-```json 200 — No LinkedIn match (fallback)
+```json 200 — No profile match (fallback)
 {
   "success": true,
   "data": {

@@ -74,7 +74,7 @@ Webhooks support two delivery modes depending on your setup:
 
 | Subscription filter | Emitted `event.type` | Description |
 |---|---|---|
-| `message_received` | `"message"` | A new LinkedIn message was received |
+| `message_received` | `"message"` | A new message was received |
 | `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
 | `all` | — | Subscribe to all event types |
 
@@ -87,12 +87,12 @@ Webhooks support two delivery modes depending on your setup:
 </Warning>
 
 <Note>
-  In addition to subscribed events, **every webhook also receives `disconnection` events** — this is not filterable. They fire whenever the underlying LinkedIn session expires so you can react (re-auth, alert, etc.).
+  In addition to subscribed events, **every webhook also receives `disconnection` events** — this is not filterable. They fire whenever the underlying platform session expires so you can react (re-auth, alert, etc.).
 </Note>
 
 ## Event Payload Format
 
-All events share the same wrapper structure. Note that the outer `timestamp` is when the API emitted the event, while `event.timestamp` is when the underlying LinkedIn activity happened — they differ slightly (latency).
+All events share the same wrapper structure. Note that the outer `timestamp` is when the API emitted the event, while `event.timestamp` is when the underlying platform activity happened — they differ slightly (latency).
 
 ```json
 {
@@ -109,7 +109,7 @@ All events share the same wrapper structure. Note that the outer `timestamp` is 
 
 ### Message Received
 
-Triggered in real-time when a new LinkedIn message is received via the LinkedIn realtime stream (sub-second latency). The inner event `type` is `"message"`.
+Triggered in real-time when a new message is received via the platform's realtime stream (sub-second latency). The inner event `type` is `"message"`.
 
 ```json
 {
@@ -154,13 +154,13 @@ Triggered in real-time when a new LinkedIn message is received via the LinkedIn 
 |---|---|---|
 | `event.message_text` | `string` | Plain text content of the message |
 | `event.sender.name` | `string` | Display name of the sender |
-| `event.sender.profile_url` | `string` | LinkedIn URL of the sender (URN-style, not vanity) |
+| `event.sender.profile_url` | `string` | Profile URL of the sender (ID-based, not vanity) |
 | `event.conversation.participants` | `array` | All participants of the thread, sender included |
 | `event.conversation.is_group_chat` | `boolean` | `true` if 3+ participants |
 | `event.conversation.unread_count` | `integer` | Number of unread messages in the thread |
 | `event.reply_to` | `object?` | **Only present when the message is a reply.** Contains `message_text`, `sender_name`, `sender_profile_url`, `timestamp` of the original message. Omitted (not `null`) for non-reply messages. |
-| `event.metadata.entity_urn` | `string` | LinkedIn URN of the message |
-| `event.metadata.conversation_urn` | `string` | LinkedIn URN of the conversation thread |
+| `event.metadata.entity_urn` | `string` | Unique identifier of the message |
+| `event.metadata.conversation_urn` | `string` | Unique identifier of the conversation thread |
 | `event.metadata.delivered_at` | `integer` | Unix milliseconds delivery time |
 | `event.metadata.read_status` | `boolean` | Whether the conversation is marked read |
 
@@ -204,9 +204,9 @@ Triggered when one or more connection requests you sent are accepted. Detected b
 | Field | Type | Description |
 |---|---|---|
 | `event.new_connections` | `array` | Profiles that accepted your connection request since the last check |
-| `event.new_connections[].profile_url` | `string` | LinkedIn vanity URL of the connection |
+| `event.new_connections[].profile_url` | `string` | Public profile URL of the connection |
 | `event.new_connections[].name` | `string` | Display name |
-| `event.new_connections[].job_title` | `string \| null` | Headline / current role as shown on LinkedIn |
+| `event.new_connections[].job_title` | `string \| null` | Headline / current role as shown on the platform |
 | `event.new_connections[].profile_picture` | `string \| null` | CDN URL of the profile picture (may expire) |
 | `event.count` | `integer` | Length of `new_connections` |
 
@@ -216,7 +216,7 @@ Triggered when one or more connection requests you sent are accepted. Detected b
 
 ### Disconnection
 
-Triggered when the account's LinkedIn session expires, the cookie is invalidated, or the user logs out. Sent to **every** webhook attached to the account regardless of subscription filters.
+Triggered when the account's platform session expires, the cookie is invalidated, or the user logs out. Sent to **every** webhook attached to the account regardless of subscription filters.
 
 ```json
 {

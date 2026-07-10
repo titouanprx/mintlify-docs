@@ -6,7 +6,7 @@ description: 'Retrieve network recommendations (people you may know).'
 
 ## Overview
 
-Returns a one-shot snapshot of recommended connections ("People You May Know") sourced from LinkedIn's Discovery Sections.
+Returns a one-shot snapshot of recommended connections ("People You May Know") sourced from the platform's discovery sections.
 
 <Note>One-shot snapshot — not paginable. Use `count` to limit results. Consumes **1 credit per 10 results**.</Note>
 
@@ -46,16 +46,16 @@ Returns a one-shot snapshot of recommended connections ("People You May Know") s
       <Expandable title="recommendation properties">
         <ResponseField name="name" type="string">Display name.</ResponseField>
         <ResponseField name="subtitle" type="string">Headline / current role.</ResponseField>
-        <ResponseField name="profile_url" type="string">LinkedIn profile URL.</ResponseField>
+        <ResponseField name="profile_url" type="string">Public profile URL.</ResponseField>
         <ResponseField name="profile_picture" type="string">Profile picture URL.</ResponseField>
         <ResponseField name="insight" type="string">Mutual connection / shared context (e.g. `"John and 35 other mutual connections"`).</ResponseField>
-        <ResponseField name="entity_urn" type="string">LinkedIn entity URN of the discovery view.</ResponseField>
+        <ResponseField name="entity_urn" type="string">Unique identifier of the discovery view. Treat it as an opaque string and pass it back exactly as returned.</ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="total_results" type="integer">Number of recommendations returned in this response.</ResponseField>
     <ResponseField name="pagination" type="object">
       <Expandable title="pagination properties">
-        <ResponseField name="results_per_page" type="integer">LinkedIn page size used internally (10).</ResponseField>
+        <ResponseField name="results_per_page" type="integer">Page size used internally per upstream request (10).</ResponseField>
         <ResponseField name="pages_fetched" type="integer">Number of internal upstream batches consumed to assemble the response.</ResponseField>
       </Expandable>
     </ResponseField>

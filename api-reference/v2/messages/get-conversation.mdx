@@ -27,10 +27,10 @@ Returns messages from a specific conversation, ordered from most recent to oldes
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="conversation_id" type="string">
-      LinkedIn conversation URN. **Required if `profile_url` is not provided.**
+      Unique identifier of the conversation, as returned by other endpoints. Treat it as an opaque string and pass it back exactly as returned. **Required if `profile_url` is not provided.**
     </ParamField>
     <ParamField body="profile_url" type="string">
-      The profile URL of the other participant. Also accepts `linkedin_url` as an alias. When provided, the conversation with this user is resolved automatically. **Required if `conversation_id` is not provided.**
+      URL of the other participant's profile on the connected platform. When provided, the conversation with this user is resolved automatically. **Required if `conversation_id` is not provided.**
     </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of messages to return. Defaults to `10`.
@@ -72,14 +72,14 @@ Returns messages from a specific conversation, ordered from most recent to oldes
           <Expandable title="sender_info properties">
             <ResponseField name="first_name" type="string">Sender's first name.</ResponseField>
             <ResponseField name="last_name" type="string">Sender's last name.</ResponseField>
-            <ResponseField name="profile_url" type="string">Sender's LinkedIn profile URL.</ResponseField>
+            <ResponseField name="profile_url" type="string">Sender's public profile URL.</ResponseField>
           </Expandable>
         </ResponseField>
         <ResponseField name="message_type" type="string">
           Message type. Common values: `"TEXT"`, `"INVITATION"`, `"SHARED_POST"`.
         </ResponseField>
         <ResponseField name="entity_urn" type="string">
-          LinkedIn URN of the message.
+          Unique identifier of the message. Treat it as an opaque string and pass it back exactly as returned.
         </ResponseField>
       </Expandable>
     </ResponseField>

@@ -6,9 +6,9 @@ description: 'Retrieve a paginated list of connections.'
 
 ## Overview
 
-Returns a paginated list of the account's connections. Pagination is **offset-based** (LinkedIn provides a stable, addressable list — no opaque cursor needed). Set `count` for the page size and `offset` to skip ahead.
+Returns a paginated list of the account's connections. Pagination is **offset-based** (the platform provides a stable, addressable list — no opaque cursor needed). Set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 50 results** returned. LinkedIn returns up to **100 connections per internal request**, so requesting `count: 250` triggers ~3 upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 50 results** returned. The platform returns up to **100 connections per internal request**, so requesting `count: 250` triggers ~3 upstream calls automatically.</Note>
 
 ## Request
 
@@ -48,8 +48,8 @@ Returns a paginated list of the account's connections. Pagination is **offset-ba
       List of connection objects.
       <Expandable title="connection properties">
         <ResponseField name="name" type="string">Display name of the connection.</ResponseField>
-        <ResponseField name="job_title" type="string">LinkedIn headline / current job title.</ResponseField>
-        <ResponseField name="profile_url" type="string">LinkedIn profile URL.</ResponseField>
+        <ResponseField name="job_title" type="string">Headline / current job title.</ResponseField>
+        <ResponseField name="profile_url" type="string">Public profile URL.</ResponseField>
         <ResponseField name="profile_picture" type="string">URL of the connection's profile picture.</ResponseField>
       </Expandable>
     </ResponseField>

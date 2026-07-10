@@ -8,7 +8,7 @@ description: 'Retrieve a paginated list of pending invitations received.'
 
 Returns a paginated list of pending connection invitations received by the account. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 50 results** returned. LinkedIn returns up to **100 invitations per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 50 results** returned. The platform returns up to **100 invitations per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
 
 ## Request
 

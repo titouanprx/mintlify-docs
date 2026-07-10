@@ -8,7 +8,7 @@ description: 'Retrieve a list of conversations from the inbox.'
 
 Returns a paginated list of conversations from the inbox. Filter by category and paginate with the `next_cursor` value.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **25 conversations per internal request**, so larger `total_results` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **25 conversations per internal request**, so larger `total_results` values trigger multiple upstream calls automatically.</Note>
 
 ## Request
 
@@ -51,16 +51,16 @@ Returns a paginated list of conversations from the inbox. Filter by category and
       List of conversation objects.
       <Expandable title="conversation properties">
         <ResponseField name="conversation_id" type="string">
-          LinkedIn conversation URN, of the form `urn:li:msg_conversation:(urn:li:fsd_profile:...,2-...)`.
+          Unique identifier of the conversation. Treat it as an opaque string and pass it back exactly as returned.
         </ResponseField>
         <ResponseField name="participant" type="object">
           The other side of the conversation. Can be a member, a company page, or — for notes-to-self — your own profile.
           <Expandable title="participant properties">
             <ResponseField name="name" type="string">Display name (member full name or company name).</ResponseField>
-            <ResponseField name="headline" type="string">LinkedIn headline (or company tagline if `is_organization`).</ResponseField>
-            <ResponseField name="profile_url" type="string">LinkedIn profile URL (or company page URL if `is_organization`).</ResponseField>
+            <ResponseField name="headline" type="string">Headline (or company tagline if `is_organization`).</ResponseField>
+            <ResponseField name="profile_url" type="string">Public profile URL (or company page URL if `is_organization`).</ResponseField>
             <ResponseField name="profile_picture" type="string">Profile picture URL (or company logo if `is_organization`).</ResponseField>
-            <ResponseField name="is_organization" type="boolean">Present and `true` when the participant is a LinkedIn company page (e.g. Sponsored InMail, brand outreach). Absent for human members.</ResponseField>
+            <ResponseField name="is_organization" type="boolean">Present and `true` when the participant is a company page (e.g. sponsored premium direct messages, brand outreach). Absent for human members.</ResponseField>
           </Expandable>
         </ResponseField>
         <ResponseField name="last_message" type="object">
@@ -72,8 +72,8 @@ Returns a paginated list of conversations from the inbox. Filter by category and
               Author of the last message.
               <Expandable title="sender properties">
                 <ResponseField name="name" type="string">Display name of the sender.</ResponseField>
-                <ResponseField name="headline" type="string">LinkedIn headline of the sender.</ResponseField>
-                <ResponseField name="profile_url" type="string">LinkedIn profile URL of the sender.</ResponseField>
+                <ResponseField name="headline" type="string">Headline of the sender.</ResponseField>
+                <ResponseField name="profile_url" type="string">Public profile URL of the sender.</ResponseField>
                 <ResponseField name="profile_picture" type="string">URL of the sender's profile picture.</ResponseField>
                 <ResponseField name="is_me" type="boolean">`true` when the sender is the authenticated account.</ResponseField>
               </Expandable>

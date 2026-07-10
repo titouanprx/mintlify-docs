@@ -1,7 +1,7 @@
 ---
 title: 'Get Company Info'
 api: 'POST /v2/profiles'
-description: 'Retrieve detailed information about a LinkedIn company page.'
+description: 'Retrieve detailed information about a company page.'
 ---
 
 ## Overview
@@ -27,7 +27,7 @@ Fetches detailed information about a company page (description, industry, employ
 <ParamField body="params" type="object">
   <Expandable title="params properties">
     <ParamField body="company_url" type="string" required>
-      The LinkedIn company page URL (e.g., `https://www.linkedin.com/company/anthropicresearch/`).
+      URL of the company page on the connected platform (e.g., `https://www.linkedin.com/company/anthropicresearch/`).
     </ParamField>
   </Expandable>
 </ParamField>
@@ -42,12 +42,12 @@ Fetches detailed information about a company page (description, industry, employ
 <ResponseField name="data" type="object">
   <Expandable title="data properties">
     <ResponseField name="name" type="string">Company name.</ResponseField>
-    <ResponseField name="universalName" type="string">LinkedIn vanity slug (last segment of the company URL).</ResponseField>
+    <ResponseField name="universalName" type="string">Vanity slug (last segment of the company URL).</ResponseField>
     <ResponseField name="description" type="string">Company description / about section.</ResponseField>
     <ResponseField name="tagline" type="string">Short tagline for the company.</ResponseField>
     <ResponseField name="websiteUrl" type="string">Company website URL.</ResponseField>
     <ResponseField name="industry" type="string">Industry sector.</ResponseField>
-    <ResponseField name="employeeCount" type="integer">Total employee count reported by LinkedIn.</ResponseField>
+    <ResponseField name="employeeCount" type="integer">Total employee count reported by the platform.</ResponseField>
     <ResponseField name="employeeCountRange" type="object">
       Range of declared headcount (e.g. `{ "start": 501, "end": 1000 }`).
     </ResponseField>

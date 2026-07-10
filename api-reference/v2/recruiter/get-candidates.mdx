@@ -8,7 +8,7 @@ description: 'Retrieve candidates who applied to a specific job posting.'
 
 Returns the candidates who applied to a specific job posting. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 candidates per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **50 candidates per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
 
 ## Request
 
@@ -27,7 +27,7 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="job_id" type="string" required>
-      The numeric LinkedIn job ID to retrieve candidates for.
+      The numeric job ID to retrieve candidates for.
     </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of candidates to return. Defaults to `10`. **Capped at `1000`** per call.
@@ -57,9 +57,9 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
         <ResponseField name="first_name" type="string">First name.</ResponseField>
         <ResponseField name="last_name" type="string">Last name.</ResponseField>
         <ResponseField name="full_name" type="string">Full name.</ResponseField>
-        <ResponseField name="headline" type="string">LinkedIn headline.</ResponseField>
+        <ResponseField name="headline" type="string">Headline.</ResponseField>
         <ResponseField name="public_identifier" type="string">Vanity slug.</ResponseField>
-        <ResponseField name="profile_url" type="string">LinkedIn profile URL.</ResponseField>
+        <ResponseField name="profile_url" type="string">Public profile URL.</ResponseField>
         <ResponseField name="location" type="string">Candidate location.</ResponseField>
         <ResponseField name="experiences" type="array">
           Work experience entries with `title`, `company`, `company_url`, `date_range` (e.g. `"2/2025 - 7/2025"`), `description`.

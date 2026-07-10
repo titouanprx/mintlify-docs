@@ -8,7 +8,7 @@ description: 'Search for posts using keywords and advanced filters.'
 
 Search for posts using keywords with optional filters by author, company, industry, date, mentions, and more. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. LinkedIn returns up to **50 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **50 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
 
 ## Request
 
@@ -38,7 +38,7 @@ Search for posts using keywords with optional filters by author, company, indust
     <ParamField body="post_type" type="string">Filter by content type (e.g. `"VIDEOS"`, `"IMAGES"`, `"ARTICLES"`).</ParamField>
     <ParamField body="sort_by" type="string" default="date_posted">Sort order: `"date_posted"` (default) or `"relevance"`.</ParamField>
     <ParamField body="post_date" type="string">Filter by date range (e.g. `"past-24h"`, `"past-week"`, `"past-month"`).</ParamField>
-    <ParamField body="profile_url" type="string">Filter posts authored by a specific profile. Also accepts `linkedin_url`.</ParamField>
+    <ParamField body="profile_url" type="string">Filter posts authored by a specific profile. Accepts the URL of the profile on the connected platform.</ParamField>
     <ParamField body="company_url" type="string">Filter posts authored by a specific company page.</ParamField>
     <ParamField body="author_company" type="string">Filter by the author's current company.</ParamField>
     <ParamField body="author_industry" type="string">Filter by the author's industry.</ParamField>
@@ -61,7 +61,7 @@ Search for posts using keywords with optional filters by author, company, indust
     <ResponseField name="posts" type="array">
       List of matching posts.
       <Expandable title="post properties">
-        <ResponseField name="backend_urn" type="string">LinkedIn activity URN (e.g. `urn:li:activity:7454082992819519488`).</ResponseField>
+        <ResponseField name="backend_urn" type="string">Unique identifier of the post. Treat it as an opaque string and pass it back exactly as returned.</ResponseField>
         <ResponseField name="shareUrl" type="string">Public share URL of the post.</ResponseField>
         <ResponseField name="text" type="string">Plain-text content of the post.</ResponseField>
         <ResponseField name="numLikes" type="integer">Reaction count.</ResponseField>
@@ -70,14 +70,14 @@ Search for posts using keywords with optional filters by author, company, indust
         <ResponseField name="actor_name" type="string">Author display name.</ResponseField>
         <ResponseField name="actor_description" type="string">Author headline.</ResponseField>
         <ResponseField name="actor_image" type="string">Author profile picture URL.</ResponseField>
-        <ResponseField name="actor_profile_url" type="string">Author LinkedIn profile URL.</ResponseField>
+        <ResponseField name="actor_profile_url" type="string">Author's public profile URL.</ResponseField>
         <ResponseField name="created_time" type="integer">Post creation Unix epoch (seconds).</ResponseField>
         <ResponseField name="post_images" type="array">List of attached image URLs.</ResponseField>
         <ResponseField name="shareAudience" type="string">Audience scope (e.g. `"PUBLIC"`).</ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="total_results" type="integer">Number of posts returned in this response.</ResponseField>
-    <ResponseField name="total_available_results" type="integer">Total number of posts matching the query reported by LinkedIn.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of posts matching the query reported by the platform.</ResponseField>
     <ResponseField name="pagination" type="object">
       <Expandable title="pagination properties">
         <ResponseField name="offset" type="integer">Offset of the first post in this response.</ResponseField>
