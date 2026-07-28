@@ -16,7 +16,7 @@ You can target the recipient either by `profile_url` (+ `inmail: true`) or by `r
 
 <Note>When multiple media options are provided, the priority order is: `media_link` > `media_file` > `media_path`. Only one media attachment will be used.</Note>
 
-<Note>An audio file (`.m4a`, `.mp3`, `.wav`, `.aac`) is delivered as a **native voice note** — a player in the conversation, not a file to download. LinkedIn transcodes whatever you send and derives the duration itself. Its stated limit is 1 minute.</Note>
+<Note>An audio file (`.m4a`, `.mp3`, `.wav`, `.aac`) is delivered as a **native voice note** — a player in the conversation, not a file to download. LinkedIn transcodes whatever you send and derives the duration itself. Its stated limit is 1 minute. Set `voice_message: true` when the filename has no usable extension; combined with a non-audio file it returns `INVALID_PARAMS`.</Note>
 
 ## Request
 
@@ -65,6 +65,9 @@ You can target the recipient either by `profile_url` (+ `inmail: true`) or by `r
     </ParamField>
     <ParamField body="media_path" type="string">
       A server-side file path to a media file to attach.
+    </ParamField>
+    <ParamField body="voice_message" type="boolean" default={false}>
+      Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension — an `.m4a`, `.mp3`, `.wav` or `.aac` file is detected on its own.
     </ParamField>
   </Expandable>
 </ParamField>
