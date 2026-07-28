@@ -78,14 +78,21 @@ Sends a message to a user identified by their profile URL, with optional media. 
 <ResponseField name="data" type="object">
   Details of the sent message. The shape differs between a standard message and an InMail.
   <Expandable title="standard message">
-    <ResponseField name="entityUrn" type="string">
-      The unique URN of the sent message entity.
+    <ResponseField name="status" type="string">
+      `"success"` when the message was sent.
     </ResponseField>
-    <ResponseField name="conversation_id" type="string">
-      The ID of the conversation the message was sent in.
-    </ResponseField>
-    <ResponseField name="deliveredAt" type="string">
-      ISO 8601 timestamp of when the message was delivered.
+    <ResponseField name="data" type="object">
+      <Expandable title="properties">
+        <ResponseField name="entityUrn" type="string">
+          The unique URN of the sent message entity.
+        </ResponseField>
+        <ResponseField name="conversation_id" type="string">
+          The URN of the conversation the message was sent in.
+        </ResponseField>
+        <ResponseField name="deliveredAt" type="integer">
+          Unix epoch timestamp in **milliseconds**.
+        </ResponseField>
+      </Expandable>
     </ResponseField>
   </Expandable>
   <Expandable title="InMail">
@@ -126,9 +133,12 @@ Sends a message to a user identified by their profile URL, with optional media. 
 {
   "success": true,
   "data": {
-    "entityUrn": "urn:li:messagingMessage:abc123",
-    "conversation_id": "2-YWJjMTIz",
-    "deliveredAt": "2026-03-24T12:00:00Z"
+    "status": "success",
+    "data": {
+      "entityUrn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc4NTI3...)",
+      "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAA...,2-M2RkYWQ4...)",
+      "deliveredAt": 1785272227840
+    }
   },
   "metadata": {
     "action": "send",

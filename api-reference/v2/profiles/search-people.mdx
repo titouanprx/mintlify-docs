@@ -83,54 +83,22 @@ Search for profiles using a combination of keyword, company, location, school, a
 
 <ResponseField name="data" type="object">
   <Expandable title="data properties">
-    <ResponseField name="results" type="array">
-      List of matching profiles.
-      <Expandable title="result item properties">
-        <ResponseField name="public_id" type="string">
-          The public identifier.
-        </ResponseField>
-        <ResponseField name="first_name" type="string">
-          First name.
-        </ResponseField>
-        <ResponseField name="last_name" type="string">
-          Last name.
-        </ResponseField>
-        <ResponseField name="headline" type="string">
-          Profile headline.
-        </ResponseField>
-        <ResponseField name="location" type="string">
-          Location.
-        </ResponseField>
-        <ResponseField name="profile_picture_url" type="string">
-          URL of the profile picture.
-        </ResponseField>
-        <ResponseField name="linkedin_url" type="string">
-          Full profile URL.
-        </ResponseField>
+    <ResponseField name="profiles" type="array">
+      Matching profiles.
+      <Expandable title="profile properties">
+        <ResponseField name="name" type="string">Full name.</ResponseField>
+        <ResponseField name="job_title" type="string">Current headline / job title.</ResponseField>
+        <ResponseField name="connection_level" type="string">Degree, e.g. `"1st degree"`, `"2nd degree"`.</ResponseField>
+        <ResponseField name="location" type="string">Geographic location.</ResponseField>
+        <ResponseField name="profile_url" type="string">Profile URL.</ResponseField>
+        <ResponseField name="profile_picture" type="string">Profile picture URL.</ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="total_results" type="integer">
-      Number of results returned.
+      Number of profiles returned.
     </ResponseField>
     <ResponseField name="total_available_results" type="integer">
-      Total number of matching results available.
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="metadata" type="object">
-  <Expandable title="metadata properties">
-    <ResponseField name="action" type="string">
-      The action that was performed (`"search_people"`).
-    </ResponseField>
-    <ResponseField name="account_id" type="string">
-      The account ID used for the request.
-    </ResponseField>
-    <ResponseField name="credits_consumed" type="integer">
-      Number of credits consumed (1 per 10 results).
-    </ResponseField>
-    <ResponseField name="timestamp" type="string">
-      ISO 8601 timestamp of the response.
+      Total number of matching profiles available.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -140,34 +108,24 @@ Search for profiles using a combination of keyword, company, location, school, a
 {
   "success": true,
   "data": {
-    "results": [
+    "profiles": [
       {
-        "public_id": "janedoe",
-        "first_name": "Jane",
-        "last_name": "Doe",
-        "headline": "Software Engineer at TechCo",
-        "location": "San Francisco, CA",
-        "profile_picture_url": "https://media.licdn.com/dms/image/example.jpg",
-        "linkedin_url": "https://www.linkedin.com/in/janedoe"
-      },
-      {
-        "public_id": "bobsmith",
-        "first_name": "Bob",
-        "last_name": "Smith",
-        "headline": "Senior Developer at StartupXYZ",
-        "location": "San Francisco Bay Area",
-        "profile_picture_url": "https://media.licdn.com/dms/image/example2.jpg",
-        "linkedin_url": "https://www.linkedin.com/in/bobsmith"
+        "name": "Jane Doe",
+        "job_title": "Growth Marketing Specialist",
+        "connection_level": "2nd degree",
+        "location": "Greater Nice Metropolitan Area",
+        "profile_url": "https://www.linkedin.com/in/janedoe",
+        "profile_picture": "https://media.licdn.com/dms/image/..."
       }
     ],
-    "total_results": 2,
+    "total_results": 1,
     "total_available_results": 15400
   },
   "metadata": {
     "action": "search_people",
     "account_id": "your-account-id",
-    "credits_consumed": 2,
-    "timestamp": "2026-03-24T12:00:00Z"
+    "credits_consumed": 1,
+    "timestamp": "2026-04-28T12:00:00Z"
   }
 }
 ```
