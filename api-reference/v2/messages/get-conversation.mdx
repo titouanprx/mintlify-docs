@@ -38,6 +38,9 @@ Returns messages from a specific conversation, ordered from most recent to oldes
     <ParamField body="cursor" type="string">
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page (most recent messages).
     </ParamField>
+    <ParamField body="sales_nav" type="boolean" default={false}>
+      Read a **Sales Navigator** thread instead of a classic conversation. See [Sales Navigator conversations](#sales-navigator-conversations) below.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -106,6 +109,23 @@ Returns messages from a specific conversation, ordered from most recent to oldes
   </Expandable>
 </ResponseField>
 
+## Sales Navigator conversations
+
+An InMail thread is unreachable from a classic conversation id. Set `sales_nav: true` and pass the Sales Navigator **thread id** — from [List Inbox](/api-reference/v2/messages/list-inbox) with `sales_nav: true`, or the `threadId` returned when the InMail was sent. `profile_url` is not supported here, so `conversation_id` is required.
+
+Messages keep the classic shape and order (newest first), plus:
+
+- `sender_info.is_me` — `true` when the account wrote the message
+- `sender_info.recipient_urn` — the author's Sales Navigator urn, ready to InMail
+- `subject` and `attachments` — only on messages that have them
+- `message_type` uses Sales Navigator values: `INMAIL`, `INMAIL_ACCEPT`, `MESSAGE`
+
+The response replaces `last_seen_message` with `conversation_id`, `type`, `archived` and `participants` (everyone but you).
+
+<Warning>
+Sales Navigator has no message cursor: a thread returns its `count` most recent messages and never issues a `next_cursor` (`cursor` is ignored). To read further back, raise `count` — compare it with `total_message_count` to know whether you have the whole thread.
+</Warning>
+
 <ResponseExample>
 ```json 200
 {
@@ -151,12 +171,73 @@ Returns messages from a specific conversation, ordered from most recent to oldes
   }
 }
 ```
-
+```json Success (Sales Navigator)
+{
+  "success": true,
+  "data": {
+    "conversation_id": "2-OTQwMTJlODEtOTUxMy00NGNlLWIyNmQtMDJjYTU4MmQyMTcxXzEwMA==",
+    "total_message_count": 8,
+    "unread_count": 0,
+    "archived": false,
+    "type": "inmail",
+    "participants": [
+      {
+        "name": "Jessica Jensen",
+        "first_name": "Jessica",
+        "last_name": "Jensen",
+        "profile_url": "https://www.linkedin.com/in/ACwAAA...",
+        "sales_nav_url": "https://www.linkedin.com/sales/lead/ACwAAA...",
+        "recipient_urn": "urn:li:fs_salesProfile:(ACwAAA...,NAME_SEARCH,JUf-)",
+        "profile_picture": "https://media.licdn.com/...",
+        "connection_level": "2",
+        "is_me": false
+      }
+    ],
+    "messages": [
+      {
+        "text": "Thanks for reaching out. I'd like to learn more.",
+        "timestamp": 1785236943298,
+        "sender": "Jessica Jensen",
+        "sender_info": {
+          "first_name": "Jessica",
+          "last_name": "Jensen",
+          "profile_url": "https://www.linkedin.com/in/ACwAAA...",
+          "recipient_urn": "urn:li:fs_salesProfile:(ACwAAA...,NAME_SEARCH,JUf-)",
+          "is_me": false
+        },
+        "message_type": "INMAIL_ACCEPT",
+        "entity_urn": "2-MTc4NTIzNjk0MzI5OGI1ODI2Ni0xMDAm..."
+      },
+      {
+        "text": "Hi Jessica — quick question about your team's stack.",
+        "timestamp": 1785231247240,
+        "sender": "Your Name",
+        "sender_info": {
+          "first_name": "Your",
+          "last_name": "Name",
+          "profile_url": "https://www.linkedin.com/in/ACwAADx...",
+          "recipient_urn": "urn:li:fs_salesProfile:(ACwAADx...,NAME_SEARCH,X3dd)",
+          "is_me": true
+        },
+        "message_type": "INMAIL",
+        "entity_urn": "2-MTc4NTIzMTI0NzI0MGI5MDM1My0xMDAm...",
+        "subject": "Quick question"
+      }
+    ]
+  },
+  "metadata": {
+    "action": "get_conversation",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-28T12:00:00Z"
+  }
+}
+```
 ```json 400
 {
   "success": false,
   "error": {
-    "code": "INVALID_REQUEST",
+    "code": "INVALID_PARAMS",
     "message": "Either conversation_id or profile_url is required."
   },
   "metadata": {

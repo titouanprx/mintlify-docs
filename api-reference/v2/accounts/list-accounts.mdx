@@ -18,7 +18,7 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 
 ### Query Parameters
 
-<ParamField query="limit" type="integer" default="50">
+<ParamField query="count" type="integer" default="50">
   Maximum number of accounts to return per page (1-500).
 </ParamField>
 
@@ -53,7 +53,11 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
         </ResponseField>
 
         <ResponseField name="status" type="string">
-          Account status (e.g. "active", "inactive", "suspended")
+          Account status, always in step with `is_active`:
+
+          - `connected` — ready to use (`is_active: true`)
+          - `checkpoint_required` — waiting on a 2FA code, see [Checkpoint](/api-reference/v2/accounts/checkpoint)
+          - `disconnected` — the LinkedIn session expired; re-authenticate via [Connect Account](/api-reference/v2/accounts/login)
         </ResponseField>
 
         <ResponseField name="country" type="string">
@@ -66,6 +70,30 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 
         <ResponseField name="updated_at" type="string">
           ISO 8601 timestamp of the last account update
+        </ResponseField>
+
+        <ResponseField name="sales_nav" type="object">
+          State of the account's Sales Navigator seat.
+          <Expandable title="sales_nav properties">
+            <ResponseField name="connected" type="boolean">
+              Whether the account currently has a usable Sales Navigator seat.
+            </ResponseField>
+            <ResponseField name="contract_id" type="string">
+              Sales Navigator contract the seat belongs to. Present once a seat has been activated.
+            </ResponseField>
+            <ResponseField name="seat_id" type="string">
+              The seat within that contract.
+            </ResponseField>
+            <ResponseField name="connected_at" type="string">
+              ISO 8601 timestamp of the last seat activation or refresh. Only when `connected` is `true`.
+            </ResponseField>
+            <ResponseField name="reason" type="string">
+              Why the seat is unavailable. Only when `connected` is `false` and a seat existed before.
+            </ResponseField>
+            <ResponseField name="disconnected_at" type="string">
+              ISO 8601 timestamp of when the seat was lost. Only when the seat died on its own.
+            </ResponseField>
+          </Expandable>
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -111,20 +139,27 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
         "platform": "linkedin",
         "account_name": "John Doe",
         "is_active": true,
-        "status": "active",
+        "status": "connected",
         "country": "FR",
         "created_at": "2025-10-15T08:30:00Z",
-        "updated_at": "2026-03-20T14:22:00Z"
+        "updated_at": "2026-03-20T14:22:00Z",
+        "sales_nav": {
+          "connected": true,
+          "contract_id": "2016220713",
+          "seat_id": "1545550052",
+          "connected_at": "2026-03-20T14:22:00Z"
+        }
       },
       {
         "account_id": "acc_def456",
         "platform": "linkedin",
         "account_name": "Jane Smith",
         "is_active": false,
-        "status": "inactive",
+        "status": "disconnected",
         "country": "US",
         "created_at": "2025-11-01T12:00:00Z",
-        "updated_at": "2026-02-10T09:15:00Z"
+        "updated_at": "2026-02-10T09:15:00Z",
+        "sales_nav": { "connected": false }
       }
     ],
     "total": 1247,
@@ -138,7 +173,16 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
   }
 }
 ```
+```json Sales Navigator states
+// seat live
+"sales_nav": { "connected": true, "contract_id": "2016220713", "seat_id": "1545550052", "connected_at": "2026-07-28T10:13:12Z" }
 
+// licence lost, LinkedIn account still fine
+"sales_nav": { "connected": false, "reason": "No Sales Nav license found for this account", "disconnected_at": "2026-07-28T10:12:25Z" }
+
+// LinkedIn account disconnected
+"sales_nav": { "connected": false, "reason": "LinkedIn account is disconnected — reconnect it to restore the Sales Navigator seat", "contract_id": "2016220713", "seat_id": "1545550052" }
+```
 ```json Error Response
 {
   "success": false,
@@ -154,6 +198,18 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 }
 ```
 </ResponseExample>
+
+
+### Sales Navigator seat
+
+`sales_nav` reports whether the account can run [lead searches](/api-reference/v2/profiles/search-people-nav), send InMails, and read its [InMail balance](/api-reference/v2/messages/balance).
+
+The seat is derived from the LinkedIn session, so the two are linked one way:
+
+- **Account disconnects → seat goes with it.** `connected` turns `false`; reconnecting the account restores the seat.
+- **Seat can die alone.** An expired licence or a seat reassigned by the contract admin leaves `is_active: true` while `connected` turns `false`, with `reason` and `disconnected_at`. Everything except Sales Navigator keeps working.
+
+An account that never had Sales Navigator simply reports `{ "connected": false }`.
 
 ### Notes
 - Use the `account_id` from the response in all V2 action requests

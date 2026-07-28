@@ -1,0 +1,122 @@
+---
+title: 'Delete Account'
+api: 'DELETE /v2/accounts/{account_id}'
+description: 'Disconnect an account and delete everything attached to it'
+---
+
+Disconnects a channel account and removes it, along with every artifact attached to it. Use it when a user unlinks their account or you stop billing them for it.
+
+<Note>
+  This endpoint is **free** — it does not consume any credits.
+</Note>
+
+<Warning>
+Deletion is **permanent and immediate**. The stored session is destroyed, so reconnecting the same LinkedIn account later means a full [Connect Account](/api-reference/v2/accounts/login) with credentials and a new `account_id`. To stop activity temporarily, stop the webhooks instead of deleting the account.
+</Warning>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  The account to delete. Must belong to your API key.
+</ParamField>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### What gets deleted
+
+One call cascades so nothing keeps running behind your back:
+
+- the real-time webhook monitor is stopped, which also **halts its billing**
+- every webhook pointing at the account (real-time and polling)
+- the cached connections snapshot
+- stored hosted-mode webhook events
+- the account itself
+
+### Response
+
+<ResponseField name="success" type="boolean">
+  Whether the deletion succeeded
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="account_id" type="string">
+      The account that was deleted
+    </ResponseField>
+    <ResponseField name="deleted" type="boolean">
+      Always `true` on success
+    </ResponseField>
+    <ResponseField name="webhooks_deleted" type="integer">
+      Number of webhooks removed
+    </ResponseField>
+    <ResponseField name="connections_deleted" type="integer">
+      Number of cached connection snapshots removed
+    </ResponseField>
+    <ResponseField name="events_deleted" type="integer">
+      Number of stored webhook events removed
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "deleted": true,
+    "webhooks_deleted": 2,
+    "connections_deleted": 1,
+    "events_deleted": 47
+  },
+  "metadata": {
+    "action": "delete_account",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-28T12:00:00Z"
+  }
+}
+```
+
+```json 404 (unknown account)
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACCOUNT",
+    "message": "Account not found"
+  },
+  "metadata": {
+    "credits_consumed": 0,
+    "timestamp": "2026-04-28T12:00:00Z"
+  }
+}
+```
+
+```json 400 (malformed id)
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Invalid account_id format"
+  },
+  "metadata": {
+    "credits_consumed": 0,
+    "timestamp": "2026-04-28T12:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+### Sales Navigator
+
+The Sales Navigator seat is stored on the account, so it goes with it — the cached seat token, contract and seat ids are all removed.
+
+The **licence itself is untouched**: it belongs to the user's Sales Navigator contract, not to us, and is never released. Reconnecting the same LinkedIn account later restores the seat in one call — see [Connect Account](/api-reference/v2/accounts/login) with `sales_nav: true`, no credit and nothing to redo on the Sales Navigator side.
+
+### Notes
+- An account that does not belong to your API key returns `404 INVALID_ACCOUNT`, same as one that does not exist — ids are never confirmed across keys
+- The call is safe to repeat: a second delete simply returns `404`
+- Deleting an account does **not** log the user out of LinkedIn, it only removes the session held by the API

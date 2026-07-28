@@ -1,0 +1,324 @@
+---
+title: 'Search People Nav'
+sidebarTitle: 'Search People Nav'
+api: 'POST /v2/profiles'
+description: 'Search leads with Sales Nav using its full filter set.'
+---
+
+## Overview
+
+Run a **Sales Nav lead search** and get back richly-detailed leads. This uses the account's Sales Nav seat — see [Connect Account](/api-reference/v2/accounts/login) to activate it.
+
+There are two ways to define the search — pick whichever fits:
+
+1. **Friendly filters** — pass human-readable values (e.g. `seniority_level: ["Director", "CXO"]`) and the API resolves them to the underlying ids for you.
+2. **Copied Sales Nav URL** — build the search visually in Sales Nav, copy the page URL, and pass it as `sales_nav_url`. Every filter is replicated verbatim, including ones with no friendly mapping (persona, lead lists, exclusions, buyer intent, …).
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Requires a Sales Nav seat on the account.</Note>
+
+<Info>
+Within a single filter, multiple values are combined with **OR** (e.g. `seniority_level: ["VP", "CXO"]` = VP **or** CXO). Different filters are combined with **AND**.
+</Info>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use. Must have a Sales Nav seat.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search_people_nav"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+
+    <ParamField body="sales_nav_url" type="string">
+      A copied Sales Nav search URL — either form Sales Nav produces works (`.../sales/search/people?query=...` or `#query=...`), pasted as-is. When provided, its filters are used as-is and **take precedence** over the friendly filters below. The best way to replicate a complex search or use filters that have no friendly mapping.
+    </ParamField>
+
+    <ParamField body="keyword" type="string">
+      Free-text keyword searched across profiles.
+    </ParamField>
+
+    {/* --- Role --- */}
+    <ParamField body="current_title" type="string">
+      Current job title (free text), e.g. `"CTO"`, `"Head of Growth"`.
+    </ParamField>
+    <ParamField body="past_title" type="string">
+      Past job title (free text).
+    </ParamField>
+    <ParamField body="seniority_level" type="string[]">
+      Seniority. Names or ids. Accepted names: `In Training`, `Entry Level`, `Senior`, `Strategic`, `Entry Level Manager`, `Experienced Manager`, `Director`, `Vice President` (`VP`), `CXO`, `Owner / Partner`.
+    </ParamField>
+    <ParamField body="function" type="string[]">
+      Job function, e.g. `["Sales", "Marketing", "Engineering"]`. Names or ids.
+    </ParamField>
+    <ParamField body="years_in_current_position" type="string[]">
+      Tenure in current position. Accepted: `Less than 1 year`, `1 to 2 years`, `3 to 5 years`, `6 to 10 years`, `More than 10 years`.
+    </ParamField>
+    <ParamField body="years_at_current_company" type="string[]">
+      Tenure at current company. Same values as above.
+    </ParamField>
+    <ParamField body="years_of_experience" type="string[]">
+      Total years of experience. Same values as above.
+    </ParamField>
+
+    {/* --- Company --- */}
+    <ParamField body="current_company" type="string[]">
+      Current company. Company names or company page URLs — resolved to ids automatically.
+    </ParamField>
+    <ParamField body="past_company" type="string[]">
+      Past company. Names or URLs.
+    </ParamField>
+    <ParamField body="company_size" type="string">
+      Headcount range, e.g. `"51-200"`, `"1-10"`, `"51-1000"`. Expanded to the matching size brackets (OR).
+    </ParamField>
+    <ParamField body="company_type" type="string[]">
+      Accepted: `Public Company`, `Privately Held`, `Non Profit`, `Educational Institution`, `Partnership`, `Self Employed`, `Self Owned`, `Government Agency`.
+    </ParamField>
+    <ParamField body="company_headquarters" type="string[]">
+      Company HQ location. Super-regions (`EMEA`, `APAC`, `DACH`, `Benelux`, `Oceania`, `North America`) or any place name (resolved via geo typeahead).
+    </ParamField>
+    <ParamField body="industry" type="string[]">
+      Industry names (e.g. `["Software Development", "Financial Services"]`), resolved via typeahead.
+    </ParamField>
+
+    {/* --- Person --- */}
+    <ParamField body="first_name" type="string">
+      Filter by first name.
+    </ParamField>
+    <ParamField body="last_name" type="string">
+      Filter by last name.
+    </ParamField>
+    <ParamField body="geography" type="string[]">
+      Person location. Place names (resolved via geo typeahead) or super-regions.
+    </ParamField>
+    <ParamField body="region" type="string[]">
+      Region / super-region (`EMEA`, `DACH`, `Benelux`, …) or place names.
+    </ParamField>
+    <ParamField body="profile_language" type="string[]">
+      Profile language. ISO code (`en`, `fr`) or name (`English`, `French`).
+    </ParamField>
+    <ParamField body="school" type="string[]">
+      School names (e.g. `["Stanford University"]`), resolved via typeahead.
+    </ParamField>
+
+    {/* --- Intent & network --- */}
+    <ParamField body="relationship" type="string[]">
+      Connection degree. Names/aliases `1st`, `2nd`, `3rd+`, `group`, or ids `F`, `S`, `O`, `A`. Alias: `connection_degree`.
+    </ParamField>
+    <ParamField body="connection_of" type="string[]">
+      People who are connections of a given person (name, resolved via typeahead).
+    </ParamField>
+    <ParamField body="category_interest" type="string[]">
+      Buyer category interest (product category names), resolved via typeahead.
+    </ParamField>
+    <ParamField body="shared_experiences" type="boolean">
+      Only leads you share an experience with (company, school, group).
+    </ParamField>
+    <ParamField body="lead_interactions" type="string[]">
+      Your past interactions. Accepted: `Viewed profile` (`LIVP`), `Messaged` (`LIMP`).
+    </ParamField>
+
+    {/* --- Your lists --- */}
+    <ParamField body="persona" type="string[]">
+      One of your saved personas (name, resolved via typeahead).
+    </ParamField>
+    <ParamField body="group" type="string[]">
+      Group names, resolved via typeahead.
+    </ParamField>
+    <ParamField body="account_list" type="string[]">
+      Your saved account lists. `"ALL"` or a list name.
+    </ParamField>
+    <ParamField body="lead_list" type="string[]">
+      Your saved lead lists. `"ALL"` or a list name.
+    </ParamField>
+    <ParamField body="saved" type="string[]">
+      Your saved items. Accepted: `saved leads` (`SL`), `saved accounts` (`SA`).
+    </ParamField>
+
+    {/* --- Paging --- */}
+    <ParamField body="offset" type="integer" default={0}>
+      Index of the first lead to return (0-based). Combine with `count` to walk the result set page by page. Any value works — it does not have to align to a page boundary.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of leads to return, starting at `offset`.
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+### Paging
+
+`offset: 0, count: 25` returns leads 0–24, `offset: 25` the next 25. The response echoes `offset` back, so the next page is `offset + total_results`.
+
+<Warning>
+Sales Navigator only lets a single search be browsed up to **2500 results**, whatever `total_available_results` reports. An `offset` of 2500 or more returns `INVALID_PARAMS` (0 credits) — narrow the filters to reach deeper leads.
+</Warning>
+
+<Tip>
+Every list filter also accepts raw ids directly, so you can mix friendly names and ids. Unknown values are ignored rather than causing an error.
+</Tip>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="profiles" type="array">
+      List of matching leads.
+      <Expandable title="lead properties">
+        <ResponseField name="name" type="string">Full name.</ResponseField>
+        <ResponseField name="job_title" type="string">Current job title.</ResponseField>
+        <ResponseField name="company" type="string">Current company.</ResponseField>
+        <ResponseField name="location" type="string">Geographic location.</ResponseField>
+        <ResponseField name="profile_url" type="string">Standard profile URL.</ResponseField>
+        <ResponseField name="sales_nav_url" type="string">Sales Nav lead URL.</ResponseField>
+        <ResponseField name="recipient_urn" type="string">Sales-Nav-specific URN (`urn:li:fs_salesProfile:(...)`) — pass it to [Send Message](/api-reference/v2/messages/send) to InMail this lead.</ResponseField>
+        <ResponseField name="profile_picture" type="string">Profile picture URL.</ResponseField>
+        <ResponseField name="connection_level" type="string">Connection degree (e.g. `"2"`).</ResponseField>
+        <ResponseField name="headline" type="string">Profile headline.</ResponseField>
+        <ResponseField name="summary" type="string">Profile summary / about.</ResponseField>
+        <ResponseField name="premium" type="boolean">Whether the lead has a Premium account.</ResponseField>
+        <ResponseField name="open_link" type="boolean">Whether the lead is reachable via Open Profile.</ResponseField>
+        <ResponseField name="viewed_profile" type="boolean">Whether you have viewed this lead's profile.</ResponseField>
+        <ResponseField name="changed_job_recently" type="boolean">Recent job change flag.</ResponseField>
+        <ResponseField name="shared_connections" type="integer">Number of shared connections.</ResponseField>
+        <ResponseField name="teamlink_count" type="integer">Number of TeamLink connection paths.</ResponseField>
+        <ResponseField name="company_size" type="string">Current company size, when available.</ResponseField>
+        <ResponseField name="latest_activity" type="string">Most recent activity (e.g. recent posts).</ResponseField>
+        <ResponseField name="badges" type="array">
+          Spotlight badges (mutual connections, recent posts, …).
+          <Expandable title="badge properties">
+            <ResponseField name="type" type="string">Badge kind, e.g. `SECOND_DEGREE_CONNECTION`.</ResponseField>
+            <ResponseField name="header" type="string">Short label, e.g. `"Mutual connection"`.</ResponseField>
+            <ResponseField name="text" type="string">Summary, e.g. `"1 mutual connection"`.</ResponseField>
+            <ResponseField name="details" type="string">Full sentence shown by Sales Navigator.</ResponseField>
+            <ResponseField name="associations" type="array">Related entities, each `{ "type": "profile", "id": "ACwAA..." }`.</ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="current_positions" type="array">
+          Current positions.
+          <Expandable title="position properties">
+            <ResponseField name="title" type="string">Job title.</ResponseField>
+            <ResponseField name="company" type="string">Company name.</ResponseField>
+            <ResponseField name="company_id" type="string">LinkedIn company id, when known.</ResponseField>
+            <ResponseField name="duration" type="string">Time in the role, e.g. `"4 mois"`.</ResponseField>
+            <ResponseField name="started" type="string">Start date, `M/YYYY`.</ResponseField>
+            <ResponseField name="description" type="string">Role description, when the lead filled one in.</ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="past_positions" type="array">
+          Past positions. Same fields as above, except `started` / `description` are replaced by `period` (e.g. `"3/2023 - 11/2025"`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of leads returned.
+    </ResponseField>
+    <ResponseField name="offset" type="integer">
+      Absolute index of the first lead returned — echoes the requested `offset`. Add `total_results` to it for the next page's `offset`.
+    </ResponseField>
+    <ResponseField name="total_available_results" type="integer">
+      Total number of matching leads available (an estimate for large sets).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "total_results": 2,
+    "offset": 0,
+    "total_available_results": 493426,
+    "profiles": [
+      {
+        "name": "Jessica Jensen",
+        "job_title": "Chief Marketing Officer",
+        "company": "TechCo",
+        "location": "San Francisco, California, United States",
+        "profile_url": "https://www.linkedin.com/in/ACwAAA...",
+        "sales_nav_url": "https://www.linkedin.com/sales/lead/ACwAAA...",
+        "recipient_urn": "urn:li:fs_salesProfile:(ACwAAA...,NAME_SEARCH,8_-X)",
+        "connection_level": "2",
+        "premium": true,
+        "changed_job_recently": false,
+        "shared_connections": 4,
+        "latest_activity": "2 recent posts",
+        "current_positions": [
+          { "title": "Chief Marketing Officer", "company": "TechCo", "duration": "2 ans" }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "action": "search_people_nav",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 422 (no Sales Nav seat)
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "No Sales Nav license found for this account"
+  },
+  "metadata": {
+    "action": "search_people_nav",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Examples
+
+### Friendly filters
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "search_people_nav",
+  "params": {
+    "keyword": "marketing",
+    "seniority_level": ["Vice President", "CXO"],
+    "function": ["Marketing", "Sales"],
+    "company_type": ["Public Company"],
+    "company_size": "51-1000",
+    "industry": ["Software Development"],
+    "company_headquarters": ["North America", "EMEA"],
+    "years_in_current_position": ["3 to 5 years"],
+    "count": 25
+  }
+}
+```
+
+### Copied Sales Nav URL
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "search_people_nav",
+  "params": {
+    "sales_nav_url": "https://www.linkedin.com/sales/search/people?query=(filters:List(...))",
+    "offset": 0,
+    "count": 25
+  }
+}
+```

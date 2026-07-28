@@ -8,7 +8,11 @@ description: 'Send a direct message to a user, optionally with media attachments
 
 Sends a message to a user identified by their profile URL. You can include text only, or attach media via a URL, base64-encoded file, or server-side path.
 
-<Note>This endpoint consumes **1 credit** for text-only messages and **2 credits** when media is attached.</Note>
+This same action also sends a **Sales Nav InMail** — to message someone you are not connected to. InMail is **opt-in**: it is only sent when you set `inmail: true` or pass a Sales Nav `recipient_urn`. A normal message is never silently upgraded to an InMail (even if you include a `subject`).
+
+You can target the recipient either by `profile_url` (+ `inmail: true`) or by `recipient_urn` — both work. **Prefer `recipient_urn`** (from the [lead search](/api-reference/v2/profiles/search-people-nav)) when you have it. See [InMail](#inmail) below.
+
+<Note>This endpoint consumes **1 credit** for text-only messages and **2 credits** when media is attached. An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
 
 <Note>When multiple media options are provided, the priority order is: `media_link` > `media_file` > `media_path`. Only one media attachment will be used.</Note>
 
@@ -28,11 +32,20 @@ Sends a message to a user identified by their profile URL. You can include text 
 
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
-    <ParamField body="profile_url" type="string" required>
-      URL of the recipient's profile on the connected platform.
+    <ParamField body="profile_url" type="string">
+      URL of the recipient's profile. Used for both a standard message and an InMail (with `inmail: true`). Required unless you pass `recipient_urn`.
     </ParamField>
     <ParamField body="message_text" type="string" required>
-      The text content of the message.
+      The text content of the message / InMail.
+    </ParamField>
+    <ParamField body="inmail" type="boolean" default={false}>
+      Set to `true` to send an **InMail** (to a non-connection, via the premium seat) instead of a standard message. Consumes 1 InMail credit. Not needed when `recipient_urn` is a Sales Nav URN — that already forces the InMail path.
+    </ParamField>
+    <ParamField body="recipient_urn" type="string">
+      **InMail** — the lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail (no `inmail: true` needed). Use this **or** `profile_url` + `inmail: true`.
+    </ParamField>
+    <ParamField body="subject" type="string">
+      **InMail** — optional subject line (recommended for InMails). Ignored for standard messages; on its own it does **not** trigger an InMail.
     </ParamField>
     <ParamField body="media_link" type="string">
       A publicly accessible URL to a media file to attach.
@@ -62,8 +75,8 @@ Sends a message to a user identified by their profile URL. You can include text 
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  Details of the sent message.
-  <Expandable title="data properties">
+  Details of the sent message. The shape differs between a standard message and an InMail.
+  <Expandable title="standard message">
     <ResponseField name="entityUrn" type="string">
       The unique URN of the sent message entity.
     </ResponseField>
@@ -72,6 +85,20 @@ Sends a message to a user identified by their profile URL. You can include text 
     </ResponseField>
     <ResponseField name="deliveredAt" type="string">
       ISO 8601 timestamp of when the message was delivered.
+    </ResponseField>
+  </Expandable>
+  <Expandable title="InMail">
+    <ResponseField name="status" type="string">
+      `"success"` when the InMail was sent.
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Human-readable result, e.g. `"InMail sent"`.
+    </ResponseField>
+    <ResponseField name="recipient_urn" type="string">
+      The Sales Nav URN the InMail was sent to.
+    </ResponseField>
+    <ResponseField name="data" type="object">
+      Raw send result: `{ "value": { "threadId": "...", "messageId": "..." } }`.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -94,7 +121,7 @@ Sends a message to a user identified by their profile URL. You can include text 
 </ResponseField>
 
 <ResponseExample>
-```json 200
+```json 200 (message)
 {
   "success": true,
   "data": {
@@ -111,12 +138,35 @@ Sends a message to a user identified by their profile URL. You can include text 
 }
 ```
 
+```json 200 (InMail)
+{
+  "success": true,
+  "data": {
+    "status": "success",
+    "message": "InMail sent",
+    "recipient_urn": "urn:li:fs_salesProfile:(ACwAAA...,name, )",
+    "data": {
+      "value": {
+        "threadId": "2-OTQwMTJlODEt...",
+        "messageId": "2-MTc4NTIyODc1..."
+      }
+    }
+  },
+  "metadata": {
+    "action": "send",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
 ```json 400
 {
   "success": false,
   "error": {
-    "code": "INVALID_REQUEST",
-    "message": "profile_url and message_text are required."
+    "code": "INVALID_PARAMS",
+    "message": "message_text is required"
   },
   "metadata": {
     "action": "send",
@@ -127,3 +177,39 @@ Sends a message to a user identified by their profile URL. You can include text 
 }
 ```
 </ResponseExample>
+
+## InMail
+
+To message someone you are not connected to, send an **InMail** via the account's premium seat. You can target the recipient in two ways — both work, but **`recipient_urn` is preferred**. Use `profile_url` when it's the only identifier you have.
+
+**From a lead search result** (recommended) — pass the `recipient_urn` returned by the [lead search](/api-reference/v2/profiles/search-people-nav):
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "send",
+  "params": {
+    "recipient_urn": "urn:li:fs_salesProfile:(...)",
+    "subject": "Quick question",
+    "message_text": "Hi ..."
+  }
+}
+```
+
+**From a profile URL** (no lead search needed):
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "send",
+  "params": {
+    "profile_url": "https://www.linkedin.com/in/some-profile/",
+    "inmail": true,
+    "subject": "Quick question",
+    "message_text": "Hi — loved your recent post on ..."
+  }
+}
+```
+
+An InMail is sent only when you set `inmail: true` or pass a `recipient_urn` — a `subject` alone never turns a message into an InMail. A profile that cannot be InMailed is rejected **before any credit is spent**. InMails draw from the seat's InMail credits — check the remaining balance with [Balance](/api-reference/v2/messages/balance).
+

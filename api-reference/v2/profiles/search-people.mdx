@@ -65,17 +65,11 @@ Search for profiles using a combination of keyword, company, location, school, a
     <ParamField body="follower_of" type="string">
       Filter to show followers of a specific company or profile.
     </ParamField>
-    <ParamField body="fetch_invitation_state" type="boolean" default={true}>
-      Whether to include invitation state for each result. Defaults to `true`.
+    <ParamField body="offset" type="integer" default={0}>
+      Index of the first result to return (0-based). Combine with `count` to paginate. Any value works — it does not have to align to a page boundary.
     </ParamField>
-    <ParamField body="total_results" type="integer" default={10}>
-      Total number of results to return. Defaults to `10`.
-    </ParamField>
-    <ParamField body="start_page" type="integer">
-      Start page for pagination (1-indexed). Use with `end_page` for pagination mode.
-    </ParamField>
-    <ParamField body="end_page" type="integer">
-      End page for pagination (inclusive). Use with `start_page` for pagination mode.
+    <ParamField body="count" type="integer" default={10}>
+      Number of results to return, starting at `offset`.
     </ParamField>
   </Expandable>
 </ParamField>
@@ -112,9 +106,6 @@ Search for profiles using a combination of keyword, company, location, school, a
         </ResponseField>
         <ResponseField name="linkedin_url" type="string">
           Full profile URL.
-        </ResponseField>
-        <ResponseField name="invitation_state" type="string">
-          Connection invitation state (if `fetch_invitation_state` is `true`).
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -157,8 +148,7 @@ Search for profiles using a combination of keyword, company, location, school, a
         "headline": "Software Engineer at TechCo",
         "location": "San Francisco, CA",
         "profile_picture_url": "https://media.licdn.com/dms/image/example.jpg",
-        "linkedin_url": "https://www.linkedin.com/in/janedoe",
-        "invitation_state": "CONNECTED"
+        "linkedin_url": "https://www.linkedin.com/in/janedoe"
       },
       {
         "public_id": "bobsmith",
@@ -167,8 +157,7 @@ Search for profiles using a combination of keyword, company, location, school, a
         "headline": "Senior Developer at StartupXYZ",
         "location": "San Francisco Bay Area",
         "profile_picture_url": "https://media.licdn.com/dms/image/example2.jpg",
-        "linkedin_url": "https://www.linkedin.com/in/bobsmith",
-        "invitation_state": "PENDING"
+        "linkedin_url": "https://www.linkedin.com/in/bobsmith"
       }
     ],
     "total_results": 2,
@@ -187,7 +176,7 @@ Search for profiles using a combination of keyword, company, location, school, a
 {
   "success": false,
   "error": {
-    "code": "INVALID_REQUEST",
+    "code": "INVALID_PARAMS",
     "message": "At least one search parameter is required."
   },
   "metadata": {

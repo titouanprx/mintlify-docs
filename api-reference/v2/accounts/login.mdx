@@ -19,7 +19,7 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
 ### Body Parameters
 
 <ParamField body="platform" type="string" required>
-  The channel platform to connect. Available: `linkedin`, `whatsapp` (more coming soon)
+  The channel platform to connect. Available: `linkedin`, `whatsapp` (more coming soon). Optional in the one case below where you pass an existing `account_id` to activate a premium seat — the account already carries its platform.
 </ParamField>
 
 <ParamField body="email" type="string">
@@ -49,6 +49,14 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
   - `app_challenge` — confirm the login directly from the platform's mobile app. No code needed — just call `/v2/checkpoint` with the `account_id` after approving on the app.
 </ParamField>
 
+<ParamField body="sales_nav" type="boolean" default={false}>
+  Also activate the account's **Sales Nav** seat during login (requires the account to hold a Sales Nav license). No extra credential is needed — the seat is derived from the existing session. See [Sales Nav](#sales-nav) below.
+</ParamField>
+
+<ParamField body="account_id" type="string">
+  Pass an **existing** account's id together with `sales_nav: true` to activate a Sales Nav seat on an already-connected account (e.g. bought after connecting) — no re-login, no credential, and **no credit**. When set, no other login parameter is required.
+</ParamField>
+
 ### Response
 
 <ResponseField name="success" type="boolean">
@@ -68,6 +76,9 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     </ResponseField>
     <ResponseField name="message" type="string">
       Additional information (present when checkpoint is required)
+    </ResponseField>
+    <ResponseField name="sales_nav" type="object">
+      Present when `sales_nav: true` was requested. `{ "connected": true, "contract_id": "...", "seat_id": "..." }` on success, or `{ "connected": false, "error": "..." }` if no seat could be activated. When the login returns `checkpoint_required`, this is `{ "pending": true }` and the seat is activated once the checkpoint completes.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -129,11 +140,59 @@ There are two ways to connect an account:
 
 1. **Credential-based login** — provide `email` + `password`. If 2FA is enabled, you'll receive a `checkpoint_required` status and need to call `/v2/checkpoint`.
 
-2. **Token-based login** — provide a `login_token` directly. The token is encrypted and stored securely. No 2FA step needed.
+2. **Token-based login** — provide a `login_token` directly. No 2FA step needed.
+
+### Sales Nav
+
+The Sales Nav seat is derived from the account's existing session — there is **no separate login**. There are two ways to activate it:
+
+1. **At login** — pass `sales_nav: true` alongside your credentials or `login_token`. The seat is activated in the same request.
+2. **On an already-connected account** — pass `account_id` + `sales_nav: true` (no credential, no credit). Ideal when the user buys Sales Nav after connecting.
+
+The seat is attached to the account and renewed automatically when it expires. Activating a seat never breaks an otherwise-successful login: if the account has no Sales Nav license, you still get `status: connected` with `sales_nav.connected: false`.
+
+<ResponseExample>
+```json Connected + Sales Nav
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "platform": "linkedin",
+    "status": "connected",
+    "sales_nav": {
+      "connected": true,
+      "contract_id": "2016220713",
+      "seat_id": "1545550052"
+    }
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 1,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Activate seat on existing account (account_id)
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "platform": "linkedin",
+    "status": "connected",
+    "sales_nav": { "connected": true, "contract_id": "2016220713", "seat_id": "1545550052" }
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
 
 ### Notes
 - The `account_id` returned is permanent — store it and reuse it for all API calls
-- Tokens are encrypted at rest using AES-256
 - If you receive `checkpoint_required`, use the `/v2/checkpoint` endpoint to complete verification
 - The `country` parameter determines which proxy is used for the connection
 - Each platform may require different parameters (e.g. WhatsApp uses `phone_number`)

@@ -1,0 +1,80 @@
+---
+title: 'Balance'
+api: 'POST /v2/balance'
+description: "Get an account's remaining premium messaging credits (InMail)."
+---
+
+## Overview
+
+Returns the remaining **InMail credits** for an account's premium seat.
+
+<Note>This endpoint costs **1 credit** per request.</Note>
+
+<Info>
+This is separate from your account credit balance (see [Credits](/api-reference/v2/credits/get-balance)) — it reports the credits available on the connected premium seat.
+</Info>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to query. Must have a premium seat (e.g. Sales Nav).
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get"`.
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="product" type="string">
+      The premium product the balance belongs to (e.g. `sales_nav`).
+    </ResponseField>
+    <ResponseField name="inmail_credits" type="integer">
+      Number of InMail credits currently available on the seat.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "product": "sales_nav",
+    "inmail_credits": 150
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 422 (no premium seat)
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "No Sales Nav license found for this account"
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

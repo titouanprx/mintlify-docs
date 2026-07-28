@@ -66,7 +66,8 @@
                   "api-reference/v2/accounts/login",
                   "api-reference/v2/accounts/checkpoint",
                   "api-reference/v2/accounts/list-accounts",
-                  "api-reference/v2/accounts/get-account"
+                  "api-reference/v2/accounts/get-account",
+                  "api-reference/v2/accounts/delete-account"
                 ]
               },
               {
@@ -77,6 +78,7 @@
                   "api-reference/v2/profiles/get-contact",
                   "api-reference/v2/profiles/visit",
                   "api-reference/v2/profiles/search-people",
+                  "api-reference/v2/profiles/search-people-nav",
                   "api-reference/v2/profiles/search-companies",
                   "api-reference/v2/profiles/get-company",
                   "api-reference/v2/profiles/get-viewers",
@@ -89,7 +91,8 @@
                 "pages": [
                   "api-reference/v2/messages/send",
                   "api-reference/v2/messages/list-inbox",
-                  "api-reference/v2/messages/get-conversation"
+                  "api-reference/v2/messages/get-conversation",
+                  "api-reference/v2/messages/balance"
                 ]
               },
               {

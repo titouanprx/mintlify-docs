@@ -35,6 +35,7 @@ All V2 API error responses follow a standardized format:
 | `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid. Check the `message` field for details. |
 | `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
 | `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
+| `CHANNEL_ERROR` | 422 Unprocessable Entity | The request was valid but the platform refused it — restricted profile, missing premium seat (e.g. no Sales Nav license), or an upstream failure. Not a parameter mistake, so retrying with the same input will not help. |
 | `INTERNAL_ERROR` | 500 Internal Server Error | An unexpected server error occurred. If this persists, contact support. |
 
 ## Error Code Details

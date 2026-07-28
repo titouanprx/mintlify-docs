@@ -35,6 +35,9 @@ Returns a paginated list of conversations from the inbox. Filter by category and
     <ParamField body="cursor" type="string">
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page.
     </ParamField>
+    <ParamField body="sales_nav" type="boolean" default={false}>
+      Read the **Sales Navigator** inbox instead of the classic one. See [Sales Navigator inbox](#sales-navigator-inbox) below.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -114,6 +117,16 @@ Returns a paginated list of conversations from the inbox. Filter by category and
   </Expandable>
 </ResponseField>
 
+## Sales Navigator inbox
+
+InMail threads live in Sales Navigator's own store and never appear in the classic inbox. Set `sales_nav: true` to read them — requires a Sales Navigator seat.
+
+Same envelope and same paging as above. Per conversation:
+
+- `conversation_id` is the Sales Navigator **thread id**, also returned as `threadId` by [Send Message](/api-reference/v2/messages/send). Pass it to [Get Conversation](/api-reference/v2/messages/get-conversation) **with `sales_nav: true`** — the two id spaces are not interchangeable.
+- `participant` and `last_message.sender` add `recipient_urn`, `sales_nav_url`, `connection_level` and `first_name` / `last_name`, and drop `headline`.
+- Extra: `total_message_count`, `archived`, `last_message.subject`.
+
 <ResponseExample>
 ```json 200
 {
@@ -154,12 +167,56 @@ Returns a paginated list of conversations from the inbox. Filter by category and
   }
 }
 ```
-
+```json Success (Sales Navigator)
+{
+  "success": true,
+  "data": {
+    "conversations": [
+      {
+        "conversation_id": "2-OTQwMTJlODEtOTUxMy00NGNlLWIyNmQtMDJjYTU4MmQyMTcxXzEwMA==",
+        "participant": {
+          "name": "Jessica Jensen",
+          "first_name": "Jessica",
+          "last_name": "Jensen",
+          "profile_url": "https://www.linkedin.com/in/ACwAAA...",
+          "sales_nav_url": "https://www.linkedin.com/sales/lead/ACwAAA...",
+          "recipient_urn": "urn:li:fs_salesProfile:(ACwAAA...,NAME_SEARCH,JUf-)",
+          "profile_picture": "https://media.licdn.com/...",
+          "connection_level": "2",
+          "is_me": false
+        },
+        "last_message": {
+          "text": "Thanks for reaching out. I'd like to learn more.",
+          "time": 1785236943298,
+          "subject": "Quick question",
+          "sender": {
+            "name": "Jessica Jensen",
+            "recipient_urn": "urn:li:fs_salesProfile:(ACwAAA...,NAME_SEARCH,JUf-)",
+            "is_me": false
+          }
+        },
+        "unread": 0,
+        "type": "inmail",
+        "total_message_count": 8,
+        "archived": false
+      }
+    ],
+    "total_results": 1,
+    "next_cursor": "1785228162040"
+  },
+  "metadata": {
+    "action": "list_inbox",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-28T12:00:00Z"
+  }
+}
+```
 ```json 400
 {
   "success": false,
   "error": {
-    "code": "INVALID_REQUEST",
+    "code": "INVALID_PARAMS",
     "message": "account_id is required."
   },
   "metadata": {
