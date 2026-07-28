@@ -117,7 +117,9 @@ Messages keep the classic shape and order (newest first), plus:
 
 - `sender_info.is_me` and `sender_info.recipient_urn`
 - `subject` and `attachments`, only when present
-- `message_type`: `INMAIL`, `INMAIL_ACCEPT`, `MESSAGE`
+- `content_flag` — `DELETED` when the message was deleted; `text` is then empty
+- `edited_at` — only on edited messages
+- `message_type`: `INMAIL`, `INMAIL_ACCEPT`, `INMAIL_REPLY`, `MESSAGE`
 
 `last_seen_message` is replaced by `conversation_id`, `type`, `archived` and `participants` (everyone but you).
 
