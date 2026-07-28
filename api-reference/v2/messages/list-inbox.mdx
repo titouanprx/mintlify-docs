@@ -36,7 +36,7 @@ Returns a paginated list of conversations from the inbox. Filter by category and
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page.
     </ParamField>
     <ParamField body="sales_nav" type="boolean" default={false}>
-      Read the **Sales Navigator** inbox instead of the classic one. See [Sales Navigator inbox](#sales-navigator-inbox) below.
+      Read the **Sales Nav** inbox instead of the classic one. See [Sales Nav inbox](#sales-nav-inbox) below.
     </ParamField>
   </Expandable>
 </ParamField>
@@ -117,11 +117,11 @@ Returns a paginated list of conversations from the inbox. Filter by category and
   </Expandable>
 </ResponseField>
 
-## Sales Navigator inbox
+## Sales Nav inbox
 
 InMail threads live in a separate store and never appear in the classic inbox. Set `sales_nav: true` to read them. Same envelope and paging, with:
 
-- `conversation_id` = the Sales Navigator **thread id**, also returned as `threadId` by [Send Message](/api-reference/v2/messages/send). Only usable with `sales_nav: true` — the two id spaces are not interchangeable.
+- `conversation_id` = the Sales Nav **thread id**, also returned as `threadId` by [Send Message](/api-reference/v2/messages/send). Only usable with `sales_nav: true` — the two id spaces are not interchangeable.
 - `participant` / `last_message.sender` add `recipient_urn`, `sales_nav_url`, `connection_level`, `first_name`, `last_name`; no `headline`
 - extra: `total_message_count`, `archived`, `last_message.subject`
 
@@ -165,7 +165,7 @@ InMail threads live in a separate store and never appear in the classic inbox. S
   }
 }
 ```
-```json Success (Sales Navigator)
+```json Success (Sales Nav)
 {
   "success": true,
   "data": {

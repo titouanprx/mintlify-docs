@@ -73,13 +73,13 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
         </ResponseField>
 
         <ResponseField name="sales_nav" type="object">
-          State of the account's Sales Navigator seat.
+          State of the account's Sales Nav seat.
           <Expandable title="sales_nav properties">
             <ResponseField name="connected" type="boolean">
-              Whether the account currently has a usable Sales Navigator seat.
+              Whether the account currently has a usable Sales Nav seat.
             </ResponseField>
             <ResponseField name="contract_id" type="string">
-              Sales Navigator contract the seat belongs to. Present once a seat has been activated.
+              Sales Nav contract the seat belongs to. Present once a seat has been activated.
             </ResponseField>
             <ResponseField name="seat_id" type="string">
               The seat within that contract.
@@ -173,7 +173,7 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
   }
 }
 ```
-```json Sales Navigator states
+```json Sales Nav states
 // seat live
 "sales_nav": { "connected": true, "contract_id": "2016220713", "seat_id": "1545550052", "connected_at": "2026-07-28T10:13:12Z" }
 
@@ -181,7 +181,7 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 "sales_nav": { "connected": false, "reason": "No Sales Nav license found for this account", "disconnected_at": "2026-07-28T10:12:25Z" }
 
 // LinkedIn account disconnected
-"sales_nav": { "connected": false, "reason": "LinkedIn account is disconnected — reconnect it to restore the Sales Navigator seat", "contract_id": "2016220713", "seat_id": "1545550052" }
+"sales_nav": { "connected": false, "reason": "LinkedIn account is disconnected — reconnect it to restore the Sales Nav seat", "contract_id": "2016220713", "seat_id": "1545550052" }
 ```
 ```json Error Response
 {
@@ -200,13 +200,13 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 </ResponseExample>
 
 
-### Sales Navigator seat
+### Sales Nav seat
 
 Whether the account can run [lead searches](/api-reference/v2/profiles/search-people-nav), send InMails and read its [InMail balance](/api-reference/v2/messages/balance). The seat is derived from the LinkedIn session, so:
 
 - account disconnects → seat goes with it; reconnecting restores it
 - seat can die alone (expired licence, seat reassigned) → `is_active` stays `true`, `connected` turns `false` with a `reason`
-- never had Sales Navigator → just `{ "connected": false }`
+- never had Sales Nav → just `{ "connected": false }`
 
 ### Notes
 - Use the `account_id` from the response in all V2 action requests

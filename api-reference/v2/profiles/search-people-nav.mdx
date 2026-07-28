@@ -158,7 +158,7 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
 `offset: 0, count: 25` returns leads 0–24, `offset: 25` the next 25. The response echoes `offset` back, so the next page is `offset + total_results`.
 
 <Warning>
-Sales Navigator only lets a single search be browsed up to **2500 results**, whatever `total_available_results` reports. An `offset` of 2500 or more returns `INVALID_PARAMS` (0 credits) — narrow the filters to reach deeper leads.
+Sales Nav only lets a single search be browsed up to **2500 results**, whatever `total_available_results` reports. An `offset` of 2500 or more returns `INVALID_PARAMS` (0 credits) — narrow the filters to reach deeper leads.
 </Warning>
 
 <Tip>
@@ -201,7 +201,7 @@ Every list filter also accepts raw ids directly, so you can mix friendly names a
             <ResponseField name="type" type="string">Badge kind, e.g. `SECOND_DEGREE_CONNECTION`.</ResponseField>
             <ResponseField name="header" type="string">Short label, e.g. `"Mutual connection"`.</ResponseField>
             <ResponseField name="text" type="string">Summary, e.g. `"1 mutual connection"`.</ResponseField>
-            <ResponseField name="details" type="string">Full sentence shown by Sales Navigator.</ResponseField>
+            <ResponseField name="details" type="string">Full sentence shown by Sales Nav.</ResponseField>
             <ResponseField name="associations" type="array">Related entities, each `{ "type": "profile", "id": "ACwAA..." }`.</ResponseField>
           </Expandable>
         </ResponseField>

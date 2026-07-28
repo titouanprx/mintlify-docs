@@ -39,7 +39,7 @@ Returns messages from a specific conversation, ordered from most recent to oldes
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page (most recent messages).
     </ParamField>
     <ParamField body="sales_nav" type="boolean" default={false}>
-      Read a **Sales Navigator** thread instead of a classic conversation. See [Sales Navigator conversations](#sales-navigator-conversations) below.
+      Read a **Sales Nav** thread instead of a classic conversation. See [Sales Nav conversations](#sales-nav-conversations) below.
     </ParamField>
   </Expandable>
 </ParamField>
@@ -109,9 +109,9 @@ Returns messages from a specific conversation, ordered from most recent to oldes
   </Expandable>
 </ResponseField>
 
-## Sales Navigator conversations
+## Sales Nav conversations
 
-Set `sales_nav: true` and pass the Sales Navigator **thread id** — from [List Inbox](/api-reference/v2/messages/list-inbox) with `sales_nav: true`, or the `threadId` returned when the InMail was sent. `profile_url` is not supported, so `conversation_id` is required.
+Set `sales_nav: true` and pass the Sales Nav **thread id** — from [List Inbox](/api-reference/v2/messages/list-inbox) with `sales_nav: true`, or the `threadId` returned when the InMail was sent. `profile_url` is not supported, so `conversation_id` is required.
 
 Messages keep the classic shape and order (newest first), plus:
 
@@ -122,7 +122,7 @@ Messages keep the classic shape and order (newest first), plus:
 `last_seen_message` is replaced by `conversation_id`, `type`, `archived` and `participants` (everyone but you).
 
 <Warning>
-Sales Navigator has no message cursor: a thread returns its `count` most recent messages and never issues a `next_cursor` (`cursor` is ignored). To read further back, raise `count` — compare it with `total_message_count` to know whether you have the whole thread.
+Sales Nav has no message cursor: a thread returns its `count` most recent messages and never issues a `next_cursor` (`cursor` is ignored). To read further back, raise `count` — compare it with `total_message_count` to know whether you have the whole thread.
 </Warning>
 
 <ResponseExample>
@@ -170,7 +170,7 @@ Sales Navigator has no message cursor: a thread returns its `count` most recent 
   }
 }
 ```
-```json Success (Sales Navigator)
+```json Success (Sales Nav)
 {
   "success": true,
   "data": {
