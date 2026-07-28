@@ -16,6 +16,8 @@ You can target the recipient either by `profile_url` (+ `inmail: true`) or by `r
 
 <Note>When multiple media options are provided, the priority order is: `media_link` > `media_file` > `media_path`. Only one media attachment will be used.</Note>
 
+<Note>An audio file (`.m4a`, `.mp3`, `.wav`, `.aac`) is delivered as a **native voice note** — a player in the conversation, not a file to download. Use **M4A**: it is what the LinkedIn app records, and other formats may not render natively. LinkedIn caps voice notes at 1 minute.</Note>
+
 ## Request
 
 <ParamField header="x-api-key" type="string" required>
