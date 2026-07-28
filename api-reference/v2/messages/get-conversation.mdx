@@ -111,16 +111,15 @@ Returns messages from a specific conversation, ordered from most recent to oldes
 
 ## Sales Navigator conversations
 
-An InMail thread is unreachable from a classic conversation id. Set `sales_nav: true` and pass the Sales Navigator **thread id** — from [List Inbox](/api-reference/v2/messages/list-inbox) with `sales_nav: true`, or the `threadId` returned when the InMail was sent. `profile_url` is not supported here, so `conversation_id` is required.
+Set `sales_nav: true` and pass the Sales Navigator **thread id** — from [List Inbox](/api-reference/v2/messages/list-inbox) with `sales_nav: true`, or the `threadId` returned when the InMail was sent. `profile_url` is not supported, so `conversation_id` is required.
 
 Messages keep the classic shape and order (newest first), plus:
 
-- `sender_info.is_me` — `true` when the account wrote the message
-- `sender_info.recipient_urn` — the author's Sales Navigator urn, ready to InMail
-- `subject` and `attachments` — only on messages that have them
-- `message_type` uses Sales Navigator values: `INMAIL`, `INMAIL_ACCEPT`, `MESSAGE`
+- `sender_info.is_me` and `sender_info.recipient_urn`
+- `subject` and `attachments`, only when present
+- `message_type`: `INMAIL`, `INMAIL_ACCEPT`, `MESSAGE`
 
-The response replaces `last_seen_message` with `conversation_id`, `type`, `archived` and `participants` (everyone but you).
+`last_seen_message` is replaced by `conversation_id`, `type`, `archived` and `participants` (everyone but you).
 
 <Warning>
 Sales Navigator has no message cursor: a thread returns its `count` most recent messages and never issues a `next_cursor` (`cursor` is ignored). To read further back, raise `count` — compare it with `total_message_count` to know whether you have the whole thread.

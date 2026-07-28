@@ -119,13 +119,11 @@ Returns a paginated list of conversations from the inbox. Filter by category and
 
 ## Sales Navigator inbox
 
-InMail threads live in Sales Navigator's own store and never appear in the classic inbox. Set `sales_nav: true` to read them — requires a Sales Navigator seat.
+InMail threads live in a separate store and never appear in the classic inbox. Set `sales_nav: true` to read them. Same envelope and paging, with:
 
-Same envelope and same paging as above. Per conversation:
-
-- `conversation_id` is the Sales Navigator **thread id**, also returned as `threadId` by [Send Message](/api-reference/v2/messages/send). Pass it to [Get Conversation](/api-reference/v2/messages/get-conversation) **with `sales_nav: true`** — the two id spaces are not interchangeable.
-- `participant` and `last_message.sender` add `recipient_urn`, `sales_nav_url`, `connection_level` and `first_name` / `last_name`, and drop `headline`.
-- Extra: `total_message_count`, `archived`, `last_message.subject`.
+- `conversation_id` = the Sales Navigator **thread id**, also returned as `threadId` by [Send Message](/api-reference/v2/messages/send). Only usable with `sales_nav: true` — the two id spaces are not interchangeable.
+- `participant` / `last_message.sender` add `recipient_urn`, `sales_nav_url`, `connection_level`, `first_name`, `last_name`; no `headline`
+- extra: `total_message_count`, `archived`, `last_message.subject`
 
 <ResponseExample>
 ```json 200

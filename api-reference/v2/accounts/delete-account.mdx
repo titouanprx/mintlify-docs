@@ -4,14 +4,14 @@ api: 'DELETE /v2/accounts/{account_id}'
 description: 'Disconnect an account and delete everything attached to it'
 ---
 
-Disconnects a channel account and removes it, along with every artifact attached to it. Use it when a user unlinks their account or you stop billing them for it.
+Disconnects a channel account and removes it, along with everything attached to it.
 
 <Note>
   This endpoint is **free** — it does not consume any credits.
 </Note>
 
 <Warning>
-Deletion is **permanent and immediate**. The stored session is destroyed, so reconnecting the same LinkedIn account later means a full [Connect Account](/api-reference/v2/accounts/login) with credentials and a new `account_id`. To stop activity temporarily, stop the webhooks instead of deleting the account.
+Permanent. Reconnecting later means a full [Connect Account](/api-reference/v2/accounts/login) and a new `account_id`. To pause temporarily, stop the webhooks instead.
 </Warning>
 
 ### Path Parameters
@@ -28,12 +28,10 @@ Deletion is **permanent and immediate**. The stored session is destroyed, so rec
 
 ### What gets deleted
 
-One call cascades so nothing keeps running behind your back:
-
-- the real-time webhook monitor is stopped, which also **halts its billing**
-- every webhook pointing at the account (real-time and polling)
+- the real-time monitor is stopped, which **halts its billing**
+- every webhook on the account
 - the cached connections snapshot
-- stored hosted-mode webhook events
+- stored webhook events
 - the account itself
 
 ### Response
@@ -110,13 +108,8 @@ One call cascades so nothing keeps running behind your back:
 ```
 </ResponseExample>
 
-### Sales Navigator
-
-The Sales Navigator seat is stored on the account, so it goes with it — the cached seat token, contract and seat ids are all removed.
-
-The **licence itself is untouched**: it belongs to the user's Sales Navigator contract, not to us, and is never released. Reconnecting the same LinkedIn account later restores the seat in one call — see [Connect Account](/api-reference/v2/accounts/login) with `sales_nav: true`, no credit and nothing to redo on the Sales Navigator side.
-
 ### Notes
-- An account that does not belong to your API key returns `404 INVALID_ACCOUNT`, same as one that does not exist — ids are never confirmed across keys
-- The call is safe to repeat: a second delete simply returns `404`
-- Deleting an account does **not** log the user out of LinkedIn, it only removes the session held by the API
+- The Sales Navigator seat goes with the account. The licence is untouched — reconnect with `sales_nav: true` to restore the seat
+- An account owned by another API key returns `404`, same as an unknown one
+- Safe to repeat: a second delete returns `404`
+- Does not log the user out of LinkedIn

@@ -202,14 +202,11 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 
 ### Sales Navigator seat
 
-`sales_nav` reports whether the account can run [lead searches](/api-reference/v2/profiles/search-people-nav), send InMails, and read its [InMail balance](/api-reference/v2/messages/balance).
+Whether the account can run [lead searches](/api-reference/v2/profiles/search-people-nav), send InMails and read its [InMail balance](/api-reference/v2/messages/balance). The seat is derived from the LinkedIn session, so:
 
-The seat is derived from the LinkedIn session, so the two are linked one way:
-
-- **Account disconnects → seat goes with it.** `connected` turns `false`; reconnecting the account restores the seat.
-- **Seat can die alone.** An expired licence or a seat reassigned by the contract admin leaves `is_active: true` while `connected` turns `false`, with `reason` and `disconnected_at`. Everything except Sales Navigator keeps working.
-
-An account that never had Sales Navigator simply reports `{ "connected": false }`.
+- account disconnects → seat goes with it; reconnecting restores it
+- seat can die alone (expired licence, seat reassigned) → `is_active` stays `true`, `connected` turns `false` with a `reason`
+- never had Sales Navigator → just `{ "connected": false }`
 
 ### Notes
 - Use the `account_id` from the response in all V2 action requests
