@@ -6,17 +6,13 @@ description: 'Send a direct message to a user, optionally with media attachments
 
 ## Overview
 
-Sends a message to a user identified by their profile URL. You can include text only, or attach media via a URL, base64-encoded file, or server-side path.
-
-This same action also sends a **Sales Nav InMail** — to message someone you are not connected to. InMail is **opt-in**: it is only sent when you set `inmail: true` or pass a Sales Nav `recipient_urn`. A normal message is never silently upgraded to an InMail (even if you include a `subject`).
-
-You can target the recipient either by `profile_url` (+ `inmail: true`) or by `recipient_urn` — both work. **Prefer `recipient_urn`** (from the [lead search](/api-reference/v2/profiles/search-people-nav)) when you have it. See [InMail](#inmail) below.
+Sends a message to a user identified by their profile URL, with optional media. Also sends a [Sales Nav InMail](#inmail) when you set `inmail: true` or pass a `recipient_urn`.
 
 <Note>This endpoint consumes **1 credit** for text-only messages and **2 credits** when media is attached. An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
 
 <Note>When multiple media options are provided, the priority order is: `media_link` > `media_file` > `media_path`. Only one media attachment will be used.</Note>
 
-<Note>An audio file (`.m4a`, `.mp3`, `.wav`, `.aac`) is delivered as a **native voice note** — a player in the conversation, not a file to download. LinkedIn transcodes whatever you send and derives the duration itself. Its stated limit is 1 minute. Set `voice_message: true` when the filename has no usable extension; combined with a non-audio file it returns `INVALID_PARAMS`.</Note>
+<Note>An audio file (`.m4a`, `.mp3`, `.wav`, `.aac`) is delivered as a **native voice note**, not a file to download. LinkedIn caps them at 1 minute.</Note>
 
 ## Request
 
@@ -185,9 +181,7 @@ You can target the recipient either by `profile_url` (+ `inmail: true`) or by `r
 
 ## InMail
 
-To message someone you are not connected to, send an **InMail** via the account's premium seat. You can target the recipient in two ways — both work, but **`recipient_urn` is preferred**. Use `profile_url` when it's the only identifier you have.
-
-**From a lead search result** (recommended) — pass the `recipient_urn` returned by the [lead search](/api-reference/v2/profiles/search-people-nav):
+Reaches someone you are not connected to, through the account's premium seat. Triggered by `inmail: true` or a `recipient_urn` — a `subject` alone never turns a message into an InMail. Prefer `recipient_urn` from the [lead search](/api-reference/v2/profiles/search-people-nav) when you have it.
 
 ```json
 {
@@ -201,20 +195,4 @@ To message someone you are not connected to, send an **InMail** via the account'
 }
 ```
 
-**From a profile URL** (no lead search needed):
-
-```json
-{
-  "account_id": "your-account-id",
-  "action": "send",
-  "params": {
-    "profile_url": "https://www.linkedin.com/in/some-profile/",
-    "inmail": true,
-    "subject": "Quick question",
-    "message_text": "Hi — loved your recent post on ..."
-  }
-}
-```
-
-An InMail is sent only when you set `inmail: true` or pass a `recipient_urn` — a `subject` alone never turns a message into an InMail. A profile that cannot be InMailed is rejected **before any credit is spent**. InMails draw from the seat's InMail credits — check the remaining balance with [Balance](/api-reference/v2/messages/balance).
-
+A profile that cannot be InMailed is rejected before any credit is spent. Credits come from the seat — see [Balance](/api-reference/v2/messages/balance).
