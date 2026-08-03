@@ -1,0 +1,157 @@
+---
+title: 'Create Job Posting'
+api: 'POST /v2/recruiter'
+description: 'Create a job posting on LinkedIn (draft state).'
+---
+
+## Overview
+
+Create a job posting. The job is created in `DRAFT` state — use `publish_job` to make it live.
+
+<Note>This endpoint consumes **2 credits** per request.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"create_job"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="company_url" type="string" required>
+      LinkedIn company page URL to post the job under.
+    </ParamField>
+    <ParamField body="title" type="string" required>
+      Job title.
+    </ParamField>
+    <ParamField body="place" type="string" required>
+      Job location (e.g. `"Paris, France"`).
+    </ParamField>
+    <ParamField body="html_description" type="string" required>
+      Job description, basic HTML supported (`<p>`, `<strong>`, `<ul>`/`<li>`).
+    </ParamField>
+    <ParamField body="employment_status" type="string" default="FULL_TIME">
+      `FULL_TIME`, `PART_TIME`, `CONTRACT`, `TEMPORARY`, `VOLUNTEER`, or `INTERNSHIP`.
+    </ParamField>
+    <ParamField body="workplace" type="string" default="1">
+      `"1"` on-site, `"2"` remote, `"3"` hybrid.
+    </ParamField>
+    <ParamField body="contact_email" type="string">
+      Contact email shown on the posting.
+    </ParamField>
+    <ParamField body="skills" type="array">
+      Skill names required for the role.
+    </ParamField>
+    <ParamField body="job_functions" type="array">
+      Job function names.
+    </ParamField>
+    <ParamField body="industry_sectors" type="array">
+      Industry sector names.
+    </ParamField>
+    <ParamField body="screening_questions" type="array">
+      Screening question objects (predefined types or `CUSTOM_QUESTION`). See the [V1 Create Job reference](/api-reference/linkup/recruiter/create-job-post) for the full object shape and predefined types.
+    </ParamField>
+    <ParamField body="auto_rejection_template" type="string">
+      Message sent to auto-rejected candidates.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="job_posting_id" type="string">
+      LinkedIn job posting ID (use it with `publish_job`, `close_job`, `get_candidates`).
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      Result message.
+    </ResponseField>
+    <ResponseField name="screening_questions_added" type="boolean">
+      Whether the screening questions were attached successfully.
+    </ResponseField>
+    <ResponseField name="warning" type="string">
+      Present only if the job was created but screening questions failed to attach.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"create_job"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (2).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "job_posting_id": "4448305877",
+    "message": "Job posting created successfully",
+    "screening_questions_added": false
+  },
+  "metadata": {
+    "action": "create_job",
+    "account_id": "your-account-id",
+    "credits_consumed": 2,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Missing required fields: company_url, place, html_description"
+  },
+  "metadata": {
+    "action": "create_job",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 422
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "Impossible de récupérer les informations de l'entreprise: "
+  },
+  "metadata": {
+    "action": "create_job",
+    "account_id": "your-account-id",
+    "credits_consumed": 2,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

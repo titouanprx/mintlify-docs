@@ -129,6 +129,7 @@
                   "api-reference/v2/recruiter/get-posts",
                   "api-reference/v2/recruiter/get-candidates",
                   "api-reference/v2/recruiter/get-cv",
+                  "api-reference/v2/recruiter/create-job",
                   "api-reference/v2/recruiter/close-job",
                   "api-reference/v2/recruiter/publish-job"
                 ]
