@@ -1,0 +1,152 @@
+---
+title: 'Connect a Mailbox'
+api: 'POST /v2/login'
+description: 'Connect an email mailbox — OAuth (Gmail / Microsoft 365) or SMTP credentials.'
+---
+
+## Overview
+
+Same endpoint as a LinkedIn login, with `platform: "email"`. Connecting a mailbox is **free** (0 credits). Reconnecting the same address updates the existing account — the `account_id` never changes.
+
+Two authentication paths:
+
+- **OAuth** (`gmail_oauth`, `m365_oauth`) — two-phase flow: phase 1 returns an `authorization_url`, the user consents, phase 2 exchanges the code.
+- **SMTP** (any other provider) — one call with the SMTP credentials; the connection is verified before the account is created.
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="platform" type="string" required>
+  Must be `"email"`.
+</ParamField>
+
+<ParamField body="provider" type="string">
+  `"gmail_oauth"`, `"m365_oauth"`, or any SMTP provider label (default `"gmail_smtp"`).
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="OAuth — phase 1">
+    <ParamField body="from_email" type="string" required>
+      The mailbox address to connect.
+    </ParamField>
+    <ParamField body="redirect_uri" type="string" required>
+      Where the user lands after consent, with `code` and `state` appended. With LinkupAPI's app, the provider redirects to our hosted callback first, then forwards to this URL. With your own app, register this URI in your Google/Azure console.
+    </ParamField>
+    <ParamField body="oauth_client_id" type="string">
+      Your own OAuth app's client ID. Omit to use LinkupAPI's app.
+    </ParamField>
+    <ParamField body="oauth_client_secret" type="string">
+      Your own OAuth app's client secret. Required with `oauth_client_id`.
+    </ParamField>
+    <ParamField body="from_name" type="string">
+      Display name used on outgoing emails.
+    </ParamField>
+    <ParamField body="daily_limit" type="integer" default={40}>
+      Max sends per day for this mailbox.
+    </ParamField>
+  </Expandable>
+  <Expandable title="OAuth — phase 2">
+    <ParamField body="code" type="string" required>
+      The authorization code received on your `redirect_uri`.
+    </ParamField>
+    <ParamField body="state" type="string" required>
+      The `state` returned by phase 1 (also present on your `redirect_uri`).
+    </ParamField>
+  </Expandable>
+  <Expandable title="SMTP">
+    <ParamField body="from_email" type="string" required>
+      The mailbox address to connect.
+    </ParamField>
+    <ParamField body="smtp" type="object" required>
+      `{ "host": "smtp.example.com", "port": 587, "password": "app-password" }` — `host` and `password` required.
+    </ParamField>
+    <ParamField body="imap" type="object">
+      `{ "host": "imap.example.com", "port": 993 }` — strongly recommended: without IMAP, replies, bounces and webhooks are unavailable for this mailbox.
+    </ParamField>
+    <ParamField body="from_name" type="string">
+      Display name used on outgoing emails.
+    </ParamField>
+    <ParamField body="daily_limit" type="integer" default={40}>
+      Max sends per day for this mailbox.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  Phase 1 returns `authorization_url` + `state`. Phase 2 and SMTP return the connected account: `account_id`, `platform`, `provider`, `from_email`, `esp`, and a `deliverability` snapshot (SPF / DKIM / DMARC / MX) of the sending domain.
+</ResponseField>
+
+<RequestExample>
+```bash OAuth phase 1
+curl -X POST https://api.linkupapi.com/v2/login \
+  -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
+  -d '{
+    "platform": "email",
+    "provider": "gmail_oauth",
+    "params": {
+      "from_email": "sales@yourdomain.com",
+      "redirect_uri": "https://yourapp.com/oauth/callback"
+    }
+  }'
+```
+
+```bash OAuth phase 2
+curl -X POST https://api.linkupapi.com/v2/login \
+  -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
+  -d '{
+    "platform": "email",
+    "provider": "gmail_oauth",
+    "params": {
+      "code": "4/0AX...",
+      "state": "h0eghfLU..."
+    }
+  }'
+```
+
+```bash SMTP
+curl -X POST https://api.linkupapi.com/v2/login \
+  -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
+  -d '{
+    "platform": "email",
+    "params": {
+      "from_email": "sales@yourdomain.com",
+      "smtp": { "host": "smtp.zoho.com", "port": 587, "password": "app-password" },
+      "imap": { "host": "imap.zoho.com", "port": 993 }
+    }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200 (phase 1)
+{
+  "success": true,
+  "data": {
+    "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=...",
+    "state": "h0eghfLUpkJS6rlHOMb4Pl3ndVsy2tqS"
+  },
+  "metadata": { "action": "login", "credits_consumed": 0, "timestamp": "2026-08-06T17:03:37Z" }
+}
+```
+
+```json 200 (connected)
+{
+  "success": true,
+  "data": {
+    "account_id": "6a74c178d42c7fc2f8be2683",
+    "platform": "email",
+    "provider": "gmail_oauth",
+    "from_email": "sales@yourdomain.com",
+    "esp": "google",
+    "auth_mode": "oauth",
+    "deliverability": { "spf": true, "dkim": true, "dmarc": true, "mx": true, "issues": [] }
+  },
+  "metadata": { "action": "login", "credits_consumed": 0, "timestamp": "2026-08-06T17:16:40Z" }
+}
+```
+</ResponseExample>

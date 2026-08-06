@@ -1,0 +1,107 @@
+---
+title: 'Send an Email'
+api: 'POST /v2/messages'
+description: 'Send an email from a connected mailbox, with cap-aware multi-mailbox routing.'
+---
+
+## Overview
+
+Same `send` action as LinkedIn messaging — the platform is inferred from the account. Consumes **1 credit**. The email goes out over SMTP directly from the chosen mailbox, with clean MIME (proper threading headers, multipart text+HTML, no tracking pixels injected).
+
+Pass a list of `account_ids` to let the API pick the best mailbox per recipient: same-provider "home court" first, skipping mailboxes over their `daily_limit`.
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  A connected email account. With `params.account_ids`, acts as the fallback candidate.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"send"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="to" type="string" required>
+      Recipient email address.
+    </ParamField>
+    <ParamField body="html" type="string" required>
+      HTML body. A plain-text alternative is generated automatically unless you pass `text`.
+    </ParamField>
+    <ParamField body="subject" type="string">
+      Subject line.
+    </ParamField>
+    <ParamField body="text" type="string">
+      Explicit plain-text body for the multipart alternative.
+    </ParamField>
+    <ParamField body="reply_to" type="string">
+      Reply-To address override.
+    </ParamField>
+    <ParamField body="thread_ref" type="string">
+      `Message-ID` of a previous email to reply in-thread (sets `In-Reply-To` / `References`). Use the `message_id` returned by a previous send or found in [list_inbox](/api-reference/v2/email/list-inbox).
+    </ParamField>
+    <ParamField body="account_ids" type="array">
+      Candidate mailbox pool for routing. Overrides `account_id` as the candidate set.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="message_id" type="string">
+      RFC Message-ID of the sent email — store it to thread follow-ups (`thread_ref`) and to match replies.
+    </ResponseField>
+    <ResponseField name="sent_from" type="string">
+      The mailbox actually chosen by the router.
+    </ResponseField>
+    <ResponseField name="home_court" type="boolean">
+      `true` when sender and recipient are on the same provider (better inbox placement).
+    </ResponseField>
+    <ResponseField name="over_cap" type="boolean">
+      `true` when every candidate mailbox was over its daily cap (the send still goes through — treat it as a signal to add mailboxes or slow down).
+    </ResponseField>
+    <ResponseField name="mailbox_health" type="object">
+      `sends_today`, `daily_limit`, `bounce_rate` of the chosen mailbox.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl -X POST https://api.linkupapi.com/v2/messages \
+  -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
+  -d '{
+    "action": "send",
+    "account_id": "6a74c178d42c7fc2f8be2683",
+    "params": {
+      "to": "prospect@company.com",
+      "subject": "Quick question",
+      "html": "<p>Hi — saw your post about...</p>"
+    }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "message_id": "<178603693612.81484.18437130397899680167@gmail.com>",
+    "sent_from": "sales@yourdomain.com",
+    "esp": "google",
+    "recipient_esp": "other",
+    "home_court": false,
+    "over_cap": false,
+    "mailbox_health": { "sends_today": 1, "daily_limit": 40, "bounce_rate": 0.0 }
+  },
+  "metadata": { "action": "send", "account_id": "6a74c178d42c7fc2f8be2683", "credits_consumed": 1, "timestamp": "2026-08-06T17:22:18Z" }
+}
+```
+</ResponseExample>

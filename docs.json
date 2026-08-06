@@ -96,6 +96,18 @@
                 ]
               },
               {
+                "group": "Email Channel",
+                "pages": [
+                  "api-reference/v2/email/introduction",
+                  "api-reference/v2/email/connect-mailbox",
+                  "api-reference/v2/email/send",
+                  "api-reference/v2/email/list-inbox",
+                  "api-reference/v2/email/check-deliverability",
+                  "api-reference/v2/email/webhooks",
+                  "api-reference/v2/email/byo-oauth-app"
+                ]
+              },
+              {
                 "group": "Network",
                 "pages": [
                   "api-reference/v2/network/invite",
@@ -186,11 +198,15 @@
             "groups": [
               {
                 "group": "Getting Started",
-                "pages": ["api-reference/introduction"]
+                "pages": [
+                  "api-reference/introduction"
+                ]
               },
               {
                 "group": "Error Handling",
-                "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"]
+                "pages": [
+                  "api-reference/linkup/Error_Messages/ErrorMessages"
+                ]
               },
               {
                 "group": "Engagement API",
@@ -327,11 +343,15 @@
             "groups": [
               {
                 "group": "Getting Started",
-                "pages": ["api-reference/introduction"]
+                "pages": [
+                  "api-reference/introduction"
+                ]
               },
               {
                 "group": "Error Handling",
-                "pages": ["api-reference/linkup/Error_Messages/ErrorMessages"]
+                "pages": [
+                  "api-reference/linkup/Error_Messages/ErrorMessages"
+                ]
               },
               {
                 "group": "LinkedIn Engagement API",

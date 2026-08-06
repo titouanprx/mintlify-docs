@@ -1,0 +1,59 @@
+---
+title: 'Check Deliverability'
+api: 'POST /v2/enrich'
+description: 'Diagnose a sending domain: SPF, DKIM, DMARC and MX records.'
+---
+
+## Overview
+
+DNS-level health check of a sending domain. Consumes **1 credit**. Also runs automatically at mailbox connection (returned in the login response). Run it before starting a campaign: missing SPF/DKIM/DMARC is the #1 cause of spam-folder placement.
+
+<Note>DKIM detection is best-effort — selectors vary by provider. `dkim: false` means "not found on common selectors", not proof it's absent.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"check_deliverability"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="domain" type="string" required>
+      The sending domain to check (e.g. `"yourdomain.com"`).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  `spf`, `dkim`, `dmarc`, `mx` booleans plus an `issues` array with a human-readable line per missing record.
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl -X POST https://api.linkupapi.com/v2/enrich \
+  -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
+  -d '{ "action": "check_deliverability", "params": { "domain": "yourdomain.com" } }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "spf": true,
+    "dkim": false,
+    "dmarc": true,
+    "mx": true,
+    "issues": ["DKIM not found on common selectors"]
+  },
+  "metadata": { "action": "check_deliverability", "credits_consumed": 1, "timestamp": "2026-08-06T17:24:52Z" }
+}
+```
+</ResponseExample>

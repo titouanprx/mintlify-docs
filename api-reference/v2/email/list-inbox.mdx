@@ -1,0 +1,84 @@
+---
+title: 'List Inbox'
+api: 'POST /v2/messages'
+description: 'Read the connected mailbox over IMAP: replies, bounces, new messages.'
+---
+
+## Overview
+
+Same `list_inbox` action as LinkedIn messaging. Free (0 credits). Requires IMAP on the mailbox (always available on OAuth connections; optional on SMTP connections).
+
+Each item carries `in_reply_to`, so you can match replies to your sent emails by `message_id`, and `is_bounce` flags delivery-failure notifications (DSN).
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The connected email account.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"list_inbox"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="limit" type="integer" default={25}>
+      Number of most-recent messages to return.
+    </ParamField>
+    <ParamField body="unread_only" type="boolean" default={false}>
+      Only unread messages.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="items" type="array">
+      Newest first. Each item: `uid`, `from`, `subject`, `date`, `message_id`, `in_reply_to`, `is_bounce`.
+    </ResponseField>
+    <ResponseField name="total" type="integer">
+      Number of items returned.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl -X POST https://api.linkupapi.com/v2/messages \
+  -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
+  -d '{
+    "action": "list_inbox",
+    "account_id": "6a74c178d42c7fc2f8be2683",
+    "params": { "limit": 10 }
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "uid": "702444",
+        "from": "Jane Doe <jane@company.com>",
+        "subject": "Re: Quick question",
+        "date": "Thu, 06 Aug 2026 19:38:00 +0200",
+        "message_id": "<CAAGCV1E...@mail.company.com>",
+        "in_reply_to": "<178603693612.81484...@gmail.com>",
+        "is_bounce": false
+      }
+    ],
+    "total": 1
+  },
+  "metadata": { "action": "list_inbox", "account_id": "6a74c178d42c7fc2f8be2683", "credits_consumed": 0, "timestamp": "2026-08-06T17:23:00Z" }
+}
+```
+</ResponseExample>

@@ -1,0 +1,60 @@
+---
+title: 'Email Webhooks'
+description: 'Real-time events for connected mailboxes — replies, bounces, opt-outs.'
+---
+
+## Overview
+
+Email accounts use the **same webhook endpoints** as LinkedIn accounts: [`POST /v2/webhooks`](/api-reference/v2/webhooks/create) with an email `account_id`, then start/stop/stream/events as usual. Delivery, HMAC signing and deduplication work identically.
+
+Once a webhook is active, the mailbox inbox is monitored continuously. Only messages arriving **after** activation generate events — history is never replayed.
+
+## Event types
+
+### `message_received`
+
+A new email landed in the inbox. Respects the webhook's `message_type` filter (`inbound` by default — the mailbox's own sent copies are flagged `outbound` and skipped).
+
+```json
+{
+  "account_id": "6a74c178d42c7fc2f8be2683",
+  "account_name": "sales@yourdomain.com",
+  "event": {
+    "type": "message_received",
+    "subject": "Re: Quick question",
+    "message_text": "Sounds interesting, tell me more...",
+    "message_id": "<CAAGCV1E...@mail.company.com>",
+    "in_reply_to": "<178603693612...@gmail.com>",
+    "sender": { "name": "Jane Doe <jane@company.com>", "email": "jane@company.com" },
+    "opt_out_detected": false,
+    "timestamp": "2026-08-06T17:38:16Z"
+  }
+}
+```
+
+- `in_reply_to` matches the `message_id` returned by [Send](/api-reference/v2/email/send) — use it to attach the reply to your campaign.
+- `opt_out_detected: true` is set when the body looks like an unsubscribe request ("stop", "unsubscribe", "not interested"...). **Honor it**: stop contacting that address.
+
+### `email_bounced`
+
+A delivery-status notification (DSN) was detected for a sent email. The mailbox's `bounce_rate` is updated automatically.
+
+```json
+{
+  "event": {
+    "type": "email_bounced",
+    "bounce_status": "5.1.1",
+    "bounce_kind": "hard",
+    "bounced_recipient": "wrong-address@company.com",
+    "timestamp": "2026-08-06T17:40:02Z"
+  }
+}
+```
+
+`bounce_kind` is `"hard"` (5.x.x — address invalid, remove it from your lists) or `"soft"` (4.x.x — temporary, retry later).
+
+### `disconnection`
+
+Emitted when the mailbox credentials stop working (OAuth access revoked, password changed). Reconnect the mailbox with [`POST /v2/login`](/api-reference/v2/email/connect-mailbox) — the `account_id` is preserved.
+
+<Note>IMAP is required for email webhooks. OAuth mailboxes always have it; SMTP-only connections (no `imap` config) cannot be monitored.</Note>

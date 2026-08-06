@@ -1,0 +1,52 @@
+---
+title: 'Bring Your Own OAuth App'
+description: 'Use your own Google / Microsoft OAuth app for a fully white-label consent screen.'
+---
+
+## Overview
+
+By default, mailbox OAuth uses LinkupAPI's apps — zero setup. If you want users to see **your** name and logo on the consent screen, create your own OAuth app and pass its credentials in [phase 1](/api-reference/v2/email/connect-mailbox):
+
+```json
+"params": {
+  "from_email": "user@company.com",
+  "redirect_uri": "https://yourapp.com/oauth/callback",
+  "oauth_client_id": "1234-abc.apps.googleusercontent.com",
+  "oauth_client_secret": "GOCSPX-..."
+}
+```
+
+With your own app, the provider redirects **directly to your `redirect_uri`** (register it in your console). Everything else is identical.
+
+## Google setup
+
+1. [Google Cloud Console](https://console.cloud.google.com) → create a project.
+2. **OAuth consent screen**: External, your app name/logo, privacy policy and terms URLs, your domain as authorized domain (verify it in [Search Console](https://search.google.com/search-console)).
+3. **Scopes**: add `https://mail.google.com/` (required for SMTP/IMAP access).
+4. **Credentials → OAuth client ID** (Web application): add your `redirect_uri` to *Authorized redirect URIs*.
+5. Copy the client ID and secret.
+
+<Warning>
+`https://mail.google.com/` is a **restricted scope**. While your app's publishing status is *Testing*, only declared test users can connect (max 100) and refresh tokens expire after 7 days. To go to production, Google requires app verification plus an annual CASA security assessment (~$500/year, budget 3–6 weeks). Until then, use LinkupAPI's app for production traffic — it carries the verification for you.
+</Warning>
+
+## Microsoft setup
+
+1. [Microsoft Entra ID](https://entra.microsoft.com) → **App registrations → New registration**.
+2. Supported account types: *"Accounts in any organizational directory and personal Microsoft accounts"* (multitenant + personal).
+3. **Authentication**: add your `redirect_uri` as a Web platform URI.
+4. **API permissions** → *APIs my organization uses* → **Office 365 Exchange Online** → Delegated → `SMTP.Send` + `IMAP.AccessAsUser.All`.
+5. **Certificates & secrets** → new client secret (set a renewal reminder — max 24 months).
+
+<Note>
+If a user hits *"Administrator approval required"*, their Microsoft tenant requires admin consent: an admin can approve the request in Entra, or complete the OAuth flow once ticking *"Consent on behalf of your organization"*.
+</Note>
+
+## Which model to choose
+
+| | LinkupAPI app | Your own app |
+|---|---|---|
+| Setup | none | Google/Azure console + verification |
+| Consent screen brand | LinkupAPI | yours |
+| Google verification / CASA | carried by LinkupAPI | carried by you |
+| Redirect flow | hosted callback → your URL | provider → your URL directly |

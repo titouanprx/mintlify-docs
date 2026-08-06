@@ -1,0 +1,39 @@
+---
+title: 'Email Channel'
+description: 'Connect your own mailboxes and send cold email through the same V2 endpoints.'
+---
+
+## Overview
+
+The Email channel adds mailbox connectivity to the V2 API. **No new endpoints**: you connect a mailbox with [`POST /v2/login`](/api-reference/v2/email/connect-mailbox), send with [`POST /v2/messages`](/api-reference/v2/email/send), read replies with [`list_inbox`](/api-reference/v2/email/list-inbox), and receive events through the existing [webhooks](/api-reference/v2/email/webhooks). A connected mailbox is a regular account with its own `account_id`, listed by `GET /v2/accounts`.
+
+Sending is **SMTP-direct from the user's own mailbox** (no shared sending pool): the recipient's provider sees a normal email sent by the mailbox owner.
+
+## Supported providers
+
+| Provider | `provider` value | Authentication |
+|---|---|---|
+| Gmail / Google Workspace | `gmail_oauth` | OAuth 2.0 (recommended) |
+| Microsoft 365 / Outlook | `m365_oauth` | OAuth 2.0 (required — Microsoft removed password SMTP) |
+| Any SMTP/IMAP provider (Zoho, OVH, self-hosted...) | `gmail_smtp` or custom | SMTP credentials / app password |
+
+## OAuth: two app models
+
+<CardGroup cols={2}>
+  <Card title="LinkupAPI app (default)" icon="bolt">
+    Omit `oauth_client_id`. Users consent on LinkupAPI's verified Google/Microsoft app. One-click UX, nothing to configure.
+  </Card>
+  <Card title="Bring your own app" icon="key">
+    Pass your own `oauth_client_id` + `oauth_client_secret`. Users see **your** brand on the consent screen. See [Bring your own OAuth app](/api-reference/v2/email/byo-oauth-app).
+  </Card>
+</CardGroup>
+
+## Built-in sending safety
+
+Every mailbox carries health counters returned on each send and on `GET /v2/accounts`:
+
+- `daily_limit` — max sends per day (default 40, configurable at connection)
+- `sends_today` — resets daily
+- `bounce_rate` — computed from detected DSN bounces
+
+When you pass several `account_ids` on a send, the API routes each email to the best mailbox: same-provider "home court" first (Gmail→Gmail lands better), skipping mailboxes over their daily cap.
