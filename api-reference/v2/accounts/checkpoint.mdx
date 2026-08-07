@@ -4,10 +4,13 @@ api: 'POST /v2/checkpoint'
 description: 'Submit a verification code to complete account connection'
 ---
 
-Complete 2FA verification for an account that returned `checkpoint_required` during login. Depending on the `challenge_type` used at login, either submit a verification code or simply confirm the app challenge.
+Complete the connection of an account that returned `checkpoint_required` during login:
+
+- **LinkedIn 2FA** — depending on the `challenge_type` used at login, submit the verification code or simply confirm the app challenge.
+- **Email OAuth** — submit the authorization `code` received on your `redirect_uri` after the user consented on the Google/Microsoft screen. See [Connect a Mailbox](/api-reference/v2/email/connect-mailbox).
 
 <Note>
-  This endpoint costs **1 credit** per request.
+  **1 credit** per request for LinkedIn. **Free** for email accounts.
 </Note>
 
 ### Header Parameters
@@ -23,7 +26,11 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
 </ParamField>
 
 <ParamField body="code" type="string">
-  The verification code received via email, SMS, or authenticator app. Required when `challenge_type` is `code_challenge`. Not needed for `app_challenge` — the user approves directly from the platform's mobile app.
+  LinkedIn: the verification code received via email, SMS, or authenticator app. Required when `challenge_type` is `code_challenge`; not needed for `app_challenge` — the user approves directly from the platform's mobile app. Email OAuth: the authorization code from your `redirect_uri` (always required).
+</ParamField>
+
+<ParamField body="state" type="string">
+  Email OAuth only, optional: the `state` from your `redirect_uri`, to disambiguate concurrent connection flows on the same mailbox.
 </ParamField>
 
 ### Response
@@ -44,7 +51,7 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
 </ResponseField>
 
 <ResponseExample>
-```json Success Response
+```json Success — LinkedIn
 {
   "success": true,
   "data": {
@@ -55,6 +62,27 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
     "action": "checkpoint",
     "credits_consumed": 1,
     "timestamp": "2025-01-15T10:32:00.000000"
+  }
+}
+```
+
+```json Success — Email OAuth
+{
+  "success": true,
+  "data": {
+    "account_id": "6a74c178d42c7fc2f8be2683",
+    "platform": "email",
+    "status": "connected",
+    "provider": "gmail_oauth",
+    "from_email": "sales@yourdomain.com",
+    "esp": "google",
+    "auth_mode": "oauth",
+    "deliverability": { "spf": true, "dkim": true, "dmarc": true, "mx": true, "issues": [] }
+  },
+  "metadata": {
+    "action": "checkpoint",
+    "credits_consumed": 0,
+    "timestamp": "2026-08-06T17:16:40.000000"
   }
 }
 ```
@@ -96,6 +124,7 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
 - **`app_challenge`** — The user approves the login directly from the platform's mobile app. Once approved, call this endpoint with only the `account_id` (no `code` needed).
 
 ### Notes
-- If the session has expired, you need to call `/v2/login` again to restart the process
+- If the session has expired (LinkedIn) or the OAuth flow is stale (email), call `/v2/login` again to restart the process
 - Once verified, the account status changes to `connected` and is ready for use
 - The `account_id` remains the same — no need to update your integration
+- Email: a failed code exchange leaves the pending flow intact — you can retry with a fresh code without restarting login

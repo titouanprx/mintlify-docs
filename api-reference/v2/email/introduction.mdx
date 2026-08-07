@@ -5,7 +5,7 @@ description: 'Connect your own mailboxes and send cold email through the same V2
 
 ## Overview
 
-The Email channel adds mailbox connectivity to the V2 API. **No new endpoints**: you connect a mailbox with [`POST /v2/login`](/api-reference/v2/email/connect-mailbox), send with [`POST /v2/messages`](/api-reference/v2/email/send), read replies with [`list_inbox`](/api-reference/v2/email/list-inbox), and receive events through the existing [webhooks](/api-reference/v2/email/webhooks). A connected mailbox is a regular account with its own `account_id`, listed by `GET /v2/accounts`.
+The Email channel adds mailbox connectivity to the V2 API. **No new endpoints**: you connect a mailbox with [`POST /v2/login`](/api-reference/v2/email/connect-mailbox) (OAuth completes through [`POST /v2/checkpoint`](/api-reference/v2/accounts/checkpoint), the same pattern as LinkedIn 2FA), send with [`POST /v2/messages`](/api-reference/v2/email/send), read replies with [`list_inbox`](/api-reference/v2/email/list-inbox), and receive events through the existing [webhooks](/api-reference/v2/email/webhooks). A connected mailbox is a regular account with its own `account_id`, listed by `GET /v2/accounts`.
 
 Sending is **SMTP-direct from the user's own mailbox** (no shared sending pool): the recipient's provider sees a normal email sent by the mailbox owner.
 

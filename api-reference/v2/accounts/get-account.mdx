@@ -67,7 +67,7 @@ Retrieve detailed information about a specific account, including its configurat
     </ResponseField>
 
     <ResponseField name="sales_nav" type="object">
-      State of the account's Sales Nav seat — same shape as in [List Accounts](/api-reference/v2/accounts/list-accounts#sales-nav-seat).
+      LinkedIn accounts only — state of the account's Sales Nav seat, same shape as in [List Accounts](/api-reference/v2/accounts/list-accounts#sales-nav-seat). Email accounts return their mailbox fields instead (`from_email`, `provider`, `esp`, `auth_mode`, `daily_limit`, `sends_today`, `sends_total`, `bounce_rate`).
       <Expandable title="sales_nav properties">
         <ResponseField name="connected" type="boolean">
           Whether the account currently has a usable Sales Nav seat.

@@ -6,7 +6,7 @@ description: 'Read the connected mailbox over IMAP: replies, bounces, new messag
 
 ## Overview
 
-Same `list_inbox` action as LinkedIn messaging. Free (0 credits). Requires IMAP on the mailbox (always available on OAuth connections; optional on SMTP connections).
+Same `list_inbox` action as LinkedIn messaging. Consumes **1 credit per 10 results**. Requires IMAP on the mailbox (always available on OAuth connections; optional on SMTP connections).
 
 Each item carries `in_reply_to`, so you can match replies to your sent emails by `message_id`, and `is_bounce` flags delivery-failure notifications (DSN).
 

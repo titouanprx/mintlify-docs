@@ -10,7 +10,7 @@ Same endpoint as a LinkedIn login, with `platform: "email"`. Connecting a mailbo
 
 Two authentication paths:
 
-- **OAuth** (`gmail_oauth`, `m365_oauth`) — two-phase flow: phase 1 returns an `authorization_url`, the user consents, phase 2 exchanges the code.
+- **OAuth** (`gmail_oauth`, `m365_oauth`) — same checkpoint pattern as LinkedIn 2FA: this endpoint answers `checkpoint_required` with an `authorization_url` and an `account_id`, the user consents, and you complete with [`POST /v2/checkpoint`](/api-reference/v2/accounts/checkpoint) using the `code` received on your `redirect_uri`.
 - **SMTP** (any other provider) — one call with the SMTP credentials; the connection is verified before the account is created.
 
 ## Request
@@ -28,12 +28,12 @@ Two authentication paths:
 </ParamField>
 
 <ParamField body="params" type="object" required>
-  <Expandable title="OAuth — phase 1">
+  <Expandable title="OAuth">
     <ParamField body="from_email" type="string" required>
       The mailbox address to connect.
     </ParamField>
     <ParamField body="redirect_uri" type="string" required>
-      Where the user lands after consent, with `code` and `state` appended. With LinkupAPI's app, the provider redirects to our hosted callback first, then forwards to this URL. With your own app, register this URI in your Google/Azure console.
+      Where the user lands after consent, with `code`, `state` and `account_id` appended. With LinkupAPI's app, the provider redirects to our hosted callback first, then forwards to this URL. With your own app, register this URI in your Google/Azure console.
     </ParamField>
     <ParamField body="oauth_client_id" type="string">
       Your own OAuth app's client ID. Omit to use LinkupAPI's app.
@@ -46,14 +46,6 @@ Two authentication paths:
     </ParamField>
     <ParamField body="daily_limit" type="integer" default={40}>
       Max sends per day for this mailbox.
-    </ParamField>
-  </Expandable>
-  <Expandable title="OAuth — phase 2">
-    <ParamField body="code" type="string" required>
-      The authorization code received on your `redirect_uri`.
-    </ParamField>
-    <ParamField body="state" type="string" required>
-      The `state` returned by phase 1 (also present on your `redirect_uri`).
     </ParamField>
   </Expandable>
   <Expandable title="SMTP">
@@ -78,11 +70,11 @@ Two authentication paths:
 ## Response
 
 <ResponseField name="data" type="object">
-  Phase 1 returns `authorization_url` + `state`. Phase 2 and SMTP return the connected account: `account_id`, `platform`, `provider`, `from_email`, `esp`, and a `deliverability` snapshot (SPF / DKIM / DMARC / MX) of the sending domain.
+  OAuth returns `status: "checkpoint_required"` with the `account_id` and the `authorization_url` to open — the account connects when [`POST /v2/checkpoint`](/api-reference/v2/accounts/checkpoint) succeeds. SMTP (and a successful checkpoint) return the connected account: `account_id`, `platform`, `status: "connected"`, `provider`, `from_email`, `esp`, and a `deliverability` snapshot (SPF / DKIM / DMARC / MX) of the sending domain.
 </ResponseField>
 
 <RequestExample>
-```bash OAuth phase 1
+```bash OAuth
 curl -X POST https://api.linkupapi.com/v2/login \
   -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
   -d '{
@@ -95,16 +87,13 @@ curl -X POST https://api.linkupapi.com/v2/login \
   }'
 ```
 
-```bash OAuth phase 2
-curl -X POST https://api.linkupapi.com/v2/login \
+```bash OAuth — complete (checkpoint)
+# after the user consents, code + state + account_id land on your redirect_uri
+curl -X POST https://api.linkupapi.com/v2/checkpoint \
   -H 'x-api-key: YOUR_API_KEY' -H 'Content-Type: application/json' \
   -d '{
-    "platform": "email",
-    "provider": "gmail_oauth",
-    "params": {
-      "code": "4/0AX...",
-      "state": "h0eghfLU..."
-    }
+    "account_id": "6a74c178d42c7fc2f8be2683",
+    "code": "4/0AX..."
   }'
 ```
 
@@ -123,10 +112,13 @@ curl -X POST https://api.linkupapi.com/v2/login \
 </RequestExample>
 
 <ResponseExample>
-```json 200 (phase 1)
+```json 200 (OAuth — checkpoint_required)
 {
   "success": true,
   "data": {
+    "account_id": "6a74c178d42c7fc2f8be2683",
+    "platform": "email",
+    "status": "checkpoint_required",
     "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=...",
     "state": "h0eghfLUpkJS6rlHOMb4Pl3ndVsy2tqS"
   },
@@ -140,6 +132,7 @@ curl -X POST https://api.linkupapi.com/v2/login \
   "data": {
     "account_id": "6a74c178d42c7fc2f8be2683",
     "platform": "email",
+    "status": "connected",
     "provider": "gmail_oauth",
     "from_email": "sales@yourdomain.com",
     "esp": "google",
