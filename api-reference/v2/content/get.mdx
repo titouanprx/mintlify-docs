@@ -1,0 +1,164 @@
+---
+title: 'Get Post'
+api: 'POST /v2/content'
+description: 'Retrieve a single post from its URL.'
+---
+
+## Overview
+
+Returns the details of one post (author, text, media, reaction and comment counts) from its URL. Same post shape as [`POST /v2/profiles` → `get_posts`](/api-reference/v2/profiles/get-posts).
+
+<Note>This endpoint consumes **1 credit** per call.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="post_url" type="string" required>
+      URL of the post (`/posts/...-activity-<id>-xxx` or `/feed/update/urn:li:activity:<id>`). A bare `urn:li:activity:<id>` is also accepted.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="backend_urn" type="string">
+      Activity URN of the post (`urn:li:activity:...`).
+    </ResponseField>
+    <ResponseField name="activity_id" type="string">
+      Numeric part of the activity URN, as a string.
+    </ResponseField>
+    <ResponseField name="shareUrl" type="string">
+      Public URL of the post.
+    </ResponseField>
+    <ResponseField name="text" type="string">
+      Text content of the post.
+    </ResponseField>
+    <ResponseField name="published_at" type="integer">
+      Publication time as a Unix timestamp (seconds).
+    </ResponseField>
+    <ResponseField name="numLikes" type="integer">
+      Total number of reactions.
+    </ResponseField>
+    <ResponseField name="numComments" type="integer">
+      Number of comments.
+    </ResponseField>
+    <ResponseField name="numShares" type="integer">
+      Number of reposts.
+    </ResponseField>
+    <ResponseField name="reactions" type="object">
+      Reaction counts by type (`LIKE`, `EMPATHY`, `PRAISE`, `INTEREST`, `APPRECIATION`, `ENTERTAINMENT`).
+    </ResponseField>
+    <ResponseField name="content" type="object">
+      Attached media. `type` is one of `text`, `image`, `article`, `video`, `document`, `poll`, `celebration`; the other fields depend on the type (`images`, `title`, `url`, `thumbnail`…).
+    </ResponseField>
+    <ResponseField name="actor_name" type="string">
+      Name of the author.
+    </ResponseField>
+    <ResponseField name="actor_description" type="string">
+      Headline of the author.
+    </ResponseField>
+    <ResponseField name="actor_profile_url" type="string">
+      Profile URL of the author.
+    </ResponseField>
+    <ResponseField name="is_reshare" type="boolean">
+      `true` when the post is a repost. The original post is then available in `original_post`.
+    </ResponseField>
+    <ResponseField name="post_url" type="string">
+      The URL that was queried.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "shareAudience": "PUBLIC",
+    "backend_urn": "urn:li:activity:7497818529442742272",
+    "activity_id": "7497818529442742272",
+    "shareUrl": "https://www.linkedin.com/posts/williamhgates_a-city-mobilizes-against-a-stubborn-health-activity-7497818529442742272-yNR5",
+    "text": "After a major surge in dengue fever, the Brazilian city of Belém went all in to fight the virus...",
+    "numLikes": 560,
+    "numComments": 90,
+    "numShares": 38,
+    "reactions": { "LIKE": 497, "EMPATHY": 21, "APPRECIATION": 20, "PRAISE": 10, "INTEREST": 8, "ENTERTAINMENT": 1 },
+    "actor_name": "Bill Gates",
+    "actor_description": "Chair, Gates Foundation and Founder, Breakthrough Energy",
+    "actor_image": "https://media.licdn.com/dms/image/...",
+    "actor_profile_url": "https://www.linkedin.com/in/williamhgates",
+    "created_time": 1787619240,
+    "published_at": 1787619240,
+    "content": {
+      "type": "article",
+      "title": "A city mobilizes against a stubborn health threat",
+      "subtitle": "gatesnotes.com",
+      "url": "https://www.gatesnotes.com/...",
+      "thumbnail": "https://media.licdn.com/dms/image/..."
+    },
+    "post_images": [],
+    "is_reshare": false,
+    "post_url": "https://www.linkedin.com/posts/williamhgates_a-city-mobilizes-against-a-stubborn-health-activity-7497818529442742272-yNR5"
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-08-25T11:20:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Post not found or not accessible with this account"
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-08-25T11:20:00Z"
+  }
+}
+```
+</ResponseExample>
