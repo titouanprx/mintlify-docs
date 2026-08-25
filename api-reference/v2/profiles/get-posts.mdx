@@ -1,0 +1,211 @@
+---
+title: 'Get Profile Posts'
+api: 'POST /v2/profiles'
+description: 'Retrieve the posts published by a user, newest first.'
+---
+
+## Overview
+
+Fetches the posts authored by a specified user (their **Activity › Posts** tab). Results are returned in reverse-chronological order and only include the user's own posts — reactions, comments and reshares are excluded unless `include_reshares` is set. Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch the next page.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
+
+<Tip>To search posts by keyword or across several authors, use [`POST /v2/content` → `search`](/api-reference/v2/content/search) instead.</Tip>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_posts"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      URL of the target user's profile on the connected platform.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of posts to return (max `500`).
+    </ParamField>
+    <ParamField body="cursor" type="string">
+      Pagination cursor returned by a previous request as `pagination.next_cursor`. Omit for the first page.
+    </ParamField>
+    <ParamField body="include_reshares" type="boolean" default={false}>
+      Also return the user's activity items (reshares, liked or commented posts). Those items carry an `activity_header` such as `"Jane Doe likes this"`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="posts" type="array">
+      List of posts, newest first.
+      <Expandable title="post item properties">
+        <ResponseField name="backend_urn" type="string">
+          Activity URN of the post (`urn:li:activity:...`). Use it with the content actions (`like`, `comment`, `get_comments`…).
+        </ResponseField>
+        <ResponseField name="activity_id" type="string">
+          Numeric part of the activity URN, as a string.
+        </ResponseField>
+        <ResponseField name="shareUrl" type="string">
+          Public URL of the post.
+        </ResponseField>
+        <ResponseField name="text" type="string">
+          Text content of the post.
+        </ResponseField>
+        <ResponseField name="published_at" type="integer">
+          Publication time as a Unix timestamp (seconds).
+        </ResponseField>
+        <ResponseField name="numLikes" type="integer">
+          Total number of reactions.
+        </ResponseField>
+        <ResponseField name="numComments" type="integer">
+          Number of comments.
+        </ResponseField>
+        <ResponseField name="numShares" type="integer">
+          Number of reposts.
+        </ResponseField>
+        <ResponseField name="reactions" type="object">
+          Reaction counts by type (`LIKE`, `EMPATHY`, `PRAISE`, `INTEREST`, `APPRECIATION`, `ENTERTAINMENT`).
+        </ResponseField>
+        <ResponseField name="content" type="object">
+          Attached media. `type` is one of `text`, `image`, `article`, `video`, `document`, `poll`, `celebration`; the other fields depend on the type (`images`, `title`, `url`, `thumbnail`…).
+        </ResponseField>
+        <ResponseField name="actor_name" type="string">
+          Name of the author.
+        </ResponseField>
+        <ResponseField name="actor_description" type="string">
+          Headline of the author.
+        </ResponseField>
+        <ResponseField name="actor_profile_url" type="string">
+          Profile URL of the author.
+        </ResponseField>
+        <ResponseField name="is_reshare" type="boolean">
+          `true` when the post is a repost. The original post is then available in `original_post`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">
+      Number of posts returned in this response.
+    </ResponseField>
+    <ResponseField name="profile_url" type="string">
+      The profile URL that was queried.
+    </ResponseField>
+    <ResponseField name="profile_urn" type="string">
+      The full URN of the queried profile.
+    </ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="has_more" type="boolean">
+          `true` if more results are available — pass `next_cursor` in the next request.
+        </ResponseField>
+        <ResponseField name="next_cursor" type="string">
+          Cursor to send as `cursor` in the next request. `null` when the end is reached.
+        </ResponseField>
+        <ResponseField name="pages_fetched" type="integer">
+          Number of internal upstream batches consumed to assemble this response.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">
+      The action that was performed (`"get_posts"`).
+    </ResponseField>
+    <ResponseField name="account_id" type="string">
+      The account ID used for the request.
+    </ResponseField>
+    <ResponseField name="credits_consumed" type="integer">
+      Number of credits consumed (1 per 10 results).
+    </ResponseField>
+    <ResponseField name="timestamp" type="string">
+      ISO 8601 timestamp of the response.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "profile_url": "https://www.linkedin.com/in/williamhgates",
+    "profile_urn": "urn:li:fsd_profile:ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc",
+    "posts": [
+      {
+        "shareAudience": "PUBLIC",
+        "backend_urn": "urn:li:activity:7497818529442742272",
+        "activity_id": "7497818529442742272",
+        "shareUrl": "https://www.linkedin.com/posts/williamhgates_a-city-mobilizes-against-a-stubborn-health-activity-7497818529442742272-yNR5",
+        "text": "After a major surge in dengue fever, the Brazilian city of Belém went all in to fight the virus...",
+        "numLikes": 545,
+        "numComments": 88,
+        "numShares": 37,
+        "reactions": { "LIKE": 484, "EMPATHY": 21, "APPRECIATION": 20, "PRAISE": 10, "INTEREST": 8, "ENTERTAINMENT": 1 },
+        "actor_name": "Bill Gates",
+        "actor_description": "Chair, Gates Foundation and Founder, Breakthrough Energy",
+        "actor_image": "https://media.licdn.com/dms/image/...",
+        "actor_profile_url": "https://www.linkedin.com/in/williamhgates",
+        "created_time": 1787619240,
+        "published_at": 1787619240,
+        "content": {
+          "type": "article",
+          "title": "A city mobilizes against a stubborn health threat",
+          "subtitle": "gatesnotes.com",
+          "url": "https://www.gatesnotes.com/...",
+          "thumbnail": "https://media.licdn.com/dms/image/..."
+        },
+        "post_images": [],
+        "is_reshare": false
+      }
+    ],
+    "total_results": 1,
+    "pagination": {
+      "count": 1,
+      "has_more": true,
+      "next_cursor": "1|dXJuOmxpOmFjdGl2aXR5Ojc0OTc4MTg1Mjk0NDI3NDIyNzItMTc4NzYxOTI0MDE1MQ==",
+      "pages_fetched": 1
+    }
+  },
+  "metadata": {
+    "action": "get_posts",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-08-25T10:48:18Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "profile_url is required"
+  },
+  "metadata": {
+    "action": "get_posts",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-08-25T10:48:18Z"
+  }
+}
+```
+</ResponseExample>
