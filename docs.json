@@ -83,7 +83,8 @@
                   "api-reference/v2/profiles/get-company",
                   "api-reference/v2/profiles/get-viewers",
                   "api-reference/v2/profiles/get-reactions",
-                  "api-reference/v2/profiles/get-comments"
+                  "api-reference/v2/profiles/get-comments",
+                  "api-reference/v2/profiles/get-posts"
                 ]
               },
               {
