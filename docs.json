@@ -114,6 +114,7 @@
                 "pages": [
                   "api-reference/v2/content/create",
                   "api-reference/v2/content/create-company",
+                  "api-reference/v2/content/get",
                   "api-reference/v2/content/search",
                   "api-reference/v2/content/get-feed",
                   "api-reference/v2/content/react",
