@@ -46,6 +46,9 @@ Create a post on a company page. The authenticated account must be an admin of t
         </ParamField>
       </Expandable>
     </ParamField>
+    <ParamField body="thumbnail" type="string | object">
+      Custom cover image for a video post. Only valid when `file` is a single video (`.mp4`, `.mov`, `.webm`…). Same format as `file`: a URL string or an object with `filename` and `data` (base64). Without it, LinkedIn picks a frame of the video.
+    </ParamField>
     <ParamField body="files" type="array">
       An array of files for carousel posts. Each element can be a URL string or an object with `filename`, `data`, and optional `altText` properties.
       <Expandable title="file object properties">
