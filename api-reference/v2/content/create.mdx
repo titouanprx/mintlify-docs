@@ -28,7 +28,7 @@ Create a post from the authenticated account. Supports plain text posts, single 
   <Expandable title="params properties">
     <ParamField body="message" type="string">
       The text content of the post. Supports hashtags (`#tag`), line breaks and people mentions.
-      To mention someone, use `mention_user(public_id, display_text)` where `public_id` is the slug of their profile URL (`linkedin.com/in/<public_id>`) and `display_text` is the clickable text shown in the post — e.g. `"Great talk mention_user(williamhgates, Bill Gates)!"`. Company mentions are not supported.
+      To mention someone, use `mention_user(public_id, display_text)` where `public_id` is the slug of their profile URL (`linkedin.com/in/<public_id>`) and `display_text` is the clickable text shown in the post — e.g. `"Great talk mention_user(williamhgates, Bill Gates)!"`. To mention a company page, use `mention_company(slug, display_text)` where `slug` is from `linkedin.com/company/<slug>` — e.g. `"Proud to partner with mention_company(microsoft, Microsoft)"`.
     </ParamField>
     <ParamField body="file" type="string | object">
       A single file to attach. Can be a URL string (image or video) or an object with `filename` and `data` properties.
