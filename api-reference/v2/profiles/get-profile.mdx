@@ -142,6 +142,51 @@ Fetches detailed profile data for a specified user. You can identify the target 
 }
 ```
 
+```json 200 (sales_nav: true — Open Profile / InMail status)
+{
+  "success": true,
+  "data": {
+    "public_id": "john-smith-42",
+    "first_name": "John",
+    "last_name": "Smith",
+    "headline": "Product Manager @Acme Corp",
+    "connection_count": 500,
+    "follower_count": 1234,
+    "open_link": false,
+    "inmail_eligible": true,
+    "inmail_restriction": "NO_RESTRICTION"
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 (Sales Nav lead URL — Sales Nav view)
+{
+  "success": true,
+  "data": {
+    "profile_url": "https://www.linkedin.com/in/john-smith-42",
+    "full_name": "John Smith",
+    "connection_level": "1",
+    "premium": true,
+    "recipient_urn": "urn:li:fs_salesProfile:(ACwAA...,name, )",
+    "open_link": false,
+    "inmail_eligible": true,
+    "inmail_restriction": "NO_RESTRICTION"
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
 ```json 400
 {
   "success": false,
