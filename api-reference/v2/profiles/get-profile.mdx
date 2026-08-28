@@ -27,7 +27,7 @@ Fetches detailed profile data for a specified user. You can identify the target 
 <ParamField body="params" type="object">
   <Expandable title="params properties">
     <ParamField body="profile_url" type="string" required>
-      URL of the target user's profile on the connected platform. Required if `identifier` and `profile_urn` are not provided.
+      URL of the target user's profile. Accepts both a **classic** profile URL (`https://www.linkedin.com/in/…`) and a **Sales Navigator** lead URL (`https://www.linkedin.com/sales/lead/…`). Required if `identifier` and `profile_urn` are not provided.
     </ParamField>
     <ParamField body="identifier" type="string">
       The public identifier (vanity name) of the target profile. Can be used instead of `profile_url`.
@@ -35,8 +35,13 @@ Fetches detailed profile data for a specified user. You can identify the target 
     <ParamField body="profile_urn" type="string">
       The URN of the target profile. Can be used instead of `profile_url`.
     </ParamField>
+    <ParamField body="sales_nav" type="boolean" default={false}>
+      Set to `true` to also return the lead's **Open Profile / InMail-eligibility** status (`open_link`, `inmail_eligible`). Requires the account's Sales Navigator seat (auto-connects on first use). Enrichment is best-effort — if the seat or lookup fails, the base profile is still returned with these fields set to `null`. A Sales Nav lead URL enables this automatically.
+    </ParamField>
   </Expandable>
 </ParamField>
+
+<Note>Pass a **Sales Nav lead URL** (`/sales/lead/…`) to check Open Profile status straight from a lead — there is no classic `/in/` page to scrape, so the response returns the Sales Nav view (name, connection level, `open_link`, `inmail_eligible`) rather than the full experience/education profile.</Note>
 
 
 ## Response
@@ -67,6 +72,8 @@ Fetches detailed profile data for a specified user. You can identify the target 
     <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
     <ResponseField name="connection_count" type="integer">Number of connections.</ResponseField>
     <ResponseField name="follower_count" type="integer">Number of followers.</ResponseField>
+    <ResponseField name="open_link" type="boolean">Whether the profile is reachable via **Open Profile** (free InMail, no connection request). Only returned when `sales_nav: true` (or a Sales Nav lead URL); `null` if the Sales Nav lookup could not run.</ResponseField>
+    <ResponseField name="inmail_eligible" type="boolean">Whether an InMail can be sent to this profile (`true` when there is no InMail restriction). Only returned when `sales_nav: true` (or a Sales Nav lead URL); `null` if the lookup could not run.</ResponseField>
   </Expandable>
 </ResponseField>
 
