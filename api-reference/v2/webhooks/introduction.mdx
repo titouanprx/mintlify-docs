@@ -3,7 +3,7 @@ title: 'Webhooks Introduction'
 description: 'Receive real-time notifications for account activity'
 ---
 
-Webhooks allow you to receive real-time notifications when events happen on your connected accounts — new messages, connection acceptances, and more.
+Webhooks allow you to receive real-time notifications when events happen on your connected accounts — new messages, connection acceptances, incoming connection requests, and more.
 
 ## Delivery Modes
 
@@ -76,6 +76,7 @@ Webhooks support two delivery modes depending on your setup:
 |---|---|---|
 | `message_received` | `"message"` | A new message was received |
 | `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
+| `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `all` | — | Subscribe to all event types |
 
 <Note>
@@ -213,6 +214,60 @@ Triggered when one or more connection requests you sent are accepted. Detected b
 <Note>
   When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. The first detection check then runs ~6 hours later and every 6 hours thereafter.
 </Note>
+
+### Invitation Received
+
+Triggered when the account receives one or more new connection requests. Detected by the same background worker as `accepted_invitation` (~6 hour polling cadence by default), so it's suited for inbound automation — auto-accepting, routing to a CRM, or replying — rather than instant notifications. The payload batches all new invitations detected in the same check.
+
+```json
+{
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "event": {
+    "type": "invitation_received",
+    "new_invitations": [
+      {
+        "name": "Jane Cooper",
+        "profile_url": "https://www.linkedin.com/in/jane-cooper",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/D4D03AQFcP6361wcRgg/profile-displayphoto-scale_200_200",
+        "subtitle": "Growth Marketing Lead @ Acme",
+        "message": "Hi! I'd love to connect and exchange about your product.",
+        "sent_time": "2 days ago",
+        "invitation_id": "7498280075365183488",
+        "shared_secret": "aBcDeFgH",
+        "entity_urn": "urn:li:fsd_invitation:7498280075365183488"
+      }
+    ],
+    "count": 1,
+    "timestamp": "2026-08-29T15:58:43.629574"
+  },
+  "timestamp": "2026-08-29T15:58:43.629583"
+}
+```
+
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.new_invitations` | `array` | Connection requests received since the last check |
+| `event.new_invitations[].name` | `string` | Display name of the sender |
+| `event.new_invitations[].profile_url` | `string` | Profile URL of the sender |
+| `event.new_invitations[].profile_picture` | `string \| null` | CDN URL of the profile picture (may expire) |
+| `event.new_invitations[].subtitle` | `string \| null` | Headline of the sender |
+| `event.new_invitations[].message` | `string \| null` | The note attached to the invitation, if any |
+| `event.new_invitations[].sent_time` | `string` | Relative time the invitation was sent (e.g. `"2 days ago"`) |
+| `event.new_invitations[].invitation_id` | `string` | Invitation ID **as a string** |
+| `event.new_invitations[].shared_secret` | `string \| null` | Secret required to [accept](/api-reference/v2/network/accept) the invitation |
+| `event.new_invitations[].entity_urn` | `string` | Invitation URN — pass it with `shared_secret` to [Accept Invitation](/api-reference/v2/network/accept) |
+| `event.count` | `integer` | Length of `new_invitations` |
+
+<Note>
+  When you create a webhook subscribed to `invitation_received` (or `all`), the API stores a baseline of your currently pending invitations in the background — the existing backlog is never notified, only invitations received **after** the webhook was created.
+</Note>
+
+<Tip>
+  To auto-accept an incoming invitation, call [Accept Invitation](/api-reference/v2/network/accept) with the payload's `entity_urn` and `shared_secret`. `invitation_id` is delivered as a **string** because the raw 19-digit number exceeds JavaScript's `Number.MAX_SAFE_INTEGER` — keep it as a string end to end.
+</Tip>
 
 ### Disconnection
 

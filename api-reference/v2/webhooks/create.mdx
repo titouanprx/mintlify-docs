@@ -36,7 +36,7 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 <ParamField body="events" type="array" default='["all"]'>
   List of event types to listen for. Defaults to `["all"]` which receives every event.
 
-  Available event types: `message_received`, `accepted_invitation`, `all`.
+  Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `all`.
 </ParamField>
 
 <ParamField body="enable_signature" type="boolean" default="false">
@@ -142,4 +142,4 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 - You can create multiple webhooks for the same account with different event filters. Billing is per-account (not per-webhook), so adding a second webhook to the same account doesn't double the credit cost.
 - Stopping the **last** active webhook on an account (via [`/stop`](/api-reference/v2/webhooks/stop) or [`DELETE`](/api-reference/v2/webhooks/delete)) halts monitoring and stops the credit billing automatically. Other webhooks on the same account are unaffected.
 - For custom mode, the webhook URL must return a `200` status code to acknowledge receipt.
-- When `accepted_invitation` is in the events list, the API performs an initial sync of your connections to enable detection of new acceptances.
+- When `accepted_invitation` is in the events list, the API performs an initial sync of your connections to enable detection of new acceptances. Likewise, `invitation_received` stores a baseline of your pending invitations — the existing backlog is never notified, only invitations received after creation.
