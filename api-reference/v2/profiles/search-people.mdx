@@ -8,6 +8,11 @@ description: 'Search for profiles using various filters.'
 
 Search for profiles using a combination of keyword, company, location, school, and other filters. Supports pagination for retrieving large result sets.
 
+There are two ways to define the search — pick whichever fits:
+
+1. **Friendly filters** — pass human-readable values (e.g. `location: "Paris"`, `title: "CEO"`) and the API resolves them to the underlying ids for you.
+2. **Copied LinkedIn search URL** — build the search visually on LinkedIn, copy the page URL, and pass it as `search_url`. Every filter is replicated verbatim, including ones with no friendly mapping (service category, profile language, open to volunteering, school free text, …).
+
 <Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
 
 ## Request
@@ -26,6 +31,9 @@ Search for profiles using a combination of keyword, company, location, school, a
 
 <ParamField body="params" type="object">
   <Expandable title="params properties">
+    <ParamField body="search_url" type="string">
+      A copied LinkedIn people search URL (`https://www.linkedin.com/search/results/people/?...`), pasted as-is. When provided, its filters are used as-is and **take precedence** over the friendly filters below. The best way to replicate a complex search or to use filters that have no friendly mapping. Returns `INVALID_PARAMS` if the URL is not a people search or carries no filter at all.
+    </ParamField>
     <ParamField body="keyword" type="string">
       General keyword to search for across profiles.
     </ParamField>
