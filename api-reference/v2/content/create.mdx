@@ -1,12 +1,12 @@
 ---
 title: 'Create Post'
 api: 'POST /v2/content'
-description: 'Create a new post with text, images, video, or carousel content.'
+description: 'Create a new post with text, images, video, a document, or carousel content.'
 ---
 
 ## Overview
 
-Create a post from the authenticated account. Supports plain text posts, single image or video attachments, and multi-image carousels.
+Create a post from the authenticated account. Supports plain text posts, single image, video or document attachments, and multi-image carousels.
 
 <Note>This endpoint consumes **1 credit** per request.</Note>
 
@@ -31,7 +31,7 @@ Create a post from the authenticated account. Supports plain text posts, single 
       To mention someone, use `mention_user(public_id, display_text)` where `public_id` is the slug of their profile URL (`linkedin.com/in/<public_id>`) and `display_text` is the clickable text shown in the post — e.g. `"Great talk mention_user(williamhgates, Bill Gates)!"`. To mention a company page, use `mention_company(slug, display_text)` where `slug` is from `linkedin.com/company/<slug>` — e.g. `"Proud to partner with mention_company(microsoft, Microsoft)"`.
     </ParamField>
     <ParamField body="file" type="string | object">
-      A single file to attach. Can be a URL string (image or video) or an object with `filename` and `data` properties.
+      A single file to attach — an image (`.jpg`, `.png`, `.gif`, `.webp`), a video (`.mp4`, `.mov`, `.webm`…) or a document (`.pdf`, `.doc`, `.docx`, `.ppt`, `.pptx`), which LinkedIn publishes as a page carousel. Can be a URL string or an object with `filename` and `data` properties.
       <Expandable title="file object properties">
         <ParamField body="filename" type="string">
           The name of the file including extension (e.g. `"photo.jpg"`).
@@ -43,6 +43,9 @@ Create a post from the authenticated account. Supports plain text posts, single 
     </ParamField>
     <ParamField body="thumbnail" type="string | object">
       Custom cover image for a video post. Only valid when `file` is a single video (`.mp4`, `.mov`, `.webm`…). Same format as `file`: a URL string or an object with `filename` and `data` (base64). Without it, LinkedIn picks a frame of the video.
+    </ParamField>
+    <ParamField body="document_title" type="string">
+      Title displayed under a document post, and used by LinkedIn to build the post URL. Only valid when `file` is a document. Defaults to the file name without its extension.
     </ParamField>
     <ParamField body="files" type="array">
       An array of files for carousel posts. Each element can be a URL string or an object with `filename`, `data`, and optional `altText` properties.

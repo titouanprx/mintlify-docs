@@ -36,7 +36,7 @@ Create a post on a company page. The authenticated account must be an admin of t
       To mention someone, use `mention_user(public_id, display_text)` where `public_id` is the slug of their profile URL (`linkedin.com/in/<public_id>`) and `display_text` is the clickable text shown in the post — e.g. `"Great talk mention_user(williamhgates, Bill Gates)!"`. To mention a company page, use `mention_company(slug, display_text)` where `slug` is from `linkedin.com/company/<slug>` — e.g. `"Proud to partner with mention_company(microsoft, Microsoft)"`.
     </ParamField>
     <ParamField body="file" type="string | object">
-      A single file to attach. Can be a URL string (image or video) or an object with `filename` and `data` properties.
+      A single file to attach — an image (`.jpg`, `.png`, `.gif`, `.webp`), a video (`.mp4`, `.mov`, `.webm`…) or a document (`.pdf`, `.doc`, `.docx`, `.ppt`, `.pptx`), which LinkedIn publishes as a page carousel. Can be a URL string or an object with `filename` and `data` properties.
       <Expandable title="file object properties">
         <ParamField body="filename" type="string">
           The name of the file including extension (e.g. `"photo.jpg"`).
