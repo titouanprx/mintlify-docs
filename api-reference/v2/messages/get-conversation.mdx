@@ -116,7 +116,7 @@ Set `sales_nav: true` and pass the Sales Nav **thread id** — from [List Inbox]
 Messages keep the classic shape and order (newest first), plus:
 
 - `sender_info.is_me` and `sender_info.recipient_urn`
-- `subject` and `attachments`, only when present
+- `subject` and `attachments`, only when present — attachments use the same shape as in [webhook message events](/api-reference/v2/webhooks/introduction), fetched via [Download Attachment](/api-reference/v2/messages/download-attachment)
 - `content_flag` — `DELETED` when the message was deleted; `text` is then empty
 - `edited_at` — only on edited messages
 - `message_type`: `INMAIL`, `INMAIL_ACCEPT`, `INMAIL_REPLY`, `MESSAGE`

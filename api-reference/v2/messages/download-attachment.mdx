@@ -1,0 +1,53 @@
+---
+title: 'Download Attachment'
+api: 'GET /v2/messages/attachment'
+description: 'Download the bytes of a message attachment.'
+---
+
+## Overview
+
+Returns the raw file for an attachment received in a message. LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves a fresh URL on demand and streams the bytes back.
+
+Every attachment in a webhook payload already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). You still need to send your `x-api-key` header with it.
+
+<Note>This endpoint costs **1 credit** per successful download. Nothing is stored on our side.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField query="account_id" type="string" required>
+  The account the message belongs to.
+</ParamField>
+
+<ParamField query="conversation_id" type="string" required>
+  The conversation URN, from `event.metadata.conversation_urn`.
+</ParamField>
+
+<ParamField query="asset_urn" type="string" required>
+  The attachment identifier, from `event.attachments[].asset_urn`.
+</ParamField>
+
+## Response
+
+On success, the raw file with its own `Content-Type` (and `Content-Disposition` when a filename is known) — not the usual JSON envelope.
+
+On failure, the standard V2 error envelope:
+
+| Code | Meaning |
+|---|---|
+| `INSUFFICIENT_CREDITS` | Not enough credits. |
+| `ACCOUNT_INACTIVE` | The account is disconnected — re-authenticate it. |
+| `INVALID_PARAMS` | Attachment not found: the message was deleted, or `conversation_id` / `asset_urn` is wrong. |
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.linkupapi.com/v2/messages/attachment?account_id=ACCOUNT_ID&conversation_id=CONVERSATION_URN&asset_urn=ASSET_URN" \
+  -H "x-api-key: YOUR_API_KEY" \
+  --output attachment.pdf
+```
+
+</RequestExample>

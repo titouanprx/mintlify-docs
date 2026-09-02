@@ -164,10 +164,35 @@ Triggered in real-time when a new message is received via the platform's realtim
 | `event.metadata.conversation_urn` | `string` | Unique identifier of the conversation thread |
 | `event.metadata.delivered_at` | `integer` | Unix milliseconds delivery time |
 | `event.metadata.read_status` | `boolean` | Whether the conversation is marked read |
+| `event.has_attachments` | `boolean` | `true` when the message carries at least one attachment |
+| `event.attachments` | `array` | One entry per attachment. Empty when there are none. |
 
 <Tip>
   When the message is a reply, an additional `event.reply_to` object is included with the original message details. For non-reply messages, the field is **omitted entirely** from the payload — don't expect a `null`.
 </Tip>
+
+**Attachments**
+
+```json
+"has_attachments": true,
+"attachments": [
+  {
+    "type": "file",
+    "name": "proposal.pdf",
+    "mime_type": "application/pdf",
+    "byte_size": 184320,
+    "asset_urn": "urn:li:digitalmediaAsset:D4E06AQ...",
+    "url": "https://media.licdn.com/dms/document/...",
+    "download_url": "https://api.linkupapi.com/v2/messages/attachment?account_id=...&conversation_id=...&asset_urn=..."
+  }
+]
+```
+
+`type` is `image`, `file`, `audio`, `video`, `gif` or `unknown`. Audio and video also carry `duration_ms` and `thumbnail_url`.
+
+<Warning>
+  `url` is LinkedIn's own media URL: it requires the account session and its signature expires, so it is not fetchable on its own. Use `download_url` — see [Download Attachment](/api-reference/v2/messages/download-attachment).
+</Warning>
 
 ### Accepted Invitation
 

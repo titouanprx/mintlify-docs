@@ -93,6 +93,7 @@
                   "api-reference/v2/messages/send",
                   "api-reference/v2/messages/list-inbox",
                   "api-reference/v2/messages/get-conversation",
+                  "api-reference/v2/messages/download-attachment",
                   "api-reference/v2/messages/balance"
                 ]
               },
