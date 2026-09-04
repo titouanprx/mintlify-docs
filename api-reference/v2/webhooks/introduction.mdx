@@ -219,8 +219,10 @@ This is automatic: an account whose Sales Navigator seat is connected starts rec
     "timestamp": "2026-04-28T10:07:45.525693",
     "message_text": "Thanks for reaching out — happy to talk next week.",
     "sender": {
-      "name": "",
-      "profile_url": "",
+      "name": "Douglas Collombat",
+      "profile_url": "https://www.linkedin.com/in/douglas-collombat-8aa5863a7",
+      "member_urn": "urn:li:member:1670586754",
+      "degree": 1,
       "urn_raw": "urn:li:fs_salesProfile:(ACwAAGOTIYIBDvlWDchVYxaO35AeIjn5Jr9cW5Y,NAME_SEARCH,1aMb)"
     },
     "metadata": {
@@ -233,9 +235,21 @@ This is automatic: an account whose Sales Navigator seat is connected starts rec
 }
 ```
 
-<Warning>
-  Sales Navigator events carry the sender's URN but **not their name**, so `sender.name` and `sender.profile_url` come back empty. Identify the sender from `sender.urn_raw`, or resolve the full profile with [Get Profile](/api-reference/v2/profiles/get-profile).
-</Warning>
+**Identifying the sender**
+
+The realtime stream only gives the sender's Sales Navigator id, which is meaningless outside Sales Navigator. We resolve it for you, so the sender arrives in the same shape as on the classic inbox, plus two fields specific to this inbox.
+
+| Field | Description |
+|---|---|
+| `sender.name` | Full name |
+| `sender.profile_url` | Public profile URL — match it against your own records |
+| `sender.member_urn` | `urn:li:member:<id>`, stable across LinkedIn |
+| `sender.degree` | Connection degree, `1`, `2` or `3` |
+| `sender.urn_raw` | The Sales Navigator id. Pass it as `recipient_urn` to reply. |
+
+<Note>
+  Resolution costs one lookup per **contact**, not per message, and is cached: the first message from someone takes about half a second longer, their next ones are instant. No credit is charged. If the lookup fails, the event is still delivered with `sender.urn_raw` alone.
+</Note>
 
 <Note>
   `metadata.conversation_urn` is a `fs_salesMessagingThread` URN, not a classic `msg_conversation` one. Pass its thread id to [List Inbox](/api-reference/v2/messages/list-inbox) or [Get Conversation](/api-reference/v2/messages/get-conversation) with `sales_nav: true` to read the thread, and reply with [Send Message](/api-reference/v2/messages/send) using `inmail: true`.
