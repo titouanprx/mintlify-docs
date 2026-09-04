@@ -118,6 +118,7 @@ Triggered in real-time when a new message is received via the platform's realtim
   "account_name": "your.email@example.com",
   "event": {
     "type": "message",
+    "inbox": "classic",
     "timestamp": "2026-04-28T10:07:45.525693",
     "message_text": "Hello! I'd love to connect.",
     "sender": {
@@ -153,6 +154,7 @@ Triggered in real-time when a new message is received via the platform's realtim
 
 | Field | Type | Description |
 |---|---|---|
+| `event.inbox` | `string` | Which inbox the message came from: `classic` for LinkedIn messaging, `sales_navigator` for a Sales Navigator InMail thread. See [Sales Navigator inbox](#sales-navigator-inbox). |
 | `event.message_text` | `string` | Plain text content of the message |
 | `event.sender.name` | `string` | Display name of the sender |
 | `event.sender.profile_url` | `string` | Profile URL of the sender (ID-based, not vanity) |
@@ -193,6 +195,51 @@ Triggered in real-time when a new message is received via the platform's realtim
 <Warning>
   `url` is LinkedIn's own media URL: it requires the account session and its signature expires, so it is not fetchable on its own. Use `download_url` — see [Download Attachment](/api-reference/v2/messages/download-attachment).
 </Warning>
+
+### Sales Navigator inbox
+
+Sales Navigator has its own inbox, separate from LinkedIn messaging. A reply to an InMail lands there and **never** appears in the classic thread, so it used to be invisible to webhooks.
+
+Both inboxes now feed the same webhook. Use `event.inbox` to tell them apart.
+
+| `event.inbox` | Source |
+|---|---|
+| `classic` | LinkedIn messaging |
+| `sales_navigator` | Sales Navigator InMail thread |
+
+This is automatic: an account whose Sales Navigator seat is connected starts receiving both. Nothing to configure, and no extra credit is charged. An account without a connected seat is unaffected and keeps receiving `classic` events only.
+
+```json
+{
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "event": {
+    "type": "message",
+    "inbox": "sales_navigator",
+    "timestamp": "2026-04-28T10:07:45.525693",
+    "message_text": "Thanks for reaching out — happy to talk next week.",
+    "sender": {
+      "name": "",
+      "profile_url": "",
+      "urn_raw": "urn:li:fs_salesProfile:(ACwAAGOTIYIBDvlWDchVYxaO35AeIjn5Jr9cW5Y,NAME_SEARCH,1aMb)"
+    },
+    "metadata": {
+      "entity_urn": "urn:li:fs_salesMessage:2-MTc4ODU0NDYyMDY5M2IyNTg3Ny0xMDAmOTI0OTkzYTQt...",
+      "conversation_urn": "urn:li:fs_salesMessagingThread:2-OTI0OTkzYTQtZjgwNy00OTJlLWJhY2YtNTMyNGRkNWFlYWIy...",
+      "delivered_at": 1788544620693
+    }
+  },
+  "timestamp": "2026-04-28T08:07:45.525853"
+}
+```
+
+<Warning>
+  Sales Navigator events carry the sender's URN but **not their name**, so `sender.name` and `sender.profile_url` come back empty. Identify the sender from `sender.urn_raw`, or resolve the full profile with [Get Profile](/api-reference/v2/profiles/get-profile).
+</Warning>
+
+<Note>
+  `metadata.conversation_urn` is a `fs_salesMessagingThread` URN, not a classic `msg_conversation` one. Pass its thread id to [List Inbox](/api-reference/v2/messages/list-inbox) or [Get Conversation](/api-reference/v2/messages/get-conversation) with `sales_nav: true` to read the thread, and reply with [Send Message](/api-reference/v2/messages/send) using `inmail: true`.
+</Note>
 
 ### Accepted Invitation
 
