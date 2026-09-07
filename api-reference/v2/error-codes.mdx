@@ -32,10 +32,9 @@ All V2 API error responses follow a standardized format:
 | `INVALID_ACCOUNT` | 404 Not Found | The specified `account_id` does not exist or does not belong to your API key. |
 | `ACCOUNT_INACTIVE` | 403 Forbidden | The account exists but is currently inactive or suspended. Reactivate the account before making requests. |
 | `INVALID_ACTION` | 400 Bad Request | The requested `action` is not supported for this category endpoint. Check the available actions in the documentation. |
-| `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid. Check the `message` field for details. |
+| `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid — this also covers a target that no longer exists on LinkedIn, such as a deleted post. Check the `message` field for details. |
 | `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
 | `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
-| `NOT_FOUND` | 404 Not Found | The target no longer exists on LinkedIn — typically a deleted post. Your parameters were well-formed, so retrying will not help. The call is not charged. |
 | `CHANNEL_ERROR` | 422 Unprocessable Entity | The request was valid but the platform refused it — restricted profile, missing premium seat (e.g. no Sales Nav license), or an upstream failure. Not a parameter mistake, so retrying with the same input will not help. |
 | `INTERNAL_ERROR` | 500 Internal Server Error | An unexpected server error occurred. If this persists, contact support. |
 
