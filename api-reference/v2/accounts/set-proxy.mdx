@@ -1,0 +1,80 @@
+---
+title: 'Set Custom Proxy'
+api: 'POST /v2/accounts/{account_id}/proxy'
+description: 'Route a LinkedIn account through your own proxy'
+---
+
+All requests of the account (actions, webhooks) go through your proxy. No fallback to LinkupAPI proxies.
+
+<Note>
+  This endpoint is **free** — it does not consume any credits.
+</Note>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  A LinkedIn account of your API key
+</ParamField>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="proxy" type="string | object" required>
+  `http://user:pass@host:port`, `host:port:user:pass`, `host:port`, or `{ "host", "port", "username", "password" }`. HTTP(S) only.
+</ParamField>
+
+### Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="proxy" type="object">
+      `{ "mode": "custom", "host": "...", "port": 8080 }`
+    </ResponseField>
+    <ResponseField name="session_verified" type="boolean">
+      The LinkedIn session works through the proxy
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "proxy": { "mode": "custom", "host": "203.0.113.10", "port": 8080 },
+    "session_verified": true,
+    "webhooks_repinned": 1
+  },
+  "metadata": {
+    "action": "set_account_proxy",
+    "credits_consumed": 0,
+    "timestamp": "2026-09-09T16:16:07.651893"
+  }
+}
+```
+
+```json 400 (proxy unreachable)
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Proxy unreachable: CONNECT to www.linkedin.com:443 through 203.0.113.10:8080 failed. Check the host, port and credentials, and that the proxy allows HTTPS CONNECT."
+  },
+  "metadata": {
+    "action": "set_account_proxy",
+    "credits_consumed": 0,
+    "timestamp": "2026-09-09T16:15:25.866021"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The proxy is tested and the session verified before applying — nothing changes on failure
+- Persistent across re-logins. Remove with [Remove Custom Proxy](/api-reference/v2/accounts/remove-proxy)

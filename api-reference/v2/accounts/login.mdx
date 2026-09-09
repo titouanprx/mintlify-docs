@@ -57,6 +57,10 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
   Pass an **existing** account's id together with `sales_nav: true` to activate a Sales Nav seat on an already-connected account (e.g. bought after connecting) — no re-login, no credential, and **no credit**. When set, no other login parameter is required.
 </ParamField>
 
+<ParamField body="proxy" type="string | object">
+  LinkedIn only. Your own HTTP(S) proxy for this account — the login and every later request go through it. See [Custom proxy](#custom-proxy) below.
+</ParamField>
+
 ### Response
 
 <ResponseField name="success" type="boolean">
@@ -79,6 +83,9 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     </ResponseField>
     <ResponseField name="sales_nav" type="object">
       Present when `sales_nav: true` was requested. `{ "connected": true, "contract_id": "...", "seat_id": "..." }` on success, or `{ "connected": false, "error": "..." }` if no seat could be activated. When the login returns `checkpoint_required`, this is `{ "pending": true }` and the seat is activated once the checkpoint completes.
+    </ResponseField>
+    <ResponseField name="proxy" type="object">
+      Present when `proxy` was given: `{ "mode": "custom", "host": "...", "port": 8080 }`.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -190,6 +197,12 @@ The seat is attached to the account and renewed automatically when it expires. A
 }
 ```
 </ResponseExample>
+
+### Custom proxy
+
+- `proxy`: `http://user:pass@host:port`, `host:port:user:pass`, `host:port`, or `{ "host", "port", "username", "password" }`. HTTP(S) only
+- tested before the login — unreachable proxy returns `400`, no credit
+- kept for later re-logins. Change it with [Set Custom Proxy](/api-reference/v2/accounts/set-proxy)
 
 ### Notes
 - The `account_id` returned is permanent — store it and reuse it for all API calls

@@ -89,6 +89,10 @@ Retrieve detailed information about a specific account, including its configurat
         </ResponseField>
       </Expandable>
     </ResponseField>
+
+    <ResponseField name="proxy" type="object">
+      `{ "mode": "managed" }` or `{ "mode": "custom", "host": "...", "port": 8080 }` — see [Set Custom Proxy](/api-reference/v2/accounts/set-proxy). LinkedIn accounts only.
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -130,7 +134,8 @@ Retrieve detailed information about a specific account, including its configurat
       "contract_id": "2016220713",
       "seat_id": "1545550052",
       "connected_at": "2026-03-20T14:22:00Z"
-    }
+    },
+    "proxy": { "mode": "managed" }
   },
   "metadata": {
     "action": "get_account",
