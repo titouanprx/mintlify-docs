@@ -26,6 +26,10 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
   The verification code received via email, SMS, or authenticator app. Required when `challenge_type` is `code_challenge`. Not needed for `app_challenge` — the user approves directly from the platform's mobile app.
 </ParamField>
 
+<ParamField body="resend" type="boolean" default="false">
+  LinkedIn only. Set to `true` to have LinkedIn send the verification code again on the same channel if the user did not receive it. No `code` needed, no credit consumed — then call this endpoint again with the code.
+</ParamField>
+
 ### Response
 
 <ResponseField name="success" type="boolean">
@@ -55,6 +59,21 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
     "action": "checkpoint",
     "credits_consumed": 1,
     "timestamp": "2025-01-15T10:32:00.000000"
+  }
+}
+```
+
+```json Resend (resend: true)
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "status": "code_sent"
+  },
+  "metadata": {
+    "action": "checkpoint",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:31:00.000000"
   }
 }
 ```
