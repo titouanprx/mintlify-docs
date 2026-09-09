@@ -67,8 +67,6 @@
                   "api-reference/v2/accounts/checkpoint",
                   "api-reference/v2/accounts/list-accounts",
                   "api-reference/v2/accounts/get-account",
-                  "api-reference/v2/accounts/set-proxy",
-                  "api-reference/v2/accounts/remove-proxy",
                   "api-reference/v2/accounts/delete-account"
                 ]
               },

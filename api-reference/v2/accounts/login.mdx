@@ -202,7 +202,7 @@ The seat is attached to the account and renewed automatically when it expires. A
 
 - `proxy`: `http://user:pass@host:port`, `host:port:user:pass`, `host:port`, or `{ "host", "port", "username", "password" }`. HTTP(S) only
 - tested before the login — unreachable proxy returns `400`, no credit
-- kept for later re-logins. Change it with [Set Custom Proxy](/api-reference/v2/accounts/set-proxy)
+- kept for later re-logins. Change it with [Set Custom Proxy](/api-reference/v2/accounts/set-proxy), remove it with [Remove Custom Proxy](/api-reference/v2/accounts/remove-proxy)
 
 ### Notes
 - The `account_id` returned is permanent — store it and reuse it for all API calls
