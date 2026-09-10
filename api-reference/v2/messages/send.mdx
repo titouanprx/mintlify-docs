@@ -10,7 +10,7 @@ Sends a message to a user identified by their profile URL, with optional media. 
 
 <Note>This endpoint consumes **1 credit** for text-only messages and **2 credits** when media is attached. An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
 
-<Note>When multiple media options are provided, the priority order is: `media_link` > `media_file` > `media_path`. Only one media attachment will be used.</Note>
+<Note>`media_link`, `media_file` and `media_path` attach **one** file (priority: `media_link` > `media_file` > `media_path`). To send **several attachments in the same message**, use `media_links` and/or `media_files` (up to 10 files per message, combinable with the single-file params).</Note>
 
 <Note>An audio file (`.m4a`, `.mp3`, `.wav`, `.aac`) is delivered as a **native voice note**, not a file to download. LinkedIn caps them at 1 minute.</Note>
 
@@ -61,6 +61,12 @@ Sends a message to a user identified by their profile URL, with optional media. 
     </ParamField>
     <ParamField body="media_path" type="string">
       A server-side file path to a media file to attach.
+    </ParamField>
+    <ParamField body="media_links" type="string[]">
+      Publicly accessible URLs of files to attach — all delivered in the same message.
+    </ParamField>
+    <ParamField body="media_files" type="object[]">
+      Base64-encoded files to attach — all delivered in the same message. Each item has the same shape as `media_file` (`data`, `filename`).
     </ParamField>
     <ParamField body="voice_message" type="boolean" default={false}>
       Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension — an `.m4a`, `.mp3`, `.wav` or `.aac` file is detected on its own.
