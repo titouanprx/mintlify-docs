@@ -50,16 +50,16 @@ There are two ways to define the search — pick whichever fits:
       Filter by current company name.
     </ParamField>
     <ParamField body="company_url" type="string | string[]">
-      Filter by company page URL. Accepts a single string or an array of strings for multiple companies.
+      Filter by company page URL, or a company id from [Typeahead](/api-reference/v2/profiles/typeahead). Accepts a single string or an array of strings for multiple companies.
     </ParamField>
     <ParamField body="past_company" type="string | string[]">
-      Filter by past company name or URL. Accepts a single string or an array.
+      Filter by past company name, URL or id. Accepts a single string or an array.
     </ParamField>
     <ParamField body="location" type="string | string[]">
-      Filter by location (e.g., `"San Francisco"`, `["Paris", "London"]`). Accepts a single string or an array.
+      Filter by location name (e.g., `"San Francisco"`, `["Paris", "London"]`) or location id from [Typeahead](/api-reference/v2/profiles/typeahead). Accepts a single string or an array.
     </ParamField>
     <ParamField body="school_url" type="string | string[]">
-      Filter by school page URL. Accepts a single string or an array.
+      Filter by school page URL or school id. Accepts a single string or an array.
     </ParamField>
     <ParamField body="industry" type="string | string[]">
       Filter by industry. Accepts a single string or an array.
@@ -68,7 +68,7 @@ There are two ways to define the search — pick whichever fits:
       Filter by network relationship. Accepted values: `"F"` (1st degree), `"S"` (2nd degree), `"O"` (3rd degree and beyond). Accepts a single string or an array (e.g., `["F", "S"]`).
     </ParamField>
     <ParamField body="connection_of" type="string">
-      Filter to show connections of a specific profile (profile URL or identifier).
+      Filter to show connections of a specific profile (profile URL, identifier, or the id returned by Typeahead `people`).
     </ParamField>
     <ParamField body="follower_of" type="string">
       Filter to show followers of a specific company or profile.

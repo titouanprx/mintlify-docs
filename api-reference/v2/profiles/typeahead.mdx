@@ -55,7 +55,7 @@ Returns the suggestions LinkedIn shows while typing in a search filter (companie
       Number of suggestions returned
     </ResponseField>
     <ResponseField name="items" type="array">
-      Suggestions, most relevant first. Each item has `id` (the value to use in search filters), `name` and an optional `description` (company industry, person headline…).
+      Suggestions, most relevant first. Each item has `id` (the value to use in search filters), `name`, an optional `description` (company industry, person headline…) and `image` (logo or profile photo URL, 200 px, `null` when LinkedIn provides none — e.g. locations, industries).
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -70,8 +70,8 @@ Returns the suggestions LinkedIn shows while typing in a search filter (companie
     "category": "classic",
     "count": 2,
     "items": [
-      { "id": "1441", "name": "Google", "description": "Software Development" },
-      { "id": "1594050", "name": "Google DeepMind", "description": "Research Services" }
+      { "id": "1441", "name": "Google", "description": "Software Development", "image": "https://media.licdn.com/dms/image/v2/…/company-logo_200_200/…" },
+      { "id": "1594050", "name": "Google DeepMind", "description": "Research Services", "image": "https://media.licdn.com/dms/image/v2/…/company-logo_200_200/…" }
     ]
   },
   "metadata": {
@@ -92,9 +92,9 @@ Returns the suggestions LinkedIn shows while typing in a search filter (companie
     "category": "sales_nav",
     "count": 3,
     "items": [
-      { "id": "320", "name": "Owner / Partner", "description": null },
-      { "id": "310", "name": "CXO", "description": null },
-      { "id": "300", "name": "Vice President", "description": null }
+      { "id": "320", "name": "Owner / Partner", "description": null, "image": null },
+      { "id": "310", "name": "CXO", "description": null, "image": null },
+      { "id": "300", "name": "Vice President", "description": null, "image": null }
     ]
   },
   "metadata": {

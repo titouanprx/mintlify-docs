@@ -70,7 +70,7 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
 
     {/* --- Company --- */}
     <ParamField body="current_company" type="string[]">
-      Current company. Company names or company page URLs — resolved to ids automatically.
+      Current company. Company names, company page URLs or ids from [Typeahead](/api-reference/v2/profiles/typeahead) (`category: sales_nav`).
     </ParamField>
     <ParamField body="past_company" type="string[]">
       Past company. Names or URLs.
@@ -96,7 +96,7 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
       Filter by last name.
     </ParamField>
     <ParamField body="geography" type="string[]">
-      Person location. Place names (resolved via geo typeahead) or super-regions.
+      Person location. Place names, super-regions, or location ids from Typeahead.
     </ParamField>
     <ParamField body="region" type="string[]">
       Region / super-region (`EMEA`, `DACH`, `Benelux`, …) or place names.
@@ -113,7 +113,7 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
       Connection degree. Names/aliases `1st`, `2nd`, `3rd+`, `group`, or ids `F`, `S`, `O`, `A`. Alias: `connection_degree`.
     </ParamField>
     <ParamField body="connection_of" type="string[]">
-      People who are connections of a given person (name, resolved via typeahead).
+      People who are connections of a given person (name, or the id returned by Typeahead `people`).
     </ParamField>
     <ParamField body="category_interest" type="string[]">
       Buyer category interest (product category names), resolved via typeahead.
