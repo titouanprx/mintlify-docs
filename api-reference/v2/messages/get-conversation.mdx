@@ -38,6 +38,9 @@ Returns messages from a specific conversation, ordered from most recent to oldes
     <ParamField body="cursor" type="string">
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page (most recent messages).
     </ParamField>
+    <ParamField body="mark_as_read" type="boolean">
+      `true` marks the conversation as read on LinkedIn after fetching it, `false` marks it as unread. Omit to leave the read state unchanged. Not available with `sales_nav`.
+    </ParamField>
     <ParamField body="sales_nav" type="boolean" default={false}>
       Read a **Sales Nav** thread instead of a classic conversation. See [Sales Nav conversations](#sales-nav-conversations) below.
     </ParamField>
@@ -57,7 +60,10 @@ Returns messages from a specific conversation, ordered from most recent to oldes
       Total number of messages in the conversation (across all pages).
     </ResponseField>
     <ResponseField name="unread_count" type="integer">
-      Number of unread messages in the conversation.
+      Number of unread messages in the conversation, as it was before this call.
+    </ResponseField>
+    <ResponseField name="marked_as_read" type="boolean">
+      Read state applied when `mark_as_read` was sent. If LinkedIn refused the change, `mark_as_read_error` is returned instead and the messages are still delivered.
     </ResponseField>
     <ResponseField name="last_seen_message" type="boolean">
       `true` when the most recent message in this batch has been read by the recipient.
