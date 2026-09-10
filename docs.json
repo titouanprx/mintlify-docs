@@ -79,6 +79,7 @@
                   "api-reference/v2/profiles/visit",
                   "api-reference/v2/profiles/search-people",
                   "api-reference/v2/profiles/search-people-nav",
+                  "api-reference/v2/profiles/typeahead",
                   "api-reference/v2/profiles/search-companies",
                   "api-reference/v2/profiles/get-company",
                   "api-reference/v2/profiles/get-viewers",

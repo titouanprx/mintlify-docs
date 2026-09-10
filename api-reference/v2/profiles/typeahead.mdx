@@ -1,0 +1,124 @@
+---
+title: 'Typeahead (Filter Suggestions)'
+api: 'POST /v2/typeahead'
+description: 'Autocomplete a search filter value and get the ids LinkedIn expects'
+---
+
+Returns the suggestions LinkedIn shows while typing in a search filter (companies, locations, schools, industries, titles, people…), with the `id` to pass in [Search People](/api-reference/v2/profiles/search-people) or [Search People (Sales Navigator)](/api-reference/v2/profiles/search-people-nav) filters.
+
+<Note>This endpoint consumes **0.1 credit** per request.</Note>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="account_id" type="string" required>
+  A connected LinkedIn account.
+</ParamField>
+
+<ParamField body="keyword" type="string">
+  The text typed so far, e.g. `"Goog"`. Required for `classic`. With `sales_nav`, leave it empty to list every value of a fixed facet (`function`, `seniority`, `company_type`, `profile_language`, `relationship`, `lead_interactions`, `account_list`, `lead_list`).
+</ParamField>
+
+<ParamField body="type" type="string" required>
+  The filter to complete.
+  - **classic**: `location`, `company`, `current_company`, `past_company`, `school`, `industry`, `service_category`, `title`, `people`
+  - **sales_nav**: `company`, `current_company`, `past_company`, `industry`, `school`, `location`, `title`, `function`, `seniority`, `company_type`, `profile_language`, `relationship`, `lead_interactions`, `persona`, `people`, `account_list`, `lead_list`
+</ParamField>
+
+<ParamField body="category" type="string" default="classic">
+  `classic` for LinkedIn search filters, `sales_nav` for Sales Navigator facets (the account must hold a Sales Navigator seat).
+</ParamField>
+
+<ParamField body="limit" type="integer" default="10">
+  Maximum number of suggestions. LinkedIn returns at most 10 for `classic` and 100 for `sales_nav`.
+</ParamField>
+
+### Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="keyword" type="string">
+      The keyword as searched
+    </ResponseField>
+    <ResponseField name="type" type="string">
+      The filter type
+    </ResponseField>
+    <ResponseField name="category" type="string">
+      `classic` or `sales_nav`
+    </ResponseField>
+    <ResponseField name="count" type="integer">
+      Number of suggestions returned
+    </ResponseField>
+    <ResponseField name="items" type="array">
+      Suggestions, most relevant first. Each item has `id` (the value to use in search filters), `name` and an optional `description` (company industry, person headline…).
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Classic — company
+{
+  "success": true,
+  "data": {
+    "keyword": "Goog",
+    "type": "company",
+    "category": "classic",
+    "count": 2,
+    "items": [
+      { "id": "1441", "name": "Google", "description": "Software Development" },
+      { "id": "1594050", "name": "Google DeepMind", "description": "Research Services" }
+    ]
+  },
+  "metadata": {
+    "action": "typeahead",
+    "account_id": "69c127c37cae0494dd827286",
+    "credits_consumed": 0.1,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Sales Navigator — seniority (empty keyword)
+{
+  "success": true,
+  "data": {
+    "keyword": "",
+    "type": "seniority",
+    "category": "sales_nav",
+    "count": 3,
+    "items": [
+      { "id": "320", "name": "Owner / Partner", "description": null },
+      { "id": "310", "name": "CXO", "description": null },
+      { "id": "300", "name": "Vice President", "description": null }
+    ]
+  },
+  "metadata": {
+    "action": "typeahead",
+    "account_id": "69c127c37cae0494dd827286",
+    "credits_consumed": 0.1,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Error — Type not available
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "type 'skill' is not available for classic search; one of: location, company, current_company, past_company, school, industry, service_category, title, people"
+  },
+  "metadata": {
+    "action": "typeahead",
+    "account_id": "69c127c37cae0494dd827286",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+</ResponseExample>
