@@ -5,7 +5,9 @@ description: 'Mark read/unread, archive, trash, labels, drafts and attachment do
 
 ## Overview
 
-These actions manage a connected **email** mailbox. They run on the same [`POST /v2/messages`](/api-reference/v2/messages/send) endpoint (except attachment download, a GET). **Gmail** is fully supported; other transports return a clear error where an action isn't available yet. Each action costs **1 credit**.
+These actions manage a connected **email** mailbox. They run on the same [`POST /v2/messages`](/api-reference/v2/messages/send) endpoint (except attachment download, a GET). Each action costs **1 credit**.
+
+Availability by provider: `mark_read` / `mark_unread` work on **Gmail and Outlook** (Outlook needs a mailbox connected with the `Mail.ReadWrite` scope — reconnect older mailboxes). `archive`, `trash`, `list_labels` and `create_draft` are **Gmail** for now; on other transports they return a clear error.
 
 The `id` used below is the **provider message id** returned by [List Inbox](/api-reference/v2/messages/list-inbox#email-inbox) (`conversations[].id`) and [Get Conversation](/api-reference/v2/messages/get-conversation) (`messages[].id`).
 
