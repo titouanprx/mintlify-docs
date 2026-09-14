@@ -273,3 +273,11 @@ Also accepts `unread_only`, `label_ids` (read a folder other than INBOX — see 
   "metadata": { "action": "list_inbox", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
 }
 ```
+
+## Search (email)
+
+`action: "search"` searches the whole mailbox and returns the **same shape** (`conversations` / `total_results` / `next_cursor`). Pass `query` (Gmail accepts its native syntax, e.g. `from:john subject:invoice`). Works on Gmail, Outlook and IMAP. Cursor pagination applies.
+
+```json Request
+{ "account_id": "your-email-account-id", "action": "search", "params": { "query": "invoice from:john", "count": 20 } }
+```

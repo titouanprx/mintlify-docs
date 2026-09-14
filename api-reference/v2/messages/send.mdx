@@ -57,6 +57,15 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
     <ParamField body="thread_ref" type="string">
       **(Email)** Message-ID to reply into an existing thread.
     </ParamField>
+    <ParamField body="cc" type="string | string[]">
+      **(Email)** CC recipients (a comma-separated string or an array).
+    </ParamField>
+    <ParamField body="bcc" type="string | string[]">
+      **(Email)** BCC recipients — hidden from the other recipients (e.g. to log a copy into a CRM).
+    </ParamField>
+    <ParamField body="custom_headers" type="object">
+      **(Email)** Extra `X-…` headers as a `{ name: value }` map — e.g. `{ "X-Campaign-Id": "camp-42" }` — to correlate replies/bounces back to your system.
+    </ParamField>
     <ParamField body="account_ids" type="string[]">
       **(Email)** Optional pool of your own mailbox ids to route the send across (home-court + daily limits). `sent_from` in the response tells you which was used.
     </ParamField>
