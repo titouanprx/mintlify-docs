@@ -212,3 +212,33 @@ Reaches someone you are not connected to, through the account's premium seat. Tr
 ```
 
 A profile that cannot be InMailed is rejected before any credit is spent. Credits come from the seat — see [Balance](/api-reference/v2/messages/balance).
+
+## Email
+
+With an `email` account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)), `action: "send"` sends an email from the user's mailbox. Use these `params` instead: `to` (required), `subject`, and `html` and/or `text` (at least one). Optional: `reply_to`, `thread_ref` (Message-ID to reply into a thread), and `account_ids` (a pool of your mailboxes to route across). Costs **1 credit**.
+
+The response returns the send result and mailbox health:
+
+```json Request
+{
+  "account_id": "your-email-account-id",
+  "action": "send",
+  "params": { "to": "prospect@example.com", "subject": "Quick question", "text": "Hi there, ..." }
+}
+```
+
+```json 200
+{
+  "success": true,
+  "data": {
+    "message_id": "<...@gmail.com>",
+    "sent_from": "you@company.com",
+    "esp": "google",
+    "recipient_esp": "other",
+    "home_court": false,
+    "over_cap": false,
+    "mailbox_health": { "sends_today": 1, "daily_limit": 40, "bounce_rate": 0.0 }
+  },
+  "metadata": { "action": "send", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```

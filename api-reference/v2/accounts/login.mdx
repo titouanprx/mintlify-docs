@@ -19,7 +19,7 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
 ### Body Parameters
 
 <ParamField body="platform" type="string" required>
-  The channel platform to connect. Available: `linkedin`, `whatsapp` (more coming soon). Optional in the one case below where you pass an existing `account_id` to activate a premium seat — the account already carries its platform.
+  The channel platform to connect. Available: `linkedin`, `whatsapp`, `email`. Optional in the one case below where you pass an existing `account_id` to activate a premium seat — the account already carries its platform. For `email`, see [Email mailbox](#email-mailbox) below.
 </ParamField>
 
 <ParamField body="email" type="string">
@@ -148,6 +148,38 @@ There are two ways to connect an account:
 1. **Credential-based login** — provide `email` + `password`. If 2FA is enabled, you'll receive a `checkpoint_required` status and need to call `/v2/checkpoint`.
 
 2. **Token-based login** — provide a `login_token` directly. No 2FA step needed.
+
+### Email mailbox
+
+Connect a mailbox with `platform: "email"` and a `provider`:
+
+- `gmail_oauth` / `m365_oauth` — OAuth. Two steps: this call returns `status: "checkpoint_required"` + an `authorization_url`; redirect the user there, then submit the returned `code` to [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint). By default LinkupAPI's own OAuth app is used — pass `oauth_client_id` + `oauth_client_secret` in `params` to use your own.
+- `smtp_generic` — IMAP/SMTP. Verified and connected in one call (no checkpoint).
+
+The mailbox address is the top-level **`email`** field (the same one used for credential login), and its display name the top-level **`account_name`**. Everything else goes in `params`: optional `daily_limit` (default 40); `redirect_uri` for OAuth; `smtp` `{ host, port, password }` (+ optional `imap` `{ host, port }`) for SMTP. Tip: call [`/v2/email/autoconfig`](/api-reference/v2/email/autoconfig) first to get the right `provider` and server settings. Connecting a mailbox is **free**.
+
+```json OAuth (step 1)
+{
+  "platform": "email",
+  "provider": "gmail_oauth",
+  "email": "you@company.com",
+  "params": { "redirect_uri": "https://yourapp.com/oauth/email/callback" }
+}
+```
+
+```json SMTP (one call)
+{
+  "platform": "email",
+  "provider": "smtp_generic",
+  "email": "you@company.com",
+  "params": {
+    "smtp": { "host": "smtp.company.com", "port": 587, "password": "app-password" },
+    "imap": { "host": "imap.company.com", "port": 993 }
+  }
+}
+```
+
+Common failures return the standard error envelope: an address with no Gmail mailbox or a rejected SMTP login → `CHANNEL_ERROR` (422); an expired/reused code → `INVALID_PARAMS` (400); denied consent → `FORBIDDEN` (403). A failed attempt leaves no leftover account.
 
 ### Sales Nav
 

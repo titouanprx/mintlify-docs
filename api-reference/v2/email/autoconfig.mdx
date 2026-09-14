@@ -1,0 +1,84 @@
+---
+title: 'Autoconfig Provider'
+api: 'GET /v2/email/autoconfig'
+description: 'Detect the provider and IMAP/SMTP settings for an email address'
+---
+
+## Overview
+
+Given an email address, returns the recommended connection method and the IMAP/SMTP server settings — so you can route the user to the right flow (Gmail/Microsoft OAuth vs IMAP/SMTP) and pre-fill the server fields. Resolution: a curated provider table, then an MX lookup (Google Workspace / Microsoft 365 on custom domains), then the Mozilla ISPDB (covers most ISPs), then a manual fallback.
+
+<Note>This endpoint is **free** (0 credits) and read-only.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>Your API key.</ParamField>
+
+<ParamField query="email" type="string" required>
+  The mailbox address to look up, e.g. `you@company.com`.
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">Whether the lookup succeeded.</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="email" type="string">The address that was looked up.</ResponseField>
+    <ResponseField name="domain" type="string">Its domain.</ResponseField>
+    <ResponseField name="provider_bucket" type="string">`"google"`, `"outlook"` or `"other"`.</ResponseField>
+    <ResponseField name="recommended_method" type="string">
+      The `provider` to pass to [`/v2/login`](/api-reference/v2/email/connect): `"gmail_oauth"`, `"m365_oauth"` or `"smtp_generic"`.
+    </ResponseField>
+    <ResponseField name="oauth_available" type="boolean">
+      `true` for Google/Microsoft — prefer OAuth over an app password.
+    </ResponseField>
+    <ResponseField name="imap" type="object">
+      Suggested IMAP settings (`host`, `port`, `security`), or `null` when unknown.
+    </ResponseField>
+    <ResponseField name="smtp" type="object">
+      Suggested SMTP settings (`host`, `port`, `security`), or `null` when unknown.
+    </ResponseField>
+    <ResponseField name="source" type="string">
+      How it was resolved: `"domain_table"`, `"mx"`, `"ispdb"` or `"unknown"`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 (Google Workspace)
+{
+  "success": true,
+  "data": {
+    "email": "you@company.com",
+    "domain": "company.com",
+    "provider_bucket": "google",
+    "recommended_method": "gmail_oauth",
+    "oauth_available": true,
+    "imap": { "host": "imap.gmail.com", "port": 993, "security": "ssl" },
+    "smtp": { "host": "smtp.gmail.com", "port": 587, "security": "starttls" },
+    "source": "mx"
+  },
+  "metadata": { "action": "email_autoconfig", "credits_consumed": 0, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```
+
+```json 200 (IMAP provider)
+{
+  "success": true,
+  "data": {
+    "email": "you@orange.fr",
+    "domain": "orange.fr",
+    "provider_bucket": "other",
+    "recommended_method": "smtp_generic",
+    "oauth_available": false,
+    "imap": { "host": "imap.orange.fr", "port": 993, "security": "ssl" },
+    "smtp": { "host": "smtp.orange.fr", "port": 465, "security": "ssl" },
+    "source": "ispdb"
+  },
+  "metadata": { "action": "email_autoconfig", "credits_consumed": 0, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```
+</ResponseExample>
+
+<Note>When the domain is unknown, `imap` and `smtp` are `null` and `source` is `"unknown"` — the user fills the server settings by hand.</Note>
