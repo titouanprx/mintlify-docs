@@ -6,9 +6,9 @@ description: 'Download the bytes of a message attachment.'
 
 ## Overview
 
-Returns the raw file for an attachment received in a message. LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves a fresh URL on demand and streams the bytes back.
+Returns the raw file for an attachment received in a message — on **LinkedIn** and **email** accounts (Gmail / Outlook). LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves it on demand; for email the bytes are fetched over the mailbox API.
 
-Every attachment in a webhook payload already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). You still need to send your `x-api-key` header with it.
+For LinkedIn, every attachment in a webhook payload already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). For email, use the `attachments[]` from [Get Conversation](/api-reference/v2/messages/get-conversation). You still send your `x-api-key` header.
 
 <Note>This endpoint costs **1 credit** per successful download. Nothing is stored on our side.</Note>
 
@@ -22,12 +22,24 @@ Every attachment in a webhook payload already carries a ready-to-call `download_
   The account the message belongs to.
 </ParamField>
 
-<ParamField query="conversation_id" type="string" required>
-  The conversation URN, from `event.metadata.conversation_urn`.
+<ParamField query="conversation_id" type="string">
+  **(LinkedIn)** The conversation URN, from `event.metadata.conversation_urn`.
 </ParamField>
 
-<ParamField query="asset_urn" type="string" required>
-  The attachment identifier, from `event.attachments[].asset_urn`.
+<ParamField query="asset_urn" type="string">
+  **(LinkedIn)** The attachment identifier, from `event.attachments[].asset_urn`.
+</ParamField>
+
+<ParamField query="message_id" type="string">
+  **(Email)** The provider message id carrying the attachment (`attachments[].message_id`).
+</ParamField>
+
+<ParamField query="attachment_id" type="string">
+  **(Email)** The attachment id (`attachments[].attachment_id`).
+</ParamField>
+
+<ParamField query="filename" type="string">
+  **(Email)** Optional filename for the download.
 </ParamField>
 
 ## Response

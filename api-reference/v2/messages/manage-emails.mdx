@@ -1,0 +1,78 @@
+---
+title: 'Manage Emails'
+description: 'Mark read/unread, archive, trash, labels, drafts and attachment download for email mailboxes'
+---
+
+## Overview
+
+These actions manage a connected **email** mailbox. They run on the same [`POST /v2/messages`](/api-reference/v2/messages/send) endpoint (except attachment download, a GET). **Gmail** is fully supported; other transports return a clear error where an action isn't available yet. Each action costs **1 credit**.
+
+The `id` used below is the **provider message id** returned by [List Inbox](/api-reference/v2/messages/list-inbox#email-inbox) (`conversations[].id`) and [Get Conversation](/api-reference/v2/messages/get-conversation) (`messages[].id`).
+
+## Read state, archive, trash
+
+| `action` | Effect |
+| --- | --- |
+| `mark_read` | Marks the message read (removes the UNREAD label). |
+| `mark_unread` | Marks it unread. |
+| `archive` | Removes it from the inbox (keeps it in All Mail). |
+| `trash` | Moves it to Trash. |
+
+<ParamField body="account_id" type="string" required>The email account.</ParamField>
+<ParamField body="action" type="string" required>One of `mark_read`, `mark_unread`, `archive`, `trash`.</ParamField>
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="id" type="string" required>The provider message id (from list_inbox / get_conversation).</ParamField>
+  </Expandable>
+</ParamField>
+
+```json Request
+{ "account_id": "your-email-account-id", "action": "mark_read", "params": { "id": "1a09b5fe5c04c6d6" } }
+```
+
+```json 200
+{
+  "success": true,
+  "data": { "status": "success", "message_id": "1a09b5fe5c04c6d6", "unread": false },
+  "metadata": { "action": "mark_read", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```
+
+## List labels
+
+`action: "list_labels"` returns the mailbox's folders/labels (id, name, type) — use a label id in `list_inbox`'s `label_ids` to read another folder.
+
+```json 200
+{
+  "success": true,
+  "data": { "labels": [ { "id": "INBOX", "name": "INBOX", "type": "system" }, { "id": "Label_12", "name": "Clients", "type": "user" } ] },
+  "metadata": { "action": "list_labels", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```
+
+## Create a draft
+
+`action: "create_draft"` saves a draft (not sent). Same body params as [Send](/api-reference/v2/messages/send#email) (`to`, `subject`, `message_text` / `html`, plus attachments via `media_*`).
+
+```json Request
+{ "account_id": "your-email-account-id", "action": "create_draft", "params": { "to": "prospect@example.com", "subject": "Draft", "message_text": "..." } }
+```
+
+```json 200
+{
+  "success": true,
+  "data": { "status": "success", "draft_id": "r-5596439384536493289", "message_id": "<...@gmail.com>" },
+  "metadata": { "action": "create_draft", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```
+
+## Download attachment
+
+`GET /v2/messages/attachment` streams an attachment's bytes. For email, pass the `message_id` and `attachment_id` from a message's `attachments[]` (via [Get Conversation](/api-reference/v2/messages/get-conversation)), plus an optional `filename`. **Gmail** and **Outlook**. Costs 1 credit.
+
+<ParamField query="account_id" type="string" required>The email account.</ParamField>
+<ParamField query="message_id" type="string" required>The provider message id carrying the attachment (`attachments[].message_id`).</ParamField>
+<ParamField query="attachment_id" type="string" required>The attachment id (`attachments[].attachment_id`).</ParamField>
+<ParamField query="filename" type="string">Optional filename for the download.</ParamField>
+
+Returns the raw file with its `Content-Type`, or the standard JSON error envelope.

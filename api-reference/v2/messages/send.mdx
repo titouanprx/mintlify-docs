@@ -1,14 +1,14 @@
 ---
-title: 'Send Message'
+title: 'Send Message or Email'
 api: 'POST /v2/messages'
-description: 'Send a direct message to a user, optionally with media attachments.'
+description: 'Send a LinkedIn message or InMail, or an email — from a connected account.'
 ---
 
 ## Overview
 
-Sends a message to a user identified by their profile URL, with optional media. Also sends a [Sales Nav InMail](#inmail) when you set `inmail: true` or pass a `recipient_urn`.
+Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, or both.
 
-<Note>This endpoint consumes **1 credit** for text-only messages and **2 credits** when media is attached. An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
+<Note>This endpoint consumes **1 credit** for a text message or email (**2 credits** with LinkedIn media). An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
 
 <Note>`media_link`, `media_file` and `media_path` attach **one** file (priority: `media_link` > `media_file` > `media_path`). To send **several attachments in the same message**, use `media_links` and/or `media_files` (up to 10 files per message, combinable with the single-file params).</Note>
 
@@ -30,26 +30,41 @@ Sends a message to a user identified by their profile URL, with optional media. 
 
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
-    <ParamField body="profile_url" type="string">
-      URL of the recipient's profile. Used for both a standard message and an InMail (with `inmail: true`). Required unless you pass `recipient_urn`.
-    </ParamField>
     <ParamField body="message_text" type="string" required>
-      The text content of the message / InMail.
-    </ParamField>
-    <ParamField body="inmail" type="boolean" default={false}>
-      Set to `true` to send an **InMail** (to a non-connection, via the premium seat) instead of a standard message. Consumes 1 InMail credit. Not needed when `recipient_urn` is a Sales Nav URN — that already forces the InMail path.
-    </ParamField>
-    <ParamField body="recipient_urn" type="string">
-      **InMail** — the lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail (no `inmail: true` needed). Use this **or** `profile_url` + `inmail: true`.
+      **(LinkedIn + Email)** The text content. Required for LinkedIn; for email, provide `message_text` and/or `html` (at least one).
     </ParamField>
     <ParamField body="subject" type="string">
-      **InMail** — optional subject line (recommended for InMails). Ignored for standard messages; on its own it does **not** trigger an InMail.
+      **(InMail + Email)** Subject line. On LinkedIn it applies to InMails only (ignored for standard messages, and alone it does **not** trigger an InMail); on email it's the email subject.
+    </ParamField>
+    <ParamField body="profile_url" type="string">
+      **(LinkedIn)** URL of the recipient's profile. Used for a standard message and an InMail (with `inmail: true`). Required unless you pass `recipient_urn`.
+    </ParamField>
+    <ParamField body="inmail" type="boolean" default={false}>
+      **(LinkedIn)** Set to `true` to send an **InMail** (to a non-connection, via the premium seat) instead of a standard message. Consumes 1 InMail credit. Not needed when `recipient_urn` is a Sales Nav URN.
+    </ParamField>
+    <ParamField body="recipient_urn" type="string">
+      **(LinkedIn InMail)** The lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail. Use this **or** `profile_url` + `inmail: true`.
+    </ParamField>
+    <ParamField body="to" type="string">
+      **(Email)** Recipient email address. Required for an email account.
+    </ParamField>
+    <ParamField body="html" type="string">
+      **(Email)** HTML body. Provide `html` and/or `message_text`.
+    </ParamField>
+    <ParamField body="reply_to" type="string">
+      **(Email)** Optional `Reply-To` address.
+    </ParamField>
+    <ParamField body="thread_ref" type="string">
+      **(Email)** Message-ID to reply into an existing thread.
+    </ParamField>
+    <ParamField body="account_ids" type="string[]">
+      **(Email)** Optional pool of your own mailbox ids to route the send across (home-court + daily limits). `sent_from` in the response tells you which was used.
     </ParamField>
     <ParamField body="media_link" type="string">
-      A publicly accessible URL to a media file to attach.
+      **(LinkedIn + Email)** A publicly accessible URL to a file to attach.
     </ParamField>
     <ParamField body="media_file" type="object">
-      A base64-encoded media file to attach.
+      **(LinkedIn + Email)** A base64-encoded file to attach.
       <Expandable title="media_file properties">
         <ParamField body="data" type="string" required>
           The base64-encoded file content.
@@ -60,16 +75,16 @@ Sends a message to a user identified by their profile URL, with optional media. 
       </Expandable>
     </ParamField>
     <ParamField body="media_path" type="string">
-      A server-side file path to a media file to attach.
+      **(LinkedIn + Email)** A server-side file path to a file to attach.
     </ParamField>
     <ParamField body="media_links" type="string[]">
-      Publicly accessible URLs of files to attach — all delivered in the same message.
+      **(LinkedIn + Email)** Publicly accessible URLs of files to attach — all delivered in the same message.
     </ParamField>
     <ParamField body="media_files" type="object[]">
-      Base64-encoded files to attach — all delivered in the same message. Each item has the same shape as `media_file` (`data`, `filename`).
+      **(LinkedIn + Email)** Base64-encoded files to attach — same shape as `media_file` (`data`, `filename`).
     </ParamField>
     <ParamField body="voice_message" type="boolean" default={false}>
-      Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension — an `.m4a`, `.mp3`, `.wav` or `.aac` file is detected on its own.
+      **(LinkedIn)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension.
     </ParamField>
   </Expandable>
 </ParamField>
@@ -82,7 +97,7 @@ Sends a message to a user identified by their profile URL, with optional media. 
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  Details of the sent message. The shape differs between a standard message and an InMail.
+  Details of the sent message. The shape differs between a LinkedIn standard message, an InMail, and an email.
   <Expandable title="standard message">
     <ResponseField name="status" type="string">
       `"success"` when the message was sent.
@@ -113,6 +128,20 @@ Sends a message to a user identified by their profile URL, with optional media. 
     </ResponseField>
     <ResponseField name="data" type="object">
       Raw send result: `{ "value": { "threadId": "...", "messageId": "..." } }`.
+    </ResponseField>
+  </Expandable>
+  <Expandable title="email">
+    <ResponseField name="status" type="string">`"success"` when the email was sent.</ResponseField>
+    <ResponseField name="data" type="object">
+      <Expandable title="properties">
+        <ResponseField name="message_id" type="string">The sent email's Message-ID.</ResponseField>
+        <ResponseField name="sent_from" type="string">The mailbox address the email was sent from.</ResponseField>
+        <ResponseField name="esp" type="string">Sending mailbox provider bucket (`google` / `outlook` / `other`).</ResponseField>
+        <ResponseField name="recipient_esp" type="string">Recipient's detected provider bucket.</ResponseField>
+        <ResponseField name="home_court" type="boolean">`true` when sender and recipient are on the same provider.</ResponseField>
+        <ResponseField name="over_cap" type="boolean">`true` when the mailbox is over its daily limit (the send still went out).</ResponseField>
+        <ResponseField name="mailbox_health" type="object">`sends_today`, `daily_limit`, `bounce_rate` for the sending mailbox.</ResponseField>
+      </Expandable>
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -178,6 +207,25 @@ Sends a message to a user identified by their profile URL, with optional media. 
 }
 ```
 
+```json 200 (email)
+{
+  "success": true,
+  "data": {
+    "status": "success",
+    "data": {
+      "message_id": "<...@gmail.com>",
+      "sent_from": "you@company.com",
+      "esp": "google",
+      "recipient_esp": "other",
+      "home_court": false,
+      "over_cap": false,
+      "mailbox_health": { "sends_today": 1, "daily_limit": 40, "bounce_rate": 0.0 }
+    }
+  },
+  "metadata": { "action": "send", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+}
+```
+
 ```json 400
 {
   "success": false,
@@ -215,30 +263,12 @@ A profile that cannot be InMailed is rejected before any credit is spent. Credit
 
 ## Email
 
-With an `email` account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)), `action: "send"` sends an email from the user's mailbox. Use these `params` instead: `to` (required), `subject`, and `html` and/or `text` (at least one). Optional: `reply_to`, `thread_ref` (Message-ID to reply into a thread), and `account_ids` (a pool of your mailboxes to route across). Costs **1 credit**.
+Sending from an [email mailbox](/api-reference/v2/accounts/login#email-mailbox) uses the same `params` above — `to` + `subject` + `message_text` (and/or `html`):
 
-The response returns the send result and mailbox health:
-
-```json Request
+```json
 {
   "account_id": "your-email-account-id",
   "action": "send",
-  "params": { "to": "prospect@example.com", "subject": "Quick question", "text": "Hi there, ..." }
-}
-```
-
-```json 200
-{
-  "success": true,
-  "data": {
-    "message_id": "<...@gmail.com>",
-    "sent_from": "you@company.com",
-    "esp": "google",
-    "recipient_esp": "other",
-    "home_court": false,
-    "over_cap": false,
-    "mailbox_health": { "sends_today": 1, "daily_limit": 40, "bounce_rate": 0.0 }
-  },
-  "metadata": { "action": "send", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+  "params": { "to": "prospect@example.com", "subject": "Quick question", "message_text": "Hi there, ..." }
 }
 ```

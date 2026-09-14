@@ -10,6 +10,8 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
   This endpoint costs **1 credit** per request.
 </Note>
 
+<Note>Also completes an **email** OAuth connection (Gmail / Microsoft): after the user consents, submit the `code` (and `state`) returned to your `redirect_uri` together with the `account_id`. See [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox).</Note>
+
 ### Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
