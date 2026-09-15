@@ -237,7 +237,7 @@ InMail threads live in a separate store and never appear in the classic inbox. S
 For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), `list_inbox` returns the **same structure** (`conversations` / `total_results` / `next_cursor`) — each email is mapped to a conversation. Differences:
 
 - `conversation_id` is the thread id (Gmail) — pass it to [Get Conversation](/api-reference/v2/messages/get-conversation) to fetch the full thread.
-- `id` is the provider message id — use it with `mark_read` / `mark_unread` / `archive` / `trash` and attachment download.
+- `id` is the provider message id — use it with `mark_as_read` / `mark_as_unread` / `archive` / `trash` and attachment download.
 - `participant` and `last_message.sender` carry `{ name, email }` (no `profile_url` / `headline`).
 - `last_message` adds `subject`; `text` is the body snippet.
 - Extra per-item fields: `message_id`, `in_reply_to`, `is_bounce`, `has_attachments`.

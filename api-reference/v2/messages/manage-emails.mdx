@@ -7,7 +7,7 @@ description: 'Mark read/unread, archive, trash, labels, drafts and attachment do
 
 These actions manage a connected **email** mailbox. They run on the same [`POST /v2/messages`](/api-reference/v2/messages/send) endpoint (except attachment download, a GET). Each action costs **1 credit**.
 
-Availability: all actions work on **Gmail**, **Outlook** and **IMAP/SMTP** mailboxes. Outlook's write actions (`mark_read`/`mark_unread`, `archive`, `trash`, `create_draft`) require a mailbox connected with the `Mail.ReadWrite` scope — reconnect mailboxes added earlier. On IMAP, `archive`/`trash` move the message to the mailbox's Archive/Trash folder (best-effort per server).
+Availability: all actions work on **Gmail**, **Outlook** and **IMAP/SMTP** mailboxes. Outlook's write actions (`mark_as_read`/`mark_as_unread`, `archive`, `trash`, `create_draft`) require a mailbox connected with the `Mail.ReadWrite` scope — reconnect mailboxes added earlier. On IMAP, `archive`/`trash` move the message to the mailbox's Archive/Trash folder (best-effort per server).
 
 The `id` used below is the **provider message id** returned by [List Inbox](/api-reference/v2/messages/list-inbox#email-inbox) (`conversations[].id`) and [Get Conversation](/api-reference/v2/messages/get-conversation) (`messages[].id`).
 
@@ -15,13 +15,13 @@ The `id` used below is the **provider message id** returned by [List Inbox](/api
 
 | `action` | Effect |
 | --- | --- |
-| `mark_read` | Marks the message read (removes the UNREAD label). |
-| `mark_unread` | Marks it unread. |
-| `archive` | Removes it from the inbox (keeps it in All Mail). |
+| `mark_as_read` | Marks the message read. |
+| `mark_as_unread` | Marks it unread. |
+| `archive` | Removes it from the inbox (keeps it in All Mail / Archive). |
 | `trash` | Moves it to Trash. |
 
 <ParamField body="account_id" type="string" required>The email account.</ParamField>
-<ParamField body="action" type="string" required>One of `mark_read`, `mark_unread`, `archive`, `trash`.</ParamField>
+<ParamField body="action" type="string" required>One of `mark_as_read`, `mark_as_unread`, `archive`, `trash`.</ParamField>
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="id" type="string" required>The provider message id (from list_inbox / get_conversation).</ParamField>
@@ -29,14 +29,14 @@ The `id` used below is the **provider message id** returned by [List Inbox](/api
 </ParamField>
 
 ```json Request
-{ "account_id": "your-email-account-id", "action": "mark_read", "params": { "id": "1a09b5fe5c04c6d6" } }
+{ "account_id": "your-email-account-id", "action": "mark_as_read", "params": { "id": "1a09b5fe5c04c6d6" } }
 ```
 
 ```json 200
 {
   "success": true,
   "data": { "status": "success", "message_id": "1a09b5fe5c04c6d6", "unread": false },
-  "metadata": { "action": "mark_read", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
+  "metadata": { "action": "mark_as_read", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
 }
 ```
 

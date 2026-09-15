@@ -74,7 +74,7 @@ Webhooks support two delivery modes depending on your setup:
 
 | Subscription filter | Emitted `event.type` | Description |
 |---|---|---|
-| `message_received` | `"message"` (LinkedIn) · `"message_received"` (email) | A new message / email was received |
+| `message_received` | `"message"` | A new message or email was received |
 | `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
 | `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `email_bounced` *(email, via `all`)* | `"email_bounced"` | An email you sent bounced |
@@ -85,7 +85,7 @@ Webhooks support two delivery modes depending on your setup:
 </Note>
 
 <Warning>
-  The subscription filter `message_received` is intentionally different from the actual `event.type` field, which is `"message"` for LinkedIn. Filter against `message_received` when creating the webhook, but check `event.type === "message"` when parsing the payload. For an **email** account the inner type is `"message_received"` (it matches the filter name) — see [Email events](#email-events).
+  The subscription filter `message_received` is intentionally different from the actual `event.type` field, which is `"message"`. Filter against `message_received` when creating the webhook, but check `event.type === "message"` when parsing the payload — the same for LinkedIn **and** email (see [Email events](#email-events)).
 </Warning>
 
 <Note>
@@ -201,14 +201,14 @@ Triggered in real-time when a new message is received via the platform's realtim
 
 For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the monitor polls the inbox and emits two event types. Both are covered by the `message_received` filter / `all`.
 
-**New email received** — inner `type` is `"message_received"` (not `"message"`):
+**New email received** — inner `type` is `"message"` (same as a LinkedIn message):
 
 ```json
 {
   "account_id": "6a75f0923a25191f7c8c5bba",
   "account_name": "you@company.com",
   "event": {
-    "type": "message_received",
+    "type": "message",
     "timestamp": "2026-09-14T10:07:45.525693",
     "subject": "Re: Quick question",
     "message_id": "<CAF...@mail.gmail.com>",
