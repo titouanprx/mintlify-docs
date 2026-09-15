@@ -74,7 +74,7 @@ Webhooks support two delivery modes depending on your setup:
 
 | Subscription filter | Emitted `event.type` | Description |
 |---|---|---|
-| `message_received` | `"message"` (LinkedIn) · `"message_received"` (email) | A new message / email was received — the `event.type` tells the two channels apart |
+| `message_received` | `"message"` | A new message (LinkedIn) or email was received — use the top-level `platform` field to tell the two channels apart |
 | `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
 | `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `email_bounced` *(email, via `all`)* | `"email_bounced"` | An email you sent bounced |
@@ -85,7 +85,7 @@ Webhooks support two delivery modes depending on your setup:
 </Note>
 
 <Warning>
-  The subscription filter `message_received` is intentionally different from the actual `event.type`. Filter against `message_received` when creating the webhook; when parsing the payload, a **LinkedIn** message has `event.type === "message"` and an **email** has `event.type === "message_received"` — so `event.type` is how you tell an email from a LinkedIn DM (see [Email events](#email-events)).
+  The subscription filter `message_received` is intentionally different from the actual `event.type`, which is `"message"`. Filter against `message_received` when creating the webhook. A LinkedIn message and an inbound email both arrive as `event.type === "message"` — read the top-level **`platform`** field (`"linkedin"` vs `"email"`) to tell them apart (see [Email events](#email-events)).
 </Warning>
 
 <Note>
@@ -96,10 +96,13 @@ Webhooks support two delivery modes depending on your setup:
 
 All events share the same wrapper structure. Note that the outer `timestamp` is when the API emitted the event, while `event.timestamp` is when the underlying platform activity happened — they differ slightly (latency).
 
+The top-level **`platform`** field (`"linkedin"`, `"email"` or `"whatsapp"`) tells you which channel the event came from — this is how you distinguish an inbound email from a LinkedIn DM, since both use `event.type: "message"`.
+
 ```json
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
+  "platform": "linkedin",
   "event": {
     "type": "...",
     "timestamp": "2026-04-28T08:07:45.525693"
@@ -111,12 +114,13 @@ All events share the same wrapper structure. Note that the outer `timestamp` is 
 
 ### Message Received
 
-Triggered in real-time when a new message is received via the platform's realtime stream (sub-second latency). The inner event `type` is `"message"`.
+Triggered in real-time when a new message is received via the platform's realtime stream (sub-second latency). The inner event `type` is `"message"` and `platform` is `"linkedin"`.
 
 ```json
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
+  "platform": "linkedin",
   "event": {
     "type": "message",
     "inbox": "classic",
@@ -199,16 +203,17 @@ Triggered in real-time when a new message is received via the platform's realtim
 
 ### Email events
 
-For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the monitor polls the inbox and emits two event types. Both are covered by the `message_received` filter / `all`.
+For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the monitor polls the inbox and emits two event types. Both are covered by the `message_received` filter / `all`. Email events carry the top-level **`platform: "email"`** — that, not `event.type`, is how you tell them from a LinkedIn DM.
 
-**New email received** — inner `type` is `"message_received"` (a LinkedIn message is `"message"`, so `event.type` distinguishes the two):
+**New email received** — inner `type` is `"message"` (same as a LinkedIn message; `platform` is what distinguishes them):
 
 ```json
 {
   "account_id": "6a75f0923a25191f7c8c5bba",
   "account_name": "you@company.com",
+  "platform": "email",
   "event": {
-    "type": "message_received",
+    "type": "message",
     "timestamp": "2026-09-14T10:07:45.525693",
     "subject": "Re: Quick question",
     "message_id": "<CAF...@mail.gmail.com>",
@@ -227,6 +232,7 @@ For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the moni
 {
   "account_id": "6a75f0923a25191f7c8c5bba",
   "account_name": "you@company.com",
+  "platform": "email",
   "event": {
     "type": "email_bounced",
     "timestamp": "2026-09-14T10:10:00.000000",
@@ -251,7 +257,7 @@ For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the moni
 | `event.in_reply_to` | `string?` | Message-ID this email replies to, when it is a reply. |
 | `event.sender.name` / `event.sender.email` | `string` | Sender display name and address. |
 | `event.sender.is_self_sent` | `boolean` | `true` when the mailbox is also the sender. |
-| `event.message_text` | `string` | Snippet of the body (up to 500 chars). `message_received` only. |
+| `event.message_text` | `string` | Snippet of the body (up to 500 chars). Inbound email (`type: "message"`) only. |
 | `event.opt_out_detected` | `boolean?` | Present and `true` when the body/subject looks like an unsubscribe/opt-out. |
 | `event.bounce_status` | `string` | RFC 3463 status code (e.g. `5.1.1`). `email_bounced` only. |
 | `event.bounce_kind` | `string` | `hard` or `soft`. `email_bounced` only. |
@@ -274,6 +280,7 @@ This is automatic: an account whose Sales Navigator seat is connected starts rec
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
+  "platform": "linkedin",
   "event": {
     "type": "message",
     "inbox": "sales_navigator",
@@ -324,6 +331,7 @@ Triggered when one or more connection requests you sent are accepted. Detected b
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
+  "platform": "linkedin",
   "event": {
     "type": "accepted_invitation",
     "new_connections": [
@@ -370,6 +378,7 @@ Triggered when the account receives one or more new connection requests. Detecte
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
+  "platform": "linkedin",
   "event": {
     "type": "invitation_received",
     "new_invitations": [
@@ -424,6 +433,7 @@ Triggered when the account's platform session expires, the cookie is invalidated
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
+  "platform": "linkedin",
   "event": {
     "type": "disconnection",
     "reason": "LinkedIn cookie invalid or expired",
