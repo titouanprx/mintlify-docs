@@ -12,7 +12,7 @@ Run a **Sales Nav lead search** and get back richly-detailed leads. This uses th
 There are two ways to define the search — pick whichever fits:
 
 1. **Friendly filters** — pass human-readable values (e.g. `seniority_level: ["Director", "CXO"]`) and the API resolves them to the underlying ids for you.
-2. **Copied Sales Nav URL** — build the search visually in Sales Nav, copy the page URL, and pass it as `sales_nav_url`. Every filter is replicated verbatim, including ones with no friendly mapping (persona, exclusions, buyer intent, …). Saved-search and lead-list URLs work too.
+2. **Copied Sales Nav URL** — build the search visually in Sales Nav, copy the page URL, and pass it as `sales_nav_url`. Every filter is replicated verbatim, including ones with no friendly mapping (buyer intent, spotlights, …). Saved-search and lead-list URLs work too.
 
 <Note>This endpoint consumes **1 credit per 10 results** returned. Requires a Sales Nav seat on the account.</Note>
 
@@ -140,6 +140,13 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
     </ParamField>
     <ParamField body="saved" type="string[]">
       Your saved items. Accepted: `saved leads` (`SL`), `saved accounts` (`SA`).
+    </ParamField>
+
+    {/* --- Exclusions --- */}
+    <ParamField body="exclude" type="object">
+      Leads to **exclude**, as `{ filter_name: [values] }` using the same filter names and value formats as above (names or ids). A filter can be included and excluded at once, e.g. `geography: ["France"]` with `exclude: { geography: ["Paris"] }`.
+
+      Sales Nav only supports exclusion on: `current_company`, `past_company`, `current_title`, `past_title`, `geography`, `region`, `company_headquarters`, `industry`, `school`, `function`, `account_list`, `lead_list`, `lead_interactions`, `saved`. Any other key returns `INVALID_PARAMS` (0 credits).
     </ParamField>
 
     {/* --- Paging --- */}
@@ -309,6 +316,25 @@ Every list filter also accepts raw ids directly, so you can mix friendly names a
     "industry": ["Software Development"],
     "company_headquarters": ["North America", "EMEA"],
     "years_in_current_position": ["3 to 5 years"],
+    "count": 25
+  }
+}
+```
+
+### Exclusions
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "search_people_nav",
+  "params": {
+    "current_title": "Head of Sales",
+    "geography": ["France"],
+    "exclude": {
+      "current_company": ["Google", "Microsoft"],
+      "current_title": ["Intern"],
+      "geography": ["Paris"]
+    },
     "count": 25
   }
 }
