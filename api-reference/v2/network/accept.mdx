@@ -1,12 +1,14 @@
 ---
 title: 'Accept Invitation'
 api: 'POST /v2/network'
-description: 'Accept a pending connection invitation.'
+description: 'Accept or decline a pending connection invitation.'
 ---
 
 ## Overview
 
 Accepts a pending connection invitation using the invitation's `shared_secret` and `entity_urn`. These values can be obtained from the [List Invitations](/api-reference/v2/network/list-invitations) endpoint.
+
+To **decline** an invitation instead, send the same request with `decline: true` — the response has the same shape.
 
 <Note>This endpoint consumes **1 credit** per request.</Note>
 
@@ -31,6 +33,9 @@ Accepts a pending connection invitation using the invitation's `shared_secret` a
     </ParamField>
     <ParamField body="entity_urn" type="string" required>
       The entity URN of the invitation to accept.
+    </ParamField>
+    <ParamField body="decline" type="boolean" default={false}>
+      `true` ignores (declines) the invitation instead of accepting it. The sender is not notified, as on LinkedIn.
     </ParamField>
   </Expandable>
 </ParamField>
