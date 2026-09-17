@@ -92,6 +92,12 @@ Returns messages from a specific conversation, ordered from most recent to oldes
         <ResponseField name="entity_urn" type="string">
           Unique identifier of the message. Treat it as an opaque string and pass it back exactly as returned.
         </ResponseField>
+        <ResponseField name="has_attachments" type="boolean">
+          `true` when the message carries at least one image, file, voice note, video or GIF.
+        </ResponseField>
+        <ResponseField name="attachments" type="array">
+          One entry per attachment, empty when there are none. Same shape as in [webhook message events](/api-reference/v2/webhooks/introduction): `type` (`image`, `file`, `audio`, `video`, `gif`), `url` (signed LinkedIn URL, private and short-lived), `name`, `mime_type`, `byte_size`, `asset_urn`, and `download_url` — a stable URL on [Download Attachment](/api-reference/v2/messages/download-attachment) that streams the bytes on demand (1 credit).
+        </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="next_cursor" type="string">
@@ -155,10 +161,12 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
           "profile_url": "https://www.linkedin.com/in/jane-doe-42/"
         },
         "message_type": "TEXT",
-        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)"
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)",
+        "has_attachments": false,
+        "attachments": []
       },
       {
-        "text": "Hey, are you available for a call tomorrow?",
+        "text": "",
         "timestamp": 1777146492678,
         "sender": "John Smith",
         "sender_info": {
@@ -166,8 +174,20 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
           "last_name": "Smith",
           "profile_url": "https://www.linkedin.com/in/john-smith-99/"
         },
-        "message_type": "TEXT",
-        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)"
+        "message_type": "MEDIA",
+        "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)",
+        "has_attachments": true,
+        "attachments": [
+          {
+            "type": "file",
+            "url": "https://www.linkedin.com/dms/prv/document/...",
+            "name": "proposal.pdf",
+            "mime_type": "application/pdf",
+            "byte_size": 184320,
+            "asset_urn": "urn:li:digitalmediaAsset:D4E06AQ...",
+            "download_url": "https://api.linkupapi.com/v2/messages/attachment?account_id=...&conversation_id=...&asset_urn=..."
+          }
+        ]
       }
     ],
     "next_cursor": "1777146285823"
