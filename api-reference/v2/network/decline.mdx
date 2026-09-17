@@ -1,14 +1,14 @@
 ---
-title: 'Accept Invitation'
+title: 'Decline Invitation'
 api: 'POST /v2/network'
-description: 'Accept or decline a pending connection invitation.'
+description: 'Decline a pending connection invitation.'
 ---
 
 ## Overview
 
-Accepts a pending connection invitation using the invitation's `shared_secret` and `entity_urn`. These values can be obtained from the [List Invitations](/api-reference/v2/network/list-invitations) endpoint.
+Declines (ignores) a pending connection invitation using the invitation's `shared_secret` and `entity_urn`. These values can be obtained from the [List Invitations](/api-reference/v2/network/list-invitations) endpoint. The sender is not notified, as on LinkedIn.
 
-To **decline** an invitation, use [Decline Invitation](/api-reference/v2/network/decline) (`action: "decline"`, same params). Sending this request with `decline: true` is still supported and equivalent.
+Same request and response as [Accept Invitation](/api-reference/v2/network/accept) — only `action` changes.
 
 <Note>This endpoint consumes **1 credit** per request.</Note>
 
@@ -23,7 +23,7 @@ To **decline** an invitation, use [Decline Invitation](/api-reference/v2/network
 </ParamField>
 
 <ParamField body="action" type="string" required>
-  Must be `"accept"`.
+  Must be `"decline"`.
 </ParamField>
 
 <ParamField body="params" type="object" required>
@@ -32,10 +32,7 @@ To **decline** an invitation, use [Decline Invitation](/api-reference/v2/network
       The shared secret associated with the invitation. Obtained from the invitation data.
     </ParamField>
     <ParamField body="entity_urn" type="string" required>
-      The entity URN of the invitation to accept.
-    </ParamField>
-    <ParamField body="decline" type="boolean" default={false}>
-      `true` ignores (declines) the invitation instead of accepting it. The sender is not notified, as on LinkedIn.
+      The entity URN of the invitation to decline.
     </ParamField>
   </Expandable>
 </ParamField>
@@ -48,13 +45,13 @@ To **decline** an invitation, use [Decline Invitation](/api-reference/v2/network
 </ResponseField>
 
 <ResponseField name="data" type="object">
-  Confirmation of the accepted invitation.
+  Confirmation of the declined invitation.
 </ResponseField>
 
 <ResponseField name="metadata" type="object">
   <Expandable title="metadata properties">
     <ResponseField name="action" type="string">
-      The action that was performed (`"accept"`).
+      The action that was performed (`"decline"`).
     </ResponseField>
     <ResponseField name="account_id" type="string">
       The account ID used for the request.
@@ -72,12 +69,15 @@ To **decline** an invitation, use [Decline Invitation](/api-reference/v2/network
 ```json 200
 {
   "success": true,
-  "data": {},
+  "data": {
+    "status": "ok",
+    "message": "success"
+  },
   "metadata": {
-    "action": "accept",
+    "action": "decline",
     "account_id": "your-account-id",
     "credits_consumed": 1,
-    "timestamp": "2026-03-24T12:00:00Z"
+    "timestamp": "2026-09-17T18:00:00Z"
   }
 }
 ```
@@ -87,13 +87,13 @@ To **decline** an invitation, use [Decline Invitation](/api-reference/v2/network
   "success": false,
   "error": {
     "code": "INVALID_PARAMS",
-    "message": "shared_secret and entity_urn are required."
+    "message": "Invalid parameter"
   },
   "metadata": {
-    "action": "accept",
+    "action": "decline",
     "account_id": "your-account-id",
-    "credits_consumed": 0,
-    "timestamp": "2026-03-24T12:00:00Z"
+    "credits_consumed": 1,
+    "timestamp": "2026-09-17T18:00:00Z"
   }
 }
 ```
