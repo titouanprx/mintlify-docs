@@ -64,14 +64,22 @@ Fetches detailed profile data for a specified user. You can identify the target 
       Work experience entries. Each item: `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"10/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`.
     </ResponseField>
     <ResponseField name="education" type="array">
-      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date`, `school_url`, `school_logo_url`.
+      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date` (years, e.g. `"2018"`), `school_logo_url`.
     </ResponseField>
     <ResponseField name="skills" type="array">List of skills (array of strings).</ResponseField>
     <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
-    <ResponseField name="connection_count" type="integer">Number of connections.</ResponseField>
-    <ResponseField name="follower_count" type="integer">Number of followers.</ResponseField>
+    <ResponseField name="isOpenToWork" type="boolean">Profile displays the "Open to work" badge.</ResponseField>
+    <ResponseField name="isHiring" type="boolean">Profile displays the "Hiring" badge.</ResponseField>
+    <ResponseField name="relationship" type="string">
+      Network distance between the connected account and this profile: `"1st degree"`, `"2nd degree"`, `"3rd+ degree"` or `"Out of network"`. Same vocabulary as `connection_level` in [Search People](/api-reference/v2/profiles/search-people).
+    </ResponseField>
+    <ResponseField name="connectionDate" type="string">Date the two profiles connected (`YYYY-MM-DD HH:MM:SS`). Empty unless `relationship` is `"1st degree"`.</ResponseField>
+    <ResponseField name="email" type="string">Email from the contact info section. Only visible for 1st degree connections that share it, otherwise `""`.</ResponseField>
+    <ResponseField name="phone" type="string">Phone from the contact info section, same visibility as `email`.</ResponseField>
+    <ResponseField name="website" type="string">Website from the contact info section, same visibility as `email`.</ResponseField>
     <ResponseField name="open_link" type="boolean">Reachable via Open Profile (free InMail). Only with `sales_nav: true`.</ResponseField>
     <ResponseField name="inmail_eligible" type="boolean">InMail can be sent (no restriction). Only with `sales_nav: true`.</ResponseField>
+    <ResponseField name="inmail_restriction" type="string">Reason an InMail cannot be sent, `"NO_RESTRICTION"` otherwise. Only with `sales_nav: true`.</ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -102,37 +110,57 @@ Fetches detailed profile data for a specified user. You can identify the target 
     "profile_url": "https://www.linkedin.com/in/john-smith-42",
     "first_name": "John",
     "last_name": "Smith",
-    "headline": "Product Manager @Acme Corp | Lecturer @Sample University",
+    "headline": "CEO @Acme | Love discussing automation, agentic tech, and data engineering",
     "location": "Greater Paris, France",
-    "summary": "",
+    "summary": "I have co-founded:\n- Acme (Email Finder & Verifier, www.acme.example)\n- Beta Labs (Model mapping, www.betalabs.example)\n\nIn total, over 50 jobs created.",
     "industry": "Internet",
     "experience": [
       {
-        "company": "Acme Corp",
-        "title": "Product Manager",
-        "description": "",
-        "start_date": "10/2023",
+        "company": "Acme",
+        "title": "CEO",
+        "description": "Acme is a SaaS to find and verify email addresses.",
+        "start_date": "10/2022",
         "end_date": "",
-        "company_url": "https://linkedin.com/company/acme-corp",
-        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo.jpg"
+        "company_url": "https://linkedin.com/company/acme",
+        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/..."
+      },
+      {
+        "company": "Beta Labs",
+        "title": "Head of R&D",
+        "description": "",
+        "start_date": "5/2019",
+        "end_date": "8/2022",
+        "company_url": "https://linkedin.com/company/beta-labs",
+        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/..."
       }
     ],
     "education": [
       {
         "school": "Sample University",
-        "degree": "MBA",
-        "field_of_study": "Business",
-        "start_date": "9/2018",
-        "end_date": "6/2020"
+        "degree": "MSc",
+        "field_of_study": "Management",
+        "start_date": "2008",
+        "end_date": "2011",
+        "school_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/..."
+      },
+      {
+        "school": "Example Institute",
+        "degree": "",
+        "field_of_study": "",
+        "start_date": "",
+        "end_date": "",
+        "school_logo_url": ""
       }
     ],
-    "skills": ["Product Strategy", "User Research"],
-    "profile_picture_url": "https://media.licdn.com/dms/image/v2/.../profile.jpg",
-    "connection_count": 500,
-    "follower_count": 1234,
-    "open_link": false,
-    "inmail_eligible": true,
-    "inmail_restriction": "NO_RESTRICTION"
+    "skills": ["Business Development", "Entrepreneurship", "Start-ups", "Team Management", "CRM"],
+    "profile_picture_url": "https://media.licdn.com/dms/image/v2/.../profile-displayphoto-shrink_400_400/...",
+    "isOpenToWork": false,
+    "isHiring": true,
+    "email": "john.smith@example.com",
+    "phone": "0600000000",
+    "website": "https://www.acme.example",
+    "relationship": "1st degree",
+    "connectionDate": "2026-05-12 12:55:48"
   },
   "metadata": {
     "action": "get",
