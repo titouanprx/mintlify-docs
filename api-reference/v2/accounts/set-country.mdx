@@ -1,0 +1,94 @@
+---
+title: 'Set Proxy Country'
+api: 'POST /v2/accounts/{account_id}/country'
+description: 'Change the country of the managed proxy of a connected LinkedIn account'
+---
+
+Moves an already-connected account to a LinkupAPI-managed proxy of another country. Every request of the account (actions, real-time webhooks, background checks) then exits from the new country.
+
+<Note>
+  This endpoint is **free** — it does not consume any credits.
+</Note>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  A LinkedIn account of your API key
+</ParamField>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="country" type="string" required>
+  ISO 3166-1 alpha-2 code of the new proxy country, e.g. `TH`
+</ParamField>
+
+### Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="country" type="string">
+      Country now used by the account's proxy
+    </ResponseField>
+    <ResponseField name="previous_country" type="string">
+      Country before the change
+    </ResponseField>
+    <ResponseField name="changed" type="boolean">
+      `false` when the account was already on this country (nothing done)
+    </ResponseField>
+    <ResponseField name="session_verified" type="boolean">
+      The LinkedIn session was accepted from an IP of the new country
+    </ResponseField>
+    <ResponseField name="webhooks_repinned" type="integer">
+      Webhooks of the account moved to the new country
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "country": "TH",
+    "previous_country": "IN",
+    "changed": true,
+    "proxy": { "mode": "managed" },
+    "session_verified": true,
+    "webhooks_repinned": 1
+  },
+  "metadata": {
+    "action": "set_account_country",
+    "credits_consumed": 0,
+    "timestamp": "2026-09-21T14:02:11.418223"
+  }
+}
+```
+
+```json 400 (session refused from the new country)
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "LinkedIn did not accept the account session from a TH IP; the country was NOT changed. Re-login the account with `country: \"TH\"` on POST /v2/login to bind a fresh session from that country."
+  },
+  "metadata": {
+    "action": "set_account_country",
+    "credits_consumed": 0,
+    "timestamp": "2026-09-21T14:02:11.418223"
+  }
+}
+```
+</ResponseExample>
+
+### Notes
+- The session is verified from the new country before applying — nothing changes on failure
+- Device identity (device id, user agent) is preserved; only the exit IP changes
+- Re-logging the account with another `country` on [Login](/api-reference/v2/accounts/login) also moves it
+- Not available on accounts routed through a [custom proxy](/api-reference/v2/accounts/set-proxy): the country is defined by your proxy
