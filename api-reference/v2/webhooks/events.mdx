@@ -1,13 +1,15 @@
 ---
 title: 'Poll Events'
 api: 'GET /v2/webhooks/{webhook_id}/events'
-description: 'Retrieve stored webhook events by polling'
+description: 'Retrieve stored webhook events by polling — the catch-up path for hosted and custom webhooks'
 ---
 
-Fetch stored events for a hosted webhook. Use this as an alternative to the SSE stream when you prefer polling over a persistent connection.
+Fetch the stored events of the webhook's account, oldest first, filtered exactly like the webhook itself (`events` subscription and `message_type` for custom webhooks, `message_type` only for hosted ones). Served from our store: **no LinkedIn traffic** on the account.
+
+Use it as a polling alternative to the SSE stream (hosted mode), or to **catch up after an outage on your side** (custom mode) instead of re-syncing the inbox.
 
 <Note>
-  This endpoint is only available for **hosted** webhooks (created without a `url`). Events are stored for **24 hours** then automatically deleted.
+  Available for **hosted and custom** webhooks. Events are stored for **30 days** then automatically deleted. To re-push missed events to your URL instead, see [Delivery & retries](/api-reference/v2/webhooks/introduction#delivery-retries-custom-mode).
 </Note>
 
 ### Header Parameters
@@ -28,6 +30,14 @@ Fetch stored events for a hosted webhook. Use this as an alternative to the SSE 
   ISO 8601 datetime to fetch events after. Only events created **after** this timestamp are returned.
 
   Example: `2025-01-15T10:30:00Z`
+</ParamField>
+
+<ParamField query="until" type="string">
+  ISO 8601 datetime. Only events created **at or before** this timestamp are returned.
+</ParamField>
+
+<ParamField query="after" type="string">
+  Cursor: the `event_id` of the last event you processed. Returns the events stored after it. Prefer this over `since` for paging — it is stable even when several events share a timestamp.
 </ParamField>
 
 <ParamField query="count" type="integer" default="50">
@@ -55,6 +65,9 @@ Fetch stored events for a hosted webhook. Use this as an alternative to the SSE 
           ISO 8601 timestamp of when the event was stored
         </ResponseField>
       </Expandable>
+    </ResponseField>
+    <ResponseField name="next_cursor" type="string">
+      `event_id` of the last item when the page is full — pass it as `after` to get the next page. `null` when there is nothing more.
     </ResponseField>
   </Expandable>
 </ResponseField>

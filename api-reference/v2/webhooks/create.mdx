@@ -39,6 +39,10 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
   Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `all`. For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
 </ParamField>
 
+<ParamField body="retry" type="boolean" default="true">
+  Custom mode only. When `true`, a POST that times out or gets a `5xx`/`429` is retried with backoff (8 attempts over ~45 h) and every attempt is visible in the delivery log. Set `false` for fire-and-forget (failures are still logged). See [Delivery & retries](/api-reference/v2/webhooks/introduction#delivery-retries-custom-mode).
+</ParamField>
+
 <ParamField body="enable_signature" type="boolean" default="false">
   Custom mode only. When `true`, every outbound POST is signed with HMAC-SHA256 so you can verify it came from LinkUp. The response returns a `secret` **once** — store it; it cannot be retrieved later. See [Signature Verification](/api-reference/v2/webhooks/signature).
 </ParamField>
@@ -67,7 +71,13 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
       SSE stream endpoint (hosted mode only)
     </ResponseField>
     <ResponseField name="events_url" type="string">
-      Polling endpoint (hosted mode only)
+      Stored-events polling endpoint (both modes) — the catch-up path
+    </ResponseField>
+    <ResponseField name="deliveries_url" type="string">
+      Delivery log endpoint (custom mode only)
+    </ResponseField>
+    <ResponseField name="retry" type="boolean">
+      Whether failed POSTs are retried (custom mode only)
     </ResponseField>
     <ResponseField name="events" type="array">
       Event types this webhook listens for

@@ -26,12 +26,28 @@ Webhooks support two delivery modes depending on your setup:
 |---|---|---|
 | **Setup** | No server required | HTTPS endpoint required |
 | **Real-time delivery** | SSE stream (`GET /stream`) | HTTP POST to your URL |
-| **Event history** | 24h stored events (`GET /events`) | Fire-and-forget |
+| **Delivery guarantee** | Pull at your pace | At-least-once: retries with backoff, delivery log, replay |
+| **Event history** | 30 days stored events (`GET /events`) | 30 days stored events (`GET /events`) + replay |
 | **Best for** | Bots, scripts, local dev | Production servers |
 
 <Note>
   **Custom mode** supports optional HMAC-SHA256 [signature verification](/api-reference/v2/webhooks/signature) so your server can reject spoofed payloads. Opt in with `enable_signature: true` at creation time.
 </Note>
+
+## Delivery & retries (custom mode)
+
+Custom webhooks are delivered **at least once**. Every envelope carries a stable top-level `event_id` (also sent as `X-Linkup-Event-Id`, with `X-Linkup-Attempt`) — dedupe on it. A POST is successful on any `2xx`. On timeout (10 s), connection error, `5xx`, `408`/`425`/`429` we retry with backoff: 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h (8 attempts). Any other `4xx` or a `3xx` is recorded as `failed` and not retried. Turn retries off per webhook with `retry: false`.
+
+Everything we sent, or still owe, is visible for 30 days, and replayable, from the API:
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /v2/webhooks/{id}/deliveries?state=failed` | Delivery log: each attempt, the status code you returned, timeouts, next retry (`cursor` paging, `since`/`until`, `event_id`) |
+| `GET /v2/webhooks/{id}/deliveries/{delivery_id}` | One delivery with the exact payload we POSTed |
+| `POST /v2/webhooks/{id}/deliveries/{delivery_id}/replay` | Re-POST it now (header `X-Linkup-Replay: true`) |
+| `POST /v2/webhooks/{id}/replay` | `{"event_id": "…"}` re-POSTs one event now; `{"from": "…", "to": "…", "only_failed": true}` queues a time range (max 5000) |
+| [`GET /v2/webhooks/{id}/events?after=<event_id>`](/api-reference/v2/webhooks/events) | Pull the stored events yourself (30 days), no LinkedIn traffic |
+| `GET /v2/webhooks/retry-policy` | The policy above, as data |
 
 ## How It Works
 
@@ -98,8 +114,11 @@ All events share the same wrapper structure. Note that the outer `timestamp` is 
 
 The top-level **`platform`** field (`"linkedin"`, `"email"` or `"whatsapp"`) tells you which channel the event came from — this is how you distinguish an inbound email from a LinkedIn DM, since both use `event.type: "message"`.
 
+The top-level **`event_id`** is the stable identifier of the event: identical on every retry or replay, and the key to dedupe on (see [Delivery & retries](#delivery-retries-custom-mode)).
+
 ```json
 {
+  "event_id": "6ab13cf890294b92776b5343",
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
   "platform": "linkedin",

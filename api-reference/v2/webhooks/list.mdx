@@ -35,6 +35,15 @@ Retrieve all webhook configurations associated with your API key.
         <ResponseField name="url" type="string">
           The webhook URL
         </ResponseField>
+        <ResponseField name="retry" type="boolean">
+          Whether failed POSTs are retried with backoff (custom mode only)
+        </ResponseField>
+        <ResponseField name="deliveries_url" type="string">
+          Delivery log endpoint (custom mode only)
+        </ResponseField>
+        <ResponseField name="events_url" type="string">
+          Stored-events polling endpoint (both modes)
+        </ResponseField>
         <ResponseField name="events" type="array">
           Event types this webhook listens for
         </ResponseField>

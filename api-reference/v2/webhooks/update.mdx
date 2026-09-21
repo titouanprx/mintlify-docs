@@ -28,6 +28,10 @@ Update the URL, events, or active status of an existing webhook.
   New list of event types to listen for (e.g. `["message_received", "accepted_invitation"]`).
 </ParamField>
 
+<ParamField body="retry" type="boolean">
+  Custom mode only. Turn automatic retries of failed POSTs on (`true`, default) or off (`false`). See [Delivery & retries](/api-reference/v2/webhooks/introduction#delivery-retries-custom-mode).
+</ParamField>
+
 <ParamField body="is_active" type="boolean">
   Set to `false` to pause the webhook without deleting it.
 </ParamField>
