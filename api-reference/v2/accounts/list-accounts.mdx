@@ -59,6 +59,12 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
           - `checkpoint_required` — waiting on a 2FA code, see [Checkpoint](/api-reference/v2/accounts/checkpoint)
           - `disconnected` — the LinkedIn session expired; re-authenticate via [Connect Account](/api-reference/v2/accounts/login)
         </ResponseField>
+        <ResponseField name="checkpoint_type" type="string">
+          Where the code went, when `checkpoint_required`: `email`, `sms`, `authenticator_app`, `app_approval` or `code`.
+        </ResponseField>
+        <ResponseField name="sent_to" type="string">
+          Masked destination when LinkedIn shows it, e.g. `phone number ending with 23`.
+        </ResponseField>
 
         <ResponseField name="country" type="string">
           Country code associated with the account

@@ -47,6 +47,8 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
 
   - `code_challenge` — receive a verification code via email, SMS, or authenticator app. You must then submit the code via `/v2/checkpoint`.
   - `app_challenge` — confirm the login directly from the platform's mobile app. No code needed — just call `/v2/checkpoint` with the `account_id` after approving on the app.
+
+  This is a preference, LinkedIn may impose another method: check `checkpoint_type` in the response.
 </ParamField>
 
 <ParamField body="sales_nav" type="boolean" default={false}>
@@ -80,6 +82,12 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     </ResponseField>
     <ResponseField name="message" type="string">
       Additional information (present when checkpoint is required)
+    </ResponseField>
+    <ResponseField name="checkpoint_type" type="string">
+      Where the code went, when `checkpoint_required`: `email`, `sms`, `authenticator_app`, `app_approval` or `code`.
+    </ResponseField>
+    <ResponseField name="sent_to" type="string">
+      Masked destination when LinkedIn shows it, e.g. `phone number ending with 23`.
     </ResponseField>
     <ResponseField name="sales_nav" type="object">
       Present when `sales_nav: true` was requested. `{ "connected": true, "contract_id": "...", "seat_id": "..." }` on success, or `{ "connected": false, "error": "..." }` if no seat could be activated. When the login returns `checkpoint_required`, this is `{ "pending": true }` and the seat is activated once the checkpoint completes.
@@ -115,7 +123,8 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     "platform": "linkedin",
     "status": "checkpoint_required",
     "message": "Check your email for verification code",
-    "challenge_type": "code_challenge"
+    "checkpoint_type": "sms",
+    "sent_to": "phone number ending with 23"
   },
   "metadata": {
     "action": "login",
