@@ -1,0 +1,126 @@
+---
+title: 'Check InMail Seat'
+sidebarTitle: 'Check InMail Seat'
+api: 'POST /v2/profiles'
+description: 'Know whether a Sales Nav seat can send InMails right now, without sending one.'
+---
+
+## Overview
+
+LinkedIn puts a **monthly fuse** on every Sales Nav seat, independent of its remaining InMail credits: once tripped, every InMail is refused with `INMAIL_MONTHLY_FUSE_LIMIT`, and it lifts on LinkedIn's own schedule. This action tells you the seat's state before you queue sends, so you can route leads to a seat that can actually deliver.
+
+It also reports whether the seat currently sees the **Open Profile badge** (see [Check InMail](/api-reference/v2/profiles/check-inmail)) and its InMail credit balance.
+
+<Note>This endpoint consumes **1 credit**. Nothing is sent: the fuse is probed with an empty message LinkedIn refuses before it could ever deliver. Requires a Sales Nav seat on the account.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use. Must have a Sales Nav seat.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"check_inmail_seat"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile" type="string">
+      Optional. A lead in the seat's network (profile URL, slug, member id or Sales Nav reference) to probe against. When omitted, the API picks one itself.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="seat_status" type="string">
+      `ok` (InMails go through), `monthly_limit` (LinkedIn's monthly fuse is tripped), `under_review` (LinkedIn has frozen the Sales Nav account; the member must clear it on linkedin.com) or `rate_limited` (a passing throttle, retry in a few minutes).
+    </ResponseField>
+    <ResponseField name="can_send_inmail" type="boolean">`true` only when `seat_status` is `ok`.</ResponseField>
+    <ResponseField name="open_profile_badge_visible" type="boolean | null">Whether the seat currently sees the Open Profile badge. When `false`, [Check InMail](/api-reference/v2/profiles/check-inmail) results from this seat carry `null` badge fields.</ResponseField>
+    <ResponseField name="inmail_credits" type="integer | null">InMail credits left on the seat. Not what decides `seat_status`: a fused seat keeps its credits.</ResponseField>
+    <ResponseField name="linkedin_code" type="string | null">LinkedIn's own code when the seat is refused, e.g. `INMAIL_MONTHLY_FUSE_LIMIT`, `ACCOUNT_UNDER_REVIEW`.</ResponseField>
+    <ResponseField name="message" type="string">Human-readable explanation of the state.</ResponseField>
+    <ResponseField name="checked_at" type="string">ISO 8601 timestamp of the probe.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 (seat can send)
+{
+  "success": true,
+  "data": {
+    "seat_status": "ok",
+    "can_send_inmail": true,
+    "open_profile_badge_visible": true,
+    "inmail_credits": 149,
+    "linkedin_code": null,
+    "message": "The seat can send InMails.",
+    "checked_at": "2026-09-23T09:33:48Z"
+  },
+  "metadata": {
+    "action": "check_inmail_seat",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-09-23T09:33:48Z"
+  }
+}
+```
+
+```json 200 (monthly fuse tripped)
+{
+  "success": true,
+  "data": {
+    "seat_status": "monthly_limit",
+    "can_send_inmail": false,
+    "open_profile_badge_visible": false,
+    "inmail_credits": 57,
+    "linkedin_code": "INMAIL_MONTHLY_FUSE_LIMIT",
+    "message": "LinkedIn has reached the monthly InMail limit on this Sales Navigator seat (INMAIL_MONTHLY_FUSE_LIMIT). It resets with the seat's monthly cycle; remaining InMail credits are not the cause.",
+    "checked_at": "2026-09-23T09:34:17Z"
+  },
+  "metadata": {
+    "action": "check_inmail_seat",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-09-23T09:34:17Z"
+  }
+}
+```
+
+```json 422 (no Sales Nav seat)
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "No Sales Nav license found for this account"
+  },
+  "metadata": {
+    "action": "check_inmail_seat",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-09-23T09:34:17Z"
+  }
+}
+```
+</ResponseExample>
+
+## Example
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "check_inmail_seat",
+  "params": {}
+}
+```
