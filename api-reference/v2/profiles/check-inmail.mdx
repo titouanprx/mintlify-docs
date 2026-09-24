@@ -14,7 +14,7 @@ Uses the account's Sales Nav seat — see [Connect Account](/api-reference/v2/ac
 <Note>This endpoint consumes **1 credit per 10 profiles** checked. Requires a Sales Nav seat on the account.</Note>
 
 <Warning>
-LinkedIn hides the Open Profile badge from some seats (typically a seat on its monthly InMail limit): every member then looks "not open" from that seat. The API detects this by checking known Open Profiles on the same seat. When the seat is blind, `open_profile_badge_visible` is `false`, `open_profile` and `inmail_free` are `null` for every result, and a `warning` says so. Check these profiles again from another seat, or use [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat) to know the seat's state before batching.
+LinkedIn hides the Open Profile badge from some seats (typically a seat on its monthly InMail limit): every member then looks "not open" from that seat. The API detects this by checking known Open Profiles on the same seat. When the seat is blind, `open_profile_badge_visible` is `false` and a `warning` is included: `open_profile` and `inmail_free` keep LinkedIn's raw value (`false`) but must not be trusted for that call. Check these profiles again from another seat, or use [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat) to know the seat's state before batching.
 </Warning>
 
 ## Request
@@ -50,7 +50,7 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
     <ResponseField name="total_results" type="integer">Number of profiles in `results`.</ResponseField>
     <ResponseField name="inmail_free_count" type="integer">How many of them can be InMailed for free.</ResponseField>
     <ResponseField name="open_profile_badge_visible" type="boolean | null">
-      Whether the seat that answered can see the Open Profile badge. `false` means every `open_profile` / `inmail_free` below is `null` (see the warning above). `null` when it could not be determined; results are then LinkedIn's raw values.
+      Whether the seat that answered can see the Open Profile badge. `false` means the `open_profile` / `inmail_free` values below are not reliable (see the warning above). `null` when it could not be determined; results are then LinkedIn's raw values.
     </ResponseField>
     <ResponseField name="warning" type="string">Present only when `open_profile_badge_visible` is `false`.</ResponseField>
     <ResponseField name="results" type="array">
@@ -58,8 +58,8 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
       <Expandable title="result properties">
         <ResponseField name="profile" type="string">The reference you sent.</ResponseField>
         <ResponseField name="status" type="string">`success`, or `error` with a `message` (profile not found, could not be resolved).</ResponseField>
-        <ResponseField name="inmail_free" type="boolean | null">`true` when an InMail to this member costs no credit (Open Profile with no restriction).</ResponseField>
-        <ResponseField name="open_profile" type="boolean | null">Whether the member is an Open Profile.</ResponseField>
+        <ResponseField name="inmail_free" type="boolean">`true` when an InMail to this member costs no credit (Open Profile with no restriction).</ResponseField>
+        <ResponseField name="open_profile" type="boolean">Whether the member is an Open Profile.</ResponseField>
         <ResponseField name="inmail_restriction" type="string">`NO_RESTRICTION`, or the restriction LinkedIn reports.</ResponseField>
         <ResponseField name="premium" type="boolean">Whether the member has a Premium account.</ResponseField>
         <ResponseField name="degree" type="integer">Connection degree from the account.</ResponseField>
@@ -125,13 +125,13 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
     "total_results": 1,
     "inmail_free_count": 0,
     "open_profile_badge_visible": false,
-    "warning": "This Sales Navigator seat currently cannot see the Open Profile badge: LinkedIn reports every member as not open from it. open_profile and inmail_free are null for this call; check these profiles from another seat.",
+    "warning": "This Sales Navigator seat currently cannot see the Open Profile badge: LinkedIn reports every member as not open from it, so open_profile and inmail_free are not reliable in this response. Check these profiles from another seat, or probe the seat with profiles/check_inmail_seat.",
     "results": [
       {
         "profile": "https://www.linkedin.com/in/jane-doe",
         "status": "success",
-        "inmail_free": null,
-        "open_profile": null,
+        "inmail_free": false,
+        "open_profile": false,
         "inmail_restriction": "NO_RESTRICTION",
         "premium": true,
         "degree": 2,

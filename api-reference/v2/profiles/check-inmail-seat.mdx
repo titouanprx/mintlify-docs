@@ -47,7 +47,7 @@ It also reports whether the seat currently sees the **Open Profile badge** (see 
       `ok` (InMails go through), `monthly_limit` (LinkedIn's monthly fuse is tripped), `under_review` (LinkedIn has frozen the Sales Nav account; the member must clear it on linkedin.com) or `rate_limited` (a passing throttle, retry in a few minutes).
     </ResponseField>
     <ResponseField name="can_send_inmail" type="boolean">`true` only when `seat_status` is `ok`.</ResponseField>
-    <ResponseField name="open_profile_badge_visible" type="boolean | null">Whether the seat currently sees the Open Profile badge. When `false`, [Check InMail](/api-reference/v2/profiles/check-inmail) results from this seat carry `null` badge fields.</ResponseField>
+    <ResponseField name="open_profile_badge_visible" type="boolean | null">Whether the seat currently sees the Open Profile badge. When `false`, [Check InMail](/api-reference/v2/profiles/check-inmail) and Sales Nav search results from this seat report every member as not open and must not be trusted.</ResponseField>
     <ResponseField name="inmail_credits" type="integer | null">InMail credits left on the seat. Not what decides `seat_status`: a fused seat keeps its credits.</ResponseField>
     <ResponseField name="linkedin_code" type="string | null">LinkedIn's own code when the seat is refused, e.g. `INMAIL_MONTHLY_FUSE_LIMIT`, `ACCOUNT_UNDER_REVIEW`.</ResponseField>
     <ResponseField name="message" type="string">Human-readable explanation of the state.</ResponseField>

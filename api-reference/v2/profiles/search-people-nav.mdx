@@ -195,7 +195,7 @@ Every list filter also accepts raw ids directly, so you can mix friendly names a
         <ResponseField name="headline" type="string">Profile headline.</ResponseField>
         <ResponseField name="summary" type="string">Profile summary / about.</ResponseField>
         <ResponseField name="premium" type="boolean">Whether the lead has a Premium account.</ResponseField>
-        <ResponseField name="open_link" type="boolean | null">Whether the lead is an Open Profile (free InMail). `null` when the seat cannot see the badge — see `open_profile_badge_visible` below.</ResponseField>
+        <ResponseField name="open_link" type="boolean">Whether the lead is an Open Profile (free InMail). Not reliable when `open_profile_badge_visible` is `false` — see below.</ResponseField>
         <ResponseField name="viewed_profile" type="boolean">Whether you have viewed this lead's profile.</ResponseField>
         <ResponseField name="changed_job_recently" type="boolean">Recent job change flag.</ResponseField>
         <ResponseField name="shared_connections" type="integer">Number of shared connections.</ResponseField>
@@ -238,7 +238,7 @@ Every list filter also accepts raw ids directly, so you can mix friendly names a
       Total number of matching leads available (an estimate for large sets).
     </ResponseField>
     <ResponseField name="open_profile_badge_visible" type="boolean | null">
-      Whether the seat that ran the search can see the Open Profile badge. LinkedIn hides it from some seats (every lead then looks "not open"); the API checks known Open Profiles on the same seat. When `false`, every `open_link` is `null` and a `warning` is included. Probe a seat beforehand with [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat).
+      Whether the seat that ran the search can see the Open Profile badge. LinkedIn hides it from some seats (every lead then looks "not open"); the API checks known Open Profiles on the same seat. When `false`, `open_link` reads `false` for every lead whatever their real status, and a `warning` is included. Probe a seat beforehand with [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat).
     </ResponseField>
     <ResponseField name="warning" type="string">Present only when `open_profile_badge_visible` is `false`.</ResponseField>
   </Expandable>
