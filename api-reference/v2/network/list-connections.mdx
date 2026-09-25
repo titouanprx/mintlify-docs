@@ -10,6 +10,14 @@ Returns a paginated list of the account's connections. Pagination is **offset-ba
 
 <Note>This endpoint consumes **1 credit per 50 results** returned. The platform returns up to **100 connections per internal request**, so requesting `count: 250` triggers ~3 upstream calls automatically.</Note>
 
+### Is one profile a connection?
+
+Same stored copy, one profile: send `action: "check_connection"` with `params.profile_url` (full URL or public identifier). Returns `connected: true/false`, `name`, `cache_synced` and `cache_synced_at`. **0 credit, no LinkedIn traffic.**
+
+```json
+{ "account_id": "your-account-id", "action": "check_connection", "params": { "profile_url": "https://www.linkedin.com/in/jane-doe-42/" } }
+```
+
 ## Request
 
 <ParamField header="x-api-key" type="string" required>

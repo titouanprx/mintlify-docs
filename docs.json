@@ -114,7 +114,6 @@
                   "api-reference/v2/network/list-sent",
                   "api-reference/v2/network/withdraw",
                   "api-reference/v2/network/check-invitation",
-                  "api-reference/v2/network/check-connection",
                   "api-reference/v2/network/recommendations"
                 ]
               },
