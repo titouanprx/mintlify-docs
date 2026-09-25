@@ -32,6 +32,9 @@ Returns a paginated list of the account's connections. Pagination is **offset-ba
     <ParamField body="offset" type="integer" default={0}>
       Zero-indexed offset into the connections list. Defaults to `0`. Use `pagination.next_offset` from a previous response to fetch the next page.
     </ParamField>
+    <ParamField body="use_cache" type="boolean" default={false}>
+      Serve the list from our stored copy of the account's connections instead of LinkedIn: **0 credit, no LinkedIn traffic**, newest connection first. The copy exists for accounts subscribed to the [`accepted_invitation`](/api-reference/v2/webhooks/introduction#event-types) webhook event (full sync at subscription, then every detected acceptance is added). Without it the response is empty with `cache_synced: false`.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -58,6 +61,15 @@ Returns a paginated list of the account's connections. Pagination is **offset-ba
     </ResponseField>
     <ResponseField name="total_available_results" type="integer">
       Total number of connections available in the account.
+    </ResponseField>
+    <ResponseField name="source" type="string">
+      `"cache"` when served with `use_cache`. Absent otherwise.
+    </ResponseField>
+    <ResponseField name="cache_synced" type="boolean">
+      With `use_cache` only: `false` when the account has no stored copy yet.
+    </ResponseField>
+    <ResponseField name="cache_synced_at" type="string">
+      With `use_cache` only: ISO 8601 date of the most recent stored connection.
     </ResponseField>
     <ResponseField name="pagination" type="object">
       <Expandable title="pagination properties">
@@ -117,6 +129,41 @@ Returns a paginated list of the account's connections. Pagination is **offset-ba
     "action": "list_connections",
     "account_id": "your-account-id",
     "credits_consumed": 1,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 — use_cache
+{
+  "success": true,
+  "data": {
+    "connections": [
+      {
+        "name": "Jane Doe",
+        "job_title": "Founder @ Acme Corp — AI recruiting platform",
+        "profile_url": "https://www.linkedin.com/in/jane-doe-42/",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/.../profile.jpg"
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 1201,
+    "pagination": {
+      "offset": 0,
+      "count": 1,
+      "next_offset": 1,
+      "has_more": true,
+      "results_per_page": 1,
+      "pages_fetched": 0
+    },
+    "source": "cache",
+    "cache_synced": true,
+    "cache_synced_at": "2026-04-25T13:42:16.859000"
+  },
+  "metadata": {
+    "action": "list_connections",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
     "timestamp": "2026-04-26T10:35:00Z"
   }
 }
