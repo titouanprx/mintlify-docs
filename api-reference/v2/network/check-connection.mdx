@@ -1,0 +1,105 @@
+---
+title: 'Check Connection'
+api: 'POST /v2/network'
+description: 'Is this profile a 1st-degree connection? Answered from our stored copy, 0 credit.'
+---
+
+## Overview
+
+Returns `connected: true` when the profile is in the account's stored connections, `false` otherwise. Served from our copy of the connections: **no LinkedIn traffic, 0 credit**.
+
+<Note>The stored copy exists for accounts subscribed to the [`accepted_invitation`](/api-reference/v2/webhooks/introduction#event-types) webhook event (full sync at subscription, then every detected acceptance is added). Without it, `cache_synced` is `false` and `connected` is always `false`. For a live answer use [Check Invitation](/api-reference/v2/network/check-invitation) (`member_distance: 1`).</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"check_connection"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="profile_url" type="string" required>
+      LinkedIn profile URL (`https://www.linkedin.com/in/jane-doe-42/`). The public identifier alone (`jane-doe-42`) is accepted too. Case-insensitive.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="connected" type="boolean">`true` when the profile is a stored 1st-degree connection of the account.</ResponseField>
+    <ResponseField name="profile_url" type="string">The stored profile URL when connected, otherwise the URL you sent.</ResponseField>
+    <ResponseField name="name" type="string">Display name of the connection. `null` when not connected.</ResponseField>
+    <ResponseField name="cache_synced" type="boolean">`false` when the account has no stored copy yet.</ResponseField>
+    <ResponseField name="cache_synced_at" type="string">ISO 8601 date of the most recent stored connection.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 — Connected
+{
+  "success": true,
+  "data": {
+    "connected": true,
+    "profile_url": "https://www.linkedin.com/in/jane-doe-42/",
+    "name": "Jane Doe",
+    "cache_synced": true,
+    "cache_synced_at": "2026-04-25T13:42:16.859000"
+  },
+  "metadata": {
+    "action": "check_connection",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 — Not connected
+{
+  "success": true,
+  "data": {
+    "connected": false,
+    "profile_url": "https://www.linkedin.com/in/john-smith/",
+    "name": null,
+    "cache_synced": true,
+    "cache_synced_at": "2026-04-25T13:42:16.859000"
+  },
+  "metadata": {
+    "action": "check_connection",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "profile_url is required"
+  },
+  "metadata": {
+    "action": "check_connection",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+</ResponseExample>
