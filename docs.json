@@ -151,11 +151,9 @@
                 ]
               },
               {
-                "group": "Logs & Usage",
+                "group": "Logs",
                 "pages": [
-                  "api-reference/v2/logs/list-logs",
-                  "api-reference/v2/logs/stats",
-                  "api-reference/v2/logs/export"
+                  "api-reference/v2/logs/list-logs"
                 ]
               },
               {

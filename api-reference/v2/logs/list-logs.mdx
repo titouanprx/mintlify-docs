@@ -6,7 +6,7 @@ description: 'Browse your API call history, one entry per request'
 
 Every V2 call is logged: action, LinkedIn account used, credits consumed, status and error message. Logs are tied to your user, so they survive an API key rotation. Served from our store: **no LinkedIn traffic** and **no credits consumed**.
 
-Paginated, newest first, capped at 200 rows per page. For aggregated numbers (per account, per action) use [Usage Stats](/api-reference/v2/logs/stats); for the full history in one file use [Export Logs](/api-reference/v2/logs/export).
+Paginated, newest first, capped at 200 rows per page.
 
 ### Header Parameters
 
@@ -141,4 +141,5 @@ Paginated, newest first, capped at 200 rows per page. For aggregated numbers (pe
 ### Notes
 - This endpoint does **not** consume any credits
 - Filters combine: `?account_id=…&action=list_inbox&status=error` returns only the failed inbox reads of that account
-- Rows for a deleted LinkedIn account are kept; the account no longer resolves but its `account_id` stays in the logs
+- `GET /v2/logs/stats` returns the same history aggregated: `total_calls`, `total_credits`, `by_account` and `by_action` (calls, successes, errors, credits). Accepts `account_id`, `date_from`, `date_to`; with `account_id`, `by_action` is the breakdown of that account
+- `GET /v2/logs/export` returns the same rows as a CSV file, same filters, no pagination
