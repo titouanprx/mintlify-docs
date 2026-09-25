@@ -192,6 +192,7 @@ Triggered in real-time when a new message is received via the platform's realtim
 | `event.metadata.read_status` | `boolean` | Whether the conversation is marked read |
 | `event.has_attachments` | `boolean` | `true` when the message carries at least one attachment |
 | `event.attachments` | `array` | One entry per attachment. Empty when there are none. |
+| `event.message_type` | `string` | What the message is. Classic inbox: `TEXT`, `MEDIA` (attachment without text) or `SYSTEM`. Sales Navigator inbox: `INMAIL`, `MESSAGE`, `INMAIL_DECLINE` or `INMAIL_ACCEPT`. An `INMAIL_DECLINE` is the prospect pressing "Not interested" on your InMail: it arrives with an empty `message_text` and is a refusal, not a reply. |
 
 <Tip>
   When the message is a reply, an additional `event.reply_to` object is included with the original message details. For non-reply messages, the field is **omitted entirely** from the payload — don't expect a `null`.
@@ -305,6 +306,7 @@ This is automatic: an account whose Sales Navigator seat is connected starts rec
     "inbox": "sales_navigator",
     "timestamp": "2026-04-28T10:07:45.525693",
     "message_text": "Thanks for reaching out — happy to talk next week.",
+    "message_type": "MESSAGE",
     "sender": {
       "name": "Douglas Collombat",
       "profile_url": "https://www.linkedin.com/in/douglas-collombat-8aa5863a7",
@@ -321,6 +323,10 @@ This is automatic: an account whose Sales Navigator seat is connected starts rec
   "timestamp": "2026-04-28T08:07:45.525853"
 }
 ```
+
+<Warning>
+A prospect can decline an InMail instead of answering it. That comes through as a `message` event with `"message_type": "INMAIL_DECLINE"` and an empty `message_text`. Treat it as a refusal: do not count it as a reply, and stop the sequence.
+</Warning>
 
 **Identifying the sender**
 
