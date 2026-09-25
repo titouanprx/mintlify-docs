@@ -151,6 +151,14 @@
                 ]
               },
               {
+                "group": "Logs & Usage",
+                "pages": [
+                  "api-reference/v2/logs/list-logs",
+                  "api-reference/v2/logs/stats",
+                  "api-reference/v2/logs/export"
+                ]
+              },
+              {
                 "group": "Email Enrichment",
                 "pages": [
                   "api-reference/v2/enrich/find-email",
