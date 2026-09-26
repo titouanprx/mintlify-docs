@@ -34,6 +34,10 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
   Authentication token/cookie for direct token-based connection. Alternative to email+password.
 </ParamField>
 
+<ParamField body="phone_number" type="string">
+  WhatsApp only. The number to link, e.g. `+33612345678`. See [WhatsApp](/api-reference/v2/messages/whatsapp).
+</ParamField>
+
 <ParamField body="country" type="string" default="FR">
   Country code for proxy selection. Available: US, UK, FR, DE, NL, IT, IL, CA, BR, ES, IN
 </ParamField>
@@ -190,6 +194,10 @@ The mailbox address is the top-level **`email`** field (the same one used for cr
 
 Common failures return the standard error envelope: an address with no Gmail mailbox or a rejected SMTP login → `CHANNEL_ERROR` (422); an expired/reused code → `INVALID_PARAMS` (400); denied consent → `FORBIDDEN` (403). A failed attempt leaves no leftover account.
 
+### WhatsApp
+
+`platform: "whatsapp"` returns a QR code to scan, then poll [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint) until `connected`. Details: [WhatsApp](/api-reference/v2/messages/whatsapp).
+
 ### Sales Nav
 
 The Sales Nav seat is derived from the account's existing session — there is **no separate login**. There are two ways to activate it:
@@ -249,4 +257,3 @@ The seat is attached to the account and renewed automatically when it expires. A
 - The `account_id` returned is permanent — store it and reuse it for all API calls
 - If you receive `checkpoint_required`, use the `/v2/checkpoint` endpoint to complete verification
 - The `country` parameter determines which proxy is used for the connection
-- Each platform may require different parameters (e.g. WhatsApp uses `phone_number`)

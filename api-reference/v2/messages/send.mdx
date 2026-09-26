@@ -6,7 +6,7 @@ description: 'Send a LinkedIn message or InMail, or an email — from a connecte
 
 ## Overview
 
-Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, or both.
+Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. For a **WhatsApp** account, see [WhatsApp](/api-reference/v2/messages/whatsapp). The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, or both.
 
 <Note>This endpoint consumes **1 credit** for a text message or email (**2 credits** with LinkedIn media). An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
 
@@ -44,6 +44,9 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
     </ParamField>
     <ParamField body="recipient_urn" type="string">
       **(LinkedIn InMail)** The lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail. Use this **or** `profile_url` + `inmail: true`.
+    </ParamField>
+    <ParamField body="phone_number" type="string">
+      **(WhatsApp)** Recipient number, e.g. `+33612345678`.
     </ParamField>
     <ParamField body="to" type="string">
       **(Email)** Recipient email address. Required for an email account.

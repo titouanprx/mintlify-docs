@@ -1,0 +1,121 @@
+---
+title: 'WhatsApp'
+description: 'Connect a WhatsApp number, send messages, read the inbox and check numbers'
+---
+
+## Overview
+
+- Same endpoints and response formats as LinkedIn: [`/v2/login`](/api-reference/v2/accounts/login), [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint), [`/v2/messages`](/api-reference/v2/messages/send), [webhooks](/api-reference/v2/webhooks/introduction)
+- Phone numbers in international format: `+33612345678`
+- Connecting is free. Each `/v2/messages` action costs **1 credit**
+
+## Connect a number
+
+1. `POST /v2/login` → returns a QR code
+2. On the phone: WhatsApp › Settings › Linked devices › Link a device, scan the QR
+3. Poll `POST /v2/checkpoint` with the `account_id` every few seconds → current QR while pending, `connected` once scanned
+
+<ParamField body="platform" type="string" required>`whatsapp`</ParamField>
+<ParamField body="phone_number" type="string">The number to link. Required with `pairing_code`.</ParamField>
+<ParamField body="params.pairing_code" type="boolean" default={false}>Get an 8-character code to type on the phone instead of a QR.</ParamField>
+
+```json Request
+{ "platform": "whatsapp", "phone_number": "+33612345678" }
+```
+
+- The QR refreshes every ~20 s and expires after 3 min. Then call `/v2/checkpoint` with `resend: true` for a new one
+- `country` defaults to the number's country
+
+## Send
+
+`action: "send"` with `phone_number` (or `conversation_id`) and `message_text`. Attachments with `media_link(s)` / `media_file(s)`, as on LinkedIn.
+
+```json Request
+{ "account_id": "your-whatsapp-account-id", "action": "send", "params": { "phone_number": "+33612345678", "message_text": "Hi!" } }
+```
+
+A number without WhatsApp returns `CHANNEL_ERROR` (422).
+
+## Check numbers
+
+`action: "check_numbers"` tells which numbers are on WhatsApp. Up to 50 per call. Nothing is sent to them.
+
+```json Request
+{ "account_id": "your-whatsapp-account-id", "action": "check_numbers", "params": { "phone_numbers": ["+33612345678", "+33600000000"] } }
+```
+
+## Inbox
+
+- `list_inbox`, `get_conversation`, `search`: same params as LinkedIn. `get_conversation` also accepts `phone_number`
+- `mark_as_read` / `mark_as_unread` with `conversation_id`
+- Attachments: [`GET /v2/messages/attachment`](/api-reference/v2/messages/download-attachment) with `account_id` + `message_id`
+
+<ResponseExample>
+```json Connect (QR)
+{
+  "success": true,
+  "data": {
+    "account_id": "6ab7dd7ba4886df610eab269",
+    "platform": "whatsapp",
+    "status": "checkpoint_required",
+    "checkpoint_type": "whatsapp_qr",
+    "qr_code": "https://wa.me/settings/linked_devices#2@…",
+    "qr_code_image": "data:image/png;base64,iVBORw0KGgo…",
+    "expires_in_seconds": 180
+  },
+  "metadata": { "action": "login", "credits_consumed": 0, "timestamp": "2026-09-26T15:00:00Z" }
+}
+```
+
+```json Connected
+{
+  "success": true,
+  "data": {
+    "account_id": "6ab7dd7ba4886df610eab269",
+    "platform": "whatsapp",
+    "status": "connected",
+    "phone_number": "33612345678",
+    "name": "Titouan"
+  },
+  "metadata": { "action": "checkpoint", "credits_consumed": 0, "timestamp": "2026-09-26T15:01:00Z" }
+}
+```
+
+```json Send
+{
+  "success": true,
+  "data": {
+    "status": "success",
+    "data": {
+      "entityUrn": "3EB05338283099EC87F1F8",
+      "conversation_id": "33612345678@s.whatsapp.net",
+      "deliveredAt": 1790436783000,
+      "phone_number": "33612345678"
+    }
+  },
+  "metadata": { "action": "send", "account_id": "6ab7dd7ba4886df610eab269", "credits_consumed": 1, "timestamp": "2026-09-26T15:33:03Z" }
+}
+```
+
+```json Check numbers
+{
+  "success": true,
+  "data": {
+    "results": [
+      { "phone_number": "+33612345678", "on_whatsapp": true, "conversation_id": "33612345678@s.whatsapp.net" },
+      { "phone_number": "+33600000000", "on_whatsapp": false, "conversation_id": null }
+    ],
+    "total_results": 2
+  },
+  "metadata": { "action": "check_numbers", "account_id": "6ab7dd7ba4886df610eab269", "credits_consumed": 1, "timestamp": "2026-09-26T15:40:00Z" }
+}
+```
+
+```json Not on WhatsApp
+{
+  "success": false,
+  "error": { "code": "CHANNEL_ERROR", "message": "This phone number is not on WhatsApp" },
+  "metadata": { "action": "send", "account_id": "6ab7dd7ba4886df610eab269", "credits_consumed": 1, "timestamp": "2026-09-26T15:33:03Z" }
+}
+```
+</ResponseExample>
