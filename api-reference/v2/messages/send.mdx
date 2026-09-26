@@ -6,7 +6,7 @@ description: 'Send a LinkedIn message or InMail, or an email — from a connecte
 
 ## Overview
 
-Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. For a **WhatsApp** account, see [WhatsApp](/api-reference/v2/messages/whatsapp). The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, or both.
+Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. For a **WhatsApp** account it sends a WhatsApp message to `phone_number`. The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, **(WhatsApp)**, or several.
 
 <Note>This endpoint consumes **1 credit** for a text message or email (**2 credits** with LinkedIn media). An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)).</Note>
 
@@ -31,7 +31,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="message_text" type="string" required>
-      **(LinkedIn + Email)** The text content. Required for LinkedIn; for email, provide `message_text` and/or `html` (at least one).
+      **(LinkedIn + Email + WhatsApp)** The text content. Required for LinkedIn; for email, provide `message_text` and/or `html`; for WhatsApp, `message_text` and/or an attachment.
     </ParamField>
     <ParamField body="subject" type="string">
       **(InMail + Email)** Subject line. On LinkedIn it applies to InMails only (ignored for standard messages, and alone it does **not** trigger an InMail); on email it's the email subject.
@@ -46,7 +46,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn InMail)** The lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail. Use this **or** `profile_url` + `inmail: true`.
     </ParamField>
     <ParamField body="phone_number" type="string">
-      **(WhatsApp)** Recipient number, e.g. `+33612345678`.
+      **(WhatsApp)** Recipient number in international format, e.g. `+33612345678`. Required for a WhatsApp account.
     </ParamField>
     <ParamField body="to" type="string">
       **(Email)** Recipient email address. Required for an email account.
@@ -73,10 +73,10 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(Email)** Optional pool of your own mailbox ids to route the send across (home-court + daily limits). `sent_from` in the response tells you which was used.
     </ParamField>
     <ParamField body="media_link" type="string">
-      **(LinkedIn + Email)** A publicly accessible URL to a file to attach.
+      **(LinkedIn + Email + WhatsApp)** A publicly accessible URL to a file to attach.
     </ParamField>
     <ParamField body="media_file" type="object">
-      **(LinkedIn + Email)** A base64-encoded file to attach.
+      **(LinkedIn + Email + WhatsApp)** A base64-encoded file to attach.
       <Expandable title="media_file properties">
         <ParamField body="data" type="string" required>
           The base64-encoded file content.
@@ -90,13 +90,16 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn + Email)** A server-side file path to a file to attach.
     </ParamField>
     <ParamField body="media_links" type="string[]">
-      **(LinkedIn + Email)** Publicly accessible URLs of files to attach — all delivered in the same message.
+      **(LinkedIn + Email + WhatsApp)** Publicly accessible URLs of files to attach — all delivered in the same message.
     </ParamField>
     <ParamField body="media_files" type="object[]">
-      **(LinkedIn + Email)** Base64-encoded files to attach — same shape as `media_file` (`data`, `filename`).
+      **(LinkedIn + Email + WhatsApp)** Base64-encoded files to attach — same shape as `media_file` (`data`, `filename`).
     </ParamField>
     <ParamField body="voice_message" type="boolean" default={false}>
-      **(LinkedIn)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension.
+      **(LinkedIn + WhatsApp)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension.
+    </ParamField>
+    <ParamField body="quoted_message_id" type="string">
+      **(WhatsApp)** Reply to a message: its `id` from [Get Conversation](/api-reference/v2/messages/get-conversation).
     </ParamField>
   </Expandable>
 </ParamField>
@@ -238,6 +241,22 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
 }
 ```
 
+```json 200 (WhatsApp)
+{
+  "success": true,
+  "data": {
+    "status": "success",
+    "data": {
+      "entityUrn": "3EB05338283099EC87F1F8",
+      "conversation_id": "33612345678@s.whatsapp.net",
+      "deliveredAt": 1790436783000,
+      "phone_number": "33612345678"
+    }
+  },
+  "metadata": { "action": "send", "account_id": "your-whatsapp-account-id", "credits_consumed": 1, "timestamp": "2026-09-26T15:33:03Z" }
+}
+```
+
 ```json 400
 {
   "success": false,
@@ -284,3 +303,17 @@ Sending from an [email mailbox](/api-reference/v2/accounts/login#email-mailbox) 
   "params": { "to": "prospect@example.com", "subject": "Quick question", "message_text": "Hi there, ..." }
 }
 ```
+
+## WhatsApp
+
+Sending from a [WhatsApp account](/api-reference/v2/accounts/login#whatsapp) uses `phone_number` + `message_text`:
+
+```json
+{
+  "account_id": "your-whatsapp-account-id",
+  "action": "send",
+  "params": { "phone_number": "+33612345678", "message_text": "Hi there, ..." }
+}
+```
+
+A number without WhatsApp returns `CHANNEL_ERROR` (422). Check numbers first with [Check Numbers](/api-reference/v2/messages/check-numbers).

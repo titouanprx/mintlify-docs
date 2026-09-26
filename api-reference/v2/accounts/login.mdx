@@ -35,7 +35,7 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
 </ParamField>
 
 <ParamField body="phone_number" type="string">
-  WhatsApp only. The number to link, e.g. `+33612345678`. See [WhatsApp](/api-reference/v2/messages/whatsapp).
+  WhatsApp only. The number to link, e.g. `+33612345678`. Sets the proxy country when `country` is not given.
 </ParamField>
 
 <ParamField body="country" type="string" default="FR">
@@ -138,6 +138,26 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
 }
 ```
 
+```json Checkpoint Required (WhatsApp)
+{
+  "success": true,
+  "data": {
+    "account_id": "6ab7dd7ba4886df610eab269",
+    "platform": "whatsapp",
+    "status": "checkpoint_required",
+    "checkpoint_type": "whatsapp_qr",
+    "qr_code": "https://wa.me/settings/linked_devices#2@…",
+    "qr_code_image": "data:image/png;base64,iVBORw0KGgo…",
+    "expires_in_seconds": 180
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 0,
+    "timestamp": "2026-09-26T15:00:00.000000"
+  }
+}
+```
+
 ```json Error Response
 {
   "success": false,
@@ -196,7 +216,17 @@ Common failures return the standard error envelope: an address with no Gmail mai
 
 ### WhatsApp
 
-`platform: "whatsapp"` returns a QR code to scan, then poll [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint) until `connected`. Details: [WhatsApp](/api-reference/v2/messages/whatsapp).
+1. `platform: "whatsapp"` + `phone_number` → `checkpoint_required` with a QR code (`qr_code_image`)
+2. Scan it on the phone: WhatsApp › Settings › Linked devices › Link a device
+3. Poll [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint) with the `account_id` every few seconds → current QR, then `connected`
+
+- The QR refreshes every ~20 s and expires after 3 min: `/v2/checkpoint` with `resend: true` gives a new one
+- Can't scan (QR shown on the same phone)? Pass `params.pairing_code: true`: you get an 8-character `pairing_code` to type on the phone instead (Link a device › Link with phone number instead)
+- Free
+
+```json WhatsApp
+{ "platform": "whatsapp", "phone_number": "+33612345678" }
+```
 
 ### Sales Nav
 

@@ -34,6 +34,9 @@ Returns messages from a specific conversation, ordered from most recent to oldes
     <ParamField body="profile_url" type="string">
       URL of the other participant's profile on the connected platform. When provided, the conversation with this user is resolved automatically. **Required if `conversation_id` is not provided.**
     </ParamField>
+    <ParamField body="phone_number" type="string">
+      **(WhatsApp)** The contact's number, instead of `conversation_id`.
+    </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of messages to return. Defaults to `10`.
     </ParamField>

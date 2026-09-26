@@ -6,7 +6,7 @@ description: 'Download the bytes of a message attachment.'
 
 ## Overview
 
-Returns the raw file for an attachment received in a message — on **LinkedIn** and **email** accounts (Gmail / Outlook). LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves it on demand; for email the bytes are fetched over the mailbox API.
+Returns the raw file for an attachment received in a message — on **LinkedIn**, **email** (Gmail / Outlook) and **WhatsApp** accounts. LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves it on demand; for email the bytes are fetched over the mailbox API.
 
 For LinkedIn, every attachment in a webhook payload already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). For email, use the `attachments[]` from [Get Conversation](/api-reference/v2/messages/get-conversation). You still send your `x-api-key` header.
 
@@ -31,7 +31,7 @@ For LinkedIn, every attachment in a webhook payload already carries a ready-to-c
 </ParamField>
 
 <ParamField query="message_id" type="string">
-  **(Email)** The provider message id carrying the attachment (`attachments[].message_id`).
+  **(Email + WhatsApp)** The id of the message carrying the attachment (`attachments[].message_id`).
 </ParamField>
 
 <ParamField query="attachment_id" type="string">

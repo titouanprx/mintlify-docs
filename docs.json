@@ -101,7 +101,7 @@
                   "api-reference/v2/messages/download-attachment",
                   "api-reference/v2/messages/balance",
                   "api-reference/v2/messages/manage-emails",
-                  "api-reference/v2/messages/whatsapp"
+                  "api-reference/v2/messages/check-numbers"
                 ]
               },
               {

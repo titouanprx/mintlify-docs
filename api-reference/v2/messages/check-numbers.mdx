@@ -1,0 +1,61 @@
+---
+title: 'Check Numbers'
+api: 'POST /v2/messages'
+description: 'Check which phone numbers are on WhatsApp.'
+---
+
+## Overview
+
+Tells which phone numbers have WhatsApp, from a connected **WhatsApp** account. Nothing is sent to them.
+
+<Note>This endpoint consumes **1 credit** per call (up to 50 numbers).</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  A connected WhatsApp account.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"check_numbers"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="phone_numbers" type="string[]" required>
+      Up to 50 numbers in international format, e.g. `+33612345678`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+```json Request
+{ "account_id": "your-whatsapp-account-id", "action": "check_numbers", "params": { "phone_numbers": ["+33612345678", "+33600000000"] } }
+```
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "results": [
+      { "phone_number": "+33612345678", "on_whatsapp": true, "conversation_id": "33612345678@s.whatsapp.net" },
+      { "phone_number": "+33600000000", "on_whatsapp": false, "conversation_id": null }
+    ],
+    "total_results": 2
+  },
+  "metadata": { "action": "check_numbers", "account_id": "your-whatsapp-account-id", "credits_consumed": 1, "timestamp": "2026-09-26T15:40:00Z" }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": { "code": "INVALID_PARAMS", "message": "At most 50 phone numbers per call" },
+  "metadata": { "action": "check_numbers", "account_id": "your-whatsapp-account-id", "credits_consumed": 0, "timestamp": "2026-09-26T15:40:00Z" }
+}
+```
+</ResponseExample>
