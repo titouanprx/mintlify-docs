@@ -8,6 +8,8 @@ description: 'Retrieve the profile information of the authenticated account.'
 
 Returns the full profile data for the account associated with the provided `account_id`. No additional parameters are needed beyond the required `account_id` and `action`.
 
+For a **WhatsApp** account, returns the linked number's profile instead: see the `200 (WhatsApp)` example.
+
 <Note>This endpoint consumes **1 credit** per request.</Note>
 
 ## Request
@@ -56,6 +58,13 @@ Returns the full profile data for the account associated with the provided `acco
     <ResponseField name="is_premium" type="boolean">`true` if the account has a Premium subscription.</ResponseField>
     <ResponseField name="profile_views" type="integer">Profile views in the last 90 days (Premium analytics; `0` when not exposed).</ResponseField>
     <ResponseField name="post_impressions" type="integer">Post impressions in the last 7 days (Premium analytics; `0` when not exposed).</ResponseField>
+  </Expandable>
+  <Expandable title="data properties (WhatsApp)">
+    <ResponseField name="phone_number" type="string">Linked number, digits only.</ResponseField>
+    <ResponseField name="name" type="string">WhatsApp display name.</ResponseField>
+    <ResponseField name="profile_picture_url" type="string | null">`null` when hidden by the owner's privacy settings.</ResponseField>
+    <ResponseField name="about" type="string | null">"About" text. `null` when hidden.</ResponseField>
+    <ResponseField name="is_business" type="boolean">`true` for a WhatsApp Business number; `business` then holds `category`, `description`, `email`, `website`, `address`.</ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -123,6 +132,32 @@ Returns the full profile data for the account associated with the provided `acco
     "account_id": "your-account-id",
     "credits_consumed": 1,
     "timestamp": "2026-04-26T10:35:00Z"
+  }
+}
+```
+
+```json 200 (WhatsApp)
+{
+  "success": true,
+  "data": {
+    "platform": "whatsapp",
+    "phone_number": "33612345678",
+    "jid": "33612345678@s.whatsapp.net",
+    "name": "Jane Doe",
+    "profile_url": "https://wa.me/33612345678",
+    "profile_picture_url": "https://pps.whatsapp.net/v/t61/.../profile.jpg",
+    "about": "Available",
+    "about_set_at": "2025-11-14T12:18:49.000Z",
+    "is_business": false,
+    "business": null,
+    "country": "FR",
+    "connected_at": "2026-09-26T14:25:03Z"
+  },
+  "metadata": {
+    "action": "get_me",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-09-27T10:35:00Z"
   }
 }
 ```
