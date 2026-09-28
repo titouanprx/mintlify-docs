@@ -35,6 +35,15 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
     <ParamField body="offset" type="integer" default={0}>
       Zero-indexed offset into the candidates list. Defaults to `0`. Use `pagination.next_offset` from a previous response to fetch the next page.
     </ParamField>
+    <ParamField body="ratings" type="string" default="GOOD_FIT,MAYBE,UNRATED,NOT_A_FIT">
+      Ratings to include, comma-separated. Defaults to all ratings.
+    </ParamField>
+    <ParamField body="sortType" type="string" default="RELEVANCE">
+      `RELEVANCE` or `APPLIED_DATE`.
+    </ParamField>
+    <ParamField body="sortOrder" type="string" default="DESCENDING">
+      `DESCENDING` or `ASCENDING`.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -51,7 +60,9 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
       List of candidates.
       <Expandable title="candidate properties">
         <ResponseField name="application_id" type="string">Unique application ID — use it with `get_cv`.</ResponseField>
-        <ResponseField name="rating" type="string">Recruiter rating: `"UNRATED"`, `"GOOD"`, `"MAYBE"`, `"NOT_A_FIT"`.</ResponseField>
+        <ResponseField name="rating" type="string">Recruiter rating: `"UNRATED"`, `"GOOD_FIT"`, `"MAYBE"`, `"NOT_A_FIT"`.</ResponseField>
+        <ResponseField name="is_rejected" type="boolean">`true` when the candidate is in the Rejected stage. Keep `false` to get the candidates in review.</ResponseField>
+        <ResponseField name="rejected_at" type="string">Rejection date (`YYYY-MM-DD HH:MM:SS`), `null` when not rejected.</ResponseField>
         <ResponseField name="is_top_choice" type="boolean">`true` when the candidate marked the job as a top choice.</ResponseField>
         <ResponseField name="top_choice_message" type="string">Optional message left by the candidate.</ResponseField>
         <ResponseField name="first_name" type="string">First name.</ResponseField>
@@ -99,6 +110,8 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
       {
         "application_id": "26905743894",
         "rating": "UNRATED",
+        "is_rejected": false,
+        "rejected_at": null,
         "is_top_choice": false,
         "top_choice_message": "",
         "first_name": "Jane",
