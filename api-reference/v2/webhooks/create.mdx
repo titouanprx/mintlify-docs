@@ -34,7 +34,7 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 </ParamField>
 
 <ParamField body="events" type="array" default='["all"]'>
-  List of event types to listen for. Defaults to `["all"]` which receives every event.
+  List of event types to listen for. Defaults to `["all"]` which receives every event. Applies to **custom mode** only: hosted webhooks always receive every event type.
 
   Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `all`. For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
 </ParamField>

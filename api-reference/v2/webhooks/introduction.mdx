@@ -91,7 +91,7 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 | `all` | — | Subscribe to all event types |
 
 <Note>
-  By default, webhooks listen to **all** event types. You can filter specific events when creating the webhook by passing an `events` array.
+  By default, webhooks listen to **all** event types. In **custom mode**, you can filter specific events when creating the webhook by passing an `events` array. **Hosted** webhooks (SSE stream and `GET /events`) always receive every event type — only the `message_type` direction filter applies — so filter on `event.type` on your side.
 </Note>
 
 <Warning>
