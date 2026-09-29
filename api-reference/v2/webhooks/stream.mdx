@@ -44,6 +44,6 @@ data: {"account_id": "69c127c3...", "event": {"type": "message", ...}, "timestam
 
 ### Notes
 - The stream automatically reconnects if the connection drops (browsers handle this natively with `EventSource`)
-- You must call `POST /v2/webhooks/{webhook_id}/start` before the stream will emit events
+- Monitoring starts when the webhook is created. If you stopped it with `/stop`, call `POST /v2/webhooks/{webhook_id}/start` to resume
 - Multiple clients can connect to the same stream simultaneously
 - The stream does **not** consume additional credits beyond the monitoring cost (10 credits/day)

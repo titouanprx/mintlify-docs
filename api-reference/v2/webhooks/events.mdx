@@ -139,7 +139,7 @@ setInterval(async () => {
 ```
 
 ### Notes
-- Events are stored for **24 hours** (TTL) then automatically deleted
+- Events are stored for **30 days** (TTL) then automatically deleted
 - Polling does **not** consume additional credits beyond the monitoring cost
 - Use the `since` parameter to avoid re-processing events
 - For real-time delivery, prefer the [SSE Stream](/api-reference/v2/webhooks/stream) endpoint

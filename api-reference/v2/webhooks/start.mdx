@@ -1,10 +1,10 @@
 ---
 title: 'Start Monitoring'
 api: 'POST /v2/webhooks/{webhook_id}/start'
-description: 'Start real-time monitoring for a webhook'
+description: 'Resume real-time monitoring for a stopped webhook'
 ---
 
-Begin real-time monitoring for a webhook's associated account. Events will be sent to the webhook URL as they occur.
+Resume real-time monitoring for a webhook stopped with [`/stop`](/api-reference/v2/webhooks/stop). Not needed after [creating a webhook](/api-reference/v2/webhooks/create): monitoring starts automatically. Calling it on a webhook that is already running is harmless.
 
 <Note>
   Monitoring consumes **10 credits per day** per active account (1 credit every 144 minutes). Credit consumption begins as soon as monitoring starts.

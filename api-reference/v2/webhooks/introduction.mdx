@@ -58,10 +58,7 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
         Use `POST /v2/login` to connect an account and get an `account_id`.
       </Step>
       <Step title="Create a hosted webhook">
-        Call `POST /v2/webhooks` **without** a `url`. You'll receive a `webhook_id`, `stream_url`, and `events_url`.
-      </Step>
-      <Step title="Start monitoring">
-        Call `POST /v2/webhooks/{webhook_id}/start` to begin real-time monitoring.
+        Call `POST /v2/webhooks` **without** a `url`. You'll receive a `webhook_id`, `stream_url`, and `events_url`. Monitoring starts automatically.
       </Step>
       <Step title="Receive events">
         Connect to the SSE stream or poll the events endpoint.
@@ -74,10 +71,7 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
         Use `POST /v2/login` to connect an account and get an `account_id`.
       </Step>
       <Step title="Create a webhook with URL">
-        Call `POST /v2/webhooks` with your server's `url`.
-      </Step>
-      <Step title="Start monitoring">
-        Call `POST /v2/webhooks/{webhook_id}/start` to begin real-time monitoring.
+        Call `POST /v2/webhooks` with your server's `url`. Monitoring starts automatically.
       </Step>
       <Step title="Receive events">
         Events are sent as `POST` requests to your URL in real time.

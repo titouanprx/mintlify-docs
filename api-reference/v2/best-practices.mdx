@@ -31,7 +31,9 @@ These principles apply to **all providers and all routes**:
 | **Free LinkedIn** | ~5 invitations/month (with note) | ~150/week (without note) | Up to 200 characters |
 
 <Info>
-  When you hit LinkedIn's invitation limit, you'll receive a `422 / cannot_resend_yet` error. We don't enforce any limits on our side — you'll hit the exact same limit as in the LinkedIn UI. You can verify by trying the same action directly in the LinkedIn interface.
+  When you hit LinkedIn's invitation limit, you'll receive a `429 / RATE_LIMITED` error — back off and retry later. We don't enforce any limits on our side — you'll hit the exact same limit as in the LinkedIn UI. You can verify by trying the same action directly in the LinkedIn interface.
+
+  A `422 / CHANNEL_ERROR` mentioning `CANT_RESEND_YET` is not a quota: after withdrawing an invitation, LinkedIn only lets you invite the same member again about 3 weeks later.
 </Info>
 
 **Recommendations:**
