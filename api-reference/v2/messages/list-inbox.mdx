@@ -8,7 +8,7 @@ description: 'Retrieve a list of conversations from the inbox.'
 
 Returns a paginated list of conversations from the inbox. Filter by category and paginate with the `next_cursor` value.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **25 conversations per internal request**, so larger `total_results` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **25 conversations per internal request**, so larger `total_results` values trigger multiple upstream calls automatically. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ## Request
 

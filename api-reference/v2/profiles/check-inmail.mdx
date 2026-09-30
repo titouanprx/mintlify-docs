@@ -11,7 +11,7 @@ An **Open Profile** member can be InMailed without spending an InMail credit, wh
 
 Uses the account's Sales Nav seat — see [Connect Account](/api-reference/v2/accounts/login) to activate it (it also auto-connects on first use).
 
-<Note>This endpoint consumes **1 credit per 10 profiles** checked. Requires a Sales Nav seat on the account.</Note>
+<Note>This endpoint consumes **1 credit per 10 profiles** checked. Requires a Sales Nav seat on the account. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 <Warning>
 LinkedIn hides the Open Profile badge from some seats (typically a seat on its monthly InMail limit): every member then looks "not open" from that seat. The API detects this by checking known Open Profiles on the same seat. When the seat is blind, `open_profile_badge_visible` is `false` and a `warning` is included: `open_profile` and `inmail_free` keep LinkedIn's raw value (`false`) but must not be trusted for that call. Check these profiles again from another seat, or use [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat) to know the seat's state before batching.

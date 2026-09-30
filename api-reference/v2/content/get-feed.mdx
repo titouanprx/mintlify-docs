@@ -8,7 +8,7 @@ description: 'Retrieve the home feed of the authenticated account.'
 
 Returns the home feed posts for the authenticated account. Pagination is **cursor-based** because the feed is a dynamic, time-ordered stream — pass the `next_cursor` returned by a previous call to fetch older posts.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **10 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **10 posts per internal request**, so larger `count` values trigger multiple upstream calls automatically. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ## Request
 

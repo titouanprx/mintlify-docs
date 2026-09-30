@@ -8,7 +8,7 @@ description: 'Retrieve a paginated list of connections.'
 
 Returns a paginated list of the account's connections. Pagination is **offset-based** (the platform provides a stable, addressable list — no opaque cursor needed). Set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 50 results** returned. The platform returns up to **100 connections per internal request**, so requesting `count: 250` triggers ~3 upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 50 results** returned. The platform returns up to **100 connections per internal request**, so requesting `count: 250` triggers ~3 upstream calls automatically. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ### Is one profile a connection?
 

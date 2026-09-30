@@ -8,7 +8,7 @@ description: 'Retrieve reactions on a specific post.'
 
 Returns the users who reacted to a specific post. Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **10 reactions per internal request**, so larger `count` values trigger multiple upstream calls automatically.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **10 reactions per internal request**, so larger `count` values trigger multiple upstream calls automatically. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ## Request
 

@@ -10,7 +10,7 @@ Returns the raw file for an attachment received in a message — on **LinkedIn**
 
 For LinkedIn, every attachment in a webhook payload already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). For email, use the `attachments[]` from [Get Conversation](/api-reference/v2/messages/get-conversation). You still send your `x-api-key` header.
 
-<Note>This endpoint costs **1 credit** per successful download. Nothing is stored on our side.</Note>
+<Note>This endpoint costs **1 credit** per successful download. Nothing is stored on our side. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ## Request
 

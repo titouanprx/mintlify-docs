@@ -8,7 +8,7 @@ description: 'Retrieve the posts published by a user, newest first.'
 
 Fetches the posts authored by a specified user (their **Activity › Posts** tab). Results are returned in reverse-chronological order and only include the user's own posts — reactions, comments and reshares are excluded unless `include_reshares` is set. Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch the next page.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 <Tip>To search posts by keyword or across several authors, use [`POST /v2/content` → `search`](/api-reference/v2/content/search) instead.</Tip>
 

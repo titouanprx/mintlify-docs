@@ -8,7 +8,7 @@ description: 'Retrieve messages from a specific conversation.'
 
 Returns messages from a specific conversation, ordered from most recent to oldest. Identify the conversation by `conversation_id` or by passing a `profile_url` (the conversation with that user is resolved automatically). Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch older messages.
 
-<Note>This endpoint consumes **1 credit per 10 messages** returned.</Note>
+<Note>This endpoint consumes **1 credit per 10 messages** returned. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 <Note>For an **email** mailbox, pass the `conversation_id` from [List Inbox](/api-reference/v2/messages/list-inbox#email-inbox) to fetch the whole thread. The response keeps the same shape (`messages[]`, `total_message_count`, `next_cursor`), each email mapped to a message — `sender_info` carries `{ name, email, is_me }`, and each message adds `id` (provider message id), `subject`, `message_id`, and `has_attachments` / `attachments[]` (`{ filename, mime_type, size, attachment_id, message_id }`, downloadable via the [attachment endpoint](/api-reference/v2/messages/manage-emails#download-attachment)). **Gmail** and **Outlook** are supported; generic IMAP falls back to the inbox listing.</Note>
 

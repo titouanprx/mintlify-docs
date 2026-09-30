@@ -8,7 +8,7 @@ description: 'Retrieve the list of people who recently viewed your profile.'
 
 Returns the list of users who recently viewed the authenticated account's profile (Premium "Who Viewed My Profile" data). Pagination is **offset-based** — set `count` for the page size and `offset` to skip ahead.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. Some viewers can be **blurred** (the platform anonymizes non-Premium-tier visitors when out of quota); they appear with `is_blurred: true` and lack `profile_url`.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. Some viewers can be **blurred** (the platform anonymizes non-Premium-tier visitors when out of quota); they appear with `is_blurred: true` and lack `profile_url`. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ## Request
 

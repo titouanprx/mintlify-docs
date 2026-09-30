@@ -8,7 +8,7 @@ description: 'Retrieve the reactions (likes, celebrates, etc.) made by a user.'
 
 Fetches the list of reactions made by a specified user on posts and comments. Pagination is **cursor-based** — pass the `next_cursor` returned by a previous call to fetch the next page.
 
-<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **50 reactions per internal request**, so requesting `count: 100` triggers only 2 upstream calls.</Note>
+<Note>This endpoint consumes **1 credit per 10 results** returned. The platform returns up to **50 reactions per internal request**, so requesting `count: 100` triggers only 2 upstream calls. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 ## Request
 

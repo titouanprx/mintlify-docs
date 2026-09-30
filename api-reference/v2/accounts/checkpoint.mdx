@@ -7,7 +7,7 @@ description: 'Submit a verification code to complete account connection'
 Complete 2FA verification for an account that returned `checkpoint_required` during login. Depending on the `challenge_type` used at login, either submit a verification code or simply confirm the app challenge.
 
 <Note>
-  This endpoint costs **1 credit** per request.
+  This endpoint costs **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.
 </Note>
 
 <Note>Also completes an **email** OAuth connection (Gmail / Microsoft): after the user consents, submit the `code` (and `state`) returned to your `redirect_uri` together with the `account_id`. See [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox).</Note>
