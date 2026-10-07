@@ -304,6 +304,12 @@ Unlike Sales Nav, a Recruiter seat is a **second LinkedIn session**: it needs a 
 - No Recruiter licence on the account → `CHANNEL_ERROR`
 - Free
 
+What the seat's `account_id` runs:
+
+- **Recruiter actions**: [Search People (Recruiter)](/api-reference/v2/profiles/search-people-recruiter), [Get Profile](/api-reference/v2/profiles/get-profile#recruiter), [Check InMail](/api-reference/v2/profiles/check-inmail), [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat), [Projects](/api-reference/v2/recruiter/projects), [Typeahead](/api-reference/v2/profiles/typeahead) (`recruiter` category), [Download Attachment](/api-reference/v2/messages/download-attachment)
+- **Messaging** (send, list_inbox, get_conversation, inbox_summary): always the Recruiter mailbox, `recruiter: true` is implied
+- **Anything else** (own profile, connections, invitations, feed, posts, classic or Sales Nav search, job posts…) → `INVALID_ACTION` (400), no credit, nothing sent to LinkedIn. The message names the LinkedIn account to use instead. See [Error Codes](/api-reference/v2/error-codes#invalid_action-400).
+
 ```json Request
 { "account_id": "69c127c37cae0494dd827286", "recruiter": true, "email": "you@company.com", "password": "••••••" }
 ```

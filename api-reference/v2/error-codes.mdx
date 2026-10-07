@@ -31,7 +31,7 @@ All V2 API error responses follow a standardized format:
 | `INVALID_API_KEY` | 403 Forbidden | The provided API key is invalid, expired, or missing from the `x-api-key` header. |
 | `INVALID_ACCOUNT` | 404 Not Found | The specified `account_id` does not exist or does not belong to your API key. |
 | `ACCOUNT_INACTIVE` | 403 Forbidden | The account exists but is currently inactive or suspended. Reactivate the account before making requests. |
-| `INVALID_ACTION` | 400 Bad Request | The requested `action` is not supported for this category endpoint. Check the available actions in the documentation. |
+| `INVALID_ACTION` | 400 Bad Request | The requested `action` is not supported for this category endpoint, or not on this account (a Recruiter seat only runs Recruiter actions). Check the available actions in the documentation. |
 | `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid — this also covers a target that no longer exists on LinkedIn, such as a deleted post. Check the `message` field for details. |
 | `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
 | `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
@@ -123,6 +123,23 @@ Returned when the `action` field contains an unsupported action for the category
 ```
 
 **How to fix:** Refer to the documentation for the category you are calling to see available actions.
+
+It is also returned when a non-Recruiter action is called with a **Recruiter seat's** `account_id`. The seat holds the Recruiter session only, so it can't run classic or Sales Nav actions (profile, connections, feed, invitations, search…). Nothing is sent to LinkedIn and no credit is charged. Call the action with the LinkedIn account named in the message instead (the seat's `parent_account_id`):
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACTION",
+    "message": "This account_id is a LinkedIn Recruiter seat: it only runs Recruiter actions, and network/list_connections is not one. Call it with its LinkedIn account (account_id 69c127c37cae0494dd827286)."
+  },
+  "metadata": {
+    "action": "list_connections",
+    "credits_consumed": 0,
+    "timestamp": "2026-10-07T12:00:00Z"
+  }
+}
+```
 
 ### INVALID_PARAMS (400)
 
