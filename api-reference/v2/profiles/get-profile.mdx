@@ -198,3 +198,16 @@ With `recruiter: true` (or called on a Recruiter seat account), pass the `profil
 ```json
 { "account_id": "your-seat-account-id", "action": "get", "params": { "recruiter": true, "profile_urn": "urn:li:ts_profile:AEMAA…" } }
 ```
+
+The Recruiter lookup only knows `profile_urn`s (the bare `AEMAA…` id works too). A public identifier, a profile URL or a classic `ACoAA…` URN is refused with `INVALID_PARAMS` (400), no credit, nothing sent to LinkedIn. To read a profile by its public identifier, call this action with the LinkedIn account (the seat's `parent_account_id`) instead.
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "In Recruiter mode (a Recruiter seat, or recruiter:true), profiles/get takes a candidate's profile_urn (urn:li:ts_profile:…) from profiles/search_people_recruiter, not a public identifier or profile URL. To read a profile by its public identifier or URL, call profiles/get with the LinkedIn account (account_id 69c127c37cae0494dd827286)."
+  },
+  "metadata": { "action": "get", "credits_consumed": 0, "timestamp": "2026-10-07T12:00:00Z" }
+}
+```
