@@ -6,9 +6,9 @@ description: 'Download the bytes of a message attachment.'
 
 ## Overview
 
-Returns the raw file for an attachment received in a message — on **LinkedIn**, **email** (Gmail / Outlook) and **WhatsApp** accounts. LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves it on demand; for email the bytes are fetched over the mailbox API.
+Returns the raw file for an attachment received in a message — on **LinkedIn** (classic messaging and the Recruiter mailbox), **email** (Gmail / Outlook) and **WhatsApp** accounts. LinkedIn's own media URL requires the account session and its signature expires, so this endpoint re-resolves it on demand; for email the bytes are fetched over the mailbox API.
 
-For LinkedIn, every attachment in a webhook payload already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). For email, use the `attachments[]` from [Get Conversation](/api-reference/v2/messages/get-conversation). You still send your `x-api-key` header.
+For LinkedIn, every attachment in a webhook payload (and in a Recruiter [Get Conversation](/api-reference/v2/messages/get-conversation)) already carries a ready-to-call `download_url` — see [Webhooks Introduction](/api-reference/v2/webhooks/introduction). For email, use the `attachments[]` from [Get Conversation](/api-reference/v2/messages/get-conversation). You still send your `x-api-key` header.
 
 <Note>This endpoint costs **1 credit** per successful download. Nothing is stored on our side. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
@@ -23,15 +23,16 @@ For LinkedIn, every attachment in a webhook payload already carries a ready-to-c
 </ParamField>
 
 <ParamField query="conversation_id" type="string">
-  **(LinkedIn)** The conversation URN, from `event.metadata.conversation_urn`.
+  **(LinkedIn, classic messaging)** The conversation URN, from `event.metadata.conversation_urn`.
 </ParamField>
 
 <ParamField query="asset_urn" type="string">
-  **(LinkedIn)** The attachment identifier, from `event.attachments[].asset_urn`.
+  **(LinkedIn)** The attachment identifier, from `attachments[].asset_urn`.
 </ParamField>
 
 <ParamField query="message_id" type="string">
   **(Email + WhatsApp)** The id of the message carrying the attachment (`attachments[].message_id`).
+  **(LinkedIn Recruiter)** The message URN (`urn:li:ts_msg_message:…`): `event.metadata.entity_urn` in a webhook, `messages[].entity_urn` in Get Conversation. A Recruiter file is signed per message, so it takes `message_id` instead of `conversation_id`, with `account_id` set to the Recruiter seat.
 </ParamField>
 
 <ParamField query="attachment_id" type="string">
@@ -39,7 +40,7 @@ For LinkedIn, every attachment in a webhook payload already carries a ready-to-c
 </ParamField>
 
 <ParamField query="filename" type="string">
-  **(Email)** Optional filename for the download.
+  **(Email + LinkedIn Recruiter)** Optional filename for the download.
 </ParamField>
 
 ## Response
@@ -52,7 +53,7 @@ On failure, the standard V2 error envelope:
 |---|---|
 | `INSUFFICIENT_CREDITS` | Not enough credits. |
 | `ACCOUNT_INACTIVE` | The account is disconnected — re-authenticate it. |
-| `INVALID_PARAMS` | Attachment not found: the message was deleted, or `conversation_id` / `asset_urn` is wrong. |
+| `INVALID_PARAMS` | Attachment not found: the message was deleted, or `conversation_id` / `message_id` / `asset_urn` is wrong. |
 
 <RequestExample>
 
