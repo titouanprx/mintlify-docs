@@ -285,8 +285,17 @@ The seat is attached to the account and renewed automatically when it expires. A
 
 Unlike Sales Nav, a Recruiter seat is a **second LinkedIn session**: it needs a real login and gets its **own `account_id`**, distinct from the LinkedIn account's. Pass that seat id to every Recruiter action.
 
+| | Sales Nav seat | Recruiter seat |
+|---|---|---|
+| Session | The LinkedIn account's own session | A separate session, from its own login |
+| `account_id` | The LinkedIn account's | Its own (`kind: "recruiter_seat"`, `parent_account_id` = the LinkedIn account) |
+| Actions | Called with the LinkedIn account's `account_id` | Called with the seat's `account_id` |
+| Webhook | Automatic on the LinkedIn account's webhook (`inbox: "sales_navigator"`) | Create one on the seat's `account_id` (`inbox: "recruiter"`) |
+| Expiry | Renewed automatically | Reconnect with this endpoint (`recruiter: true`) |
+| IP | The account's | The LinkedIn account's IP (and its [custom proxy](#custom-proxy) if set): nothing else is shared |
+
 1. Connect the LinkedIn account as usual.
-2. Call this endpoint again with its `account_id`, `recruiter: true`, `email` and `password`.
+2. Call this endpoint again with the **LinkedIn account's** `account_id`, `recruiter: true`, `email` and `password`. The response returns the seat's new `account_id`.
 3. If `checkpoint_required`, answer it with [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint).
 
 - The seat is never billed as an extra account
