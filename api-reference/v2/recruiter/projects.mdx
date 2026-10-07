@@ -1,0 +1,103 @@
+---
+title: 'Projects'
+sidebarTitle: 'Projects'
+api: 'POST /v2/recruiter'
+description: 'Hiring projects of a LinkedIn Recruiter (Lite) seat: pipeline, stages and notes.'
+---
+
+## Overview
+
+Manage the seat's **hiring projects** — the Recruiter equivalent of a lead list — and the candidates inside them. One endpoint, the `action` picks the operation.
+
+Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/accounts/login#recruiter-seat). Pass the **seat's `account_id`**. Candidates come from [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter).
+
+<Note>Each action consumes **1 credit**, `list_project_candidates` **1 credit per 10 results**. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The Recruiter seat's account id.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  One of the actions below.
+</ParamField>
+
+<ParamField body="params" type="object">
+  Depends on the action — see each one below.
+</ParamField>
+
+## Actions
+
+| Action | Params | Does |
+|---|---|---|
+| `list_projects` | `count`, `offset`, `state` (`ACTIVE` default, `CLOSED`, `DRAFT`) | The seat's projects, each with its `hiring_states` (stages) and `candidate_counts` per stage. |
+| `create_project` | `name`, `description`, `private` (default `true`) | Creates a project. Returns its `project_urn`. |
+| `add_to_project` | `project_urn`, `candidate_urn` | Files a candidate into a project. |
+| `list_project_candidates` | `project_urn`, `count`, `offset`, `states` | The pipeline: everyone in the project, in the search result shape, each with their `hiring_state`. `states` filters on stages. |
+| `get_project_candidate` | `project_urn`, `candidate_urn` | Where one candidate stands: stage, how they were sourced, when they were added. |
+| `move_candidate` | `project_urn`, `candidate_urn`, `state` | Moves a candidate to another stage. |
+| `add_note` | `candidate_urn`, `text` | Leaves a note on a candidate, visible to the whole contract. |
+| `get_candidate_notes` | `profile_urn` | The notes and tags held on a candidate. |
+| `recommended_candidates` | `project_urn`, `count`, `offset` | LinkedIn's recommended matches for the project. |
+
+- `candidate_urn` is the candidate's `hire_identity_urn` from the search; `profile_urn` is their `profile_urn`.
+- `project_urn` is the urn from `list_projects` / `create_project` (a `project_id` works too).
+- `state` takes the stage name as the project shows it (`"contacted"`, `"uncontacted"`), its status type (`CONTACTED`…) or its urn from `hiring_states`. The stage shown as "uncontacted" has the status type `SHORTLISTED`.
+
+<ResponseExample>
+```json list_projects
+{
+  "success": true,
+  "data": {
+    "total_results": 1,
+    "offset": 0,
+    "projects": [
+      {
+        "project_id": "2159702274",
+        "project_urn": "urn:li:ts_hiring_project:(urn:li:ts_contract:123,2159702274)",
+        "name": "Growth Marketer — Paris",
+        "state": "ACTIVE",
+        "candidate_counts": { "uncontacted": 2, "contacted": 1, "replied": 0 },
+        "hiring_states": [
+          { "name": "contacted", "status_type": "CONTACTED", "urn": "urn:li:ts_hiring_state:…" }
+        ]
+      }
+    ]
+  },
+  "metadata": { "action": "list_projects", "account_id": "your-seat-account-id", "credits_consumed": 1, "timestamp": "2026-10-07T12:00:00Z" }
+}
+```
+
+```json move_candidate
+{
+  "success": true,
+  "data": {
+    "status": "success",
+    "message": "Candidate moved",
+    "project_urn": "urn:li:ts_hiring_project:(urn:li:ts_contract:123,2159702274)",
+    "candidate_urn": "urn:li:ts_hire_identity:1670586754",
+    "hiring_state_urn": "urn:li:ts_hiring_state:…"
+  },
+  "metadata": { "action": "move_candidate", "account_id": "your-seat-account-id", "credits_consumed": 1, "timestamp": "2026-10-07T12:00:00Z" }
+}
+```
+</ResponseExample>
+
+## Example
+
+```json
+{
+  "account_id": "your-seat-account-id",
+  "action": "move_candidate",
+  "params": {
+    "project_urn": "urn:li:ts_hiring_project:(urn:li:ts_contract:123,2159702274)",
+    "candidate_urn": "urn:li:ts_hire_identity:1670586754",
+    "state": "contacted"
+  }
+}
+```

@@ -172,7 +172,7 @@ Triggered in real-time when a new message is received via the platform's realtim
 
 | Field | Type | Description |
 |---|---|---|
-| `event.inbox` | `string` | Which inbox the message came from: `classic` for LinkedIn messaging, `sales_navigator` for a Sales Navigator InMail thread. See [Sales Navigator inbox](#sales-navigator-inbox). |
+| `event.inbox` | `string` | Which inbox the message came from: `classic` for LinkedIn messaging, `sales_navigator` for a Sales Navigator InMail thread, `recruiter` for a Recruiter InMail. See [Sales Navigator inbox](#sales-navigator-inbox) and [Recruiter inbox](#recruiter-inbox). |
 | `event.message_text` | `string` | Plain text content of the message |
 | `event.sender.name` | `string` | Display name of the sender |
 | `event.sender.profile_url` | `string` | Profile URL of the sender (ID-based, not vanity) |
@@ -341,6 +341,23 @@ The realtime stream only gives the sender's Sales Navigator id, which is meaning
 <Note>
   `metadata.conversation_urn` is a `fs_salesMessagingThread` URN, not a classic `msg_conversation` one. Pass its thread id to [List Inbox](/api-reference/v2/messages/list-inbox) or [Get Conversation](/api-reference/v2/messages/get-conversation) with `sales_nav: true` to read the thread, and reply with [Send Message](/api-reference/v2/messages/send) using `inmail: true`.
 </Note>
+
+### Recruiter inbox
+
+Recruiter InMails arrive with `event.inbox: "recruiter"`. Create the webhook on the **Recruiter seat's `account_id`** (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)): its stream is separate from the LinkedIn account's.
+
+On top of the usual fields, a Recruiter event carries:
+
+| Field | Description |
+|---|---|
+| `event.subject` | InMail subject |
+| `event.conversation_id` | Thread id — pass it to [Get Conversation](/api-reference/v2/messages/get-conversation#recruiter-conversations) or reply with [Send Message](/api-reference/v2/messages/send#recruiter-inmail) |
+| `event.reply_status` | LinkedIn's verdict on the InMail, e.g. `AWAITING_REPLY`, `ACCEPTED`, `DECLINED` |
+| `event.project_urn` | The [project](/api-reference/v2/recruiter/projects) the InMail was sent from, when any |
+| `event.folders` | Mailbox folders the thread is in |
+| `event.sender.urn_raw` | The candidate's `urn:li:ts_profile:…` |
+
+`event.sender.is_self_sent` is `true` on the seat's own sends.
 
 ### Accepted Invitation
 

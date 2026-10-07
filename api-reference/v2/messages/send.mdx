@@ -45,6 +45,9 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
     <ParamField body="recipient_urn" type="string">
       **(LinkedIn InMail)** The lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail. Use this **or** `profile_url` + `inmail: true`.
     </ParamField>
+    <ParamField body="recruiter" type="boolean" default={false}>
+      **(LinkedIn Recruiter)** Send from the account's **Recruiter seat** (pass the seat's `account_id`). See [Recruiter InMail](#recruiter-inmail) below.
+    </ParamField>
     <ParamField body="phone_number" type="string">
       **(WhatsApp)** Recipient number in international format, e.g. `+33612345678`. Required for a WhatsApp account.
     </ParamField>
@@ -291,6 +294,31 @@ Reaches someone you are not connected to, through the account's premium seat. Tr
 ```
 
 A profile that cannot be InMailed is rejected before any credit is spent. Credits come from the seat — see [Balance](/api-reference/v2/messages/balance).
+
+## Recruiter InMail
+
+Set `recruiter: true` and pass the Recruiter seat's `account_id`.
+
+**New InMail** — `recipient_urn` (the candidate's `profile_urn` from [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter)), `subject` and `message_text`. Optional:
+- `project_urn` — the thread is also filed in that [project](/api-reference/v2/recruiter/projects)
+- `signature` — replaces the seat's own signature, appended by default
+
+**Reply** — `conversation_id` (from [List Inbox](/api-reference/v2/messages/list-inbox#recruiter-inbox)) and `message_text`. No subject.
+
+```json
+{
+  "account_id": "your-seat-account-id",
+  "action": "send",
+  "params": {
+    "recruiter": true,
+    "recipient_urn": "urn:li:ts_profile:AEMAA…",
+    "subject": "Growth role in Paris",
+    "message_text": "Hi Jane, ..."
+  }
+}
+```
+
+Returns the `conversation_id` of the thread. Consumes **1 credit** plus **1 Recruiter InMail credit** when the candidate is not free to InMail (see [Check InMail](/api-reference/v2/profiles/check-inmail#recruiter)).
 
 ## Email
 

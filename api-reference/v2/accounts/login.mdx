@@ -59,8 +59,12 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
   Also activate the account's **Sales Nav** seat during login (requires the account to hold a Sales Nav license). No extra credential is needed — the seat is derived from the existing session. See [Sales Nav](#sales-nav) below.
 </ParamField>
 
+<ParamField body="recruiter" type="boolean" default={false}>
+  Connect the account's **LinkedIn Recruiter (Lite)** seat. Needs `account_id` + `email` + `password`. See [Recruiter seat](#recruiter-seat) below.
+</ParamField>
+
 <ParamField body="account_id" type="string">
-  Pass an **existing** account's id together with `sales_nav: true` to activate a Sales Nav seat on an already-connected account (e.g. bought after connecting) — no re-login, no credential, and **no credit**. When set, no other login parameter is required.
+  Pass an **existing** account's id together with `sales_nav: true` to activate a Sales Nav seat on an already-connected account (e.g. bought after connecting) — no re-login, no credential, and **no credit**. When set, no other login parameter is required. With `recruiter: true`, the LinkedIn account the Recruiter seat is opened from.
 </ParamField>
 
 <ParamField body="proxy" type="string | object">
@@ -276,6 +280,39 @@ The seat is attached to the account and renewed automatically when it expires. A
 }
 ```
 </ResponseExample>
+
+### Recruiter seat
+
+Unlike Sales Nav, a Recruiter seat is a **second LinkedIn session**: it needs a real login and gets its **own `account_id`**, distinct from the LinkedIn account's. Pass that seat id to every Recruiter action.
+
+1. Connect the LinkedIn account as usual.
+2. Call this endpoint again with its `account_id`, `recruiter: true`, `email` and `password`.
+3. If `checkpoint_required`, answer it with [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint).
+
+- The seat is never billed as an extra account
+- The seat and its LinkedIn account connect and disconnect independently
+- The seat id is also in [List Accounts](/api-reference/v2/accounts/list-accounts) under `recruiter.account_id`
+- No Recruiter licence on the account → `CHANNEL_ERROR`
+- Free
+
+```json Request
+{ "account_id": "69c127c37cae0494dd827286", "recruiter": true, "email": "you@company.com", "password": "••••••" }
+```
+
+```json Response
+{
+  "success": true,
+  "data": {
+    "account_id": "6ac5faf6490a374925434c46",
+    "parent_account_id": "69c127c37cae0494dd827286",
+    "platform": "linkedin",
+    "kind": "recruiter_seat",
+    "status": "connected",
+    "recruiter": { "connected": true, "account_id": "6ac5faf6490a374925434c46", "contract_id": "…", "seat_id": "…" }
+  },
+  "metadata": { "action": "login", "credits_consumed": 0, "timestamp": "2026-10-07T10:30:00.000000" }
+}
+```
 
 ### Custom proxy
 

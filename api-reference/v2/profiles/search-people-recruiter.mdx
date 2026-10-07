@@ -1,0 +1,185 @@
+---
+title: 'Search People Recruiter'
+sidebarTitle: 'Search People Recruiter'
+api: 'POST /v2/profiles'
+description: 'Search candidates with a LinkedIn Recruiter (Lite) seat.'
+---
+
+## Overview
+
+Run a **Recruiter talent search** and get back candidates in the same shape as [Get Profile](/api-reference/v2/profiles/get-profile), plus what the seat knows about them (notes, messages, projects) and LinkedIn's hiring insights.
+
+Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/accounts/login#recruiter-seat). The seat has its **own `account_id`**: pass that one, not the LinkedIn account's.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Requires a Recruiter seat. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+<Info>
+Within a single filter, multiple values are combined with **OR**. Different filters are combined with **AND**. Ids come from [Typeahead](/api-reference/v2/profiles/typeahead) with `category: "recruiter"`.
+</Info>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The Recruiter seat's account id (`recruiter.account_id` in [List Accounts](/api-reference/v2/accounts/list-accounts)).
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search_people_recruiter"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+
+    {/* --- Free text --- */}
+    <ParamField body="keywords" type="string">
+      Free-text keywords.
+    </ParamField>
+    <ParamField body="job_title" type="string | string[]">
+      Job titles. Pair with `title_scope`: `CURRENT`, `CURRENT_OR_PAST` or `PAST`.
+    </ParamField>
+    <ParamField body="companies" type="string | string[]">
+      Company names. Pair with `company_scope` (same values as `title_scope`).
+    </ParamField>
+    <ParamField body="skills" type="string | string[]">
+      Skills, e.g. `["Python", "SQL"]`.
+    </ParamField>
+    <ParamField body="occupations" type="string[]">
+      Job families, by id (Typeahead `occupation`).
+    </ParamField>
+    <ParamField body="first_name" type="string">First name.</ParamField>
+    <ParamField body="last_name" type="string">Last name.</ParamField>
+    <ParamField body="notes" type="string">Text found in the seat's notes on the candidate.</ParamField>
+
+    {/* --- By id --- */}
+    <ParamField body="locations" type="string[]">
+      Location ids (Typeahead `location`).
+    </ParamField>
+    <ParamField body="postal_codes" type="object[]">
+      Postal codes, passed as the **items returned by Typeahead `zip`** (`{ "id", "name" }`) — LinkedIn needs both. Pair with `distance`, the radius around them (default 25).
+    </ParamField>
+    <ParamField body="current_company" type="string[]">
+      Current company ids (Typeahead `company`). `past_company` works the same.
+    </ParamField>
+    <ParamField body="schools" type="string[]">School ids (Typeahead `school`).</ParamField>
+    <ParamField body="industries" type="string[]">Industry ids (Typeahead `industry`).</ParamField>
+    <ParamField body="groups" type="string[]">Group ids (Typeahead `group`).</ParamField>
+    <ParamField body="projects" type="string[]">Candidates already in these hiring projects (Typeahead `project`).</ParamField>
+
+    {/* --- Names or ids --- */}
+    <ParamField body="seniority_level" type="string[]">
+      `Unpaid`, `Training`, `Entry level`, `Senior`, `Manager`, `Director`, `VP`, `CXO`, `Partner`, `Owner`.
+    </ParamField>
+    <ParamField body="function" type="string[]">
+      Job function, e.g. `["Engineering", "Sales"]`. Full list via Typeahead `function`.
+    </ParamField>
+    <ParamField body="company_size" type="string[]">
+      `Self-employed`, `1-10`, `11-50`, `51-200`, `201-500`, `501-1,000`, `1,001-5,000`, `5,001-10,000`, `10,001+`.
+    </ParamField>
+    <ParamField body="connection_degree" type="string[]">
+      `1st`, `2nd`, `3rd`, `group` (ids `F`, `S`, `O`, `A`).
+    </ParamField>
+    <ParamField body="workplace" type="string[]">`On-site`, `Remote`, `Hybrid`.</ParamField>
+    <ParamField body="profile_language" type="string[]">ISO code or name, e.g. `en`, `French`.</ParamField>
+    <ParamField body="joined_within" type="string[]">
+      Joined LinkedIn recently: `1 day ago`, `2 to 7 days ago`, `8 to 14 days ago`, `15 to 30 days ago`, `1 to 3 months ago`.
+    </ParamField>
+    <ParamField body="activity_types" type="string[]">
+      What the seat already did with them: `Emailed`, `Has notes`, `Tagged`, `In a project`, `Reviewed`, `Has a resume`. Set `exclude_activities: true` to exclude them instead.
+    </ParamField>
+
+    {/* --- Ranges & flags --- */}
+    <ParamField body="years_of_experience" type="object | string">
+      `{ "min": 3, "max": 10 }`, `[3, 10]` or `"3-10"`. `graduation_year` takes the same formats.
+    </ParamField>
+    <ParamField body="veteran" type="boolean">Veterans only.</ParamField>
+    <ParamField body="profile_views" type="boolean">People who viewed your profile (`profile_views_days` sets the window).</ParamField>
+
+    {/* --- Paging --- */}
+    <ParamField body="count" type="integer" default={10}>Number of candidates to return.</ParamField>
+    <ParamField body="offset" type="integer" default={0}>Index of the first candidate to return.</ParamField>
+    <ParamField body="search_request_id" type="string">
+      Returned by the first page — pass it back with the next `offset` to page the same search.
+    </ParamField>
+    <ParamField body="include_raw" type="boolean" default={false}>
+      Also attach LinkedIn's untouched result under `raw`.
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="profiles" type="array">
+      Candidates, in the [Get Profile](/api-reference/v2/profiles/get-profile) shape (`public_id`, `profile_url`, `first_name`, `headline`, `experience`, `education`…), plus:
+      <Expandable title="Recruiter fields">
+        <ResponseField name="profile_urn" type="string">`urn:li:ts_profile:…` — what [Send Message](/api-reference/v2/messages/send#recruiter-inmail) and `get` with `recruiter: true` take.</ResponseField>
+        <ResponseField name="hire_identity_urn" type="string">The candidate's id in [Projects](/api-reference/v2/recruiter/projects).</ResponseField>
+        <ResponseField name="notes_count" type="integer">Notes the seat holds on them. `messages_count` and `projects_count` work the same.</ResponseField>
+        <ResponseField name="can_send_inmail" type="boolean">Whether the seat can InMail them. `inmail_cost` is the InMail credits it costs (0 = free).</ResponseField>
+        <ResponseField name="open_to_opportunities" type="boolean">Open to work, from the member's own job preferences (`job_preferences`).</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of candidates returned.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total matches.</ResponseField>
+    <ResponseField name="offset" type="integer">Echoes the requested `offset`.</ResponseField>
+    <ResponseField name="search_request_id" type="string">Pass it back to page this search.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "total_results": 1,
+    "total_available_results": 4812,
+    "offset": 0,
+    "search_request_id": "a1b2c3…",
+    "profiles": [
+      {
+        "full_name": "Jane Doe",
+        "headline": "Growth Marketing Lead",
+        "location": "Paris, Île-de-France, France",
+        "profile_url": "https://www.linkedin.com/in/janedoe",
+        "profile_urn": "urn:li:ts_profile:AEMAA…",
+        "hire_identity_urn": "urn:li:ts_hire_identity:1670586754",
+        "can_send_inmail": true,
+        "inmail_cost": 1,
+        "notes_count": 0,
+        "projects_count": 1,
+        "open_to_opportunities": true
+      }
+    ]
+  },
+  "metadata": {
+    "action": "search_people_recruiter",
+    "account_id": "your-seat-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-07T12:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Example
+
+```json
+{
+  "account_id": "your-seat-account-id",
+  "action": "search_people_recruiter",
+  "params": {
+    "job_title": "Product Manager",
+    "title_scope": "CURRENT",
+    "locations": ["105015875"],
+    "seniority_level": ["Senior", "Manager"],
+    "years_of_experience": { "min": 3, "max": 10 },
+    "count": 25
+  }
+}
+```

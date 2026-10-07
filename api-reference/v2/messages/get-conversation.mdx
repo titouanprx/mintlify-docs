@@ -49,6 +49,9 @@ Returns messages from a specific conversation, ordered from most recent to oldes
     <ParamField body="sales_nav" type="boolean" default={false}>
       Read a **Sales Nav** thread instead of a classic conversation. See [Sales Nav conversations](#sales-nav-conversations) below.
     </ParamField>
+    <ParamField body="recruiter" type="boolean" default={false}>
+      Read a **Recruiter** thread (pass the Recruiter seat's `account_id`). See [Recruiter conversations](#recruiter-conversations) below.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -281,3 +284,12 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
 }
 ```
 </ResponseExample>
+
+## Recruiter conversations
+
+Set `recruiter: true`, pass the Recruiter seat's `account_id` and the thread's `conversation_id` — from [List Inbox](/api-reference/v2/messages/list-inbox#recruiter-inbox) with `recruiter: true`, or returned when the InMail was sent.
+
+- paging with `count` + `offset` (no cursor)
+- `mark_as_read` works as above
+- each message: `text`, `time`, `message_type`, `state` and `sender` (`name`, `profile_url`, `recipient_urn`, `is_me`)
+- the thread: `conversation_id`, `conversation_urn`, `type`, `participants`, `total_message_count`

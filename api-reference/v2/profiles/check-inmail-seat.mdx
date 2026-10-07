@@ -32,6 +32,9 @@ It also reports whether the seat currently sees the **Open Profile badge** (see 
     <ParamField body="profile" type="string">
       Optional. A lead in the seat's network (profile URL, slug, member id or Sales Nav reference) to probe against. When omitted, the API picks one itself.
     </ParamField>
+    <ParamField body="recruiter" type="boolean" default={false}>
+      Report the account's **Recruiter seat** instead (pass the seat's `account_id`). See [Recruiter](#recruiter) below.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -123,4 +126,17 @@ It also reports whether the seat currently sees the **Open Profile badge** (see 
   "action": "check_inmail_seat",
   "params": {}
 }
+```
+
+## Recruiter
+
+With `recruiter: true` (or called on a Recruiter seat account), it reports the Recruiter seat, with no LinkedIn write:
+
+- `seat_status` (`ok` when usable), `seat_urn`, `can_search`
+- `contract` (name, type), `seat_holder`, `roles`
+- `inmail_credits` and `inmail_credits_refresh_at` (epoch ms)
+- `signature` — appended to Recruiter InMails unless you pass your own
+
+```json
+{ "account_id": "your-seat-account-id", "action": "check_inmail_seat", "params": { "recruiter": true } }
 ```

@@ -95,6 +95,12 @@ Retrieve detailed information about a specific account, including its configurat
         </ResponseField>
       </Expandable>
     </ResponseField>
+    <ResponseField name="recruiter" type="object">
+      LinkedIn accounts only. State of the Recruiter seat — same shape as in [List Accounts](/api-reference/v2/accounts/list-accounts). Its `account_id` is the seat's own id.
+    </ResponseField>
+    <ResponseField name="kind" type="string">
+      `recruiter_seat` when this account is a Recruiter seat, with `parent_account_id` and `billable: false`.
+    </ResponseField>
 
     <ResponseField name="proxy" type="object">
       `{ "mode": "managed" }` or `{ "mode": "custom", "host": "...", "port": 8080 }` — see [Set Custom Proxy](/api-reference/v2/accounts/set-proxy). LinkedIn accounts only.

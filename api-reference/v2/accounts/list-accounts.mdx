@@ -26,6 +26,10 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
   Number of accounts to skip — use with `limit` to paginate (e.g. `offset=50&limit=50` for page 2).
 </ParamField>
 
+<ParamField query="include_seats" type="boolean" default="false">
+  Also list Recruiter seat accounts. They are hidden by default: each one is already reachable through its LinkedIn account's `recruiter.account_id`.
+</ParamField>
+
 ### Response
 
 <ResponseField name="success" type="boolean">
@@ -100,6 +104,14 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
               ISO 8601 timestamp of when the seat was lost. Only when the seat died on its own.
             </ResponseField>
           </Expandable>
+        </ResponseField>
+
+        <ResponseField name="recruiter" type="object">
+          LinkedIn accounts only. State of the account's Recruiter seat — `{ "connected": false }` when there is none. Same fields as `sales_nav`, plus `account_id`: the seat's own id, to pass to every Recruiter action (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)).
+        </ResponseField>
+
+        <ResponseField name="kind" type="string">
+          `recruiter_seat` on a Recruiter seat account. Such an account also carries `parent_account_id` (the LinkedIn account it was opened from) and `billable: false`.
         </ResponseField>
       </Expandable>
     </ResponseField>

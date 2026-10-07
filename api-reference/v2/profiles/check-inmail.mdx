@@ -36,6 +36,9 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
     <ParamField body="profiles" type="string[]" required>
       Up to 100 profile references, in any mix of shapes: profile URL, vanity slug, member id (`ACoAA…`), `urn:li:fsd_profile:…`, Sales Nav lead URL, Sales Nav id (`ACwAA…`) or `urn:li:fs_salesProfile:(…)`. Each result echoes the reference you sent so you can match them back.
     </ParamField>
+    <ParamField body="recruiter" type="boolean" default={false}>
+      Check from the account's **Recruiter seat** instead (pass the seat's `account_id`). See [Recruiter](#recruiter) below.
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -183,3 +186,12 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
   }
 }
 ```
+
+## Recruiter
+
+With `recruiter: true`, `profiles` are the candidates' `profile_urn` (`urn:li:ts_profile:…`) from [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter). The answer is `data.profiles`, one item per candidate:
+
+- `profile_urn`, `name`
+- `can_receive_inmail` — whether the seat can InMail them
+- `inmail_cost` — InMail credits it costs, `inmail_free` when 0
+- `contacted_in_last_24h`

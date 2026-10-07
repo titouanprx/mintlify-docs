@@ -28,14 +28,19 @@ Returns the suggestions LinkedIn shows while typing in a search filter (companie
   The filter to complete.
   - **classic**: `location`, `company`, `current_company`, `past_company`, `school`, `industry`, `service_category`, `title`, `people`
   - **sales_nav**: `company`, `current_company`, `past_company`, `industry`, `school`, `location`, `title`, `function`, `seniority`, `company_type`, `profile_language`, `relationship`, `lead_interactions`, `persona`, `people`, `account_list`, `lead_list`
+  - **recruiter**: `company`, `current_company`, `past_company`, `location`, `zip`, `skill`, `school`, `industry`, `group`, `occupation`, `title`, `project`, `seniority`, `function`, `company_size`, `connection_degree`, `workplace`, `profile_language`, `joined_within`, `activity_type`, `scope`
 </ParamField>
 
 <ParamField body="category" type="string" default="classic">
-  `classic` for LinkedIn search filters, `sales_nav` for Sales Navigator facets (the account must hold a Sales Navigator seat).
+  `classic` for LinkedIn search filters, `sales_nav` for Sales Navigator facets (the account must hold a Sales Navigator seat), `recruiter` for [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter) filters (pass the Recruiter seat's `account_id`).
 </ParamField>
 
 <ParamField body="limit" type="integer" default="10">
-  Maximum number of suggestions. LinkedIn returns at most 10 for `classic` and 100 for `sales_nav`.
+  Maximum number of suggestions. LinkedIn returns at most 10 for `classic`, 100 for `sales_nav` and 25 for `recruiter`.
+</ParamField>
+
+<ParamField body="occupation_id" type="string">
+  `recruiter` with `type: "title"` only: list the titles of that occupation (an `id` from type `occupation`).
 </ParamField>
 
 ### Response
@@ -49,7 +54,7 @@ Returns the suggestions LinkedIn shows while typing in a search filter (companie
       The filter type
     </ResponseField>
     <ResponseField name="category" type="string">
-      `classic` or `sales_nav`
+      `classic`, `sales_nav` or `recruiter`
     </ResponseField>
     <ResponseField name="count" type="integer">
       Number of suggestions returned

@@ -38,6 +38,9 @@ Returns a paginated list of conversations from the inbox. Filter by category and
     <ParamField body="sales_nav" type="boolean" default={false}>
       Read the **Sales Nav** inbox instead of the classic one. See [Sales Nav inbox](#sales-nav-inbox) below.
     </ParamField>
+    <ParamField body="recruiter" type="boolean" default={false}>
+      Read the **Recruiter** mailbox (pass the Recruiter seat's `account_id`). See [Recruiter inbox](#recruiter-inbox) below.
+    </ParamField>
     <ParamField body="unread_only" type="boolean" default={false}>
       **(Email)** Only return unread emails.
     </ParamField>
@@ -231,6 +234,24 @@ InMail threads live in a separate store and never appear in the classic inbox. S
 }
 ```
 </ResponseExample>
+
+## Recruiter inbox
+
+Recruiter InMails live in a third, separate store. Set `recruiter: true` and pass the Recruiter seat's `account_id`. Same envelope, with:
+
+- `folder`: `INBOX` (default), `UNREAD`, `AWAITING_REPLY`, `ACCEPTED`, `ACCEPTED_BUT_NOT_RESPONDED`, `DECLINED`, `ARCHIVED`, `CANCELED`, `SCHEDULED`
+- paging with `count` + `offset` (no cursor)
+- `conversation_id` = the Recruiter thread id, for [Get Conversation](/api-reference/v2/messages/get-conversation#recruiter-conversations) and replies
+- extra: `subject`, `request_state`, `can_reply`, `archived`, `total_message_count`
+- `last_message` is the thread's **opening** message (the only one LinkedIn lists) — read the rest with Get Conversation
+
+### Inbox summary
+
+`action: "inbox_summary"` returns the mailbox counters without listing it: `unread`, `awaiting_reply_unseen` and `recent_messages`. **0.1 credit**.
+
+```json
+{ "account_id": "your-seat-account-id", "action": "inbox_summary", "params": {} }
+```
 
 ## Email inbox
 

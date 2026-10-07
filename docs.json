@@ -81,6 +81,7 @@
                   "api-reference/v2/profiles/visit",
                   "api-reference/v2/profiles/search-people",
                   "api-reference/v2/profiles/search-people-nav",
+                  "api-reference/v2/profiles/search-people-recruiter",
                   "api-reference/v2/profiles/check-inmail",
                   "api-reference/v2/profiles/check-inmail-seat",
                   "api-reference/v2/profiles/typeahead",
@@ -142,7 +143,8 @@
                   "api-reference/v2/recruiter/get-cv",
                   "api-reference/v2/recruiter/create-job",
                   "api-reference/v2/recruiter/close-job",
-                  "api-reference/v2/recruiter/publish-job"
+                  "api-reference/v2/recruiter/publish-job",
+                  "api-reference/v2/recruiter/projects"
                 ]
               },
               {
