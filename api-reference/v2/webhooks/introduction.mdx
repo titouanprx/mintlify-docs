@@ -344,20 +344,68 @@ The realtime stream only gives the sender's Sales Navigator id, which is meaning
 
 ### Recruiter inbox
 
-Recruiter InMails arrive with `event.inbox: "recruiter"`. Create the webhook on the **Recruiter seat's `account_id`** (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)): its stream is separate from the LinkedIn account's.
+Recruiter InMails arrive with `event.inbox: "recruiter"`. Create the webhook on the **Recruiter seat's `account_id`** (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)): its stream is separate from the LinkedIn account's, which never receives Recruiter messages (and the other way round).
 
-On top of the usual fields, a Recruiter event carries:
+Both directions come through: the candidate's replies (`direction: "inbound"`) and the seat's own sends (`direction: "outbound"`, `sender.is_self_sent: true`).
+
+```json
+{
+  "account_id": "your-seat-account-id",
+  "account_name": "your.email@example.com (Recruiter)",
+  "platform": "linkedin",
+  "event": {
+    "type": "message",
+    "inbox": "recruiter",
+    "direction": "inbound",
+    "timestamp": "2026-10-07T14:25:46.592089",
+    "message_text": "Thanks, happy to talk next week.",
+    "message_type": "INMAIL",
+    "subject": "Growth role in Paris",
+    "conversation_id": "2-YzZhYzFjYTUtODMyYS00NDJkLWI2NTMtMmE3MWNlNjU5YzIyXzEwMA==",
+    "project_urn": "urn:li:ts_hiring_project:(urn:li:contract:2064790365,2159702274)",
+    "folders": ["ACCEPTED", "UNREAD", "INBOX"],
+    "sender": {
+      "name": "Douglas Collombat",
+      "profile_url": "",
+      "urn_raw": "urn:li:ts_profile:AEMAAGOTIYIB-DhDANCE28kq7JCRPMqkPJjTeXo",
+      "is_self_sent": false
+    },
+    "conversation": {
+      "participants": [{ "name": "Douglas Collombat", "profile_url": "" }],
+      "is_group_chat": false,
+      "unread_count": 0
+    },
+    "metadata": {
+      "entity_urn": "urn:li:ts_msg_message:2-MTc5MTM3NTk0NjA0N2IzMTYyMS0xMDAmYzZh...",
+      "conversation_urn": "urn:li:ts_msg_conversation:2-YzZhYzFjYTUtODMyYS00NDJkLWI2NTMtMmE3MWNlNjU5YzIyXzEwMA==",
+      "delivered_at": 1791375946047,
+      "read_status": false
+    },
+    "attachments": [],
+    "has_attachments": false
+  },
+  "timestamp": "2026-10-07T12:25:46.593510"
+}
+```
 
 | Field | Description |
 |---|---|
-| `event.subject` | InMail subject |
+| `event.message_type` | Always `INMAIL` |
+| `event.subject` | The thread's subject. Present on the opening InMail and on the candidate's replies; **absent on the seat's own replies** (LinkedIn sends none) |
 | `event.conversation_id` | Thread id — pass it to [Get Conversation](/api-reference/v2/messages/get-conversation#recruiter-conversations) or reply with [Send Message](/api-reference/v2/messages/send#recruiter-inmail) |
-| `event.reply_status` | LinkedIn's verdict on the InMail, e.g. `AWAITING_REPLY`, `ACCEPTED`, `DECLINED` |
-| `event.project_urn` | The [project](/api-reference/v2/recruiter/projects) the InMail was sent from, when any |
-| `event.folders` | Mailbox folders the thread is in |
-| `event.sender.urn_raw` | The candidate's `urn:li:ts_profile:…` |
+| `event.project_urn` | The [project](/api-reference/v2/recruiter/projects) the thread belongs to. Absent for a standalone InMail |
+| `event.folders` | Mailbox folders the thread is in: `INBOX`, `UNREAD`, `AWAITING_REPLY`, `ACCEPTED`, `ACCEPTED_BUT_NOT_RESPONDED`, `DECLINED`, `ARCHIVED`… This is where the InMail's outcome lives: `ACCEPTED` once the candidate answered, `DECLINED` if they refused |
+| `event.reply_status` | Only on the seat's **opening** InMail (`AWAITING_REPLY`). LinkedIn does not send it on later messages — read `folders` instead |
+| `event.sender.urn_raw` | `urn:li:ts_profile:…` for the candidate (pass it as `recipient_urn`), `urn:li:ts_seat:…` for the seat |
+| `event.attachments` | Same shape as above, with `url: null` and no `download_url`: Recruiter files are not downloadable through the API yet |
 
-`event.sender.is_self_sent` is `true` on the seat's own sends.
+<Note>
+  LinkedIn's Recruiter stream carries less than the classic one. Always empty or fixed on a Recruiter event:
+  - `sender.profile_url` — the candidate is only identified by `urn_raw`; resolve them with [Get Profile](/api-reference/v2/profiles/get-profile#recruiter) and `recruiter: true`
+  - `conversation.participants` — the sender only; for both sides, read the thread with [Get Conversation](/api-reference/v2/messages/get-conversation#recruiter-conversations)
+  - `conversation.unread_count` (`0`) and `metadata.read_status` (`false`) — use `folders` (`UNREAD`)
+  - `reply_to` — never present
+</Note>
 
 ### Accepted Invitation
 

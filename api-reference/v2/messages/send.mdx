@@ -303,7 +303,7 @@ Set `recruiter: true` and pass the Recruiter seat's `account_id`.
 - `project_urn` — the thread is also filed in that [project](/api-reference/v2/recruiter/projects)
 - `signature` — replaces the seat's own signature, appended by default
 
-**Reply** — `conversation_id` (from [List Inbox](/api-reference/v2/messages/list-inbox#recruiter-inbox)) and `message_text`. No subject.
+**Reply** — `conversation_id` (from [List Inbox](/api-reference/v2/messages/list-inbox#recruiter-inbox)) and `message_text`. No subject. The candidate is read off the thread; pass `recipient_urn` to save that lookup.
 
 ```json
 {
