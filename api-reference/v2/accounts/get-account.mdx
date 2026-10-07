@@ -147,11 +147,50 @@ Retrieve detailed information about a specific account, including its configurat
       "seat_id": "1545550052",
       "connected_at": "2026-03-20T14:22:00Z"
     },
+    "recruiter": {
+      "connected": true,
+      "account_id": "acc_rec789",
+      "contract_id": "2064790365",
+      "seat_id": "1612889193",
+      "connected_at": "2026-03-21T09:00:00Z"
+    },
     "proxy": { "mode": "managed" }
   },
   "metadata": {
     "action": "get_account",
     "account_id": "acc_abc123",
+    "credits_consumed": 0,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json Recruiter seat account
+{
+  "success": true,
+  "data": {
+    "account_id": "acc_rec789",
+    "platform": "linkedin",
+    "account_name": "john.doe@company.com (Recruiter)",
+    "is_active": true,
+    "status": "connected",
+    "country": "FR",
+    "created_at": "2026-03-21T09:00:00Z",
+    "updated_at": "2026-03-21T09:00:00Z",
+    "kind": "recruiter_seat",
+    "parent_account_id": "acc_abc123",
+    "billable": false,
+    "recruiter": {
+      "connected": true,
+      "account_id": "acc_rec789",
+      "contract_id": "2064790365",
+      "seat_id": "1612889193",
+      "connected_at": "2026-03-21T09:00:00Z"
+    }
+  },
+  "metadata": {
+    "action": "get_account",
+    "account_id": "acc_rec789",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }

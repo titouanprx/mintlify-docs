@@ -113,6 +113,10 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
         <ResponseField name="kind" type="string">
           `recruiter_seat` on a Recruiter seat account. Such an account also carries `parent_account_id` (the LinkedIn account it was opened from) and `billable: false`.
         </ResponseField>
+
+        <ResponseField name="proxy" type="object">
+          `{ "mode": "managed" }` or `{ "mode": "custom", "host": "...", "port": 8080 }` — see [Set Custom Proxy](/api-reference/v2/accounts/set-proxy). LinkedIn accounts only (a Recruiter seat uses its LinkedIn account's).
+        </ResponseField>
       </Expandable>
     </ResponseField>
 
@@ -166,7 +170,15 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
           "contract_id": "2016220713",
           "seat_id": "1545550052",
           "connected_at": "2026-03-20T14:22:00Z"
-        }
+        },
+        "recruiter": {
+          "connected": true,
+          "account_id": "acc_rec789",
+          "contract_id": "2064790365",
+          "seat_id": "1612889193",
+          "connected_at": "2026-03-21T09:00:00Z"
+        },
+        "proxy": { "mode": "managed" }
       },
       {
         "account_id": "acc_def456",
@@ -177,7 +189,9 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
         "country": "US",
         "created_at": "2025-11-01T12:00:00Z",
         "updated_at": "2026-02-10T09:15:00Z",
-        "sales_nav": { "connected": false }
+        "sales_nav": { "connected": false },
+        "recruiter": { "connected": false },
+        "proxy": { "mode": "managed" }
       }
     ],
     "total": 1247,
@@ -200,6 +214,30 @@ Retrieve a paginated list of accounts linked to your API key. Use the returned `
 
 // LinkedIn account disconnected
 "sales_nav": { "connected": false, "reason": "LinkedIn account is disconnected — reconnect it to restore the Sales Nav seat", "contract_id": "2016220713", "seat_id": "1545550052" }
+```
+```json Recruiter seat (include_seats=true)
+// Listed only with include_seats=true. Its id is already in its
+// LinkedIn account's recruiter.account_id (acc_abc123 above).
+{
+  "account_id": "acc_rec789",
+  "platform": "linkedin",
+  "account_name": "john.doe@company.com (Recruiter)",
+  "is_active": true,
+  "status": "connected",
+  "country": "FR",
+  "created_at": "2026-03-21T09:00:00Z",
+  "updated_at": "2026-03-21T09:00:00Z",
+  "kind": "recruiter_seat",
+  "parent_account_id": "acc_abc123",
+  "billable": false,
+  "recruiter": {
+    "connected": true,
+    "account_id": "acc_rec789",
+    "contract_id": "2064790365",
+    "seat_id": "1612889193",
+    "connected_at": "2026-03-21T09:00:00Z"
+  }
+}
 ```
 ```json Error Response
 {
@@ -225,6 +263,15 @@ Whether the account can run [lead searches](/api-reference/v2/profiles/search-pe
 - account disconnects → seat goes with it; reconnecting restores it
 - seat can die alone (expired licence, seat reassigned) → `is_active` stays `true`, `connected` turns `false` with a `reason`
 - never had Sales Nav → just `{ "connected": false }`
+
+### Recruiter seat
+
+A Recruiter seat is **not** derived from the session like Sales Nav: it is a second LinkedIn session with its **own `account_id`** (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)). So it shows up in two places:
+
+- on the LinkedIn account, `recruiter` tells whether it has a seat and gives the seat's `account_id` — pass that id to every Recruiter action
+- the seat itself is an account of its own (`kind: "recruiter_seat"`, `parent_account_id`, `billable: false`, no `sales_nav` / `proxy`), listed only with `include_seats=true`
+
+The seat and its LinkedIn account connect and disconnect independently. No seat → `"recruiter": { "connected": false }`.
 
 ### Notes
 - Use the `account_id` from the response in all V2 action requests
