@@ -54,19 +54,32 @@ The `id` used below is the **provider message id** returned by [List Inbox](/api
 
 ## Create a draft
 
-`action: "create_draft"` saves a draft (not sent). Same body params as [Send](/api-reference/v2/messages/send#email) (`to`, `subject`, `message_text` / `html`, plus attachments via `media_*`).
+`action: "create_draft"` saves a draft (not sent). Same body params as [Send](/api-reference/v2/messages/send#email) (`to`, `subject`, `message_text` / `html`, plus attachments via `media_*`), plus two optional ones:
+
+<ParamField body="params.thread_id" type="string">
+  File the draft inside an existing conversation instead of as a standalone draft: the `conversation_id` returned by `list_inbox` / `get_conversation`. When set, `to` defaults to the sender of the thread's last message and `subject` to `Re: <its subject>`; pass them to override. Gmail and Outlook thread the draft natively; on IMAP the conversation id is the thread's Message-ID and is used as the `In-Reply-To` header.
+</ParamField>
+<ParamField body="params.from_email" type="string">
+  Write the draft from a send-as alias of the mailbox instead of its primary address (optional `from_name` for the display name). The alias must be configured on the mailbox: Gmail replaces an unverified alias with the primary address at send time, Outlook needs Send-As rights on it.
+</ParamField>
 
 ```json Request
 { "account_id": "your-email-account-id", "action": "create_draft", "params": { "to": "prospect@example.com", "subject": "Draft", "message_text": "..." } }
 ```
 
+```json Request (reply draft in a thread, from an alias)
+{ "account_id": "your-email-account-id", "action": "create_draft", "params": { "thread_id": "19a2f3c4d5e6f708", "from_email": "sales@yourdomain.com", "message_text": "Following up on our call..." } }
+```
+
 ```json 200
 {
   "success": true,
-  "data": { "status": "success", "draft_id": "r-5596439384536493289", "message_id": "<...@gmail.com>" },
+  "data": { "status": "success", "draft_id": "r-5596439384536493289", "message_id": "<...@gmail.com>", "provider_message_id": "19a2f3c4d5e6f9ab", "thread_id": "19a2f3c4d5e6f708", "from_email": "sales@yourdomain.com" },
   "metadata": { "action": "create_draft", "account_id": "your-email-account-id", "credits_consumed": 1, "timestamp": "2026-09-14T12:00:00Z" }
 }
 ```
+
+`provider_message_id` is the draft message's own id (usable with `trash` to discard it) and `thread_id` its conversation: Gmail always returns both, Outlook returns them when `thread_id` was passed, IMAP returns `draft_folder` instead. `from_email` echoes the alias when one was used.
 
 ## Download attachment
 
