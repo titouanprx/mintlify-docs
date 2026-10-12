@@ -1,0 +1,187 @@
+---
+title: 'Get Event'
+api: 'POST /v2/network'
+description: 'Read a LinkedIn event: name, start and end times, organizer, venue, state.'
+---
+
+## Overview
+
+Returns the details of a LinkedIn event from its URL, URN or id: when it starts and ends (as UTC instants and as wall-clock times in the event's own time zone), whether it is upcoming, ongoing or past, who organizes it, where it happens or streams, and the account's own status towards it (invited, attending, host).
+
+<Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_event"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="event_url" type="string" required>
+      The event: URL (`https://www.linkedin.com/events/launch7315105458780465155/`), `urn:li:fsd_professionalEvent:…` or the numeric event id. `event_id` is accepted as an alias.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="event_id" type="string">Numeric id of the event.</ResponseField>
+    <ResponseField name="event_urn" type="string">`urn:li:fsd_professionalEvent:…`.</ResponseField>
+    <ResponseField name="name" type="string">Event title.</ResponseField>
+    <ResponseField name="description" type="string | null">Event description.</ResponseField>
+    <ResponseField name="url" type="string">Public URL of the event page.</ResponseField>
+    <ResponseField name="vanity_name" type="string | null">The slug in the event URL.</ResponseField>
+    <ResponseField name="start_at" type="string | null">Start, ISO 8601 UTC (e.g. `2026-10-12T11:00:00Z`).</ResponseField>
+    <ResponseField name="end_at" type="string | null">End, ISO 8601 UTC. `null` when the organizer set no end time.</ResponseField>
+    <ResponseField name="start_local" type="string | null">Start as a wall-clock time in `time_zone` (`2026-10-12T13:00:00`, no offset).</ResponseField>
+    <ResponseField name="end_local" type="string | null">End as a wall-clock time in `time_zone`.</ResponseField>
+    <ResponseField name="time_zone" type="string | null">IANA time zone of the event (`Europe/Paris`).</ResponseField>
+    <ResponseField name="display_time" type="string | null">The time range as LinkedIn displays it (`Oct 12, 2026, 1:00 PM - 2:00 PM CEST`).</ResponseField>
+    <ResponseField name="lifecycle_state" type="string">`FUTURE`, `ONGOING` or `PAST`.</ResponseField>
+    <ResponseField name="cancelled" type="boolean">Whether the organizer cancelled the event.</ResponseField>
+    <ResponseField name="private_event" type="boolean">Private events are visible to invitees only.</ResponseField>
+    <ResponseField name="organizer_invite_only" type="boolean">When `true`, only the organizer and co-hosts can invite.</ResponseField>
+    <ResponseField name="external_url" type="string | null">Registration or streaming link outside LinkedIn, when set.</ResponseField>
+    <ResponseField name="streaming_url" type="string | null">LinkedIn Live stream URL, when set.</ResponseField>
+    <ResponseField name="broadcast_tool" type="string | null">The streaming tool for a LinkedIn Live event.</ResponseField>
+    <ResponseField name="venue" type="string | null">Venue details for an in-person event.</ResponseField>
+    <ResponseField name="address" type="object | null">Postal address for an in-person event (`line1`, `line2`, `city`, `postalCode`, `country`…), only the fields LinkedIn filled.</ResponseField>
+    <ResponseField name="organizer" type="object">
+      <Expandable title="organizer properties">
+        <ResponseField name="profile_id" type="string | null">Member id of the organizing person (`ACoAA…`).</ResponseField>
+        <ResponseField name="profile_urn" type="string | null">`urn:li:fsd_profile:…` of the organizing person.</ResponseField>
+        <ResponseField name="public_identifier" type="string | null">Public slug of the organizing person.</ResponseField>
+        <ResponseField name="name" type="string | null">Name of the organizing person.</ResponseField>
+        <ResponseField name="company_id" type="string | null">Numeric id of the organizing company page, when a page organizes.</ResponseField>
+        <ResponseField name="company_urn" type="string | null">`urn:li:fsd_company:…` of the organizing page.</ResponseField>
+        <ResponseField name="company_universal_name" type="string | null">Slug of the organizing page.</ResponseField>
+        <ResponseField name="company_name" type="string | null">Name of the organizing page.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="co_hosts" type="object[]">Co-hosts, same shape as the organizer's person fields.</ResponseField>
+    <ResponseField name="speakers" type="object[]">Announced speakers, same shape.</ResponseField>
+    <ResponseField name="attendee_count" type="integer | null">Number of attendees when LinkedIn shows it.</ResponseField>
+    <ResponseField name="attendee_visibility" type="boolean">Whether the attendee list is visible.</ResponseField>
+    <ResponseField name="viewer_status" type="string | null">The account's status towards the event: `INVITED`, `INTERESTED` (attending), `NOT_INTERESTED`, or `null`.</ResponseField>
+    <ResponseField name="viewer_is_host" type="boolean">`true` when the account organizes or co-hosts the event.</ResponseField>
+    <ResponseField name="can_invite" type="boolean">`true` when the account can invite people to it (see [Invite to Event](/api-reference/v2/network/invite-to-event)).</ResponseField>
+    <ResponseField name="post_urn" type="string | null">URN of the event's feed post, usable with [Get Post](/api-reference/v2/content/get).</ResponseField>
+    <ResponseField name="background_image_url" type="string | null">Cover image URL.</ResponseField>
+    <ResponseField name="created_at" type="string | null">When the event was created, ISO 8601 UTC.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"get_event"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "event_id": "7515337029308538883",
+    "event_urn": "urn:li:fsd_professionalEvent:7515337029308538883",
+    "name": "Product launch",
+    "description": "Join us for the live walkthrough.",
+    "url": "https://www.linkedin.com/events/productlaunch7515337029308538883/",
+    "vanity_name": "productlaunch7515337029308538883",
+    "start_at": "2026-10-12T11:00:00Z",
+    "end_at": "2026-10-12T12:00:00Z",
+    "start_local": "2026-10-12T13:00:00",
+    "end_local": "2026-10-12T14:00:00",
+    "time_zone": "Europe/Paris",
+    "display_time": "Oct 12, 2026, 1:00 PM - 2:00 PM CEST",
+    "lifecycle_state": "FUTURE",
+    "cancelled": false,
+    "private_event": false,
+    "organizer_invite_only": false,
+    "external_url": null,
+    "streaming_url": null,
+    "broadcast_tool": null,
+    "venue": null,
+    "address": {
+      "country": "FR",
+      "city": "Paris",
+      "line1": "10 rue de la Paix"
+    },
+    "organizer": {
+      "profile_id": "ACoAAGOTIYIBlqheYWb-Mm6ygh4ErjKMId2CNMo",
+      "profile_urn": "urn:li:fsd_profile:ACoAAGOTIYIBlqheYWb-Mm6ygh4ErjKMId2CNMo",
+      "public_identifier": "douglas-collombat-8aa5863a7",
+      "name": "Douglas Collombat",
+      "company_id": null,
+      "company_urn": null,
+      "company_universal_name": null,
+      "company_name": null
+    },
+    "co_hosts": [],
+    "speakers": [],
+    "attendee_count": 12,
+    "attendee_visibility": true,
+    "viewer_status": "INVITED",
+    "viewer_is_host": false,
+    "can_invite": false,
+    "post_urn": "urn:li:ugcPost:7515337032559292416",
+    "background_image_url": null,
+    "created_at": "2026-10-12T09:06:16Z"
+  },
+  "metadata": {
+    "action": "get_event",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-12T14:02:11Z"
+  }
+}
+```
+
+```json 400 — Unknown or deleted event
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Event not found"
+  },
+  "metadata": {
+    "action": "get_event",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-12T14:02:11Z"
+  }
+}
+```
+
+```json 400 — Missing event
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "event_url or event_id is required"
+  },
+  "metadata": {
+    "action": "get_event",
+    "credits_consumed": 0,
+    "timestamp": "2026-10-12T14:02:11Z"
+  }
+}
+```
+</ResponseExample>

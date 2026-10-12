@@ -6,7 +6,7 @@ description: 'Invite members to a LinkedIn event.'
 
 ## Overview
 
-Invites one or more members to a LinkedIn event, the same way the **Invite** button on the event page does. The account must be allowed to invite to that event: its organizer, a co-host, or an attendee of an event that lets attendees invite.
+Invites one or more members to a LinkedIn event, the same way the **Invite** button on the event page does. The account must be allowed to invite to that event: its organizer, a co-host, or an attendee of an event that lets attendees invite. LinkedIn only lets you invite your **1st-degree connections**. Check [Get Event](/api-reference/v2/network/get-event) `can_invite` first.
 
 Up to 50 profiles per call. Each profile is resolved first; a profile LinkedIn cannot find is reported in `results` and does not block the others.
 
@@ -61,6 +61,8 @@ Up to 50 profiles per call. Each profile is resolved first; a profile LinkedIn c
         <ResponseField name="profile_id" type="string">Resolved member id (`ACoAA…`), when found.</ResponseField>
         <ResponseField name="profile_urn" type="string">Resolved `urn:li:fsd_profile:…`, when found.</ResponseField>
         <ResponseField name="status" type="string">`invited`, or `error`.</ResponseField>
+        <ResponseField name="invitation_id" type="string">Id of the created invitation, as a string (19 digits). Inviting someone already invited returns the existing invitation.</ResponseField>
+        <ResponseField name="invitation_urn" type="string">`urn:li:fsd_invitation:…` of the invitation.</ResponseField>
         <ResponseField name="message" type="string">Why this person was not invited (only on `error`).</ResponseField>
         <ResponseField name="linkedin_code" type="string">LinkedIn's own refusal code for this person, when it gives one (e.g. already invited, already attending).</ResponseField>
       </Expandable>
@@ -90,7 +92,9 @@ Up to 50 profiles per call. Each profile is resolved first; a profile LinkedIn c
         "profile": "https://www.linkedin.com/in/john-doe/",
         "profile_id": "ACoAAGOTIYIBlqheYWb-Mm6ygh4ErjKMId2CNMo",
         "profile_urn": "urn:li:fsd_profile:ACoAAGOTIYIBlqheYWb-Mm6ygh4ErjKMId2CNMo",
-        "status": "invited"
+        "status": "invited",
+        "invitation_id": "7515337837941141504",
+        "invitation_urn": "urn:li:fsd_invitation:7515337837941141504"
       },
       {
         "profile": "no-such-person-xyz",
