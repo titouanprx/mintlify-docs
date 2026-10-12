@@ -1,0 +1,117 @@
+---
+title: 'Unlock Profile'
+api: 'POST /v2/profiles'
+description: 'Unlock an out-of-network profile on a Sales Navigator seat, before an InMail.'
+---
+
+## Overview
+
+Sales Navigator withholds the profile of a member outside the seat's network (3rd degree and beyond, no shared group): the lead shows as **LinkedIn Member**, the full profile is hidden and no InMail can be sent. This action spends one of the seat's **monthly unlock credits** to reveal the member for good, so you can then [send an InMail](/api-reference/v2/messages/send).
+
+LinkedIn grants each Sales Navigator seat 25 unlocks a month, not pooled between seats and not carried over. An unlocked member stays unlocked for every seat on the same contract.
+
+<Note>This endpoint consumes **1 credit** and **one of the seat's monthly unlock credits** when LinkedIn performs the unlock. Requires a Sales Nav seat on the account (connected automatically on first use). Ignore the 1 credit if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use. Must have a Sales Nav seat.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"unlock"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="profile" type="string" required>
+      The member to unlock: profile URL, public slug, member id (`ACoAA…`), or a Sales Nav lead reference (`/sales/lead/ACwAA…` URL, `urn:li:fs_salesProfile:…`, bare `ACwAA…`). `profile_url` is accepted as an alias.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="unlocked" type="boolean">`true` once LinkedIn has accepted the unlock.</ResponseField>
+    <ResponseField name="sales_profile_id" type="string">The lead's Sales Nav id (`ACwAA…`).</ResponseField>
+    <ResponseField name="recipient_urn" type="string">The lead's `urn:li:fs_salesProfile:…`, usable as `recipient` in [Send Message](/api-reference/v2/messages/send) with `sales_navigator: true`.</ResponseField>
+    <ResponseField name="member_urn" type="string">The member's `urn:li:member:…`.</ResponseField>
+    <ResponseField name="full_name" type="string | null">Full name as the seat sees it.</ResponseField>
+    <ResponseField name="degree" type="integer | null">Connection degree from the account.</ResponseField>
+    <ResponseField name="profile_url" type="string | null">The member's public profile URL.</ResponseField>
+    <ResponseField name="inmail_restriction" type="string | null">LinkedIn's InMail restriction on this member, `NO_RESTRICTION` when an InMail can be sent.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  <Expandable title="metadata properties">
+    <ResponseField name="action" type="string">The action that was performed (`"unlock"`).</ResponseField>
+    <ResponseField name="account_id" type="string">The account ID used for the request.</ResponseField>
+    <ResponseField name="credits_consumed" type="integer">Number of credits consumed (1).</ResponseField>
+    <ResponseField name="timestamp" type="string">ISO 8601 timestamp of the response.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "unlocked": true,
+    "sales_profile_id": "ACwAAAstu10B6ONvINVM4_BzI_rFALPEOlLx7Ig",
+    "recipient_urn": "urn:li:fs_salesProfile:(ACwAAAstu10B6ONvINVM4_BzI_rFALPEOlLx7Ig,NAME_SEARCH,AbCd)",
+    "member_urn": "urn:li:member:187678557",
+    "full_name": "Jake Abrams",
+    "degree": 3,
+    "profile_url": "https://www.linkedin.com/in/abramsjake",
+    "inmail_restriction": "NO_RESTRICTION"
+  },
+  "metadata": {
+    "action": "unlock",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-12T14:02:11Z"
+  }
+}
+```
+
+```json 422 — LinkedIn refused the unlock
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "LinkedIn refused this Sales Nav request. The seat may have lost access, or the action is not permitted on this profile."
+  },
+  "metadata": {
+    "action": "unlock",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-12T14:02:11Z"
+  }
+}
+```
+
+```json 400 — Missing profile
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "profile is required: a profile URL, slug, member id or Sales Nav lead reference"
+  },
+  "metadata": {
+    "action": "unlock",
+    "credits_consumed": 0,
+    "timestamp": "2026-10-12T14:02:11Z"
+  }
+}
+```
+</ResponseExample>

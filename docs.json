@@ -84,6 +84,7 @@
                   "api-reference/v2/profiles/search-people-recruiter",
                   "api-reference/v2/profiles/check-inmail",
                   "api-reference/v2/profiles/check-inmail-seat",
+                  "api-reference/v2/profiles/unlock",
                   "api-reference/v2/profiles/typeahead",
                   "api-reference/v2/profiles/search-companies",
                   "api-reference/v2/profiles/get-company",
@@ -116,7 +117,10 @@
                   "api-reference/v2/network/list-sent",
                   "api-reference/v2/network/withdraw",
                   "api-reference/v2/network/check-invitation",
-                  "api-reference/v2/network/recommendations"
+                  "api-reference/v2/network/recommendations",
+                  "api-reference/v2/network/follow",
+                  "api-reference/v2/network/unfollow",
+                  "api-reference/v2/network/invite-to-event"
                 ]
               },
               {
