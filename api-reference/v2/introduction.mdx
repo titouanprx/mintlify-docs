@@ -119,16 +119,18 @@ Every V2 response follows a standardized format.
 }
 ```
 
-## Credit System
+## Billing
 
-Most actions consume **1 credit** per request. Actions that return lists (search, get connections, etc.) consume **1 credit per 10 results**, rounded up. On the per-account plan, usage is unlimited: you pay per connected account ($55 for the first 10, then $5.50 each, capped at $3,000/month), billed upfront. With auto-upgrade on (default) you can connect beyond your seats and the monthly peak is billed at renewal; off, you get `SEAT_LIMIT_REACHED`. Only email enrichment still consumes credits.
+Two billing modes, chosen in [Billing](https://app.linkupapi.com/plans). The API is identical, only the limits differ.
 
-For example:
+**Per-account plan.** You pay per connected account (one LinkedIn profile, mailbox or WhatsApp number), billed upfront each month: \$55 for the first 10 accounts, then \$5.50 per extra account, capped at \$3,000/month. Usage is unlimited on every endpoint. With auto-upgrade on (default) you can connect beyond your seats and the monthly peak is billed at renewal; with it off, one account too many returns `SEAT_LIMIT_REACHED`. Only email enrichment still consumes credits.
+
+**Credit plans.** Most actions consume **1 credit** per request. Actions that return lists (search, get connections, etc.) consume **1 credit per 10 results**, rounded up. For example:
 - Fetching a single profile: **1 credit**
 - Searching with 25 results: **3 credits** (25 / 10 = 2.5, rounded up to 3)
 - Listing 10 connections: **1 credit**
 
-The exact number of credits consumed is always returned in the `metadata.credits_consumed` field of the response.
+The exact number of credits consumed is always returned in the `metadata.credits_consumed` field of the response. At zero, calls return `INSUFFICIENT_CREDITS` until the plan renews or you buy a pack.
 
 ## Available Categories
 
