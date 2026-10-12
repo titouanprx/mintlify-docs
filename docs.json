@@ -119,7 +119,6 @@
                   "api-reference/v2/network/check-invitation",
                   "api-reference/v2/network/recommendations",
                   "api-reference/v2/network/follow",
-                  "api-reference/v2/network/unfollow",
                   "api-reference/v2/network/invite-to-event",
                   "api-reference/v2/network/get-event"
                 ]
