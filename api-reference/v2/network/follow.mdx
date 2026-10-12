@@ -56,7 +56,7 @@ Follows a person (their posts appear in the account's feed, without a connection
       `urn:li:fsd_profile:…` of the followed person. Person only.
     </ResponseField>
     <ResponseField name="follower_count" type="integer">
-      The person's follower count after the action, when LinkedIn reports it. Person only.
+      Follower count of the person or page as LinkedIn reports it after the action.
     </ResponseField>
     <ResponseField name="company_id" type="string">
       Numeric id of the followed company. Page only.
@@ -65,10 +65,10 @@ Follows a person (their posts appear in the account's feed, without a connection
       `urn:li:fsd_company:…` of the followed company. Page only.
     </ResponseField>
     <ResponseField name="name" type="string">
-      Company name. Page only.
+      Company name. Page only, when the page was given as `company_url`.
     </ResponseField>
     <ResponseField name="universal_name" type="string">
-      Company slug. Page only.
+      Company slug. Page only, when the page was given as `company_url`.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -109,7 +109,8 @@ Follows a person (their posts appear in the account's feed, without a connection
     "company_id": "1441",
     "company_urn": "urn:li:fsd_company:1441",
     "name": "Google",
-    "universal_name": "google"
+    "universal_name": "google",
+    "follower_count": 42498394
   },
   "metadata": {
     "action": "follow",
