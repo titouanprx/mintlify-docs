@@ -79,7 +79,7 @@ Returns the details of a LinkedIn event from its URL, URN or id: when it starts 
     <ResponseField name="attendee_visibility" type="boolean">Whether the attendee list is visible.</ResponseField>
     <ResponseField name="viewer_status" type="string | null">The account's status towards the event: `INVITED`, `INTERESTED` (attending), `NOT_INTERESTED`, or `null`.</ResponseField>
     <ResponseField name="viewer_is_host" type="boolean">`true` when the account organizes or co-hosts the event.</ResponseField>
-    <ResponseField name="can_invite" type="boolean">`true` when the account can invite people to it (see [Invite to Event](/api-reference/v2/network/invite-to-event)).</ResponseField>
+    <ResponseField name="can_invite" type="boolean">LinkedIn's own flag for the account on this event. Indicative only: on a public event LinkedIn still accepts invitations to 1st-degree connections when it is `false` (see [Invite to Event](/api-reference/v2/network/invite-to-event)).</ResponseField>
     <ResponseField name="post_urn" type="string | null">URN of the event's feed post, usable with [Get Post](/api-reference/v2/content/get).</ResponseField>
     <ResponseField name="background_image_url" type="string | null">Cover image URL.</ResponseField>
     <ResponseField name="created_at" type="string | null">When the event was created, ISO 8601 UTC.</ResponseField>
