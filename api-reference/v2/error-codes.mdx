@@ -35,6 +35,7 @@ All V2 API error responses follow a standardized format:
 | `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid — this also covers a target that no longer exists on LinkedIn, such as a deleted post. Check the `message` field for details. |
 | `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
 | `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
+| `SEAT_LIMIT_REACHED` | 402 Payment Required | Per-account plan: no seat available for this account. Either you are connecting more accounts than your plan allows (auto-upgrade off), or the workspace has no active per-account plan. Manage it in Billing. |
 | `CHANNEL_ERROR` | 422 Unprocessable Entity | The request was valid but the platform refused it — restricted profile, missing premium seat (e.g. no Sales Nav license), or an upstream failure. Not a parameter mistake, so retrying with the same input will not help. |
 | `INTERNAL_ERROR` | 500 Internal Server Error | An unexpected server error occurred. If this persists, contact support. |
 
@@ -203,6 +204,27 @@ Returned when your account does not have enough credits for the requested action
 ```
 
 **How to fix:** Top up your credits at [app.linkupapi.com](https://app.linkupapi.com).
+
+### SEAT_LIMIT_REACHED (402)
+
+Returned on the per-account plan when no seat is available for the account you are connecting. Two causes, told apart by the `message`: you already have as many connected accounts as your plan allows and auto-upgrade is off, or the workspace has no active per-account plan at all (checkout never completed, trial ended without a card).
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SEAT_LIMIT_REACHED",
+    "message": "No account seat available: this workspace has no active per-account plan. Subscribe at https://app.linkupapi.com/billing"
+  },
+  "metadata": {
+    "action": "login",
+    "credits_consumed": 0,
+    "timestamp": "2026-10-12T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Open [Billing](https://app.linkupapi.com/billing) to subscribe to the per-account plan, add seats, or turn auto-upgrade on. `INSUFFICIENT_CREDITS` is only returned to credit customers whose balance is at zero, and for email enrichment, which is billed in credits on every plan.
 
 ### INTERNAL_ERROR (500)
 
