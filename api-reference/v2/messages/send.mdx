@@ -37,7 +37,10 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(InMail + Email)** Subject line. On LinkedIn it applies to InMails only (ignored for standard messages, and alone it does **not** trigger an InMail); on email it's the email subject.
     </ParamField>
     <ParamField body="profile_url" type="string">
-      **(LinkedIn)** URL of the recipient's profile. Used for a standard message and an InMail (with `inmail: true`). Required unless you pass `recipient_urn`.
+      **(LinkedIn)** URL of the recipient's profile. Used for a standard message and an InMail (with `inmail: true`). Required unless you pass `recipient_urn` or `conversation_id`.
+    </ParamField>
+    <ParamField body="conversation_id" type="string">
+      **(LinkedIn)** Reply into an existing thread, 1:1 or group, instead of addressing a person: pass the `conversation_id` from [List Inbox](/api-reference/v2/messages/list-inbox) or a webhook event, without `profile_url`. With `sales_nav: true` it is the Sales Navigator thread id (reply inside an InMail thread, no subject needed); with `recruiter: true`, the Recruiter thread id.
     </ParamField>
     <ParamField body="inmail" type="boolean" default={false}>
       **(LinkedIn)** Set to `true` to send an **InMail** (to a non-connection, via the premium seat) instead of a standard message. Consumes 1 InMail credit. Not needed when `recipient_urn` is a Sales Nav URN.
