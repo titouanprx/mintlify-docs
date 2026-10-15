@@ -36,7 +36,7 @@ Webhooks support two delivery modes depending on your setup:
 
 ## Delivery & retries (custom mode)
 
-Custom webhooks are delivered **at least once**. Every envelope carries a stable top-level `event_id` (also sent as `X-Linkup-Event-Id`, with `X-Linkup-Attempt`) — dedupe on it. A POST is successful on any `2xx`. On timeout (10 s), connection error, `5xx`, `408`/`425`/`429` we retry with backoff: 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h (8 attempts). Any other `4xx` or a `3xx` is recorded as `failed` and not retried. Turn retries off per webhook with `retry: false`.
+Custom webhooks are delivered **at least once**. Every envelope carries a stable top-level `event_id` (also sent as `X-Linkup-Event-Id`, with `X-Linkup-Attempt` and `X-Linkup-Webhook-Id`) — dedupe on it. A POST is successful on any `2xx`. On timeout (10 s), connection error, `5xx`, `408`/`425`/`429` we retry with backoff: 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h (8 attempts). Any other `4xx` or a `3xx` is recorded as `failed` and not retried. Turn retries off per webhook with `retry: false`.
 
 Everything we sent, or still owe, is visible for 30 days, and replayable, from the API:
 
@@ -415,6 +415,7 @@ Triggered when one or more connection requests you sent are accepted. Detected i
 
 ```json
 {
+  "event_id": "6a0f1c2b3d4e5f6a7b8c9d0e",
   "account_id": "69ee261e41fc4cbecf9f34c9",
   "account_name": "your.email@example.com",
   "platform": "linkedin",
@@ -424,12 +425,14 @@ Triggered when one or more connection requests you sent are accepted. Detected i
       {
         "profile_url": "https://www.linkedin.com/in/maruthigudi/",
         "name": "Maruthi Gudi",
+        "member_urn": "urn:li:fsd_profile:ACoAABxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1",
         "job_title": "Building High-Performance Tech & FinTech Teams | Headhunter @ HackerTrail",
         "profile_picture": "https://media.licdn.com/dms/image/v2/D4E03AQEEUE9iAq2LXA/profile-displayphoto-shrink_100_100/B4EZYY8bulGYAU-/0/1744175218426"
       },
       {
         "profile_url": "https://www.linkedin.com/in/musokeshaibu/",
         "name": "Musoke Shaibu",
+        "member_urn": "urn:li:fsd_profile:ACoAABxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
         "job_title": "Building the definitive operating system for sales, marketing, and research.",
         "profile_picture": "https://media.licdn.com/dms/image/v2/D4D03AQGCOZ3SrVT5Tg/profile-displayphoto-shrink_200_200/B4DZZtP29UGcAY-/0/1745589597790"
       }
@@ -448,6 +451,7 @@ Triggered when one or more connection requests you sent are accepted. Detected i
 | `event.new_connections` | `array` | Profiles that accepted your connection request since the last check |
 | `event.new_connections[].profile_url` | `string` | Public profile URL of the connection |
 | `event.new_connections[].name` | `string` | Display name |
+| `event.new_connections[].member_urn` | `string` | Member URN (`urn:li:fsd_profile:ACoA…`), the id `invite` accepts. Match it against the members you invited. |
 | `event.new_connections[].job_title` | `string \| null` | Headline / current role as shown on the platform |
 | `event.new_connections[].profile_picture` | `string \| null` | CDN URL of the profile picture (may expire) |
 | `event.count` | `integer` | Length of `new_connections` |

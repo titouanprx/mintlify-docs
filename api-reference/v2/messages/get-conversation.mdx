@@ -90,6 +90,7 @@ Returns messages from a specific conversation, ordered from most recent to oldes
             <ResponseField name="first_name" type="string">Sender's first name.</ResponseField>
             <ResponseField name="last_name" type="string">Sender's last name.</ResponseField>
             <ResponseField name="profile_url" type="string">Sender's public profile URL.</ResponseField>
+            <ResponseField name="is_me" type="boolean">`true` when the account itself sent the message.</ResponseField>
           </Expandable>
         </ResponseField>
         <ResponseField name="message_type" type="string">
@@ -164,7 +165,8 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
         "sender_info": {
           "first_name": "Jane",
           "last_name": "Doe",
-          "profile_url": "https://www.linkedin.com/in/jane-doe-42/"
+          "profile_url": "https://www.linkedin.com/in/jane-doe-42/",
+          "is_me": false
         },
         "message_type": "TEXT",
         "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)",
@@ -178,7 +180,8 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
         "sender_info": {
           "first_name": "John",
           "last_name": "Smith",
-          "profile_url": "https://www.linkedin.com/in/john-smith-99/"
+          "profile_url": "https://www.linkedin.com/in/john-smith-99/",
+          "is_me": true
         },
         "message_type": "MEDIA",
         "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)",
