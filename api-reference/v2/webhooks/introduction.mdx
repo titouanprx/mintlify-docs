@@ -88,8 +88,10 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 | `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
 | `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `email_bounced` *(email, via `all`)* | `"email_bounced"` | An email you sent bounced |
-| `message_read` *(LinkedIn, opt-in)* | `"message_read"` | A participant has seen one of the account's messages. Not included in `all`: name it in `events` to receive it |
-| `all` | — | Subscribe to all event types (except opt-in types such as `message_read`) |
+| `message_read` *(LinkedIn, WhatsApp, opt-in)* | `"message_read"` | A participant has seen one of the account's messages. Not included in `all`: name it in `events` to receive it |
+| `message_delivered` *(WhatsApp, opt-in)* | `"message_delivered"` | A message the account sent reached the recipient's phone. Not included in `all` |
+| `message_failed` *(WhatsApp, opt-in)* | `"message_failed"` | WhatsApp could not deliver a message the account sent. Not included in `all` |
+| `all` | — | Subscribe to all event types (except opt-in types: `message_read`, `message_delivered`, `message_failed`) |
 
 <Note>
   By default, webhooks listen to **all** event types. In **custom mode**, you can filter specific events when creating the webhook by passing an `events` array. **Hosted** webhooks (SSE stream and `GET /events`) always receive every event type — only the `message_type` direction filter applies — so filter on `event.type` on your side.
@@ -447,6 +449,41 @@ Triggered when a participant of a thread sees one of the account's messages (Lin
 | `event.message_urn` | `string` | The message that was seen (`entity_urn` in [Get Conversation](/api-reference/v2/messages/get-conversation)). Every earlier message of the thread is seen too |
 | `event.conversation_urn` | `string` | The thread, usable as `conversation_id` |
 | `event.reader` | `object` | Who read it: `name`, `profile_url`, `urn`, `headline` |
+
+**WhatsApp** sends the same event (`platform: "whatsapp"`) when the recipient reads a message the account sent: `message_urn` and `message_id` are the WhatsApp message id, `conversation_urn` and `conversation_id` the chat, `reader` carries `phone_number` and `jid` (`urn` and `headline` are null). In a group WhatsApp does not say who read it: the `reader` fields are null and `is_group_chat` is true.
+
+### Message Delivered / Message Failed (WhatsApp)
+
+Opt-in like `message_read`: name `message_delivered` or `message_failed` in `events`. `message_delivered` fires once when a message the account sent reaches the recipient's phone (`delivered_at`, epoch milliseconds); `message_failed` when WhatsApp could not deliver it (`failed_at`). Same frame as the read event, with `recipient` instead of `reader`.
+
+```json
+{
+  "event_id": "6ad0e9a153ea1583ca478c77",
+  "account_id": "6ab8e649459f45ad3a9aad6e",
+  "account_name": "Titouan",
+  "platform": "whatsapp",
+  "event": {
+    "type": "message_delivered",
+    "timestamp": "2026-10-15T14:56:33.372754",
+    "message_urn": "3EB0C1A2B3D4E5F6A7B8",
+    "message_id": "3EB0C1A2B3D4E5F6A7B8",
+    "conversation_urn": "33612345678@s.whatsapp.net",
+    "conversation_id": "33612345678@s.whatsapp.net",
+    "is_group_chat": false,
+    "sent_at": 1792070000000,
+    "delivered_at": 1792070005000,
+    "recipient": {
+      "name": "Jane Doe",
+      "profile_url": "https://wa.me/33612345678",
+      "urn": null,
+      "headline": null,
+      "phone_number": "33612345678",
+      "jid": "33612345678@s.whatsapp.net"
+    }
+  },
+  "timestamp": "2026-10-15T14:56:33.373415"
+}
+```
 
 ### Accepted Invitation
 

@@ -47,6 +47,9 @@ Create a post from the authenticated account. Supports plain text posts, single 
     <ParamField body="document_title" type="string">
       Title displayed under a document post, and used by LinkedIn to build the post URL. Only valid when `file` is a document. Defaults to the file name without its extension.
     </ParamField>
+    <ParamField body="link" type="string">
+      A URL shown as a preview card under the text (title, source and image, as when a link is pasted in the composer). Exclusive with `file` and `files`: LinkedIn shows one card per post. The URL does not need to appear in `message`.
+    </ParamField>
     <ParamField body="files" type="array">
       An array of files for carousel posts. Each element can be a URL string or an object with `filename`, `data`, and optional `altText` properties.
       <Expandable title="file object properties">
@@ -80,6 +83,9 @@ Create a post from the authenticated account. Supports plain text posts, single 
     <ResponseField name="post_urn" type="string">
       Unique identifier of the post. Treat it as an opaque string and pass it back exactly as returned.
     </ResponseField>
+    <ResponseField name="share_urn" type="string">
+      Share identifier of the post (`urn:li:share:...`). Opaque string.
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -106,7 +112,8 @@ Create a post from the authenticated account. Supports plain text posts, single 
   "success": true,
   "data": {
     "post_url": "https://www.linkedin.com/feed/update/urn:li:activity:7654321098765432100",
-    "post_urn": "urn:li:activity:7654321098765432100"
+    "post_urn": "urn:li:activity:7654321098765432100",
+    "share_urn": "urn:li:share:7654321098765432000"
   },
   "metadata": {
     "action": "create",
