@@ -105,7 +105,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn + WhatsApp)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension.
     </ParamField>
     <ParamField body="quoted_message_id" type="string">
-      **(WhatsApp)** Reply to a message: its `id` from [Get Conversation](/api-reference/v2/messages/get-conversation).
+      Reply to a specific message (quoted above yours, like the Reply action of the app). **LinkedIn:** the message's `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or `metadata.entity_urn` of a webhook event; the thread is resolved from `conversation_id` or `profile_url`, and the quoted message must be among the last 100 of the thread. **WhatsApp:** its `id` from Get Conversation.
     </ParamField>
   </Expandable>
 </ParamField>

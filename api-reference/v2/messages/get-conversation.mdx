@@ -105,6 +105,12 @@ Returns messages from a specific conversation, ordered from most recent to oldes
         <ResponseField name="attachments" type="array">
           One entry per attachment, empty when there are none. Same shape as in [webhook message events](/api-reference/v2/webhooks/introduction): `type` (`image`, `file`, `audio`, `video`, `gif`), `url` (signed LinkedIn URL, private and short-lived), `name`, `mime_type`, `byte_size`, `asset_urn`, and `download_url` — a stable URL on [Download Attachment](/api-reference/v2/messages/download-attachment) that streams the bytes on demand (1 credit).
         </ResponseField>
+        <ResponseField name="reactions" type="array">
+          Emoji reactions left on the message, empty when there are none: `emoji`, `count`, `first_reacted_at` (epoch ms), `viewer_reacted` (`true` when the connected account reacted).
+        </ResponseField>
+        <ResponseField name="reply_to" type="object">
+          Present when the message quotes an earlier one (Reply action): `message_text`, `sender_name`, `sender_profile_url`, `sender_urn`, `timestamp` (epoch ms) and `entity_urn` of the quoted message, reusable as `quoted_message_id` in [Send Message](/api-reference/v2/messages/send). `null` otherwise.
+        </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="next_cursor" type="string">

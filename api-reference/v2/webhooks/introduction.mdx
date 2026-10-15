@@ -88,7 +88,8 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 | `accepted_invitation` | `"accepted_invitation"` | One or more connection requests you sent were accepted |
 | `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `email_bounced` *(email, via `all`)* | `"email_bounced"` | An email you sent bounced |
-| `all` | — | Subscribe to all event types |
+| `message_read` *(LinkedIn, opt-in)* | `"message_read"` | A participant has seen one of the account's messages. Not included in `all`: name it in `events` to receive it |
+| `all` | — | Subscribe to all event types (except opt-in types such as `message_read`) |
 
 <Note>
   By default, webhooks listen to **all** event types. In **custom mode**, you can filter specific events when creating the webhook by passing an `events` array. **Hosted** webhooks (SSE stream and `GET /events`) always receive every event type — only the `message_type` direction filter applies — so filter on `event.type` on your side.
@@ -409,6 +410,43 @@ Both directions come through: the candidate's replies (`direction: "inbound"`) a
   - `conversation.unread_count` (`0`) and `metadata.read_status` (`false`) — use `folders` (`UNREAD`)
   - `reply_to` — never present
 </Note>
+
+### Message Read
+
+Triggered when a participant of a thread sees one of the account's messages (LinkedIn read receipt). **Opt-in**: it is only delivered to webhooks whose `events` list contains `message_read`, never through `all` or to hosted webhooks that did not name it, and the account reading its own inbox does not fire it. One event per message and reader.
+
+```json
+{
+  "event_id": "6ad0c9567ec96b30888d2f61",
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "account_name": "your.email@example.com",
+  "platform": "linkedin",
+  "event": {
+    "type": "message_read",
+    "timestamp": "2026-10-15T12:35:34.442336",
+    "seen_at": 1792067734213,
+    "message_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)",
+    "conversation_urn": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAAD...,2-YTg2...)",
+    "reader": {
+      "name": "Jane Doe",
+      "profile_url": "https://www.linkedin.com/in/ACoAAGOT...",
+      "urn": "urn:li:fsd_profile:ACoAAGOT...",
+      "headline": "Head of Sales at Acme"
+    },
+    "is_self_read": false
+  },
+  "timestamp": "2026-10-15T12:35:34.442336"
+}
+```
+
+**Field reference**
+
+| Field | Type | Description |
+|---|---|---|
+| `event.seen_at` | `integer` | When the reader saw the message, epoch milliseconds |
+| `event.message_urn` | `string` | The message that was seen (`entity_urn` in [Get Conversation](/api-reference/v2/messages/get-conversation)). Every earlier message of the thread is seen too |
+| `event.conversation_urn` | `string` | The thread, usable as `conversation_id` |
+| `event.reader` | `object` | Who read it: `name`, `profile_url`, `urn`, `headline` |
 
 ### Accepted Invitation
 
