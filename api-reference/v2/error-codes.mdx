@@ -21,9 +21,21 @@ All V2 API error responses follow a standardized format:
 }
 ```
 
-`sub_code` is the machine-readable reason. It is always present on `CHANNEL_ERROR`; on other codes only in the cases listed under [Sub-codes](#sub-codes). When there is none the field is omitted (never `null`): handle the error on `code` alone. Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
+`sub_code` is the machine-readable reason. It is always present on `CHANNEL_ERROR`; on other codes only in the cases listed under [Sub-codes](#sub-codes). When there is none the field is omitted (never `null`): handle the error on `code` alone. Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't.
 
-**Handling logic:** retry with backoff only on `INTERNAL_ERROR`, on `RATE_LIMITED` (except the account limits below) and on the temporary `CHANNEL_ERROR` sub-codes (`UPSTREAM_ERROR`, `*_UNAVAILABLE`). A `RATE_LIMITED` with `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` or `INMAIL_MONTHLY_FUSE_LIMIT` means LinkedIn capped the account: stop that action on the account until the limit resets (days, not seconds). Anything else needs a change before retrying: fix the request on `INVALID_*`, top up on `INSUFFICIENT_CREDITS`, reconnect the account on `ACCOUNT_INACTIVE` or a seat sub-code, and move on from that target on any other `CHANNEL_ERROR`.
+## Handling errors
+
+Every error calls for one of five reactions:
+
+| Reaction | When |
+|---|---|
+| **Retry** with backoff | `INTERNAL_ERROR`, `RATE_LIMITED` without an account-limit sub-code, `UPSTREAM_ERROR`, the `*_UNAVAILABLE` sub-codes, `NOT_CONNECTED` (WhatsApp reconnecting) |
+| **Pause the action on this account** until LinkedIn's limit resets (days) | `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED`, `INMAIL_MONTHLY_FUSE_LIMIT` |
+| **Reconnect the account** (`POST /v2/login`) | `ACCOUNT_INACTIVE` (other than `NOT_CONNECTED`), `ACCOUNT_DISCONNECTED`, and the seat sub-codes (`*_SEAT_EXPIRED`, `NO_SALES_NAV_SEAT`…) |
+| **Skip this target** and move on | `PROFILE_NOT_FOUND`, `CANT_RESEND_YET`, `RECIPIENT_NOT_FIRST_DEGREE_CONNECTION` and the other `CHANNEL_ERROR` refusals |
+| **Fix the request** before sending it again | Other `INVALID_PARAMS` / `INVALID_ACTION`, `INVALID_ACCOUNT`; top up on `INSUFFICIENT_CREDITS` |
+
+Never retry the same request on the last three: it will fail the same way and may cost a credit each time.
 
 <Note>
   Errors caught before the request reaches the platform (API key, parameters, credits…) are free. Once it has reached the platform, a refusal (e.g. `CHANNEL_ERROR` / `CANT_RESEND_YET`) consumes **1 credit**, shown in `credits_consumed`.
