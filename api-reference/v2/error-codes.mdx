@@ -50,6 +50,7 @@ All V2 API error responses follow a standardized format:
 |---|---|---|
 | Temporary | `UPSTREAM_ERROR`, `WHATSAPP_UNAVAILABLE`, `SALES_NAV_SEAT_UNAVAILABLE`, `NO_PROXY_AVAILABLE`, `MONITOR_START_FAILED`, `MAILBOX_PROVIDER_ERROR` | Yes, after a short delay |
 | Invitations | `CANT_RESEND_YET` (already connected, invitation pending, or withdrawn less than ~3 weeks ago), `ALREADY_CONNECTED`, `ALREADY_INVITED`, `CUSTOM_MESSAGE_TOO_LONG`, `INVITATION_REFUSED`, `INVITATION_NOT_CONFIRMED` (check with `check_invitation`), `INVITATION_NOT_PENDING` | No |
+| Request (under `INVALID_PARAMS`) | `PROFILE_NOT_FOUND` (the profile doesn't exist or isn't visible: drop it), `ACCOUNT_DISCONNECTED` (the `account_id` is disconnected: reconnect it), `BAD_CREDENTIALS` (login), and on a refused `send` LinkedIn's own code, e.g. `RECIPIENT_NOT_FIRST_DEGREE_CONNECTION` (not connected yet) or `NOT_ALLOWED_PREMIUM_INMAIL_SUBSEQUENT_REPLY` (wait for a reply to your InMail) | No |
 | Rate limits (under `RATE_LIMITED`) | `CONCURRENCY_LIMIT` (our per-key limit: retry in a second), `LINKEDIN_RATE_LIMITED` (LinkedIn throttled the account: retry later) | Yes, with backoff |
 | Disconnected (under `ACCOUNT_INACTIVE`) | `LINKEDIN_SESSION_EXPIRED`, `MAILBOX_AUTH_REVOKED`, `MAILBOX_AUTH_FAILED`, `RECRUITER_SEAT_EXPIRED`: reconnect via `POST /v2/login`. `NOT_CONNECTED` (WhatsApp): retry shortly | Only `NOT_CONNECTED` |
 | Account limits (under `RATE_LIMITED`) | `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` (invitations, weekly), `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) | Not before the limit resets |
@@ -117,7 +118,8 @@ Returned when the account exists but is not currently active.
   "success": false,
   "error": {
     "code": "ACCOUNT_INACTIVE",
-    "message": "This account is currently inactive"
+    "message": "LinkedIn account is no longer connected. Please re-authenticate.",
+    "sub_code": "LINKEDIN_SESSION_EXPIRED"
   },
   "metadata": {
     "action": "get_profile",
