@@ -119,17 +119,17 @@ Create a post on a company page. The authenticated account must be an admin of t
 }
 ```
 
-```json 403
+```json 400
 {
   "success": false,
   "error": {
-    "code": "FORBIDDEN",
-    "message": "You must be an admin of the company page to create posts."
+    "code": "INVALID_PARAMS",
+    "message": "Company not found or no admin access for: acme-corp"
   },
   "metadata": {
     "action": "create_company",
     "account_id": "your-account-id",
-    "credits_consumed": 0,
+    "credits_consumed": 1,
     "timestamp": "2026-03-24T12:00:00Z"
   }
 }
