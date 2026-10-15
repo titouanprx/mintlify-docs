@@ -21,7 +21,7 @@ All V2 API error responses follow a standardized format:
 }
 ```
 
-`sub_code` is the machine-readable reason, present when we know it (always on `CHANNEL_ERROR`). Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
+`sub_code` is the machine-readable reason. It is always present on `CHANNEL_ERROR`; on other codes only in the cases listed under [Sub-codes](#sub-codes). When there is none the field is omitted (never `null`): handle the error on `code` alone. Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
 
 **Handling logic:** retry with backoff only on `INTERNAL_ERROR`, on `RATE_LIMITED` (except the account limits below) and on the temporary `CHANNEL_ERROR` sub-codes (`UPSTREAM_ERROR`, `*_UNAVAILABLE`). A `RATE_LIMITED` with `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` or `INMAIL_MONTHLY_FUSE_LIMIT` means LinkedIn capped the account: stop that action on the account until the limit resets (days, not seconds). Anything else needs a change before retrying: fix the request on `INVALID_*`, top up on `INSUFFICIENT_CREDITS`, reconnect the account on `ACCOUNT_INACTIVE` or a seat sub-code, and move on from that target on any other `CHANNEL_ERROR`.
 
