@@ -193,7 +193,7 @@ Fetches detailed profile data for a specified user. You can identify the target 
 
 ## Recruiter
 
-With `recruiter: true` (or called on a Recruiter seat account), pass the `profile_urn` (`urn:li:ts_profile:…`) of a [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter) result. You get the same shape as a search result, plus contact info when LinkedIn exposes it, summary, follower count and the seat's own counters on that person. `include_activity: true` adds their recent activity.
+With `recruiter: true`, pass the `profile_urn` (`urn:li:ts_profile:…`) of a [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter) result. You get the same shape as a search result, plus contact info when LinkedIn exposes it, summary, follower count and the seat's own counters on that person. `include_activity: true` adds their recent activity.
 
 ```json
 { "account_id": "your-account-id", "action": "get", "params": { "recruiter": true, "profile_urn": "urn:li:ts_profile:AEMAA…" } }

@@ -40,7 +40,7 @@ Branch on `code` and `sub_code`, never on `message`: the text may change, the co
 | `INVALID_API_KEY` | 403 | The `x-api-key` header is missing or invalid. |
 | `INVALID_ACCOUNT` | 404 | The `account_id` doesn't exist under your API key. |
 | `ACCOUNT_INACTIVE` | 403 | The account's session stopped working during the call. |
-| `INVALID_ACTION` | 400 | The action doesn't exist for this endpoint, or not on this account: a Recruiter seat only runs Recruiter actions, call the others with its `parent_account_id` (no credit charged). |
+| `INVALID_ACTION` | 400 | The action doesn't exist for this endpoint, or not on this account: a Recruiter seat's own id only runs Recruiter actions, call the others with the LinkedIn account's id (no credit charged). |
 | `INVALID_PARAMS` | 400 | A parameter is missing or invalid, the target doesn't exist (`PROFILE_NOT_FOUND`), or the `account_id` is disconnected (`ACCOUNT_DISCONNECTED`). |
 | `RATE_LIMITED` | 429 | Too many concurrent requests on your key, or LinkedIn limited the account. |
 | `INSUFFICIENT_CREDITS` | 402 | Not enough credits. Only on credit plans, and for email enrichment on every plan. |

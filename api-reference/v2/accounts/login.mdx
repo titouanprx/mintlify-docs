@@ -311,13 +311,13 @@ Recruiter actions use the LinkedIn account's `account_id`.
 { "platform": "linkedin", "email": "you@company.com", "password": "••••••", "products": ["classic", "recruiter"] }
 ```
 
-**Already-connected account** — pass its `account_id`, `recruiter: true`, `email` and `password`.
+**Already-connected account** — pass its `account_id`, `recruiter: true`, `email` and `password`. No password needed if it was connected with `products`.
 
 - One 2FA at most. Answer it with [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint)
 - The seat's events arrive on the account's webhook, with `"product": "recruiter"`
 - The seat and the account disconnect independently. Reconnect the seat with `recruiter: true`
-- No Recruiter licence → `recruiter.connected: false`
-- The seat is never billed as an extra account. Free
+- No Recruiter licence → `recruiter.connected: false` (`NO_RECRUITER_LICENSE` with `recruiter: true`)
+- The seat itself is free and never billed as an extra account
 
 ```json Response
 {
