@@ -50,6 +50,8 @@ All V2 API error responses follow a standardized format:
 |---|---|---|
 | Temporary | `UPSTREAM_ERROR`, `WHATSAPP_UNAVAILABLE`, `SALES_NAV_SEAT_UNAVAILABLE`, `NO_PROXY_AVAILABLE`, `MONITOR_START_FAILED`, `MAILBOX_PROVIDER_ERROR` | Yes, after a short delay |
 | Invitations | `CANT_RESEND_YET` (already connected, invitation pending, or withdrawn less than ~3 weeks ago), `ALREADY_CONNECTED`, `ALREADY_INVITED`, `CUSTOM_MESSAGE_TOO_LONG`, `INVITATION_REFUSED`, `INVITATION_NOT_CONFIRMED` (check with `check_invitation`), `INVITATION_NOT_PENDING` | No |
+| Rate limits (under `RATE_LIMITED`) | `CONCURRENCY_LIMIT` (our per-key limit: retry in a second), `LINKEDIN_RATE_LIMITED` (LinkedIn throttled the account: retry later) | Yes, with backoff |
+| Disconnected (under `ACCOUNT_INACTIVE`) | `LINKEDIN_SESSION_EXPIRED`, `MAILBOX_AUTH_REVOKED`, `MAILBOX_AUTH_FAILED`, `RECRUITER_SEAT_EXPIRED`: reconnect via `POST /v2/login`. `NOT_CONNECTED` (WhatsApp): retry shortly | Only `NOT_CONNECTED` |
 | Account limits (under `RATE_LIMITED`) | `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` (invitations, weekly), `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) | Not before the limit resets |
 | LinkedIn refusals | `PROFILE_RESTRICTED`, `ENTITY_NOT_FOUND`, `GEO_RESTRICTED`, `INMAIL_NOT_ALLOWED`, `JOB_POSTING_FAILED`, `LINKEDIN_REFUSED` | No |
 | Sales Navigator | `NO_SALES_NAV_SEAT`, `SALES_NAV_SEAT_INVALID` (reconnect), `SALES_NAV_ACCESS_DENIED`, `SALES_NAV_BAD_REQUEST`, `SALES_NAV_NOT_FOUND`, `SALES_NAV_RATE_LIMITED`, `INMAIL_MONTHLY_FUSE_LIMIT`, `ACCOUNT_UNDER_REVIEW`, `MISSING_CONVERSATION_ID`, `SALES_NAV_ERROR` | No |
@@ -124,6 +126,8 @@ Returned when the account exists but is not currently active.
   }
 }
 ```
+
+Its `sub_code` says why: `LINKEDIN_SESSION_EXPIRED`, `MAILBOX_AUTH_REVOKED`, `RECRUITER_SEAT_EXPIRED`… (reconnect), or `NOT_CONNECTED` for a WhatsApp session that is reconnecting (retry shortly).
 
 **How to fix:** Check the account status with `GET /v2/accounts/{account_id}`. To reactivate the account, log in again via `POST /v2/login` with the same credentials.
 
