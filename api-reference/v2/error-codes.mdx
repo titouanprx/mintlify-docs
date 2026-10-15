@@ -10,7 +10,8 @@ All V2 API error responses follow a standardized format:
   "success": false,
   "error": {
     "code": "ERROR_CODE",
-    "message": "Human-readable description of the error"
+    "message": "Human-readable description of the error",
+    "sub_code": "CANT_RESEND_YET"
   },
   "metadata": {
     "action": "the_action_attempted",
@@ -19,6 +20,8 @@ All V2 API error responses follow a standardized format:
   }
 }
 ```
+
+`sub_code` is the machine-readable reason, present when we know it (always on `CHANNEL_ERROR`). Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
 
 <Note>
   Error responses **never consume credits**. The `credits_consumed` field will always be `0` on errors.
@@ -36,8 +39,26 @@ All V2 API error responses follow a standardized format:
 | `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
 | `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
 | `SEAT_LIMIT_REACHED` | 402 Payment Required | Per-account plan: no seat available for this account. Either you are connecting more accounts than your plan allows (auto-upgrade off), or the workspace has no active per-account plan. Manage it in Billing. |
-| `CHANNEL_ERROR` | 422 Unprocessable Entity | The request was valid but the platform refused it — restricted profile, missing premium seat (e.g. no Sales Nav license), or an upstream failure. Not a parameter mistake, so retrying with the same input will not help. |
+| `CHANNEL_ERROR` | 422 Unprocessable Entity | The request was valid but the platform refused it — restricted profile, missing premium seat (e.g. no Sales Nav license), or an upstream failure. `sub_code` tells which: only `UPSTREAM_ERROR` and `*_UNAVAILABLE` are worth retrying. |
 | `INTERNAL_ERROR` | 500 Internal Server Error | An unexpected server error occurred. If this persists, contact support. |
+
+## Sub-codes
+
+| Area | `sub_code` | Retry? |
+|---|---|---|
+| Temporary | `UPSTREAM_ERROR`, `WHATSAPP_UNAVAILABLE`, `SALES_NAV_SEAT_UNAVAILABLE`, `NO_PROXY_AVAILABLE`, `MONITOR_START_FAILED`, `MAILBOX_PROVIDER_ERROR` | Yes, after a short delay |
+| Invitations | `CANT_RESEND_YET` (already connected, invitation pending, or withdrawn less than ~3 weeks ago), `ALREADY_CONNECTED`, `ALREADY_INVITED`, `CUSTOM_MESSAGE_TOO_LONG`, `INVITATION_REFUSED`, `INVITATION_NOT_CONFIRMED` (check with `check_invitation`), `INVITATION_NOT_PENDING` | No |
+| Invitation limits (under `RATE_LIMITED`) | `QUOTA_EXCEEDED`, `FUSE_LIMIT_EXCEEDED` | Later |
+| LinkedIn refusals | `PROFILE_RESTRICTED`, `ENTITY_NOT_FOUND`, `GEO_RESTRICTED`, `INMAIL_NOT_ALLOWED`, `JOB_POSTING_FAILED`, `LINKEDIN_REFUSED` | No |
+| Sales Navigator | `NO_SALES_NAV_SEAT`, `SALES_NAV_SEAT_INVALID` (reconnect), `SALES_NAV_ACCESS_DENIED`, `SALES_NAV_BAD_REQUEST`, `SALES_NAV_NOT_FOUND`, `SALES_NAV_RATE_LIMITED`, `INMAIL_MONTHLY_FUSE_LIMIT`, `ACCOUNT_UNDER_REVIEW`, `MISSING_CONVERSATION_ID`, `SALES_NAV_ERROR` | No |
+| Recruiter | `RECRUITER_SEAT_MISSING`, `RECRUITER_SEAT_EXPIRED` (reconnect), `NO_RECRUITER_LICENSE`, `RECRUITER_LOGIN_FAILED`, `RECRUITER_ERROR` | No |
+| Login & checkpoint | `LOGIN_FAILED`, `ACCOUNT_RESTRICTED`, `INVALID_LOGIN_TOKEN`, `CHECKPOINT_VERIFICATION_FAILED`, `CHECKPOINT_SESSION_EXPIRED` (login again), `CHECKPOINT_RESEND_FAILED` | No |
+| Accounts | `SESSION_REJECTED_THROUGH_PROXY` (proxy or country change refused, nothing changed) | No |
+| Email | `MAILBOX_AUTHORIZATION_FAILED`, `MAILBOX_AUTH_FAILED`, `MAILBOX_AUTH_REVOKED`, `MAILBOX_PERMISSIONS_MISSING`, `MAILBOX_CONNECTION_FAILED`, `NO_GMAIL_MAILBOX`, `MICROSOFT_SENDING_UNAVAILABLE`, `IMAP_AUTH_FAILED`, `IMAP_CONNECTION_FAILED` | No |
+| WhatsApp | `WHATSAPP_LINK_EXPIRED`, `WHATSAPP_LINK_REFUSED`, `NOT_ON_WHATSAPP`, `SEND_FAILED`, `NOT_CONNECTED`, `CHAT_NOT_FOUND` | No |
+| Other | `COMPANY_NOT_FOUND` (enrich), `CONNECT_LINK_UNAVAILABLE`, `CONNECTION_FAILED` (hosted connection links) | No |
+
+New sub-codes may be added; treat an unknown one like its `code`.
 
 ## Error Code Details
 
