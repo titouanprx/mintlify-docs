@@ -11,7 +11,7 @@ All V2 API error responses follow a standardized format:
   "error": {
     "code": "ERROR_CODE",
     "message": "Human-readable description of the error",
-    "sub_code": "CANT_RESEND_YET"
+    "sub_code": "OPTIONAL_REASON"
   },
   "metadata": {
     "action": "the_action_attempted",
@@ -35,7 +35,7 @@ Every error calls for one of five reactions:
 | **Skip this target** and move on | `PROFILE_NOT_FOUND`, `CANT_RESEND_YET`, `RECIPIENT_NOT_FIRST_DEGREE_CONNECTION` and the other `CHANNEL_ERROR` refusals |
 | **Fix the request** before sending it again | Other `INVALID_PARAMS` / `INVALID_ACTION`, `INVALID_ACCOUNT`; top up on `INSUFFICIENT_CREDITS` |
 
-Never retry the same request on the last three: it will fail the same way and may cost a credit each time.
+Never retry the same request on the last three: it will fail the same way.
 
 ## Error Codes Reference
 
@@ -43,12 +43,12 @@ Never retry the same request on the last three: it will fail the same way and ma
 |---|---|---|
 | `INVALID_API_KEY` | 403 Forbidden | The provided API key is invalid, expired, or missing from the `x-api-key` header. |
 | `INVALID_ACCOUNT` | 404 Not Found | The specified `account_id` does not exist or does not belong to your API key. |
-| `ACCOUNT_INACTIVE` | 403 Forbidden | The account exists but is currently inactive or suspended. Reactivate the account before making requests. |
+| `ACCOUNT_INACTIVE` | 403 Forbidden | The account's session stopped working during the call (LinkedIn session expired, mailbox access revoked, Recruiter seat expired…). Reconnect it via `POST /v2/login`. |
 | `INVALID_ACTION` | 400 Bad Request | The requested `action` is not supported for this category endpoint, or not on this account (a Recruiter seat only runs Recruiter actions). Check the available actions in the documentation. |
-| `INVALID_PARAMS` | 400 Bad Request | One or more required parameters are missing, or a parameter value is invalid — this also covers a target that no longer exists on LinkedIn, such as a deleted post. Check the `message` field for details. |
-| `RATE_LIMITED` | 429 Too Many Requests | You are sending too many requests. Slow down and retry after a short delay. |
+| `INVALID_PARAMS` | 400 Bad Request | A parameter is missing or invalid. Also returned when the target doesn't exist on LinkedIn (`PROFILE_NOT_FOUND`) and when the `account_id` is disconnected (`ACCOUNT_DISCONNECTED`). |
+| `RATE_LIMITED` | 429 Too Many Requests | Too many concurrent requests on your API key, or LinkedIn throttled or capped the account. `sub_code` tells which. |
 | `INSUFFICIENT_CREDITS` | 402 Payment Required | Your account does not have enough credits to perform this action. Top up your credits to continue. |
-| `SEAT_LIMIT_REACHED` | 402 Payment Required | Per-account plan: no seat available for this account. Either you are connecting more accounts than your plan allows (auto-upgrade off), or the workspace has no active per-account plan. Manage it in Billing. |
+| `SEAT_LIMIT_REACHED` | 402 Payment Required | Per-account plan: all your seats are used and auto-upgrade is off. Add seats or turn auto-upgrade on in Billing. |
 | `CHANNEL_ERROR` | 422 Unprocessable Entity | The request was valid but the platform refused it — restricted profile, missing premium seat (e.g. no Sales Nav license), or an upstream failure. `sub_code` tells which: only `UPSTREAM_ERROR` and `*_UNAVAILABLE` are worth retrying. |
 | `INTERNAL_ERROR` | 500 Internal Server Error | An unexpected server error occurred. If this persists, contact support. |
 
@@ -57,18 +57,18 @@ Never retry the same request on the last three: it will fail the same way and ma
 | Area | `sub_code` | Retry? |
 |---|---|---|
 | Temporary | `UPSTREAM_ERROR`, `WHATSAPP_UNAVAILABLE`, `SALES_NAV_SEAT_UNAVAILABLE`, `NO_PROXY_AVAILABLE`, `MONITOR_START_FAILED`, `MAILBOX_PROVIDER_ERROR` | Yes, after a short delay |
-| Invitations | `CANT_RESEND_YET` (already connected, invitation pending, or withdrawn less than ~3 weeks ago), `ALREADY_CONNECTED`, `ALREADY_INVITED`, `CUSTOM_MESSAGE_TOO_LONG`, `INVITATION_REFUSED`, `INVITATION_NOT_CONFIRMED` (check with `check_invitation`), `INVITATION_NOT_PENDING` | No |
-| Request (under `INVALID_PARAMS`) | `PROFILE_NOT_FOUND` (the profile doesn't exist or isn't visible: drop it), `ACCOUNT_DISCONNECTED` (the `account_id` is disconnected: reconnect it), `BAD_CREDENTIALS` (login), and on a refused `send` LinkedIn's own code, e.g. `RECIPIENT_NOT_FIRST_DEGREE_CONNECTION` (not connected yet) or `NOT_ALLOWED_PREMIUM_INMAIL_SUBSEQUENT_REPLY` (wait for a reply to your InMail) | No |
-| Rate limits (under `RATE_LIMITED`) | `CONCURRENCY_LIMIT` (our per-key limit: retry in a second), `LINKEDIN_RATE_LIMITED` (LinkedIn throttled the account: retry later) | Yes, with backoff |
-| Disconnected (under `ACCOUNT_INACTIVE`) | `LINKEDIN_SESSION_EXPIRED`, `MAILBOX_AUTH_REVOKED`, `MAILBOX_AUTH_FAILED`, `RECRUITER_SEAT_EXPIRED`: reconnect via `POST /v2/login`. `NOT_CONNECTED` (WhatsApp): retry shortly | Only `NOT_CONNECTED` |
+| Rate limits (under `RATE_LIMITED`) | `CONCURRENCY_LIMIT` (your per-key limit: retry in a second), `LINKEDIN_RATE_LIMITED`, `SALES_NAV_RATE_LIMITED` (LinkedIn throttled the account: retry in a few minutes) | Yes, with backoff |
 | Account limits (under `RATE_LIMITED`) | `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` (invitations, weekly), `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) | Not before the limit resets |
+| Disconnected (under `ACCOUNT_INACTIVE`) | `LINKEDIN_SESSION_EXPIRED`, `MAILBOX_AUTH_REVOKED`, `MAILBOX_AUTH_FAILED`, `RECRUITER_SEAT_EXPIRED`: reconnect via `POST /v2/login`. `NOT_CONNECTED` (WhatsApp session reconnecting): retry shortly | Only `NOT_CONNECTED` |
+| Request (under `INVALID_PARAMS`) | `PROFILE_NOT_FOUND` (the profile doesn't exist or isn't visible: drop it), `ACCOUNT_DISCONNECTED` (reconnect the account), `BAD_CREDENTIALS` (login), and on a refused `send` LinkedIn's own code, e.g. `RECIPIENT_NOT_FIRST_DEGREE_CONNECTION` (not connected yet) or `NOT_ALLOWED_PREMIUM_INMAIL_SUBSEQUENT_REPLY` (wait for a reply to your InMail) | No |
+| Invitations | `CANT_RESEND_YET` (already connected, invitation pending, or withdrawn less than ~3 weeks ago), `ALREADY_CONNECTED`, `ALREADY_INVITED`, `CUSTOM_MESSAGE_TOO_LONG`, `INVITATION_REFUSED`, `INVITATION_NOT_CONFIRMED` (check with `check_invitation`), `INVITATION_NOT_PENDING` | No |
 | LinkedIn refusals | `PROFILE_RESTRICTED`, `ENTITY_NOT_FOUND`, `GEO_RESTRICTED`, `INMAIL_NOT_ALLOWED`, `JOB_POSTING_FAILED`, `LINKEDIN_REFUSED` | No |
-| Sales Navigator | `NO_SALES_NAV_SEAT`, `SALES_NAV_SEAT_INVALID` (reconnect), `SALES_NAV_ACCESS_DENIED`, `SALES_NAV_BAD_REQUEST`, `SALES_NAV_NOT_FOUND`, `SALES_NAV_RATE_LIMITED`, `INMAIL_MONTHLY_FUSE_LIMIT`, `ACCOUNT_UNDER_REVIEW`, `MISSING_CONVERSATION_ID`, `SALES_NAV_ERROR` | No |
+| Sales Navigator | `NO_SALES_NAV_SEAT`, `SALES_NAV_SEAT_INVALID` (reconnect), `SALES_NAV_ACCESS_DENIED`, `SALES_NAV_BAD_REQUEST`, `SALES_NAV_NOT_FOUND`, `ACCOUNT_UNDER_REVIEW`, `MISSING_CONVERSATION_ID`, `SALES_NAV_ERROR` | No |
 | Recruiter | `RECRUITER_SEAT_MISSING`, `RECRUITER_SEAT_EXPIRED` (reconnect), `NO_RECRUITER_LICENSE`, `RECRUITER_LOGIN_FAILED`, `RECRUITER_ERROR` | No |
 | Login & checkpoint | `LOGIN_FAILED`, `ACCOUNT_RESTRICTED`, `INVALID_LOGIN_TOKEN`, `CHECKPOINT_VERIFICATION_FAILED`, `CHECKPOINT_SESSION_EXPIRED` (login again), `CHECKPOINT_RESEND_FAILED` | No |
 | Accounts | `SESSION_REJECTED_THROUGH_PROXY` (proxy or country change refused, nothing changed) | No |
-| Email | `MAILBOX_AUTHORIZATION_FAILED`, `MAILBOX_AUTH_FAILED`, `MAILBOX_AUTH_REVOKED`, `MAILBOX_PERMISSIONS_MISSING`, `MAILBOX_CONNECTION_FAILED`, `NO_GMAIL_MAILBOX`, `MICROSOFT_SENDING_UNAVAILABLE`, `IMAP_AUTH_FAILED`, `IMAP_CONNECTION_FAILED` | No |
-| WhatsApp | `WHATSAPP_LINK_EXPIRED`, `WHATSAPP_LINK_REFUSED`, `NOT_ON_WHATSAPP`, `SEND_FAILED`, `NOT_CONNECTED`, `CHAT_NOT_FOUND` | No |
+| Email | `MAILBOX_AUTHORIZATION_FAILED`, `MAILBOX_PERMISSIONS_MISSING`, `MAILBOX_CONNECTION_FAILED`, `NO_GMAIL_MAILBOX`, `MICROSOFT_SENDING_UNAVAILABLE`, `IMAP_AUTH_FAILED`, `IMAP_CONNECTION_FAILED` | No |
+| WhatsApp | `WHATSAPP_LINK_EXPIRED`, `WHATSAPP_LINK_REFUSED`, `NOT_ON_WHATSAPP`, `SEND_FAILED`, `CHAT_NOT_FOUND` | No |
 | Other | `COMPANY_NOT_FOUND` (enrich), `CONNECT_LINK_UNAVAILABLE`, `CONNECTION_FAILED` (hosted connection links) | No |
 
 New sub-codes may be added; treat an unknown one like its `code`.
@@ -84,10 +84,9 @@ Returned when the `x-api-key` header is missing or contains an invalid key.
   "success": false,
   "error": {
     "code": "INVALID_API_KEY",
-    "message": "The provided API key is invalid or missing"
+    "message": "Invalid API Key"
   },
   "metadata": {
-    "action": "get_profile",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
@@ -105,10 +104,10 @@ Returned when the `account_id` in the request body does not match any account un
   "success": false,
   "error": {
     "code": "INVALID_ACCOUNT",
-    "message": "The specified account_id does not exist"
+    "message": "Account not found"
   },
   "metadata": {
-    "action": "get_profile",
+    "action": "get",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
@@ -119,7 +118,7 @@ Returned when the `account_id` in the request body does not match any account un
 
 ### ACCOUNT_INACTIVE (403)
 
-Returned when the account exists but is not currently active.
+Returned when the account's session stops working during the call. A request on an `account_id` that is already disconnected gets `400 INVALID_PARAMS` with `sub_code: ACCOUNT_DISCONNECTED` instead.
 
 ```json
 {
@@ -130,7 +129,7 @@ Returned when the account exists but is not currently active.
     "sub_code": "LINKEDIN_SESSION_EXPIRED"
   },
   "metadata": {
-    "action": "get_profile",
+    "action": "get",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
@@ -150,7 +149,7 @@ Returned when the `action` field contains an unsupported action for the category
   "success": false,
   "error": {
     "code": "INVALID_ACTION",
-    "message": "Unknown action 'foo_bar' for category 'profiles'"
+    "message": "Unsupported action 'foo_bar' for category 'profiles' on platform 'linkedin'"
   },
   "metadata": {
     "action": "foo_bar",
@@ -181,17 +180,17 @@ It is also returned when a non-Recruiter action is called with a **Recruiter sea
 
 ### INVALID_PARAMS (400)
 
-Returned when required parameters are missing or parameter values are invalid.
+Returned when a parameter is missing or invalid, when the target doesn't exist on LinkedIn (`sub_code: PROFILE_NOT_FOUND`), or when the `account_id` is disconnected (`sub_code: ACCOUNT_DISCONNECTED`).
 
 ```json
 {
   "success": false,
   "error": {
     "code": "INVALID_PARAMS",
-    "message": "Missing required parameter: profile_url"
+    "message": "profile_url is required"
   },
   "metadata": {
-    "action": "get_profile",
+    "action": "get_contact",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
@@ -202,24 +201,24 @@ Returned when required parameters are missing or parameter values are invalid.
 
 ### RATE_LIMITED (429)
 
-Returned when you exceed the API rate limit.
+Returned when your API key has too many requests in flight (`CONCURRENCY_LIMIT`), or when LinkedIn throttles or caps the account.
 
 ```json
 {
   "success": false,
   "error": {
     "code": "RATE_LIMITED",
-    "message": "Rate limit exceeded. Please try again later"
+    "message": "Too many concurrent requests for this API key (limit: 20). Reduce parallelism or retry shortly.",
+    "sub_code": "CONCURRENCY_LIMIT"
   },
   "metadata": {
-    "action": "get_profile",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
 }
 ```
 
-**How to fix:** Implement exponential backoff in your requests. Wait a few seconds before retrying. LinkedIn account limits carry a `sub_code`: `FUSE_LIMIT_EXCEEDED` and `QUOTA_EXCEEDED` (invitations, weekly) and `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) reset on LinkedIn's schedule, so stop that action on the account instead of retrying. `SALES_NAV_RATE_LIMITED` is a short throttle: retry in a few minutes.
+**How to fix:** On `CONCURRENCY_LIMIT`, send fewer requests in parallel and retry after a second. LinkedIn account limits carry a `sub_code`: `FUSE_LIMIT_EXCEEDED` and `QUOTA_EXCEEDED` (invitations, weekly) and `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) reset on LinkedIn's schedule, so stop that action on the account instead of retrying. `SALES_NAV_RATE_LIMITED` is a short throttle: retry in a few minutes.
 
 ### INSUFFICIENT_CREDITS (402)
 
@@ -230,10 +229,10 @@ Returned when your account does not have enough credits for the requested action
   "success": false,
   "error": {
     "code": "INSUFFICIENT_CREDITS",
-    "message": "Insufficient credits. This action requires 3 credits, but you have 1 remaining"
+    "message": "Not enough credits"
   },
   "metadata": {
-    "action": "search_profiles",
+    "action": "get",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
@@ -244,14 +243,14 @@ Returned when your account does not have enough credits for the requested action
 
 ### SEAT_LIMIT_REACHED (402)
 
-Returned on the per-account plan when no seat is available for the account you are connecting. Two causes, told apart by the `message`: you already have as many connected accounts as your plan allows and auto-upgrade is off, or the workspace has no active per-account plan at all (checkout never completed, trial ended without a card).
+Returned on the per-account plan when all your seats are used and auto-upgrade is off.
 
 ```json
 {
   "success": false,
   "error": {
     "code": "SEAT_LIMIT_REACHED",
-    "message": "No account seat available: this workspace has no active per-account plan. Subscribe at https://app.linkupapi.com/billing"
+    "message": "Seat limit reached: 3/3 accounts connected. Add seats or turn on auto-upgrade in your dashboard to connect more accounts."
   },
   "metadata": {
     "action": "login",
@@ -261,7 +260,7 @@ Returned on the per-account plan when no seat is available for the account you a
 }
 ```
 
-**How to fix:** Open [Billing](https://app.linkupapi.com/billing) to subscribe to the per-account plan, add seats, or turn auto-upgrade on. `INSUFFICIENT_CREDITS` is only returned to credit customers whose balance is at zero, and for email enrichment, which is billed in credits on every plan.
+**How to fix:** Open [Billing](https://app.linkupapi.com/billing) to add seats or turn auto-upgrade on. `INSUFFICIENT_CREDITS` is only returned to credit customers whose balance is at zero, and for email enrichment, which is billed in credits on every plan.
 
 ### CHANNEL_ERROR (422)
 
@@ -297,7 +296,7 @@ Returned when an unexpected error occurs on the server.
     "message": "An unexpected error occurred while processing your request"
   },
   "metadata": {
-    "action": "get_profile",
+    "action": "get",
     "credits_consumed": 0,
     "timestamp": "2026-03-24T12:00:00Z"
   }
