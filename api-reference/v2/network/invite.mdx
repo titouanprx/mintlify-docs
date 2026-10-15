@@ -89,7 +89,7 @@ Sends a connection request (invitation) to a user. You can identify the target b
   </Expandable>
 </ResponseField>
 
-<Note>A `422 CHANNEL_ERROR` ending in `CANT_RESEND_YET` means LinkedIn refused the invitation: an invitation to this member is already pending, or one was withdrawn less than about 3 weeks ago. Call `check_invitation` to tell which.</Note>
+<Note>A `422 CHANNEL_ERROR` ending in `CANT_RESEND_YET` means LinkedIn refused the invitation: you are already connected to this member, an invitation is already pending, or one was withdrawn less than about 3 weeks ago. Call `check_invitation` to tell which.</Note>
 
 <ResponseExample>
 ```json 200
