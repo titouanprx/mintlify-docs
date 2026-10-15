@@ -48,6 +48,126 @@ Branch on `code` and `sub_code`, never on `message`: the text may change, the co
 | `CHANNEL_ERROR` | 422 | The request was valid but the platform refused it. `sub_code` says why. |
 | `INTERNAL_ERROR` | 500 | Unexpected error on our side. Contact [support@linkupapi.com](mailto:support@linkupapi.com) if it persists. |
 
+## Examples
+
+<CodeGroup>
+
+```json INVALID_API_KEY
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_API_KEY",
+    "message": "Invalid API Key"
+  },
+  "metadata": { "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json INVALID_ACCOUNT
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACCOUNT",
+    "message": "Account not found"
+  },
+  "metadata": { "action": "get", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json ACCOUNT_INACTIVE
+{
+  "success": false,
+  "error": {
+    "code": "ACCOUNT_INACTIVE",
+    "message": "LinkedIn account is no longer connected. Please re-authenticate.",
+    "sub_code": "LINKEDIN_SESSION_EXPIRED"
+  },
+  "metadata": { "action": "get", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json INVALID_ACTION
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_ACTION",
+    "message": "Unsupported action 'foo_bar' for category 'profiles' on platform 'linkedin'"
+  },
+  "metadata": { "action": "foo_bar", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json INVALID_PARAMS
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "Profile not found",
+    "sub_code": "PROFILE_NOT_FOUND"
+  },
+  "metadata": { "action": "get", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json RATE_LIMITED
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMITED",
+    "message": "LinkedIn invitation limit reached on this account (FUSE_LIMIT_EXCEEDED)",
+    "sub_code": "FUSE_LIMIT_EXCEEDED"
+  },
+  "metadata": { "action": "invite", "credits_consumed": 1, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json INSUFFICIENT_CREDITS
+{
+  "success": false,
+  "error": {
+    "code": "INSUFFICIENT_CREDITS",
+    "message": "Not enough credits"
+  },
+  "metadata": { "action": "get", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json SEAT_LIMIT_REACHED
+{
+  "success": false,
+  "error": {
+    "code": "SEAT_LIMIT_REACHED",
+    "message": "Seat limit reached: 3/3 accounts connected. Add seats or turn on auto-upgrade in your dashboard to connect more accounts."
+  },
+  "metadata": { "action": "login", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json CHANNEL_ERROR
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "LinkedIn won't accept this invitation yet: after withdrawing an invitation, the same member can only be invited again about 3 weeks later (CANT_RESEND_YET)",
+    "sub_code": "CANT_RESEND_YET"
+  },
+  "metadata": { "action": "invite", "credits_consumed": 1, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+```json INTERNAL_ERROR
+{
+  "success": false,
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "An unexpected error occurred while processing your request"
+  },
+  "metadata": { "action": "get", "credits_consumed": 0, "timestamp": "2026-10-15T12:00:00Z" }
+}
+```
+
+</CodeGroup>
+
 ## Sub-codes
 
 | Area | `sub_code` |
