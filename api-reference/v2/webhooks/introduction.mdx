@@ -457,7 +457,7 @@ Triggered when one or more connection requests you sent are accepted. Detected i
 | `event.count` | `integer` | Length of `new_connections` |
 
 <Note>
-  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. Acceptances are then detected in real time.
+  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. Acceptances are then detected in real time. A periodic full check (every ~6 hours) catches any acceptance missed in real time.
 </Note>
 
 ### Invitation Received
