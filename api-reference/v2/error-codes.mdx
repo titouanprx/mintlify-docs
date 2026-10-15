@@ -203,7 +203,7 @@ Returned when you exceed the API rate limit.
 }
 ```
 
-**How to fix:** Implement exponential backoff in your requests. Wait a few seconds before retrying.
+**How to fix:** Implement exponential backoff in your requests. Wait a few seconds before retrying. LinkedIn-side limits carry a `sub_code` (`QUOTA_EXCEEDED`, `FUSE_LIMIT_EXCEEDED`, `SALES_NAV_RATE_LIMITED`, `INMAIL_MONTHLY_FUSE_LIMIT`): those reset on LinkedIn's schedule, not in seconds.
 
 ### INSUFFICIENT_CREDITS (402)
 
@@ -246,6 +246,28 @@ Returned on the per-account plan when no seat is available for the account you a
 ```
 
 **How to fix:** Open [Billing](https://app.linkupapi.com/billing) to subscribe to the per-account plan, add seats, or turn auto-upgrade on. `INSUFFICIENT_CREDITS` is only returned to credit customers whose balance is at zero, and for email enrichment, which is billed in credits on every plan.
+
+### CHANNEL_ERROR (422)
+
+Returned when the request was valid but the platform refused it. `sub_code` gives the reason; see [Sub-codes](#sub-codes).
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "No Sales Nav license found for this account",
+    "sub_code": "NO_SALES_NAV_SEAT"
+  },
+  "metadata": {
+    "action": "search_people_nav",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-15T12:00:00Z"
+  }
+}
+```
+
+**How to fix:** Branch on `sub_code`. Retry only the temporary ones (`UPSTREAM_ERROR`, `*_UNAVAILABLE`); for the others, change the request or the account (seat, licence, reconnection).
 
 ### INTERNAL_ERROR (500)
 
