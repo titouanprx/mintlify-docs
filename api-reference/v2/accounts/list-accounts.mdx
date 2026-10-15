@@ -266,12 +266,11 @@ Whether the account can run [lead searches](/api-reference/v2/profiles/search-pe
 
 ### Recruiter seat
 
-A Recruiter seat is **not** derived from the session like Sales Nav: it is a second LinkedIn session with its **own `account_id`** (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)). So it shows up in two places:
+`recruiter` on the LinkedIn account tells whether its Recruiter seat is connected. Recruiter actions use the account's own `account_id` (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)).
 
-- on the LinkedIn account, `recruiter` tells whether it has a seat and gives the seat's `account_id` — pass that id to every Recruiter action
-- the seat itself is an account of its own (`kind: "recruiter_seat"`, `parent_account_id`, `billable: false`, no `sales_nav` / `proxy`), listed only with `include_seats=true`
-
-The seat and its LinkedIn account connect and disconnect independently. No seat → `"recruiter": { "connected": false }`.
+- several contracts → `contracts`, with `selected` on the current one (same in `sales_nav`)
+- the seat and the account disconnect independently
+- no seat → `"recruiter": { "connected": false }`
 
 ### Notes
 - Use the `account_id` from the response in all V2 action requests

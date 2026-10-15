@@ -346,7 +346,7 @@ The realtime stream only gives the sender's Sales Navigator id, which is meaning
 
 ### Recruiter inbox
 
-Recruiter InMails arrive with `event.inbox: "recruiter"`. Create the webhook on the **Recruiter seat's `account_id`** (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)): its stream is separate from the LinkedIn account's, which never receives Recruiter messages (and the other way round).
+Recruiter InMails arrive on the LinkedIn account's webhook, with `"product": "recruiter"` and `event.inbox: "recruiter"` (see [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat)).
 
 Both directions come through: the candidate's replies (`direction: "inbound"`) and the seat's own sends (`direction: "outbound"`, `sender.is_self_sent: true`).
 
@@ -399,7 +399,7 @@ Both directions come through: the candidate's replies (`direction: "inbound"`) a
 | `event.folders` | Mailbox folders the thread is in: `INBOX`, `UNREAD`, `AWAITING_REPLY`, `ACCEPTED`, `ACCEPTED_BUT_NOT_RESPONDED`, `DECLINED`, `ARCHIVED`… This is where the InMail's outcome lives: `ACCEPTED` once the candidate answered, `DECLINED` if they refused |
 | `event.reply_status` | Only on the seat's **opening** InMail (`AWAITING_REPLY`). LinkedIn does not send it on later messages — read `folders` instead |
 | `event.sender.urn_raw` | `urn:li:ts_profile:…` for the candidate (pass it as `recipient_urn`), `urn:li:ts_seat:…` for the seat |
-| `event.attachments` | Same shape as above, with `url: null` (LinkedIn never sends a link). `download_url` points at [Download Attachment](/api-reference/v2/messages/download-attachment) with the seat's `account_id`, the message (`message_id`) and the file (`asset_urn`). An image comes back re-encoded by LinkedIn, so its size can differ from `byte_size` |
+| `event.attachments` | Same shape as above, with `url: null` (LinkedIn never sends a link). `download_url` points at [Download Attachment](/api-reference/v2/messages/download-attachment) with the account's `account_id`, the message (`message_id`) and the file (`asset_urn`). An image comes back re-encoded by LinkedIn, so its size can differ from `byte_size` |
 
 <Note>
   LinkedIn's Recruiter stream carries less than the classic one. Always empty or fixed on a Recruiter event:

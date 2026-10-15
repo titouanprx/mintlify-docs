@@ -9,7 +9,7 @@ description: 'Search candidates with a LinkedIn Recruiter (Lite) seat.'
 
 Run a **Recruiter talent search** and get back candidates in the same shape as [Get Profile](/api-reference/v2/profiles/get-profile), plus what the seat knows about them (notes, messages, projects) and LinkedIn's hiring insights.
 
-Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/accounts/login#recruiter-seat). The seat has its **own `account_id`**: pass that one, not the LinkedIn account's.
+Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/accounts/login#recruiter-seat). Pass the LinkedIn account's `account_id`.
 
 <Note>This endpoint consumes **1 credit per 10 results** returned. Requires a Recruiter seat. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 

@@ -60,7 +60,23 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
 </ParamField>
 
 <ParamField body="recruiter" type="boolean" default={false}>
-  Connect the account's **LinkedIn Recruiter (Lite)** seat. Needs `account_id` + `email` + `password`. See [Recruiter seat](#recruiter-seat) below.
+  Connect the **LinkedIn Recruiter (Lite)** seat of an already-connected account. Needs `account_id` + `email` + `password`. See [Recruiter seat](#recruiter-seat) below.
+</ParamField>
+
+<ParamField body="products" type="string[]">
+  What to open with this login: `classic`, `sales_navigator`, `recruiter`. `classic` is always included. With `recruiter`, one login and one 2FA open the account and its Recruiter seat. See [Recruiter seat](#recruiter-seat).
+</ParamField>
+
+<ParamField body="allow_product_selection" type="boolean" default={false}>
+  Let the user choose. After the login you get `checkpoint_type: "product_selection"` with the products the account holds. See [Choosing products and contracts](#choosing-products-and-contracts).
+</ParamField>
+
+<ParamField body="choose_contract" type="boolean" default={false}>
+  If the account holds several Sales Nav or Recruiter contracts, return them instead of picking one (`checkpoint_type: "contract_selection"`).
+</ParamField>
+
+<ParamField body="contract_id" type="string">
+  Open the seat on this contract. Remembered for later reconnections.
 </ParamField>
 
 <ParamField body="account_id" type="string">
@@ -99,6 +115,9 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     </ResponseField>
     <ResponseField name="sales_nav" type="object">
       Present when `sales_nav: true` was requested. `{ "connected": true, "contract_id": "...", "seat_id": "..." }` on success, or `{ "connected": false, "error": "..." }` if no seat could be activated. When the login returns `checkpoint_required`, this is `{ "pending": true }` and the seat is activated once the checkpoint completes.
+    </ResponseField>
+    <ResponseField name="recruiter" type="object">
+      Present when `products` includes `recruiter`. `{ "connected": true, "contract_id": "...", "seat_id": "..." }`, or `{ "connected": false, "error": "..." }`. `{ "pending": true }` while a 2FA is pending.
     </ResponseField>
     <ResponseField name="proxy" type="object">
       Present when `proxy` was given: `{ "mode": "custom", "host": "...", "port": 8080 }`.
@@ -284,49 +303,64 @@ The seat is attached to the account and renewed automatically when it expires. A
 
 ### Recruiter seat
 
-Unlike Sales Nav, a Recruiter seat is a **second LinkedIn session**: it needs a real login and gets its **own `account_id`**, distinct from the LinkedIn account's. Pass that seat id to every Recruiter action.
+Recruiter actions use the LinkedIn account's `account_id`.
 
-| | Sales Nav seat | Recruiter seat |
-|---|---|---|
-| Session | The LinkedIn account's own session | A separate session, from its own login |
-| `account_id` | The LinkedIn account's | Its own (`kind: "recruiter_seat"`, `parent_account_id` = the LinkedIn account) |
-| Actions | Called with the LinkedIn account's `account_id` | Called with the seat's `account_id` |
-| Webhook | Automatic on the LinkedIn account's webhook (`inbox: "sales_navigator"`) | Create one on the seat's `account_id` (`inbox: "recruiter"`) |
-| Expiry | Renewed automatically | Reconnect with this endpoint (`recruiter: true`) |
-| IP | The account's | The LinkedIn account's IP (and its [custom proxy](#custom-proxy) if set): nothing else is shared |
-
-1. Connect the LinkedIn account as usual.
-2. Call this endpoint again with the **LinkedIn account's** `account_id`, `recruiter: true`, `email` and `password`. The response returns the seat's new `account_id`.
-3. If `checkpoint_required`, answer it with [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint).
-
-- The seat is never billed as an extra account
-- The seat and its LinkedIn account connect and disconnect independently
-- The seat id is also in [List Accounts](/api-reference/v2/accounts/list-accounts) under `recruiter.account_id`
-- No Recruiter licence on the account → `CHANNEL_ERROR`
-- Free
-
-What the seat's `account_id` runs:
-
-- **Recruiter actions**: [Search People (Recruiter)](/api-reference/v2/profiles/search-people-recruiter), [Get Profile](/api-reference/v2/profiles/get-profile#recruiter), [Check InMail](/api-reference/v2/profiles/check-inmail), [Check InMail Seat](/api-reference/v2/profiles/check-inmail-seat), [Projects](/api-reference/v2/recruiter/projects), [Typeahead](/api-reference/v2/profiles/typeahead) (`recruiter` category), [Download Attachment](/api-reference/v2/messages/download-attachment)
-- **Messaging** (send, list_inbox, get_conversation, inbox_summary): always the Recruiter mailbox, `recruiter: true` is implied
-- **Anything else** (own profile, connections, invitations, feed, posts, classic or Sales Nav search, job posts…) → `INVALID_ACTION` (400), no credit, nothing sent to LinkedIn. The message names the LinkedIn account to use instead. See [Error Codes](/api-reference/v2/error-codes#codes).
+**New account** — one login opens both:
 
 ```json Request
-{ "account_id": "69c127c37cae0494dd827286", "recruiter": true, "email": "you@company.com", "password": "••••••" }
+{ "platform": "linkedin", "email": "you@company.com", "password": "••••••", "products": ["classic", "recruiter"] }
 ```
+
+**Already-connected account** — pass its `account_id`, `recruiter: true`, `email` and `password`.
+
+- One 2FA at most. Answer it with [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint)
+- The seat's events arrive on the account's webhook, with `"product": "recruiter"`
+- The seat and the account disconnect independently. Reconnect the seat with `recruiter: true`
+- No Recruiter licence → `recruiter.connected: false`
+- The seat is never billed as an extra account. Free
 
 ```json Response
 {
   "success": true,
   "data": {
-    "account_id": "6ac5faf6490a374925434c46",
-    "parent_account_id": "69c127c37cae0494dd827286",
+    "account_id": "69c127c37cae0494dd827286",
     "platform": "linkedin",
-    "kind": "recruiter_seat",
     "status": "connected",
-    "recruiter": { "connected": true, "account_id": "6ac5faf6490a374925434c46", "contract_id": "…", "seat_id": "…" }
+    "recruiter": { "connected": true, "contract_id": "347818991", "seat_id": "1612550011" }
   },
-  "metadata": { "action": "login", "credits_consumed": 0, "timestamp": "2026-10-07T10:30:00.000000" }
+  "metadata": { "action": "login", "credits_consumed": 1, "timestamp": "2026-10-15T10:30:00.000000" }
+}
+```
+
+### Choosing products and contracts
+
+Some accounts hold several products or contracts. Let the user pick:
+
+- `allow_product_selection: true` → `checkpoint_type: "product_selection"` with `products`. Answer with `code: "classic,recruiter"`
+- `choose_contract: true` → `checkpoint_type: "contract_selection"` with `contracts`. Answer with `code: "<contract id>"`
+
+Both answers go to [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint) with the account's `account_id`.
+
+To change contract later:
+
+- `GET /v2/accounts/{account_id}/contracts?product=recruiter` lists them (`selected` marks the current one)
+- `POST /v2/accounts/{account_id}/contracts/{contract_id}/select?product=recruiter` switches. No password
+
+Use `product=sales_navigator` for Sales Nav.
+
+```json Contract choice
+{
+  "success": true,
+  "data": {
+    "account_id": "69c127c37cae0494dd827286",
+    "status": "checkpoint_required",
+    "checkpoint_type": "contract_selection",
+    "product": "recruiter",
+    "contracts": [
+      { "id": "338091421", "name": "Acme Inc. - Recruiter" },
+      { "id": "347818991", "name": "Recruiter Lite" }
+    ]
+  }
 }
 ```
 

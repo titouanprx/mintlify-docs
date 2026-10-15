@@ -63,6 +63,10 @@ Links are single-use: generate a new one each time a user starts a connection.
   HTTPS endpoint we POST to once the account is connected. See [Callback](#callback).
 </ParamField>
 
+<ParamField body="products" type="string[]">
+  LinkedIn: `classic`, `sales_navigator`, `recruiter`. The page then asks the user what to connect, and which contract if there are several. Omit for classic only.
+</ParamField>
+
 ### Response
 
 <ResponseField name="data.link_id" type="string">

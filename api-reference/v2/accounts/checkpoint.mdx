@@ -12,7 +12,9 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
 
 <Note>Also completes an **email** OAuth connection (Gmail / Microsoft): after the user consents, submit the `code` (and `state`) returned to your `redirect_uri` together with the `account_id`. See [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox).</Note>
 
-<Note>**Recruiter seat**: pass the seat's `account_id` (or the LinkedIn account it was opened from) with the `code`. See [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat).</Note>
+<Note>**Recruiter seat**: pass the account's `account_id` with the `code`. See [Recruiter seat](/api-reference/v2/accounts/login#recruiter-seat).</Note>
+
+<Note>**Product or contract choice** (`checkpoint_type` `product_selection` or `contract_selection`): put the choice in `code`, e.g. `"classic,recruiter"` or a contract id. See [Choosing products and contracts](/api-reference/v2/accounts/login#choosing-products-and-contracts).</Note>
 
 <Note>**WhatsApp**: send only the `account_id` to get the current QR code, or `connected` once scanned. `resend: true` gives a new code once it expired. See [Connect Account](/api-reference/v2/accounts/login#whatsapp).</Note>
 
