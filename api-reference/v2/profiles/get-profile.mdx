@@ -73,6 +73,9 @@ Fetches detailed profile data for a specified user. You can identify the target 
     <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
     <ResponseField name="isOpenToWork" type="boolean">Profile displays the "Open to work" badge.</ResponseField>
     <ResponseField name="isHiring" type="boolean">Profile displays the "Hiring" badge.</ResponseField>
+    <ResponseField name="isPremium" type="boolean">The person has a LinkedIn Premium subscription.</ResponseField>
+    <ResponseField name="isInfluencer" type="boolean">LinkedIn Influencer badge.</ResponseField>
+    <ResponseField name="isCreator" type="boolean">Creator mode is on.</ResponseField>
     <ResponseField name="relationship" type="string">
       Network distance between the connected account and this profile: `"1st degree"`, `"2nd degree"`, `"3rd+ degree"` or `"Out of network"`. Same vocabulary as `connection_level` in [Search People](/api-reference/v2/profiles/search-people).
     </ResponseField>
@@ -159,6 +162,9 @@ Fetches detailed profile data for a specified user. You can identify the target 
     "profile_picture_url": "https://media.licdn.com/dms/image/v2/.../profile-displayphoto-shrink_400_400/...",
     "isOpenToWork": false,
     "isHiring": true,
+    "isPremium": true,
+    "isInfluencer": false,
+    "isCreator": false,
     "email": "john.smith@example.com",
     "phone": "0600000000",
     "website": "https://www.acme.example",
