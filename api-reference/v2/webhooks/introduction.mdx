@@ -411,7 +411,7 @@ Both directions come through: the candidate's replies (`direction: "inbound"`) a
 
 ### Accepted Invitation
 
-Triggered when one or more connection requests you sent are accepted. Detected in real time from LinkedIn's notifications (usually within a few minutes), with a full check of the connections list every ~6 hours as a fallback; both diff against the previously stored snapshot. The payload batches all new connections detected in the same check.
+Triggered when one or more connection requests you sent are accepted. Detected in real time. The payload batches all new connections detected in the same check.
 
 ```json
 {
@@ -453,7 +453,7 @@ Triggered when one or more connection requests you sent are accepted. Detected i
 | `event.count` | `integer` | Length of `new_connections` |
 
 <Note>
-  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. Acceptances are then detected in real time from LinkedIn's notifications, usually within a few minutes of the acceptance. A full check every ~6 hours catches anything missed.
+  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. Acceptances are then detected in real time.
 </Note>
 
 ### Invitation Received
