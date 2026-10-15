@@ -176,6 +176,8 @@ Triggered in real-time when a new message is received via the platform's realtim
 | `event.message_text` | `string` | Plain text content of the message |
 | `event.sender.name` | `string` | Display name of the sender |
 | `event.sender.profile_url` | `string` | Profile URL of the sender (ID-based, not vanity) |
+| `event.sender.is_self_sent` | `boolean` | `true` when the account itself sent the message |
+| `event.direction` | `string` | `inbound` or `outbound`. Outbound messages (sent through the API or typed by hand on LinkedIn) are only delivered to webhooks with `message_type` `outbound` or `all`. |
 | `event.conversation.participants` | `array` | All participants of the thread, sender included |
 | `event.conversation.is_group_chat` | `boolean` | `true` if 3+ participants |
 | `event.conversation.unread_count` | `integer` | Number of unread messages in the thread |
@@ -409,7 +411,7 @@ Both directions come through: the candidate's replies (`direction: "inbound"`) a
 
 ### Accepted Invitation
 
-Triggered when one or more connection requests you sent are accepted. Detected by a background worker that polls the connections list every ~6 hours and diffs against the previously stored snapshot. The payload batches all new connections detected in the same check.
+Triggered when one or more connection requests you sent are accepted. Detected in real time from LinkedIn's notifications (usually within a few minutes), with a full check of the connections list every ~6 hours as a fallback; both diff against the previously stored snapshot. The payload batches all new connections detected in the same check.
 
 ```json
 {
@@ -451,12 +453,12 @@ Triggered when one or more connection requests you sent are accepted. Detected b
 | `event.count` | `integer` | Length of `new_connections` |
 
 <Note>
-  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. The first detection check then runs ~6 hours later and every 6 hours thereafter.
+  When you create a webhook subscribed to `accepted_invitation` (or `all`), the API performs an initial sync of your existing connections in the background. Acceptances are then detected in real time from LinkedIn's notifications, usually within a few minutes of the acceptance. A full check every ~6 hours catches anything missed.
 </Note>
 
 ### Invitation Received
 
-Triggered when the account receives one or more new connection requests. Detected by the same background worker as `accepted_invitation` (~6 hour polling cadence by default), so it's suited for inbound automation — auto-accepting, routing to a CRM, or replying — rather than instant notifications. The payload batches all new invitations detected in the same check.
+Triggered when the account receives one or more new connection requests. Detected by a background check (~6 hour cadence by default), so it's suited for inbound automation — auto-accepting, routing to a CRM, or replying — rather than instant notifications. The payload batches all new invitations detected in the same check.
 
 ```json
 {

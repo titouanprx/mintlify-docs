@@ -89,6 +89,8 @@ Sends a connection request (invitation) to a user. You can identify the target b
   </Expandable>
 </ResponseField>
 
+<Note>A `422 CHANNEL_ERROR` ending in `CANT_RESEND_YET` means LinkedIn refused the invitation: an invitation to this member is already pending, or one was withdrawn less than about 3 weeks ago. Call `check_invitation` to tell which.</Note>
+
 <ResponseExample>
 ```json 200
 {
@@ -101,6 +103,22 @@ Sends a connection request (invitation) to a user. You can identify the target b
     "headline": "Senior Software Engineer at Acme Corp",
     "public_identifier": "johndoe",
     "profile_picture_url": "https://media.licdn.com/dms/image/example.jpg"
+  },
+  "metadata": {
+    "action": "invite",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-03-24T12:00:00Z"
+  }
+}
+```
+
+```json 422
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "LinkedIn won't accept this invitation yet: after withdrawing an invitation, the same member can only be invited again about 3 weeks later (CANT_RESEND_YET)"
   },
   "metadata": {
     "action": "invite",

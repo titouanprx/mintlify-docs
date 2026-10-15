@@ -39,6 +39,10 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
   Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `all`. For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
 </ParamField>
 
+<ParamField body="message_type" type="string" default="inbound">
+  Direction filter for message events: `inbound` (messages received by the account), `outbound` (messages the account sends, through the API or typed by hand on LinkedIn) or `all`. Outbound messages carry `event.direction: "outbound"` and `event.sender.is_self_sent: true`.
+</ParamField>
+
 <ParamField body="retry" type="boolean" default="true">
   Custom mode only. When `true`, a POST that times out or gets a `5xx`/`429` is retried with backoff (8 attempts over ~45 h) and every attempt is visible in the delivery log. Set `false` for fire-and-forget (failures are still logged). See [Delivery & retries](/api-reference/v2/webhooks/introduction#delivery-retries-custom-mode).
 </ParamField>

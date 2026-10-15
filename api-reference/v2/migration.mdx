@@ -210,7 +210,7 @@ V2 uses real HTTP status codes — V1 returned 200 for almost everything.
 | `INVALID_PARAMS` | 400 | Read `error.message` for details |
 | `RATE_LIMITED` | 429 | Implement exponential backoff |
 | `INSUFFICIENT_CREDITS` | 402 | Top up at [app.linkupapi.com](https://app.linkupapi.com) |
-| `CHANNEL_ERROR` | varies | Retry or check the platform directly |
+| `CHANNEL_ERROR` | 422 | The platform refused the request: read `error.message`. Retrying with the same input will not help |
 | `INTERNAL_ERROR` | 500 | Retry after a few seconds |
 
 <Note>
