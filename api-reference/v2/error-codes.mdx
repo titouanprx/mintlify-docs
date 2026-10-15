@@ -23,7 +23,7 @@ All V2 API error responses follow a standardized format:
 
 `sub_code` is the machine-readable reason, present when we know it (always on `CHANNEL_ERROR`). Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
 
-**Handling logic:** retry with backoff only on `RATE_LIMITED`, `INTERNAL_ERROR` and the temporary `CHANNEL_ERROR` sub-codes (`UPSTREAM_ERROR`, `*_UNAVAILABLE`). Anything else needs a change before retrying: fix the request on `INVALID_*`, top up on `INSUFFICIENT_CREDITS`, reconnect the account on `ACCOUNT_INACTIVE` or a seat sub-code, and move on from that target on any other `CHANNEL_ERROR`.
+**Handling logic:** retry with backoff only on `INTERNAL_ERROR`, on `RATE_LIMITED` (except the account limits below) and on the temporary `CHANNEL_ERROR` sub-codes (`UPSTREAM_ERROR`, `*_UNAVAILABLE`). A `RATE_LIMITED` with `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` or `INMAIL_MONTHLY_FUSE_LIMIT` means LinkedIn capped the account: stop that action on the account until the limit resets (days, not seconds). Anything else needs a change before retrying: fix the request on `INVALID_*`, top up on `INSUFFICIENT_CREDITS`, reconnect the account on `ACCOUNT_INACTIVE` or a seat sub-code, and move on from that target on any other `CHANNEL_ERROR`.
 
 <Note>
   Errors caught before the request reaches the platform (API key, parameters, credits…) are free. Once it has reached the platform, a refusal (e.g. `CHANNEL_ERROR` / `CANT_RESEND_YET`) consumes **1 credit**, shown in `credits_consumed`.
@@ -50,7 +50,7 @@ All V2 API error responses follow a standardized format:
 |---|---|---|
 | Temporary | `UPSTREAM_ERROR`, `WHATSAPP_UNAVAILABLE`, `SALES_NAV_SEAT_UNAVAILABLE`, `NO_PROXY_AVAILABLE`, `MONITOR_START_FAILED`, `MAILBOX_PROVIDER_ERROR` | Yes, after a short delay |
 | Invitations | `CANT_RESEND_YET` (already connected, invitation pending, or withdrawn less than ~3 weeks ago), `ALREADY_CONNECTED`, `ALREADY_INVITED`, `CUSTOM_MESSAGE_TOO_LONG`, `INVITATION_REFUSED`, `INVITATION_NOT_CONFIRMED` (check with `check_invitation`), `INVITATION_NOT_PENDING` | No |
-| Invitation limits (under `RATE_LIMITED`) | `QUOTA_EXCEEDED`, `FUSE_LIMIT_EXCEEDED` | Later |
+| Account limits (under `RATE_LIMITED`) | `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED` (invitations, weekly), `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) | Not before the limit resets |
 | LinkedIn refusals | `PROFILE_RESTRICTED`, `ENTITY_NOT_FOUND`, `GEO_RESTRICTED`, `INMAIL_NOT_ALLOWED`, `JOB_POSTING_FAILED`, `LINKEDIN_REFUSED` | No |
 | Sales Navigator | `NO_SALES_NAV_SEAT`, `SALES_NAV_SEAT_INVALID` (reconnect), `SALES_NAV_ACCESS_DENIED`, `SALES_NAV_BAD_REQUEST`, `SALES_NAV_NOT_FOUND`, `SALES_NAV_RATE_LIMITED`, `INMAIL_MONTHLY_FUSE_LIMIT`, `ACCOUNT_UNDER_REVIEW`, `MISSING_CONVERSATION_ID`, `SALES_NAV_ERROR` | No |
 | Recruiter | `RECRUITER_SEAT_MISSING`, `RECRUITER_SEAT_EXPIRED` (reconnect), `NO_RECRUITER_LICENSE`, `RECRUITER_LOGIN_FAILED`, `RECRUITER_ERROR` | No |
@@ -205,7 +205,7 @@ Returned when you exceed the API rate limit.
 }
 ```
 
-**How to fix:** Implement exponential backoff in your requests. Wait a few seconds before retrying. LinkedIn-side limits carry a `sub_code` (`QUOTA_EXCEEDED`, `FUSE_LIMIT_EXCEEDED`, `SALES_NAV_RATE_LIMITED`, `INMAIL_MONTHLY_FUSE_LIMIT`): those reset on LinkedIn's schedule, not in seconds.
+**How to fix:** Implement exponential backoff in your requests. Wait a few seconds before retrying. LinkedIn account limits carry a `sub_code`: `FUSE_LIMIT_EXCEEDED` and `QUOTA_EXCEEDED` (invitations, weekly) and `INMAIL_MONTHLY_FUSE_LIMIT` (Sales Nav InMails, monthly) reset on LinkedIn's schedule, so stop that action on the account instead of retrying. `SALES_NAV_RATE_LIMITED` is a short throttle: retry in a few minutes.
 
 ### INSUFFICIENT_CREDITS (402)
 
