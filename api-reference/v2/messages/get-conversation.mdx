@@ -177,7 +177,18 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
         "message_type": "TEXT",
         "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0...)",
         "has_attachments": false,
-        "attachments": []
+        "attachments": [],
+        "reactions": [
+          { "emoji": "👍", "count": 1, "first_reacted_at": 1777147702118, "viewer_reacted": true }
+        ],
+        "reply_to": {
+          "message_text": "Can we talk Thursday?",
+          "sender_name": "John Smith",
+          "sender_profile_url": "https://www.linkedin.com/in/john-smith-99/",
+          "sender_urn": "urn:li:fsd_profile:ACoAA...",
+          "timestamp": 1777146285823,
+          "entity_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAA...,2-MTc3NzE0NjI4...)"
+        }
       },
       {
         "text": "",
@@ -202,7 +213,9 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
             "asset_urn": "urn:li:digitalmediaAsset:D4E06AQ...",
             "download_url": "https://api.linkupapi.com/v2/messages/attachment?account_id=...&conversation_id=...&asset_urn=..."
           }
-        ]
+        ],
+        "reactions": [],
+        "reply_to": null
       }
     ],
     "next_cursor": "1777146285823"

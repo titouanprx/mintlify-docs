@@ -250,7 +250,7 @@ POST /v2/webhooks
 **Key changes:**
 - No more separate "webhook accounts" — reuse your existing `account_id`
 - `webhook_url` → `url`
-- Filter events with the `events` array: `["message_received", "accepted_invitation", "disconnection"]`
+- Filter events with the `events` array: `["message_received", "accepted_invitation", "disconnection"]`. Read and delivery receipts (`message_read`, `message_delivered`, `message_failed`) are opt-in: name them explicitly, `all` does not include them
 - Start/stop: `/v1/webhooks/accounts/{id}/start` → `/v2/webhooks/{id}/start`
 - Status: replace `GET .../status` with the `is_active` field on `GET /v2/webhooks`
 - New **hosted mode**: omit `url` to get a built-in SSE stream + polling endpoint (no server needed)
