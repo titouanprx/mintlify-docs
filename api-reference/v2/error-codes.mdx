@@ -37,10 +37,6 @@ Every error calls for one of five reactions:
 
 Never retry the same request on the last three: it will fail the same way and may cost a credit each time.
 
-<Note>
-  Errors caught before the request reaches the platform (API key, parameters, credits…) are free. Once it has reached the platform, a refusal (e.g. `CHANNEL_ERROR` / `CANT_RESEND_YET`) consumes **1 credit**, shown in `credits_consumed`.
-</Note>
-
 ## Error Codes Reference
 
 | Error Code | HTTP Status | Description |
