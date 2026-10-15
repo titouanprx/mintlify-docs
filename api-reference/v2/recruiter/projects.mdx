@@ -69,7 +69,7 @@ Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/ac
       }
     ]
   },
-  "metadata": { "action": "list_projects", "account_id": "your-seat-account-id", "credits_consumed": 1, "timestamp": "2026-10-07T12:00:00Z" }
+  "metadata": { "action": "list_projects", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-10-07T12:00:00Z" }
 }
 ```
 
@@ -83,7 +83,7 @@ Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/ac
     "candidate_urn": "urn:li:ts_hire_identity:1670586754",
     "hiring_state_urn": "urn:li:ts_hiring_state:…"
   },
-  "metadata": { "action": "move_candidate", "account_id": "your-seat-account-id", "credits_consumed": 1, "timestamp": "2026-10-07T12:00:00Z" }
+  "metadata": { "action": "move_candidate", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-10-07T12:00:00Z" }
 }
 ```
 
@@ -179,7 +179,7 @@ Uses the account's Recruiter seat — see [Connect Account](/api-reference/v2/ac
 
 ```json
 {
-  "account_id": "your-seat-account-id",
+  "account_id": "your-account-id",
   "action": "move_candidate",
   "params": {
     "project_urn": "urn:li:ts_hiring_project:(urn:li:ts_contract:123,2159702274)",

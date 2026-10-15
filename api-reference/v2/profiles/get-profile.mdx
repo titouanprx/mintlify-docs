@@ -196,7 +196,7 @@ Fetches detailed profile data for a specified user. You can identify the target 
 With `recruiter: true` (or called on a Recruiter seat account), pass the `profile_urn` (`urn:li:ts_profile:…`) of a [Search People Recruiter](/api-reference/v2/profiles/search-people-recruiter) result. You get the same shape as a search result, plus contact info when LinkedIn exposes it, summary, follower count and the seat's own counters on that person. `include_activity: true` adds their recent activity.
 
 ```json
-{ "account_id": "your-seat-account-id", "action": "get", "params": { "recruiter": true, "profile_urn": "urn:li:ts_profile:AEMAA…" } }
+{ "account_id": "your-account-id", "action": "get", "params": { "recruiter": true, "profile_urn": "urn:li:ts_profile:AEMAA…" } }
 ```
 
 The Recruiter lookup only knows `profile_urn`s (the bare `AEMAA…` id works too). A public identifier, a profile URL or a classic `ACoAA…` URN is refused with `INVALID_PARAMS` (400), no credit, nothing sent to LinkedIn. To read a profile by its public identifier, call this action with the LinkedIn account (the seat's `parent_account_id`) instead.
