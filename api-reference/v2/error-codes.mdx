@@ -23,6 +23,8 @@ All V2 API error responses follow a standardized format:
 
 `sub_code` is the machine-readable reason, present when we know it (always on `CHANNEL_ERROR`). Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
 
+**Handling logic:** retry with backoff only on `RATE_LIMITED`, `INTERNAL_ERROR` and the temporary `CHANNEL_ERROR` sub-codes (`UPSTREAM_ERROR`, `*_UNAVAILABLE`). Anything else needs a change before retrying: fix the request on `INVALID_*`, top up on `INSUFFICIENT_CREDITS`, reconnect the account on `ACCOUNT_INACTIVE` or a seat sub-code, and move on from that target on any other `CHANNEL_ERROR`.
+
 <Note>
   Errors caught before the request reaches the platform (API key, parameters, credits…) are free. Once it has reached the platform, a refusal (e.g. `CHANNEL_ERROR` / `CANT_RESEND_YET`) consumes **1 credit**, shown in `credits_consumed`.
 </Note>
