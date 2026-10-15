@@ -214,7 +214,7 @@ V2 uses real HTTP status codes — V1 returned 200 for almost everything.
 | `INTERNAL_ERROR` | 500 | Retry after a few seconds |
 
 <Note>
-  Errors **never consume credits** in V2.
+  Errors caught before the request reaches the platform are free in V2; a refusal from the platform itself consumes 1 credit (see `credits_consumed`).
 </Note>
 
 ---

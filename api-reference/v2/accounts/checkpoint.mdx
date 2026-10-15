@@ -91,7 +91,8 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
   "success": false,
   "error": {
     "code": "CHANNEL_ERROR",
-    "message": "Verification failed"
+    "message": "Verification failed",
+    "sub_code": "CHECKPOINT_VERIFICATION_FAILED"
   },
   "metadata": {
     "action": "checkpoint",
@@ -106,7 +107,8 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
   "success": false,
   "error": {
     "code": "CHANNEL_ERROR",
-    "message": "Session expired, please login again"
+    "message": "Session expired, please login again",
+    "sub_code": "CHECKPOINT_SESSION_EXPIRED"
   },
   "metadata": {
     "action": "checkpoint",

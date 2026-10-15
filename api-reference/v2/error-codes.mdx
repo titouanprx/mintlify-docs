@@ -24,7 +24,7 @@ All V2 API error responses follow a standardized format:
 `sub_code` is the machine-readable reason, present when we know it (always on `CHANNEL_ERROR`). Branch on `code` and `sub_code`, never on `message`: the text may change, the codes don't. See [Sub-codes](#sub-codes).
 
 <Note>
-  Error responses **never consume credits**. The `credits_consumed` field will always be `0` on errors.
+  Errors caught before the request reaches the platform (API key, parameters, credits…) are free. Once it has reached the platform, a refusal (e.g. `CHANNEL_ERROR` / `CANT_RESEND_YET`) consumes **1 credit**, shown in `credits_consumed`.
 </Note>
 
 ## Error Codes Reference

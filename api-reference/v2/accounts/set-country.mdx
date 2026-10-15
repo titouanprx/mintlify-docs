@@ -76,7 +76,8 @@ Moves an already-connected account to a LinkupAPI-managed proxy of another count
   "success": false,
   "error": {
     "code": "CHANNEL_ERROR",
-    "message": "LinkedIn did not accept the account session from a TH IP; the country was NOT changed. Re-login the account with `country: \"TH\"` on POST /v2/login to bind a fresh session from that country."
+    "message": "LinkedIn did not accept the account session from a TH IP; the country was NOT changed. Re-login the account with `country: \"TH\"` on POST /v2/login to bind a fresh session from that country.",
+    "sub_code": "SESSION_REJECTED_THROUGH_PROXY"
   },
   "metadata": {
     "action": "set_account_country",

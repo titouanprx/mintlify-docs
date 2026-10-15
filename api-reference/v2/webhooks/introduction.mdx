@@ -36,7 +36,7 @@ Webhooks support two delivery modes depending on your setup:
 
 ## Delivery & retries (custom mode)
 
-Custom webhooks are delivered **at least once**. Every envelope carries a stable top-level `event_id` (also sent as `X-Linkup-Event-Id`, with `X-Linkup-Attempt` and `X-Linkup-Webhook-Id`) — dedupe on it. A POST is successful on any `2xx`. On timeout (10 s), connection error, `5xx`, `408`/`425`/`429` we retry with backoff: 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h (8 attempts). Any other `4xx` or a `3xx` is recorded as `failed` and not retried. Turn retries off per webhook with `retry: false`.
+Custom webhooks are delivered **at least once**. Every envelope carries a stable top-level `event_id` (also sent as `X-Linkup-Event-Id`, with `X-Linkup-Attempt` and `X-Linkup-Webhook-Id`) — dedupe on it. A POST is successful on any `2xx`. On timeout (10 s), connection error, `5xx`, `408`/`425`/`429` we retry with backoff: 1 min, 5 min, 30 min, 2 h, 6 h, 12 h, 24 h (8 attempts). Any other `4xx` or a `3xx` is recorded as `failed` and not retried. Turn retries off per webhook with `retry: false`. `accepted_invitation` and `invitation_received` are the exception: each is posted once, without retries.
 
 Everything we sent, or still owe, is visible for 30 days, and replayable, from the API:
 
