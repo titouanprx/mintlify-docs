@@ -77,6 +77,7 @@
                 "group": "Profiles",
                 "pages": [
                   "api-reference/v2/profiles/get-me",
+                  "api-reference/v2/profiles/update-profile",
                   "api-reference/v2/profiles/get-profile",
                   "api-reference/v2/profiles/get-contact",
                   "api-reference/v2/profiles/visit",
