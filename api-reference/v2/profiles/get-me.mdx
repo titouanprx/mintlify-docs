@@ -44,10 +44,10 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
     <ResponseField name="summary" type="string">About / bio section.</ResponseField>
     <ResponseField name="industry" type="string">Industry associated with the profile.</ResponseField>
     <ResponseField name="experience" type="array">
-      Work experience entries. Each item: `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"1/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`.
+      Work experience entries. Each item: `id` (to edit it with [Update Profile](/api-reference/v2/profiles/update-profile)), `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"1/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`.
     </ResponseField>
     <ResponseField name="education" type="array">
-      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date`, `school_url`, `school_logo_url`.
+      Education entries. Each item: `id`, `school`, `degree`, `field_of_study`, `start_date`, `end_date`, `school_url`, `school_logo_url`.
     </ResponseField>
     <ResponseField name="skills" type="array">List of skills (array of strings).</ResponseField>
     <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
@@ -99,6 +99,7 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
     "industry": "Computer Software",
     "experience": [
       {
+        "id": "2543928369",
         "company": "Acme Corp",
         "title": "Senior Software Engineer",
         "description": "Leading the platform team.",
@@ -110,6 +111,7 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
     ],
     "education": [
       {
+        "id": "1271230878",
         "school": "Stanford University",
         "degree": "B.S.",
         "field_of_study": "Computer Science",

@@ -1,25 +1,14 @@
 ---
 title: 'Update Profile'
 api: 'POST /v2/profiles'
-description: 'Edit the connected account’s own profile: intro, about, experience, education and skills.'
+description: 'Edit the connected account’s own profile in one call: intro, about, experience, education and skills.'
 ---
 
-<Note>Each request consumes **1 credit**. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+<Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
-## Actions
-
-| Action | Use |
-|---|---|
-| `update` | Name, headline, about, website |
-| `list_profile_items` | Ids of the experience, education or skills entries |
-| `get_profile_item` | Current fields of one entry |
-| `add_profile_item` | Add an entry |
-| `update_profile_item` | Edit an entry (experience, education) |
-| `delete_profile_item` | Delete an entry |
-
-- The network is never notified unless you send `notify_network: true`.
-- A skill can't be edited: delete it and add the new one.
-- `add_profile_item` doesn't return the new id: `list_profile_items` gives it.
+- Send only what you want to change.
+- `experience` / `education` entries: no `id` = add, `id` = edit, `id` + `delete: true` = delete. The ids come from [Get Me](/api-reference/v2/profiles/get-me).
+- The network is never notified unless an entry has `notify_network: true`.
 
 ## Request
 
@@ -32,124 +21,87 @@ description: 'Edit the connected account’s own profile: intro, about, experien
 </ParamField>
 
 <ParamField body="action" type="string" required>
-  One of the actions above.
+  Must be `"update"`.
 </ParamField>
 
 <ParamField body="params" type="object" required>
-  <Expandable title="update">
+  <Expandable title="params properties">
     <ParamField body="first_name" type="string" />
     <ParamField body="last_name" type="string" />
     <ParamField body="headline" type="string" />
     <ParamField body="about" type="string">Send `""` to clear it.</ParamField>
     <ParamField body="website" type="string" />
-  </Expandable>
-  <Expandable title="*_profile_item">
-    <ParamField body="section" type="string" required>
-      `experience`, `education` or `skills`.
+    <ParamField body="experience" type="array">
+      <Expandable title="entry properties">
+        <ParamField body="id" type="string">To edit or delete an entry.</ParamField>
+        <ParamField body="delete" type="boolean">`true` to delete the entry.</ParamField>
+        <ParamField body="title" type="string">Required to add.</ParamField>
+        <ParamField body="company" type="string" />
+        <ParamField body="company_id" type="string">
+          From [Typeahead](/api-reference/v2/profiles/typeahead) `type: "company"`. Without it the company shows as plain text.
+        </ParamField>
+        <ParamField body="description" type="string" />
+        <ParamField body="location" type="string" />
+        <ParamField body="location_id" type="string">From Typeahead `type: "location"`.</ParamField>
+        <ParamField body="start_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
+        <ParamField body="end_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
+        <ParamField body="is_current" type="boolean" />
+        <ParamField body="notify_network" type="boolean" default="false" />
+      </Expandable>
     </ParamField>
-    <ParamField body="item_id" type="string">
-      Required for `get_profile_item`, `update_profile_item` and `delete_profile_item`. From `list_profile_items`.
+    <ParamField body="education" type="array">
+      <Expandable title="entry properties">
+        <ParamField body="id" type="string">To edit or delete an entry.</ParamField>
+        <ParamField body="delete" type="boolean">`true` to delete the entry.</ParamField>
+        <ParamField body="school" type="string">Required to add.</ParamField>
+        <ParamField body="school_id" type="string">From Typeahead `type: "school"`.</ParamField>
+        <ParamField body="degree" type="string" />
+        <ParamField body="field_of_study" type="string" />
+        <ParamField body="start_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
+        <ParamField body="end_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
+        <ParamField body="grade" type="string" />
+        <ParamField body="activities" type="string" />
+        <ParamField body="description" type="string" />
+        <ParamField body="notify_network" type="boolean" default="false" />
+      </Expandable>
     </ParamField>
-  </Expandable>
-  <Expandable title="experience fields">
-    <ParamField body="title" type="string">Required to add.</ParamField>
-    <ParamField body="company_name" type="string" />
-    <ParamField body="company_id" type="string">
-      LinkedIn company id, from [Typeahead](/api-reference/v2/profiles/typeahead) `type: "company"`. Without it the company is shown as plain text.
+    <ParamField body="skills" type="object">
+      `{"add": ["Python"], "remove": ["Java"]}`, by skill name.
     </ParamField>
-    <ParamField body="description" type="string" />
-    <ParamField body="location" type="string" />
-    <ParamField body="location_id" type="string">From Typeahead `type: "location"`.</ParamField>
-    <ParamField body="start_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
-    <ParamField body="end_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
-    <ParamField body="is_current" type="boolean" />
-    <ParamField body="notify_network" type="boolean" default="false" />
-  </Expandable>
-  <Expandable title="education fields">
-    <ParamField body="school_name" type="string">Required to add.</ParamField>
-    <ParamField body="school_id" type="string">From Typeahead `type: "school"`.</ParamField>
-    <ParamField body="degree" type="string" />
-    <ParamField body="field_of_study" type="string" />
-    <ParamField body="start_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
-    <ParamField body="end_date" type="string">`"YYYY-MM"` or `"YYYY"`.</ParamField>
-    <ParamField body="grade" type="string" />
-    <ParamField body="activities" type="string" />
-    <ParamField body="description" type="string" />
-    <ParamField body="notify_network" type="boolean" default="false" />
-  </Expandable>
-  <Expandable title="skills fields">
-    <ParamField body="skill_name" type="string">Required to add.</ParamField>
   </Expandable>
 </ParamField>
 
 <RequestExample>
-```json update
+```json Request
 {
   "account_id": "your-account-id",
   "action": "update",
-  "params": { "headline": "Founder @ Acme", "about": "We build..." }
-}
-```
-
-```json add_profile_item
-{
-  "account_id": "your-account-id",
-  "action": "add_profile_item",
   "params": {
-    "section": "experience",
-    "title": "Head of Growth",
-    "company_name": "Acme",
-    "company_id": "1035",
-    "start_date": "2024-03",
-    "is_current": true
+    "headline": "Head of Growth @ Acme",
+    "about": "I help B2B teams grow.",
+    "experience": [
+      { "title": "Head of Growth", "company": "Acme", "start_date": "2024-03", "is_current": true },
+      { "id": "2543928369", "description": "Led the platform team." },
+      { "id": "3046062887", "delete": true }
+    ],
+    "education": [
+      { "school": "HEC Paris", "degree": "MSc", "start_date": "2018", "end_date": "2020" }
+    ],
+    "skills": { "add": ["Growth Marketing"], "remove": ["Java"] }
   }
-}
-```
-
-```json update_profile_item
-{
-  "account_id": "your-account-id",
-  "action": "update_profile_item",
-  "params": { "section": "experience", "item_id": "2543928369", "description": "Leading growth." }
 }
 ```
 </RequestExample>
 
 <ResponseExample>
-```json list_profile_items
+```json 200
 {
   "success": true,
   "data": {
-    "section": "experience",
-    "items": [{ "id": "2543928369", "title": "Founder" }]
+    "updated": true,
+    "fields": ["headline", "about", "experience[0]", "experience[1]", "experience[2]", "education[0]", "skills.add Growth Marketing", "skills.remove"]
   }
 }
-```
-
-```json get_profile_item
-{
-  "success": true,
-  "data": {
-    "section": "experience",
-    "item_id": "2543928369",
-    "title": "Founder",
-    "company_name": "Acme",
-    "company_id": 105980822,
-    "description": "",
-    "location": "Paris, Île-de-France, France",
-    "location_id": 106383538,
-    "is_current": true,
-    "start_date": "2025-01",
-    "end_date": null,
-    "notify_network": false
-  }
-}
-```
-
-```json add / update / delete
-{ "success": true, "data": { "added": true, "section": "experience" } }
-{ "success": true, "data": { "updated": true, "section": "experience", "item_id": "2543928369", "fields": ["description"] } }
-{ "success": true, "data": { "deleted": true, "section": "experience", "item_id": "2543928369" } }
 ```
 
 ```json 400
@@ -157,8 +109,10 @@ description: 'Edit the connected account’s own profile: intro, about, experien
   "success": false,
   "error": {
     "code": "INVALID_PARAMS",
-    "message": "section must be one of: experience, education, skills"
+    "message": "experience[0]: title is required to add an entry"
   }
 }
 ```
 </ResponseExample>
+
+<Note>Changes are applied in order. If one is refused, the error names it and lists the changes already applied.</Note>
