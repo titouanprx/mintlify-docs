@@ -222,7 +222,9 @@ Triggered in real-time when a new message is received via the platform's realtim
 
 ### Email events
 
-For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the monitor polls the inbox and emits two event types. Both are covered by the `message_received` filter / `all`. Email events carry the top-level **`platform: "email"`** — that, not `event.type`, is how you tell them from a LinkedIn DM.
+For an [email mailbox](/api-reference/v2/accounts/login#email-mailbox), the monitor watches the **inbox** and emits two event types. Both are covered by the `message_received` filter / `all`.
+
+A new email is reported within about 10 seconds on Gmail and Outlook, and within seconds on IMAP mailboxes (IMAP IDLE; servers without IDLE are checked every minute). Emails the provider files in Spam or Junk are not reported. Email events carry the top-level **`platform: "email"`** — that, not `event.type`, is how you tell them from a LinkedIn DM.
 
 **New email received** — inner `type` is `"message"` (same as a LinkedIn message; `platform` is what distinguishes them):
 
