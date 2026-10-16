@@ -99,7 +99,14 @@ description: 'Edit the connected account’s own profile in one call: intro, abo
   "success": true,
   "data": {
     "updated": true,
-    "fields": ["headline", "about", "experience[0]", "experience[1]", "experience[2]", "education[0]", "skills.add Growth Marketing", "skills.remove"]
+    "fields": ["headline", "about", "experience", "education", "skills"],
+    "profile_urn": "urn:li:fsd_profile:ACoAAB1234567"
+  },
+  "metadata": {
+    "action": "update",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-16T12:00:00Z"
   }
 }
 ```
@@ -110,6 +117,12 @@ description: 'Edit the connected account’s own profile in one call: intro, abo
   "error": {
     "code": "INVALID_PARAMS",
     "message": "experience[0]: title is required to add an entry"
+  },
+  "metadata": {
+    "action": "update",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-10-16T12:00:00Z"
   }
 }
 ```
