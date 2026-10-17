@@ -213,7 +213,7 @@ Connect a mailbox with `platform: "email"` and a `provider`:
 - `gmail_oauth` / `m365_oauth` — OAuth. Two steps: this call returns `status: "checkpoint_required"` + an `authorization_url`; redirect the user there, then submit the returned `code` to [`/v2/checkpoint`](/api-reference/v2/accounts/checkpoint). By default LinkupAPI's own OAuth app is used — pass `oauth_client_id` + `oauth_client_secret` in `params` to use your own.
 - `smtp_generic` — IMAP/SMTP. Verified and connected in one call (no checkpoint).
 
-The mailbox address is the top-level **`email`** field (the same one used for credential login), and its display name the top-level **`account_name`**. Everything else goes in `params`: optional `daily_limit` (default 40); `redirect_uri` for OAuth; `smtp` `{ host, port, password }` (+ optional `imap` `{ host, port }`) for SMTP. Tip: call [`/v2/email/autoconfig`](/api-reference/v2/email/autoconfig) first to get the right `provider` and server settings. Connecting a mailbox is **free**.
+The mailbox address is the top-level **`email`** field (the same one used for credential login), and its display name the top-level **`account_name`**. For OAuth the address is optional: without it the user picks the mailbox on the provider's consent screen and the account takes that address. Everything else goes in `params`: optional `daily_limit` (default 40); `redirect_uri` for OAuth; `smtp` `{ host, port, password }` (+ optional `imap` `{ host, port }`) for SMTP. Tip: call [`/v2/email/autoconfig`](/api-reference/v2/email/autoconfig) first to get the right `provider` and server settings. Connecting a mailbox is **free**.
 
 ```json OAuth (step 1)
 {

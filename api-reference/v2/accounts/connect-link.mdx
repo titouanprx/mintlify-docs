@@ -39,6 +39,14 @@ Links are single-use: generate a new one each time a user starts a connection.
   Your product or company name (max 60 characters). The page then reads "Connect LinkedIn to {brand_name}", in the heading and the tab title. Omit for a neutral page.
 </ParamField>
 
+<ParamField body="logo_url" type="string">
+  HTTPS URL of your logo, shown above the heading.
+</ParamField>
+
+<ParamField body="email_providers" type="string[]" default='["google", "microsoft", "smtp"]'>
+  Choices on the email step: `google` and `microsoft` are one-click OAuth buttons (the user picks the mailbox on the provider's consent screen), `smtp` opens the IMAP/SMTP form. Pass `["google"]` for a single "Continue with Google" button.
+</ParamField>
+
 <ParamField body="expires_in" type="integer" default="3600">
   Link lifetime in seconds, from 60 to 604800 (7 days).
 </ParamField>
@@ -114,6 +122,7 @@ curl -X POST https://api.linkupapi.com/v2/accounts/connect-link \
     "platforms": ["linkedin", "email"],
     "name": "user_12345",
     "brand_name": "Acme",
+    "logo_url": "https://acme.com/logo.svg",
     "country": "FR",
     "success_url": "https://yourapp.com/linkedin/connected",
     "notify_url": "https://yourapp.com/webhooks/linkup"
@@ -130,6 +139,7 @@ r = requests.post(
         "platforms": ["linkedin", "email"],
         "name": "user_12345",
     "brand_name": "Acme",
+    "logo_url": "https://acme.com/logo.svg",
         "country": "FR",
         "success_url": "https://yourapp.com/linkedin/connected",
         "notify_url": "https://yourapp.com/webhooks/linkup",
@@ -150,6 +160,7 @@ print(r.json()["data"]["url"])
     "platforms": ["linkedin", "email"],
     "name": "user_12345",
     "brand_name": "Acme",
+    "logo_url": "https://acme.com/logo.svg",
     "reconnect": null
   },
   "metadata": {
