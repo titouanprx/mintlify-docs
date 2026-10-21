@@ -11,6 +11,8 @@ Two actions on LinkedIn events, both on `POST /v2/network`:
 - `get_event`: when the event starts and ends, its state, organizer, venue, speakers, and the account's own status towards it.
 - `invite_to_event`: invite 1st-degree connections to it.
 
+To list the attendees, use [Search People](/api-reference/v2/profiles/search-people) with the attendee-list URL as `search_url`.
+
 <Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
 <ParamField header="x-api-key" type="string" required>

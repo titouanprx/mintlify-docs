@@ -33,6 +33,8 @@ There are two ways to define the search — pick whichever fits:
   <Expandable title="params properties">
     <ParamField body="search_url" type="string">
       A copied LinkedIn people search URL (`https://www.linkedin.com/search/results/people/?...`), pasted as-is. When provided, its filters are used as-is and **take precedence** over the friendly filters below. The best way to replicate a complex search or to use filters that have no friendly mapping. Returns `INVALID_PARAMS` if the URL is not a people search or carries no filter at all.
+
+      To list an event's attendees, pass the URL behind the event page's attendee list (`https://www.linkedin.com/search/results/people/?eventAttending=%5B%22<event_id>%22%5D`), not the `/events/<id>` page itself. LinkedIn only shows that list to accounts attending the event.
     </ParamField>
     <ParamField body="keyword" type="string">
       General keyword to search for across profiles.
