@@ -34,6 +34,10 @@ Within a single filter, multiple values are combined with **OR**. Different filt
 <ParamField body="params" type="object">
   <Expandable title="params properties">
 
+    <ParamField body="recruiter_url" type="string">
+      A copied Recruiter or Recruiter Lite search URL (`https://www.linkedin.com/talent/search?...searchHistoryId=...`), pasted as-is. It replaces the filters below: LinkedIn re-runs the search saved behind the URL. Copy it from the Recruiter seat connected to this account. Returns `INVALID_PARAMS` (no credit) if it carries no `searchHistoryId`.
+    </ParamField>
+
     {/* --- Free text --- */}
     <ParamField body="keywords" type="string">
       Free-text keywords.
