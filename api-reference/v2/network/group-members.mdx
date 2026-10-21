@@ -1,0 +1,122 @@
+---
+title: 'Get Group Members'
+api: 'POST /v2/network'
+description: 'List the members of a LinkedIn group from its URL.'
+---
+
+## Overview
+
+Returns the members of a LinkedIn group, paginated with `count` and `offset`. **The account must be a member of the group**: LinkedIn only shows a group's member list to its members.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_group_members"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="group_url" type="string" required>
+      The group URL (`https://www.linkedin.com/groups/8561802/`) or its numeric id. `group_id` is accepted as an alias.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of members to return. Capped at `1000` per call; paginate with `offset`.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Number of members to skip.
+    </ParamField>
+    <ParamField body="first_degree_only" type="boolean" default={false}>
+      Only return members who are 1st-degree connections of the account.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="profiles" type="array">
+      The members: `name`, `first_name`, `last_name`, `job_title`, `connection_level`, `profile_url`, `public_identifier`, `profile_urn`, `profile_id`, `profile_picture`, `group_role` (`MEMBER`, `MANAGER`, `OWNER`) and `joined_at`.
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of members returned.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of members in the group.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+If the account is not a member of the group (or the group does not exist), the call returns `CHANNEL_ERROR` with `sub_code: "NOT_GROUP_MEMBER"`.
+
+<RequestExample>
+```json Request
+{
+  "account_id": "your-account-id",
+  "action": "get_group_members",
+  "params": {
+    "group_url": "https://www.linkedin.com/groups/8561802/",
+    "count": 50
+  }
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "group_id": "8561802",
+    "group_urn": "urn:li:fsd_group:8561802",
+    "profiles": [
+      {
+        "name": "Jane Doe",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "job_title": "Head of Growth at Acme",
+        "connection_level": "2nd degree",
+        "profile_url": "https://www.linkedin.com/in/jane-doe",
+        "public_identifier": "jane-doe",
+        "profile_urn": "urn:li:fsd_profile:ACoAAB1x2y3z",
+        "profile_id": "ACoAAB1x2y3z",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/.../400_400.jpg",
+        "group_role": "MEMBER",
+        "joined_at": "2026-06-04T10:56:37Z"
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 3243
+  },
+  "metadata": {
+    "action": "get_group_members",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-21T10:25:34.023862"
+  }
+}
+```
+
+```json 422
+{
+  "success": false,
+  "error": {
+    "code": "CHANNEL_ERROR",
+    "message": "This account is not a member of this LinkedIn group (or the group does not exist). Only members can list a group's members: join it with this account, then retry.",
+    "sub_code": "NOT_GROUP_MEMBER"
+  },
+  "metadata": {
+    "action": "get_group_members",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-21T10:25:37.448417"
+  }
+}
+```
+</ResponseExample>
