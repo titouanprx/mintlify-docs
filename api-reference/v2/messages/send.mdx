@@ -32,6 +32,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
   <Expandable title="params properties">
     <ParamField body="message_text" type="string" required>
       **(LinkedIn + Email + WhatsApp)** The text content. Required for LinkedIn; for email, provide `message_text` and/or `html`; for WhatsApp, `message_text` and/or an attachment.
+      To tag someone in a LinkedIn message, use `mention_user(public_id, display_text)` (`public_id` = the slug of `linkedin.com/in/<public_id>`, or the profile URL) — e.g. `"Hi, meet mention_user(williamhgates, Bill Gates)!"` is sent as `Hi, meet @Bill Gates!` with Bill Gates tagged. An unknown profile returns an error and nothing is sent.
     </ParamField>
     <ParamField body="subject" type="string">
       **(InMail + Email)** Subject line. On LinkedIn it applies to InMails only (ignored for standard messages, and alone it does **not** trigger an InMail); on email it's the email subject.
