@@ -111,6 +111,9 @@ Returns messages from a specific conversation, ordered from most recent to oldes
         <ResponseField name="reply_to" type="object">
           Present when the message quotes an earlier one (Reply action): `message_text`, `sender_name`, `sender_profile_url`, `sender_urn`, `timestamp` (epoch ms) and `entity_urn` of the quoted message, reusable as `quoted_message_id` in [Send Message](/api-reference/v2/messages/send). `null` otherwise.
         </ResponseField>
+        <ResponseField name="mentions" type="array">
+          Members tagged with `@` in `text`, empty when nobody is tagged: `name`, `member_urn`, `profile_url`, `start`, `length` (offsets in `text`, counted like JavaScript strings). Same shape as in [webhook message events](/api-reference/v2/webhooks/introduction).
+        </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="next_cursor" type="string">
@@ -215,7 +218,8 @@ Sales Nav has no message cursor: a thread returns its `count` most recent messag
           }
         ],
         "reactions": [],
-        "reply_to": null
+        "reply_to": null,
+        "mentions": []
       }
     ],
     "next_cursor": "1777146285823"

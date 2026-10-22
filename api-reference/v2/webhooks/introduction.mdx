@@ -191,6 +191,7 @@ Triggered in real-time when a new message is received via the platform's realtim
 | `event.metadata.read_status` | `boolean` | Whether the conversation is marked read |
 | `event.has_attachments` | `boolean` | `true` when the message carries at least one attachment |
 | `event.attachments` | `array` | One entry per attachment. Empty when there are none. |
+| `event.mentions` | `array` | Members tagged with `@` in `message_text`: `name`, `member_urn`, `profile_url`, `start`, `length` (offsets in `message_text`, counted like JavaScript strings). Empty when nobody is tagged. Example: `[{"name": "Diego Hernández", "member_urn": "urn:li:fsd_profile:ACoAA...", "profile_url": "https://www.linkedin.com/in/ACoAA...", "start": 19, "length": 16}]` |
 | `event.message_type` | `string` | What the message is. Classic inbox: `TEXT`, `MEDIA` (attachment without text) or `SYSTEM`. Sales Navigator inbox: `INMAIL`, `MESSAGE`, `INMAIL_DECLINE` or `INMAIL_ACCEPT`. An `INMAIL_DECLINE` is the prospect pressing "Not interested" on your InMail: it arrives with an empty `message_text` and is a refusal, not a reply. |
 
 <Tip>
