@@ -104,7 +104,7 @@ Within a single filter, multiple values are combined with **OR**. Different filt
 
     {/* --- Paging --- */}
     <ParamField body="count" type="integer" default={10}>Number of candidates to return.</ParamField>
-    <ParamField body="offset" type="integer" default={0}>Index of the first candidate to return.</ParamField>
+    <ParamField body="offset" type="integer" default={0}>Index of the first candidate to return. Recruiter only lets a single search be browsed up to **1000 results**, whatever `total_available_results` reports: an `offset` of 1000 or more returns `INVALID_PARAMS` (0 credits) — narrow the filters to reach deeper candidates.</ParamField>
     <ParamField body="search_request_id" type="string">
       Returned by the first page — pass it back with the next `offset` to page the same search.
     </ParamField>
