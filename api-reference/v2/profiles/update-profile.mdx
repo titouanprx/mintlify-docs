@@ -1,7 +1,7 @@
 ---
 title: 'Update Profile'
 api: 'POST /v2/profiles'
-description: 'Edit the connected account’s own profile in one call: intro, about, experience, education and skills.'
+description: 'Edit the connected account’s own profile in one call: intro, about, experience, education, skills, profile picture and background image.'
 ---
 
 <Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
@@ -68,6 +68,12 @@ description: 'Edit the connected account’s own profile in one call: intro, abo
     <ParamField body="skills" type="object">
       `{"add": ["Python"], "remove": ["Java"]}`, by skill name.
     </ParamField>
+    <ParamField body="profile_picture" type="string | object">
+      Image URL, or `{"filename", "data"}` with base64 data. Center-cropped to a square.
+    </ParamField>
+    <ParamField body="background_image" type="string | object">
+      Same format. Center-cropped to 4:1 (1584×396).
+    </ParamField>
   </Expandable>
 </ParamField>
 
@@ -87,7 +93,8 @@ description: 'Edit the connected account’s own profile in one call: intro, abo
     "education": [
       { "school": "HEC Paris", "degree": "MSc", "start_date": "2018", "end_date": "2020" }
     ],
-    "skills": { "add": ["Growth Marketing"], "remove": ["Java"] }
+    "skills": { "add": ["Growth Marketing"], "remove": ["Java"] },
+    "profile_picture": "https://example.com/me.jpg"
   }
 }
 ```
