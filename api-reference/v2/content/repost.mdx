@@ -6,7 +6,7 @@ description: 'Repost a post to your feed.'
 
 ## Overview
 
-Repost (share) a post to the authenticated account's feed.
+Repost (share) a post to the authenticated account's feed. You can also repost as a company page by providing the `company_url` parameter.
 
 <Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
@@ -28,6 +28,9 @@ Repost (share) a post to the authenticated account's feed.
   <Expandable title="params properties">
     <ParamField body="post_url" type="string" required>
       The URL of the post to repost, as shown on the connected platform.
+    </ParamField>
+    <ParamField body="company_url" type="string">
+      Optional. The URL of a company page to repost as. You must be an admin of the company page.
     </ParamField>
   </Expandable>
 </ParamField>
