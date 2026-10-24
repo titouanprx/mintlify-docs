@@ -281,6 +281,24 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
 ```
 </ResponseExample>
 
+## React, edit or delete a message
+
+Same endpoint, classic LinkedIn messages only, 1 credit each. `message_id` is the message URN: `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or from a webhook event (a bare `2-…` id works with `conversation_id`). Only the account's own messages can be edited or deleted.
+
+| `action` | `params` |
+| --- | --- |
+| `react_message` | `message_id`, `emoji`, `remove?` (`true` removes the reaction) |
+| `edit_message` | `message_id`, `message_text` |
+| `delete_message` | `message_id` (unsends it for everyone) |
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "react_message",
+  "params": { "message_id": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)", "emoji": "👍" }
+}
+```
+
 ## InMail
 
 Reaches someone you are not connected to, through the account's premium seat. Triggered by `inmail: true` or a `recipient_urn` — a `subject` alone never turns a message into an InMail. Prefer `recipient_urn` from the [lead search](/api-reference/v2/profiles/search-people-nav) when you have it.
