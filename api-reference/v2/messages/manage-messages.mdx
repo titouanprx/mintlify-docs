@@ -1,0 +1,70 @@
+---
+title: 'React, Edit, Delete'
+description: 'React to a LinkedIn message, edit or unsend one of your own'
+---
+
+## Overview
+
+Three actions on [`POST /v2/messages`](/api-reference/v2/messages/send) for classic LinkedIn messages (not Sales Navigator or Recruiter threads). Each one costs **1 credit**.
+
+`message_id` is the message's URN: `messages[].entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation), or `metadata.entity_urn` / `message_urn` from a [webhook event](/api-reference/v2/webhooks/introduction). The bare `2-…` id also works when you pass its `conversation_id`.
+
+| `action` | Params | Effect |
+| --- | --- | --- |
+| `react_message` | `message_id`, `emoji`, `remove?` | Adds an emoji reaction. `remove: true` takes it off. |
+| `edit_message` | `message_id`, `message_text` | Replaces the text of one of the account's own messages. |
+| `delete_message` | `message_id` | Unsends one of the account's own messages, for every participant. |
+
+Editing or deleting someone else's message is refused by LinkedIn (`INVALID_PARAMS`). The other participants see the change, and it reaches your webhooks as `message_reaction`, `message_edited` or `message_deleted` if you subscribed to them.
+
+<ParamField body="account_id" type="string" required>The LinkedIn account.</ParamField>
+<ParamField body="action" type="string" required>`react_message`, `edit_message` or `delete_message`.</ParamField>
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="message_id" type="string" required>The message URN (`urn:li:msg_message:(urn:li:fsd_profile:…,2-…)`), or its bare `2-…` id with `conversation_id`.</ParamField>
+    <ParamField body="conversation_id" type="string">Required only with a bare `2-…` id.</ParamField>
+    <ParamField body="emoji" type="string">`react_message`: the emoji, e.g. `"👍"`.</ParamField>
+    <ParamField body="remove" type="boolean" default="false">`react_message`: `true` removes the reaction.</ParamField>
+    <ParamField body="message_text" type="string">`edit_message`: the new text.</ParamField>
+  </Expandable>
+</ParamField>
+
+<RequestExample>
+```json React
+{ "account_id": "your-account-id", "action": "react_message", "params": { "message_id": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)", "emoji": "👍" } }
+```
+
+```json Edit
+{ "account_id": "your-account-id", "action": "edit_message", "params": { "message_id": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)", "message_text": "Updated text" } }
+```
+
+```json Delete
+{ "account_id": "your-account-id", "action": "delete_message", "params": { "message_id": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)" } }
+```
+</RequestExample>
+
+<ResponseExample>
+```json react_message
+{
+  "success": true,
+  "data": { "message_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)", "emoji": "👍", "reacted": true },
+  "metadata": { "action": "react_message", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-10-24T12:00:00Z" }
+}
+```
+
+```json edit_message
+{
+  "success": true,
+  "data": { "message_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)", "edited": true, "message_text": "Updated text" },
+  "metadata": { "action": "edit_message", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-10-24T12:00:00Z" }
+}
+```
+
+```json delete_message
+{
+  "success": true,
+  "data": { "message_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)", "deleted": true },
+  "metadata": { "action": "delete_message", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-10-24T12:00:00Z" }
+}
+```
+</ResponseExample>
