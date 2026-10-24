@@ -10,9 +10,9 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 - **Without `url`** — Hosted mode: events are available via [SSE stream](/api-reference/v2/webhooks/stream) or [polling](/api-reference/v2/webhooks/events)
 
 <Note>
-  **Monitoring starts automatically.** As soon as the webhook is created, the account's real-time SSE stream is opened and credit billing begins (≈10 credits/day per account). You don't need to call [`/start`](/api-reference/v2/webhooks/start) — that endpoint is only used to resume a webhook that was previously stopped via [`/stop`](/api-reference/v2/webhooks/stop).
+  **Monitoring starts as soon as the webhook is created.** No need to call [`/start`](/api-reference/v2/webhooks/start): it only resumes a webhook stopped with [`/stop`](/api-reference/v2/webhooks/stop).
 
-  Calling `POST /v2/webhooks` itself costs **0 credits**; the running cost comes from the live monitoring it enables.
+  **Cost.** Creating a webhook is free. On a per-account plan, monitoring is included. On a credit plan, a monitored account costs ≈10 credits/day, however many webhooks it has; when credits run out, monitoring pauses and resumes once you top up.
 </Note>
 
 ### Header Parameters
@@ -38,9 +38,9 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 </ParamField>
 
 <ParamField body="events" type="array" default='["all"]'>
-  List of event types to listen for. Defaults to `["all"]` which receives every event. Applies to **custom mode** only: hosted webhooks always receive every event type.
+  List of event types to listen for. Defaults to `["all"]`. Applies to **custom mode** only: hosted webhooks always receive every event type.
 
-  Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `message_read` (LinkedIn and WhatsApp read receipts, opt-in: not covered by `all`), `message_delivered` and `message_failed` (WhatsApp delivery receipts, opt-in), `all`. For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
+  Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `message_read` (LinkedIn and WhatsApp read receipts, opt-in: not covered by `all`), `message_delivered` and `message_failed` (WhatsApp delivery receipts, opt-in), `all`. `all` covers every event except the opt-in ones, which must be listed explicitly (e.g. `["all", "message_read"]`). For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
 </ParamField>
 
 <ParamField body="message_type" type="string" default="inbound">
