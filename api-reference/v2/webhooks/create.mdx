@@ -16,13 +16,13 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 </Note>
 
 <Warning>
-  **Check your subscription: `all` is not every event.** It leaves out the opt-in events (`message_read`, `message_delivered`, `message_failed`), and `message_type` defaults to `inbound`, so the messages the account sends are left out too. Event types added later will also be opt-in.
+  **Check your subscription: `all` is not every event.** It leaves out the opt-in events (`message_read`, `message_reaction`, `message_edited`, `message_deleted`, `message_delivered`, `message_failed`), and `message_type` defaults to `inbound`, so the messages the account sends are left out too. Event types added later will also be opt-in.
 
   To receive everything, set explicitly:
 
   ```json
   {
-    "events": ["all", "message_read", "message_delivered", "message_failed"],
+    "events": ["all", "message_read", "message_reaction", "message_edited", "message_deleted", "message_delivered", "message_failed"],
     "message_type": "all"
   }
   ```
@@ -55,7 +55,7 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 <ParamField body="events" type="array" default='["all"]'>
   List of event types to listen for. Defaults to `["all"]`. Applies to **custom mode** only: hosted webhooks always receive every event type.
 
-  Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `message_read` (LinkedIn and WhatsApp read receipts, opt-in: not covered by `all`), `message_delivered` and `message_failed` (WhatsApp delivery receipts, opt-in), `all`. For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
+  Available event types: `message_received`, `accepted_invitation`, `invitation_received`, `message_read` (LinkedIn and WhatsApp read receipts, opt-in: not covered by `all`), `message_reaction`, `message_edited` and `message_deleted` (LinkedIn, opt-in), `message_delivered` and `message_failed` (WhatsApp delivery receipts, opt-in), `all`. For an **email** account, `message_received` covers new incoming emails and `email_bounced` (delivered via `all`) covers bounces — see [Email events](/api-reference/v2/webhooks/introduction#email-events).
 </ParamField>
 
 <ParamField body="message_type" type="string" default="inbound">

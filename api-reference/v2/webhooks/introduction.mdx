@@ -89,9 +89,12 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 | `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `email_bounced` *(email, via `all`)* | `"email_bounced"` | An email you sent bounced |
 | `message_read` *(LinkedIn, WhatsApp, opt-in)* | `"message_read"` | A participant has seen one of the account's messages. Not included in `all`: name it in `events` to receive it |
+| `message_reaction` *(LinkedIn, opt-in)* | `"message_reaction"` | Someone added or removed an emoji reaction on a message of the account |
+| `message_edited` *(LinkedIn, opt-in)* | `"message_edited"` | A message of the account's threads was edited |
+| `message_deleted` *(LinkedIn, opt-in)* | `"message_deleted"` | A message of the account's threads was unsent |
 | `message_delivered` *(WhatsApp, opt-in)* | `"message_delivered"` | A message the account sent reached the recipient's phone. Not included in `all` |
 | `message_failed` *(WhatsApp, opt-in)* | `"message_failed"` | WhatsApp could not deliver a message the account sent. Not included in `all` |
-| `all` | — | Subscribe to all event types (except opt-in types: `message_read`, `message_delivered`, `message_failed`) |
+| `all` | — | Subscribe to all event types (except opt-in types: `message_read`, `message_delivered`, `message_failed`, `message_reaction`, `message_edited`, `message_deleted`) |
 
 <Note>
   By default, webhooks listen to **all** event types. In **custom mode**, you can filter specific events when creating the webhook by passing an `events` array. **Hosted** webhooks (SSE stream and `GET /events`) always receive every event type — only the `message_type` direction filter applies — so filter on `event.type` on your side.
@@ -485,6 +488,54 @@ Opt-in like `message_read`: name `message_delivered` or `message_failed` in `eve
     }
   },
   "timestamp": "2026-10-15T14:56:33.373415"
+}
+```
+
+
+### Message Reaction / Edited / Deleted (LinkedIn)
+
+Opt-in like `message_read`: name `message_reaction`, `message_edited` or `message_deleted` in `events`.
+
+- `message_reaction`: someone added or removed an emoji on a message of the account's threads. `action` is `added` or `removed`, `reaction_count` the count of this emoji after the change, `actor` who reacted. The account's own reactions are not sent.
+- `message_edited`: a message was edited, `message_text` is the new text.
+- `message_deleted`: a message was unsent. Its text is gone, use `message_urn` to find it.
+
+Both carry `sender` (the author, the only one who can edit or unsend) and `is_self_sent` (`true` when the account itself edited or unsent it).
+
+```json
+{
+  "event_id": "6ad1a2b37ec96b30888d3a10",
+  "account_id": "69ee261e41fc4cbecf9f34c9",
+  "platform": "linkedin",
+  "event": {
+    "type": "message_reaction",
+    "action": "added",
+    "emoji": "👍",
+    "reaction_count": 1,
+    "message_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)",
+    "conversation_urn": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAAD...,2-YTg2...)",
+    "actor": {
+      "name": "Jane Doe",
+      "profile_url": "https://www.linkedin.com/in/ACoAAGOT...",
+      "urn": "urn:li:fsd_profile:ACoAAGOT...",
+      "headline": "Head of Sales at Acme"
+    },
+    "is_self_reaction": false
+  }
+}
+```
+
+```json
+{
+  "event": {
+    "type": "message_edited",
+    "message_urn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAAD...,2-MTc5...)",
+    "conversation_urn": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAAD...,2-YTg2...)",
+    "message_text": "Updated text",
+    "sender": { "name": "Jane Doe", "profile_url": "https://www.linkedin.com/in/ACoAAGOT...", "urn": "urn:li:fsd_profile:ACoAAGOT..." },
+    "is_self_sent": false,
+    "delivered_at": 1792853045769
+  }
 }
 ```
 
