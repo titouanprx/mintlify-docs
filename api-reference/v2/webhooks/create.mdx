@@ -16,7 +16,18 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 </Note>
 
 <Warning>
-  **`all` does not mean every event type.** It covers `message_received`, `accepted_invitation`, `invitation_received` and `email_bounced`. Opt-in events (`message_read`, `message_delivered`, `message_failed`) are never included: list them explicitly, e.g. `["all", "message_read"]`. Every event type added in the future will be opt-in too, so an existing `all` webhook never starts receiving payloads it doesn't expect. `disconnection` is always delivered, whatever the filter.
+  **Check your subscription: `all` is not every event.** It leaves out the opt-in events (`message_read`, `message_delivered`, `message_failed`), and `message_type` defaults to `inbound`, so the messages the account sends are left out too. Event types added later will also be opt-in.
+
+  To receive everything, set explicitly:
+
+  ```json
+  {
+    "events": ["all", "message_read", "message_delivered", "message_failed"],
+    "message_type": "all"
+  }
+  ```
+
+  `disconnection` is always delivered, whatever the filter.
 </Warning>
 
 ### Header Parameters
