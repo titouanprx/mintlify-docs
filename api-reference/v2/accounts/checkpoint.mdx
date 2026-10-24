@@ -78,7 +78,11 @@ Complete 2FA verification for an account that returned `checkpoint_required` dur
   "success": true,
   "data": {
     "account_id": "69c127c37cae0494dd827286",
-    "status": "code_sent"
+    "status": "code_sent",
+    "method": "sms",
+    "available_methods": ["sms", "call", "email"],
+    "sent_to": "phone number ending with 23",
+    "checkpoint_message": "LinkedIn sent a verification code to the phone number ending with 23."
   },
   "metadata": {
     "action": "checkpoint",

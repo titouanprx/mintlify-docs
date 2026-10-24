@@ -59,6 +59,9 @@ Retrieve detailed information about a specific account, including its configurat
     <ResponseField name="sent_to" type="string">
       Masked destination when LinkedIn shows it, e.g. `phone number ending with 23`.
     </ResponseField>
+    <ResponseField name="checkpoint_message" type="string">
+      Ready-to-display sentence for your user, built from `checkpoint_type` and `sent_to`, e.g. `LinkedIn sent a verification code to the phone number ending with 23.` `message` keeps its generic wording.
+    </ResponseField>
 
     <ResponseField name="country" type="string">
       Country code associated with the account

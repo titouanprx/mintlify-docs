@@ -113,6 +113,9 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     <ResponseField name="sent_to" type="string">
       Masked destination when LinkedIn shows it, e.g. `phone number ending with 23`.
     </ResponseField>
+    <ResponseField name="checkpoint_message" type="string">
+      Ready-to-display sentence for your user, built from `checkpoint_type` and `sent_to`, e.g. `LinkedIn sent a verification code to the phone number ending with 23.` `message` keeps its generic wording.
+    </ResponseField>
     <ResponseField name="sales_nav" type="object">
       Present when `sales_nav: true` was requested. `{ "connected": true, "contract_id": "...", "seat_id": "..." }` on success, or `{ "connected": false, "error": "..." }` if no seat could be activated. When the login returns `checkpoint_required`, this is `{ "pending": true }` and the seat is activated once the checkpoint completes.
     </ResponseField>
@@ -151,7 +154,8 @@ Connect a new channel account (LinkedIn, WhatsApp, etc.) to your API key. Once c
     "status": "checkpoint_required",
     "message": "Check your email for verification code",
     "checkpoint_type": "sms",
-    "sent_to": "phone number ending with 23"
+    "sent_to": "phone number ending with 23",
+    "checkpoint_message": "LinkedIn sent a verification code to the phone number ending with 23."
   },
   "metadata": {
     "action": "login",
