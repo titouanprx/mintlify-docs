@@ -283,7 +283,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
 
 ## React, edit or delete a message
 
-Same endpoint, classic LinkedIn messages only, 1 credit each. `message_id` is the message URN: `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or from a webhook event (a bare `2-…` id works with `conversation_id`). Only the account's own messages can be edited or deleted.
+Same endpoint, classic LinkedIn messages only, 1 credit each. `message_id` is the message URN: `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or from a webhook event (a bare `2-…` id works with `conversation_id`). Only the account's own messages can be edited or deleted, within 60 minutes of sending them.
 
 | `action` | `params` |
 | --- | --- |
