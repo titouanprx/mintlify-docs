@@ -23,8 +23,12 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
 
 ### Body Parameters
 
-<ParamField body="account_id" type="string" required>
-  The ID of the account to monitor. Must be an account you own (created via `/v2/login`).
+<ParamField body="account_id" type="string">
+  The ID of the account to monitor. Must be an account you own (created via `/v2/login`). Send either `account_id` or `account_ids`.
+</ParamField>
+
+<ParamField body="account_ids" type="array">
+  Up to 100 account IDs: creates one webhook per account with the same settings, in one call. The response lists the created webhooks in `data.webhooks` and the accounts that could not be attached in `data.failed`; the others are still created. With `enable_signature`, all of them share the one `secret` returned.
 </ParamField>
 
 <ParamField body="url" type="string">
@@ -126,6 +130,36 @@ Create a webhook listener for one of your connected accounts. The delivery mode 
     "url": "https://your-server.com/webhook",
     "events": ["all"],
     "is_active": true
+  },
+  "metadata": {
+    "action": "create_webhook",
+    "credits_consumed": 0,
+    "timestamp": "2025-01-15T10:30:00.000000"
+  }
+}
+```
+
+```json Several accounts (account_ids)
+{
+  "success": true,
+  "data": {
+    "webhooks": [
+      {
+        "webhook_id": "6789abcdef0123456789abcd",
+        "account_id": "69c127c37cae0494dd827286",
+        "mode": "custom",
+        "url": "https://your-server.com/webhook",
+        "events": ["all"],
+        "is_active": true
+      }
+    ],
+    "failed": [
+      {
+        "account_id": "69c127c37cae0494dd8272ff",
+        "error": { "code": "INVALID_ACCOUNT", "message": "Account not found" }
+      }
+    ],
+    "count": 1
   },
   "metadata": {
     "action": "create_webhook",
