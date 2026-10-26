@@ -256,6 +256,10 @@ Common failures return the standard error envelope: an address with no Gmail mai
 { "platform": "whatsapp", "phone_number": "+33612345678" }
 ```
 
+### iMessage
+
+An iMessage line is a dedicated US or UK number. It is not connected with `/v2/login`: buy it from the dashboard ([Plans](https://app.linkupapi.com/plans) or Account connection), $199 per line per month. Once active, it appears in [List Accounts](/api-reference/v2/accounts/list-accounts) with `platform: "imessage"` and works with the same message endpoints and webhooks. Sending rules: [iMessage limits](/api-reference/v2/best-practices#imessage-limits).
+
 ### Sales Nav
 
 The Sales Nav seat is derived from the account's existing session — there is **no separate login**. There are two ways to activate it:

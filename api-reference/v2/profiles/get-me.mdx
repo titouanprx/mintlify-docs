@@ -8,7 +8,7 @@ description: 'Retrieve the profile information of the authenticated account.'
 
 Returns the full profile data for the account associated with the provided `account_id`. No additional parameters are needed beyond the required `account_id` and `action`.
 
-For a **WhatsApp** account, returns the linked number's profile instead: see the `200 (WhatsApp)` example.
+For a **WhatsApp** account, returns the linked number's profile instead: see the `200 (WhatsApp)` example. For an **iMessage** line, returns the line and its sending limits.
 
 <Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
@@ -65,6 +65,12 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
     <ResponseField name="profile_picture_url" type="string | null">`null` when hidden by the owner's privacy settings.</ResponseField>
     <ResponseField name="about" type="string | null">"About" text. `null` when hidden.</ResponseField>
     <ResponseField name="is_business" type="boolean">`true` for a WhatsApp Business number; `business` then holds `category`, `description`, `email`, `website`, `address`.</ResponseField>
+  </Expandable>
+  <Expandable title="data properties (iMessage)">
+    <ResponseField name="phone_number" type="string">The line's number, international format.</ResponseField>
+    <ResponseField name="imessage_link" type="string">Link that opens a conversation with the line.</ResponseField>
+    <ResponseField name="contact_card" type="object | null">Name and photo shown when a contact saves the number.</ResponseField>
+    <ResponseField name="sending_limits" type="object">Where the line stands today: `new_conversations_per_24h`, `new_conversations_last_24h`, `new_conversations_left`, `contacts_last_24h` / `contacts_per_24h`, `contacts_last_30_days` / `contacts_per_30_days`, `reply_rate`, `warmed_up`. See [iMessage limits](/api-reference/v2/best-practices#imessage-limits).</ResponseField>
   </Expandable>
 </ResponseField>
 

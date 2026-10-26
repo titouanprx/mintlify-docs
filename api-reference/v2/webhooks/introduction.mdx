@@ -92,8 +92,8 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 | `message_reaction` *(LinkedIn, opt-in)* | `"message_reaction"` | Someone added or removed an emoji reaction on a message of the account |
 | `message_edited` *(LinkedIn, opt-in)* | `"message_edited"` | A message of the account's threads was edited |
 | `message_deleted` *(LinkedIn, opt-in)* | `"message_deleted"` | A message of the account's threads was unsent |
-| `message_delivered` *(WhatsApp, opt-in)* | `"message_delivered"` | A message the account sent reached the recipient's phone. Not included in `all` |
-| `message_failed` *(WhatsApp, opt-in)* | `"message_failed"` | WhatsApp could not deliver a message the account sent. Not included in `all` |
+| `message_delivered` *(WhatsApp, iMessage, opt-in)* | `"message_delivered"` | A message the account sent reached the recipient's phone. Not included in `all` |
+| `message_failed` *(WhatsApp, iMessage, opt-in)* | `"message_failed"` | A message the account sent could not be delivered. Not included in `all` |
 | `all` | — | Subscribe to all event types (except opt-in types: `message_read`, `message_delivered`, `message_failed`, `message_reaction`, `message_edited`, `message_deleted`) |
 
 <Note>
@@ -112,7 +112,7 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 
 All events share the same wrapper structure. Note that the outer `timestamp` is when the API emitted the event, while `event.timestamp` is when the underlying platform activity happened — they differ slightly (latency).
 
-The top-level **`platform`** field (`"linkedin"`, `"email"` or `"whatsapp"`) tells you which channel the event came from — this is how you distinguish an inbound email from a LinkedIn DM, since both use `event.type: "message"`.
+The top-level **`platform`** field (`"linkedin"`, `"email"`, `"whatsapp"` or `"imessage"`) tells you which channel the event came from — this is how you distinguish an inbound email from a LinkedIn DM, since both use `event.type: "message"`.
 
 The top-level **`event_id`** is the stable identifier of the event: identical on every retry or replay, and the key to dedupe on (see [Delivery & retries](#delivery-retries-custom-mode)).
 
@@ -458,9 +458,9 @@ Triggered when a participant of a thread sees one of the account's messages (Lin
 
 **WhatsApp** sends the same event (`platform: "whatsapp"`) when the recipient reads a message the account sent: `message_urn` and `message_id` are the WhatsApp message id, `conversation_urn` and `conversation_id` the chat, `reader` carries `phone_number` and `jid` (`urn` and `headline` are null). In a group WhatsApp does not say who read it: the `reader` fields are null and `is_group_chat` is true.
 
-### Message Delivered / Message Failed (WhatsApp)
+### Message Delivered / Message Failed (WhatsApp, iMessage)
 
-Opt-in like `message_read`: name `message_delivered` or `message_failed` in `events`. `message_delivered` fires once when a message the account sent reaches the recipient's phone (`delivered_at`, epoch milliseconds); `message_failed` when WhatsApp could not deliver it (`failed_at`). Same frame as the read event, with `recipient` instead of `reader`.
+Opt-in like `message_read`: name `message_delivered` or `message_failed` in `events`. `message_delivered` fires once when a message the account sent reaches the recipient's phone (`delivered_at`, epoch milliseconds); `message_failed` when it could not be delivered (`failed_at`; on iMessage, plus `error_code`). Same frame as the read event, with `recipient` instead of `reader`.
 
 ```json
 {

@@ -6,7 +6,7 @@ description: 'Send a LinkedIn message or InMail, or an email — from a connecte
 
 ## Overview
 
-Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. For a **WhatsApp** account it sends a WhatsApp message to `phone_number`. The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, **(WhatsApp)**, or several.
+Sends a message from a connected account. For a **LinkedIn** account it's a direct message — or a [Sales Nav InMail](#inmail) with `inmail: true` / a `recipient_urn`. For an **email** account (see [Connect a mailbox](/api-reference/v2/accounts/login#email-mailbox)) it sends an email. For a **WhatsApp** account it sends a WhatsApp message to `phone_number`. For an **iMessage** line it sends an iMessage to `phone_number` (SMS when the contact has no iMessage). The `params` depend on the account's platform — each field below is tagged **(LinkedIn)**, **(Email)**, **(WhatsApp)**, **(iMessage)**, or several.
 
 <Note>This endpoint consumes **1 credit** for a text message or email (**2 credits** with LinkedIn media). An InMail consumes **1 InMail credit** from the account's premium seat (separate from your API credits — see [Balance](/api-reference/v2/messages/balance)). Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
@@ -31,11 +31,11 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="message_text" type="string" required>
-      **(LinkedIn + Email + WhatsApp)** The text content. Required for LinkedIn; for email, provide `message_text` and/or `html`; for WhatsApp, `message_text` and/or an attachment.
+      **(LinkedIn + Email + WhatsApp + iMessage)** The text content. Required for LinkedIn and iMessage; for email, provide `message_text` and/or `html`; for WhatsApp, `message_text` and/or an attachment. iMessage sending rules: see [iMessage limits](/api-reference/v2/best-practices#imessage-limits).
       To tag someone in a LinkedIn message, use `mention_user(public_id, display_text)` (`public_id` = the slug of `linkedin.com/in/<public_id>`, or the profile URL) — e.g. `"Hi, meet mention_user(williamhgates, Bill Gates)!"` is sent as `Hi, meet @Bill Gates!` with Bill Gates tagged. An unknown profile returns an error and nothing is sent.
     </ParamField>
     <ParamField body="subject" type="string">
-      **(InMail + Email)** Subject line. On LinkedIn it applies to InMails only (ignored for standard messages, and alone it does **not** trigger an InMail); on email it's the email subject.
+      **(InMail + Email + iMessage)** Subject line. On LinkedIn it applies to InMails only (ignored for standard messages, and alone it does **not** trigger an InMail); on email it's the email subject; on iMessage, a bold title above the text.
     </ParamField>
     <ParamField body="profile_url" type="string">
       **(LinkedIn)** URL of the recipient's profile. Used for a standard message and an InMail (with `inmail: true`). Required unless you pass `recipient_urn` or `conversation_id`.
@@ -53,7 +53,10 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn Recruiter)** Send from the account's **Recruiter seat**. See [Recruiter InMail](#recruiter-inmail) below.
     </ParamField>
     <ParamField body="phone_number" type="string">
-      **(WhatsApp)** Recipient number in international format, e.g. `+33612345678`. Required for a WhatsApp account.
+      **(WhatsApp + iMessage)** Recipient number in international format, e.g. `+33612345678`. Required for a WhatsApp account. On iMessage, pass `phone_number`, an Apple ID `email`, or a group `conversation_id`.
+    </ParamField>
+    <ParamField body="effect" type="string">
+      **(iMessage)** Message effect: `slam`, `loud`, `gentle`, `invisibleInk`, `echo`, `spotlight`, `balloons`, `confetti`, `love`, `lasers`, `fireworks`, `shootingStar` or `celebration`.
     </ParamField>
     <ParamField body="to" type="string">
       **(Email)** Recipient email address. Required for an email account.
@@ -97,7 +100,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn + Email)** A server-side file path to a file to attach.
     </ParamField>
     <ParamField body="media_links" type="string[]">
-      **(LinkedIn + Email + WhatsApp)** Publicly accessible URLs of files to attach — all delivered in the same message.
+      **(LinkedIn + Email + WhatsApp + iMessage)** Publicly accessible URLs of files to attach — all delivered in the same message. iMessage takes `https://` URLs only, up to 10.
     </ParamField>
     <ParamField body="media_files" type="object[]">
       **(LinkedIn + Email + WhatsApp)** Base64-encoded files to attach — same shape as `media_file` (`data`, `filename`).
@@ -106,7 +109,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn + WhatsApp)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension.
     </ParamField>
     <ParamField body="quoted_message_id" type="string">
-      Reply to a specific message (quoted above yours, like the Reply action of the app). **LinkedIn:** the message's `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or `metadata.entity_urn` of a webhook event; the thread is resolved from `conversation_id` or `profile_url`, and the quoted message must be among the last 100 of the thread. **WhatsApp:** its `id` from Get Conversation.
+      Reply to a specific message (quoted above yours, like the Reply action of the app). **LinkedIn:** the message's `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or `metadata.entity_urn` of a webhook event; the thread is resolved from `conversation_id` or `profile_url`, and the quoted message must be among the last 100 of the thread. **WhatsApp:** its `id` from Get Conversation. **iMessage:** its `message_id`.
     </ParamField>
   </Expandable>
 </ParamField>
