@@ -128,7 +128,7 @@ An iMessage line is a dedicated phone number. Messaging is unlimited; what is li
 | Different contacts | 300 per rolling 24 hours, 1,000 per month |
 
 - Every contact the line sends to counts once in the period, including contacts who wrote first. Messaging the same contact again does not count twice.
-- Once a limit is reached, the line still **receives** messages but can no longer **reply** until the period frees up.
+- Once a limit is reached, the line still **receives** messages but can no longer **reply** until the period frees up. LinkupAPI refuses a send to one more contact with `IMESSAGE_CONTACT_LIMIT`; writing to contacts already counted still goes through. The month is counted over the last 30 days.
 
 ### Opening conversations
 
@@ -154,12 +154,13 @@ An iMessage line is a dedicated phone number. Messaging is unlimited; what is li
 
 A ready number may have had another owner: from time to time, it can receive messages from contacts of that owner. A new number is assigned when no ready number is available in the country.
 
-`get_me` on an iMessage account returns `sending_limits`: the day of the line, new conversations allowed, used and left in the last 24 hours, the reply rate, and whether the line is warmed up.
+`get_me` on an iMessage account returns `sending_limits`: the day of the line, new conversations allowed, used and left in the last 24 hours, different contacts reached in the last 24 hours and 30 days, the reply rate, and whether the line is warmed up.
 
 ### Refused sends
 
 | `error.sub_code` | HTTP | Meaning |
 |---|---|---|
+| `IMESSAGE_CONTACT_LIMIT` | 429 | Different contacts of the last 24 hours or 30 days used up |
 | `IMESSAGE_DAILY_NEW_CONTACT_LIMIT` | 429 | New conversations of the last 24 hours used up |
 | `IMESSAGE_NEW_CONTACT_INTERVAL` | 429 | Less than 15 minutes since the last new conversation |
 | `IMESSAGE_FOLLOW_UP_TOO_SOON` | 429 | Less than 24 hours since the last follow-up to this contact |
