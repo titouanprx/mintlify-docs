@@ -359,3 +359,14 @@ Every list filter also accepts raw ids directly, so you can mix friendly names a
   }
 }
 ```
+
+## Lists and lead profile
+
+Same seat, same endpoint, 1 credit per call:
+
+- `list_lists_nav` `{ type?: "lead"|"account", ownership?: "all"|"owned"|"editable", offset?, count? }`: the seat's lists, each with `list_id`, `name`, `type` and `entity_count`.
+- `create_list_nav` `{ name, type: "lead"|"account", description? }`: creates an empty list and returns its `list_id`.
+- `add_to_list_nav` `{ list_id, profiles? | companies? }`: adds up to 25 profiles (URLs or ids) to a lead list, or up to 100 companies (ids or URLs) to an account list. Each input gets a `status`: `added`, `already_in_list`, or `failed` with an `error`. Costs 1 credit per 10 entities.
+- `get_profile_nav` `{ profile }`: a lead as Sales Nav shows it, with positions, education, the emails visible to the seat, `inmail_restriction`, `open_link`, `saved` and `list_count`.
+
+To read a list, pass it to this search as `lead_list` or as a `.../sales/lists/people/<id>` URL.
