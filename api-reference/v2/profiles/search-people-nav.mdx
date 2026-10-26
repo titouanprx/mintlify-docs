@@ -41,6 +41,10 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
       A copied Sales Nav people URL, pasted as-is. Three kinds work: a search (`.../sales/search/people?query=...` or `#query=...`), a saved search (`.../sales/search/people?savedSearchId=...`) and a lead list (`.../sales/lists/people/<id>`). When provided, it **takes precedence** over the friendly filters below. The best way to replicate a complex search or use filters that have no friendly mapping.
     </ParamField>
 
+    <ParamField body="saved_search_id" type="string">
+      Id of a Sales Nav saved search, run as it was saved. Same as passing its `savedSearchId` URL.
+    </ParamField>
+
     <ParamField body="keyword" type="string">
       Free-text keyword searched across profiles.
     </ParamField>
@@ -101,6 +105,9 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
     <ParamField body="region" type="string[]">
       Region / super-region (`EMEA`, `DACH`, `Benelux`, …) or place names.
     </ParamField>
+    <ParamField body="postal_code" type="string[]">
+      Postal codes (e.g. `["75001"]`) or ids from Typeahead (`type: postal_code`). `postal_radius` widens the area: `5`, `10`, `25`, `35`, `50`, `75` or `100`.
+    </ParamField>
     <ParamField body="profile_language" type="string[]">
       Profile language. ISO code (`en`, `fr`) or name (`English`, `French`).
     </ParamField>
@@ -120,6 +127,9 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
     </ParamField>
     <ParamField body="shared_experiences" type="boolean">
       Only leads you share an experience with (company, school, group).
+    </ParamField>
+    <ParamField body="changed_jobs" type="boolean">
+      Only leads who changed jobs in the last 90 days. Same form: `posted_on_linkedin` (last 30 days), `following_your_company`, `viewed_your_profile` (last 90 days), `past_colleague`, `past_customer`.
     </ParamField>
     <ParamField body="lead_interactions" type="string[]">
       Your past interactions. Accepted: `Viewed profile` (`LIVP`), `Messaged` (`LIMP`).
@@ -184,6 +194,10 @@ Every list filter also accepts raw ids directly, so you can mix friendly names a
       List of matching leads.
       <Expandable title="lead properties">
         <ResponseField name="name" type="string">Full name.</ResponseField>
+        <ResponseField name="first_name" type="string">First name. `last_name` alongside.</ResponseField>
+        <ResponseField name="member_urn" type="string">`urn:li:member:<id>`.</ResponseField>
+        <ResponseField name="saved" type="boolean">Saved as a lead by the seat. `list_count`: number of the seat's lists it is in.</ResponseField>
+        <ResponseField name="pending_invitation" type="boolean">An invitation is pending with the lead.</ResponseField>
         <ResponseField name="job_title" type="string">Current job title.</ResponseField>
         <ResponseField name="company" type="string">Current company.</ResponseField>
         <ResponseField name="location" type="string">Geographic location.</ResponseField>

@@ -77,6 +77,12 @@ Within a filter, values are combined with **OR**. Different filters are combined
     <ParamField body="leadership_changes" type="boolean">
       Only companies with senior leadership changes in the last 3 months.
     </ParamField>
+    <ParamField body="first_degree_connections" type="boolean">
+      Only companies where the seat has 1st-degree connections. `saved_accounts: true`: only the accounts the seat saved.
+    </ParamField>
+    <ParamField body="postal_code" type="string[]">
+      Headquarters postal codes, or ids from Typeahead (`type: postal_code`).
+    </ParamField>
     <ParamField body="account_list" type="string[]">
       Your saved account lists, by name or id from Typeahead (`type: account_list`).
     </ParamField>
