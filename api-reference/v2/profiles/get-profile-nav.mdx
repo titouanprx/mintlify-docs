@@ -1,0 +1,108 @@
+---
+title: 'Get Profile Nav'
+sidebarTitle: 'Get Profile Nav'
+api: 'POST /v2/profiles'
+description: 'Get a lead as Sales Nav shows it.'
+---
+
+## Overview
+
+Get a profile in its **Sales Nav view**: positions, education, the emails visible to the seat, InMail restriction, Open Profile badge, and the seat's own data on the lead (saved, lists, notes).
+
+<Note>This endpoint consumes **1 credit** per call. Requires a Sales Nav seat on the account. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use. Must have a Sales Nav seat.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get_profile_nav"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="profile" type="string" required>
+      A profile URL, a Sales Nav lead URL, or a profile id (`ACoAA…` or `ACwAA…`). An unknown profile returns `INVALID_PARAMS` with `sub_code: PROFILE_NOT_FOUND`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="profile_id" type="string">Sales Nav profile id (`ACwAA…`).</ResponseField>
+    <ResponseField name="recipient_urn" type="string">Pass it to [Send Message](/api-reference/v2/messages/send) to InMail this lead.</ResponseField>
+    <ResponseField name="member_urn" type="string">`urn:li:member:<id>`.</ResponseField>
+    <ResponseField name="profile_url" type="string">Standard profile URL.</ResponseField>
+    <ResponseField name="sales_nav_url" type="string">Sales Nav lead URL.</ResponseField>
+    <ResponseField name="first_name" type="string">First name.</ResponseField>
+    <ResponseField name="last_name" type="string">Last name.</ResponseField>
+    <ResponseField name="full_name" type="string">Full name.</ResponseField>
+    <ResponseField name="headline" type="string">Headline.</ResponseField>
+    <ResponseField name="location" type="string">Location.</ResponseField>
+    <ResponseField name="profile_picture" type="string">Profile picture URL.</ResponseField>
+    <ResponseField name="connection_degree" type="integer">Connection degree with the seat.</ResponseField>
+    <ResponseField name="connections_count" type="integer">Number of connections.</ResponseField>
+    <ResponseField name="shared_connections" type="integer">Connections in common.</ResponseField>
+    <ResponseField name="premium" type="boolean">Premium member.</ResponseField>
+    <ResponseField name="open_link" type="boolean">Open Profile (free InMail).</ResponseField>
+    <ResponseField name="job_seeker" type="boolean">Open to work badge.</ResponseField>
+    <ResponseField name="inmail_restriction" type="string">`NO_RESTRICTION` when an InMail can be sent.</ResponseField>
+    <ResponseField name="emails" type="string[]">Emails LinkedIn shows the seat (usually for 1st-degree connections).</ResponseField>
+    <ResponseField name="saved" type="boolean">Saved as a lead by the seat.</ResponseField>
+    <ResponseField name="list_count" type="integer">Number of the seat's lists it belongs to.</ResponseField>
+    <ResponseField name="note_count" type="integer">Number of notes the seat wrote on it.</ResponseField>
+    <ResponseField name="viewed" type="boolean">Whether the seat already viewed the profile.</ResponseField>
+    <ResponseField name="pending_invitation" type="boolean">An invitation is pending between the seat and the lead.</ResponseField>
+    <ResponseField name="teamlink" type="boolean">Reachable through TeamLink.</ResponseField>
+    <ResponseField name="last_active_at" type="integer">Last activity on LinkedIn, Unix ms.</ResponseField>
+    <ResponseField name="positions" type="array">Positions, each with `title`, `company`, `company_id`, `company_industry`, `location`, `description`, `started`, `ended` (`M/YYYY`) and `current`.</ResponseField>
+    <ResponseField name="educations" type="array">Education, each with `school`, `degree`, `fields_of_study`, `started` and `ended`.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "profile_id": "ACwAAGOTIYIB...",
+    "recipient_urn": "urn:li:fs_salesProfile:(ACwAAGOTIYIB...,name, )",
+    "member_urn": "urn:li:member:1670586754",
+    "profile_url": "https://www.linkedin.com/in/jane-doe",
+    "sales_nav_url": "https://www.linkedin.com/sales/lead/ACwAAGOTIYIB...",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "full_name": "Jane Doe",
+    "headline": "VP Marketing at TechCo",
+    "location": "Miami, Florida, United States",
+    "connection_degree": 1,
+    "connections_count": 450,
+    "shared_connections": 6,
+    "premium": false,
+    "open_link": false,
+    "inmail_restriction": "NO_RESTRICTION",
+    "emails": ["jane@example.com"],
+    "saved": false,
+    "list_count": 0,
+    "positions": [
+      { "title": "VP Marketing", "company": "TechCo", "company_id": "111891988", "started": "1/2026", "ended": null, "current": true }
+    ],
+    "educations": []
+  },
+  "metadata": {
+    "action": "get_profile_nav",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-26T12:00:00Z"
+  }
+}
+```
+</ResponseExample>

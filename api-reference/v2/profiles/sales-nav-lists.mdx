@@ -1,0 +1,127 @@
+---
+title: 'Sales Nav Lists'
+sidebarTitle: 'Sales Nav Lists'
+api: 'POST /v2/profiles'
+description: 'List, create and fill Sales Nav lead and account lists.'
+---
+
+## Overview
+
+Three actions on the Sales Nav lists of the account's seat:
+
+- `list_lists_nav`: the seat's lead lists or account lists.
+- `create_list_nav`: create an empty list.
+- `add_to_list_nav`: add leads to a lead list, or companies to an account list.
+
+To read the content of a list, use [Search People Nav](/api-reference/v2/profiles/search-people-nav) (`lead_list` or a `.../sales/lists/people/<id>` URL) or [Search Companies Nav](/api-reference/v2/profiles/search-companies-nav) (`account_list` or a `.../sales/lists/company/<id>` URL).
+
+<Note>`list_lists_nav` and `create_list_nav` consume **1 credit**, `add_to_list_nav` **1 credit per 10 entities**. Requires a Sales Nav seat on the account. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use. Must have a Sales Nav seat.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  `"list_lists_nav"`, `"create_list_nav"` or `"add_to_list_nav"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="list_lists_nav">
+    <ParamField body="type" type="string" default="lead">`lead` or `account`.</ParamField>
+    <ParamField body="ownership" type="string" default="all">`all`, `owned` (lists the seat created) or `editable` (lists the seat can add to).</ParamField>
+    <ParamField body="offset" type="integer" default={0}>Index of the first list to return.</ParamField>
+    <ParamField body="count" type="integer" default={25}>Number of lists to return, up to 100.</ParamField>
+  </Expandable>
+  <Expandable title="create_list_nav">
+    <ParamField body="name" type="string" required>List name.</ParamField>
+    <ParamField body="type" type="string" required>`lead` or `account`.</ParamField>
+    <ParamField body="description" type="string">List description.</ParamField>
+  </Expandable>
+  <Expandable title="add_to_list_nav">
+    <ParamField body="list_id" type="string" required>The list id returned by `list_lists_nav` or `create_list_nav`.</ParamField>
+    <ParamField body="profiles" type="string[]">For a lead list: up to 25 profile URLs, Sales Nav lead URLs or profile ids.</ParamField>
+    <ParamField body="companies" type="string[]">For an account list: up to 100 company ids, company page URLs or Sales Nav company URLs.</ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="list_lists_nav">
+    <ResponseField name="lists" type="array">
+      <Expandable title="list properties">
+        <ResponseField name="list_id" type="string">List id.</ResponseField>
+        <ResponseField name="name" type="string">List name.</ResponseField>
+        <ResponseField name="type" type="string">`lead` or `account`.</ResponseField>
+        <ResponseField name="entity_count" type="integer">Number of leads or companies in the list.</ResponseField>
+        <ResponseField name="description" type="string">List description.</ResponseField>
+        <ResponseField name="source" type="string">`MANUAL` for a list the user created, otherwise the kind of list Sales Nav maintains (e.g. `LEADS_TO_FOLLOW_UP`).</ResponseField>
+        <ResponseField name="role" type="string">The seat's role on the list, e.g. `OWNER`.</ResponseField>
+        <ResponseField name="shared" type="boolean">Whether the list is shared.</ResponseField>
+        <ResponseField name="created_at" type="integer">Creation time, Unix ms.</ResponseField>
+        <ResponseField name="last_modified_at" type="integer">Last change, Unix ms.</ResponseField>
+        <ResponseField name="last_viewed_at" type="integer">Last time the seat opened it, Unix ms.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of lists returned.</ResponseField>
+    <ResponseField name="offset" type="integer">Echoes the requested `offset`.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of lists of that type.</ResponseField>
+  </Expandable>
+  <Expandable title="create_list_nav">
+    <ResponseField name="list_id" type="string">Id of the new list.</ResponseField>
+    <ResponseField name="name" type="string">List name.</ResponseField>
+    <ResponseField name="type" type="string">`lead` or `account`.</ResponseField>
+    <ResponseField name="description" type="string">List description.</ResponseField>
+  </Expandable>
+  <Expandable title="add_to_list_nav">
+    <ResponseField name="list_id" type="string">The list.</ResponseField>
+    <ResponseField name="added" type="integer">Entities added.</ResponseField>
+    <ResponseField name="already_in_list" type="integer">Entities that were already in the list.</ResponseField>
+    <ResponseField name="failed" type="integer">Entities not added.</ResponseField>
+    <ResponseField name="results" type="array">One entry per input, in input order: `input`, `profile_id` or `company_id`, `status` (`added`, `already_in_list` or `failed`) and `error` when it failed (e.g. a company sent to a lead list, an unknown list).</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200 (add_to_list_nav)
+{
+  "success": true,
+  "data": {
+    "list_id": "7520494393313726464",
+    "added": 2,
+    "already_in_list": 0,
+    "failed": 1,
+    "results": [
+      { "input": 1035, "company_id": "1035", "status": "added" },
+      { "input": "https://www.linkedin.com/company/google/", "company_id": "1441", "status": "added" },
+      { "input": "no-such-company", "status": "failed", "error": "Company not found on LinkedIn" }
+    ]
+  },
+  "metadata": {
+    "action": "add_to_list_nav",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-26T12:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Example
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "add_to_list_nav",
+  "params": {
+    "list_id": "7520494392361668609",
+    "profiles": ["https://www.linkedin.com/in/jane-doe", "https://www.linkedin.com/sales/lead/ACwAAA..."]
+  }
+}
+```
