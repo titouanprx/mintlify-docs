@@ -3,7 +3,7 @@ title: 'Platform Best Practices'
 description: 'Limits, guidelines, and recommendations to use LinkupAPI safely'
 ---
 
-LinkupAPI connects to third-party platforms like LinkedIn and WhatsApp. Each provider enforces its own limits and restrictions. Understanding these limits is essential to avoid account warnings or suspensions.
+LinkupAPI connects to third-party platforms like LinkedIn, WhatsApp and iMessage. Each provider enforces its own limits and restrictions. Understanding these limits is essential to avoid account warnings or suspensions.
 
 <Warning>
   The limits below are **conservative recommendations**. You may increase them at your own risk. Exceeding provider limits will result in HTTP `429` or `500` errors. Make sure your system handles these errors gracefully.
@@ -114,6 +114,61 @@ WhatsApp enforces strict anti-spam measures. Follow these guidelines:
 - **Don't message contacts who haven't opted in** — WhatsApp bans accounts aggressively for unsolicited messages
 - **Use random delays** between messages (10-30 seconds minimum)
 - **Warm up new numbers** — Start with 5-10 messages/day and increase over several weeks
+
+---
+
+## iMessage Limits
+
+An iMessage line is a dedicated phone number. Messaging is unlimited; what is limited is how many **different contacts** a line reaches, and how fast it **opens new conversations**. LinkupAPI checks the sending rules before each send and refuses a send that would break them, with the reason in `error.sub_code` (see below).
+
+### Contacts per line
+
+| Limit | Per line |
+|---|---|
+| Different contacts | 300 per rolling 24 hours, 1,000 per month |
+
+- Every contact the line sends to counts once in the period, including contacts who wrote first. Messaging the same contact again does not count twice.
+- Once a limit is reached, the line still **receives** messages but can no longer **reply** until the period frees up.
+
+### Opening conversations
+
+| Rule | Value |
+|---|---|
+| New conversations | up to **50 per day** per line |
+| Interval between two new conversations | 15 minutes |
+| Follow-ups to a contact who has not replied | 2 at most, 24 hours apart |
+
+- **Replies don't count.** Once a contact has answered, messages to them no longer use the new-conversation quota. A reply within 24 hours of their last message goes out with no interval; after 24 hours of silence, such messages are spaced 2 minutes apart.
+- **First message in plain text.** Until the contact replies, a message cannot contain a link, an email address, a phone number, an amount of money, or an attachment. Write something the contact would answer, and let them say if they don't want to hear from you.
+- **Reply rate.** Keep it above roughly 30%. Message contacts who recently opted in or gave you their consent.
+- A follow-up to a contact who never replied counts as a new conversation.
+
+### Ready numbers and new numbers
+
+| | Ready number | New number |
+|---|---|---|
+| Age | Usually 1+ months | Brand new |
+| New conversations per day | 50 from day one | Days 1–2: 2 · Days 3–4: 5 · Days 5–7: 10 · Days 8–14: 20 · Days 15–21: 30 · Then: 50 |
+| Number | Picked from the available numbers, no area code choice | Assigned by the carrier |
+| Activation | Within a minute | Within a few hours |
+
+A ready number may have had another owner: from time to time, it can receive messages from contacts of that owner. A new number is assigned when no ready number is available in the country.
+
+`get_me` on an iMessage account returns `sending_limits`: the day of the line, new conversations allowed, used and left in the last 24 hours, the reply rate, and whether the line is warmed up.
+
+### Refused sends
+
+| `error.sub_code` | HTTP | Meaning |
+|---|---|---|
+| `IMESSAGE_DAILY_NEW_CONTACT_LIMIT` | 429 | New conversations of the last 24 hours used up |
+| `IMESSAGE_NEW_CONTACT_INTERVAL` | 429 | Less than 15 minutes since the last new conversation |
+| `IMESSAGE_FOLLOW_UP_TOO_SOON` | 429 | Less than 24 hours since the last follow-up to this contact |
+| `IMESSAGE_FOLLOW_UP_INTERVAL` | 429 | Less than 2 minutes since the last message to a contact quiet for 24 hours |
+| `IMESSAGE_RECIPIENT_MUST_REPLY` | 422 | 3 messages without a reply: wait for theirs |
+| `IMESSAGE_FIRST_MESSAGE_CONTENT` | 400 | Link, email, phone number, amount or attachment before the contact replied |
+| `IMESSAGE_SEND_REFUSED` | 422 | Refused by the carrier |
+
+The `429` messages say how many seconds to wait before retrying.
 
 ---
 
