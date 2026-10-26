@@ -1,0 +1,187 @@
+---
+title: 'Search Companies Nav'
+sidebarTitle: 'Search Companies Nav'
+api: 'POST /v2/profiles'
+description: 'Search accounts (companies) with Sales Nav.'
+---
+
+## Overview
+
+Run a **Sales Nav account search**. It uses the account's Sales Nav seat, which is activated automatically on first use.
+
+You can define the search with the filters below, or copy a Sales Nav company search URL (or an account list URL) and pass it as `sales_nav_url`.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Requires a Sales Nav seat on the account. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+<Info>
+Within a filter, values are combined with **OR**. Different filters are combined with **AND**. An invalid value, or a name Sales Nav doesn't know, returns `INVALID_PARAMS` (0 credits) instead of being ignored.
+</Info>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use. Must have a Sales Nav seat.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search_companies_nav"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+
+    <ParamField body="sales_nav_url" type="string">
+      A copied Sales Nav URL: a company search (`.../sales/search/company?query=...` or `#query=...`) or an account list (`.../sales/lists/company/<id>`). Every filter is replicated verbatim. Takes precedence over the filters below.
+    </ParamField>
+
+    <ParamField body="keyword" type="string">
+      Free-text keyword.
+    </ParamField>
+    <ParamField body="industry" type="string[]">
+      Industry names (e.g. `["Software Development"]`) or ids from [Typeahead](/api-reference/v2/profiles/typeahead) (`category: sales_nav`, `type: industry`).
+    </ParamField>
+    <ParamField body="location" type="string[]">
+      Headquarters location. Place names, super-regions (`EMEA`, `APAC`, `DACH`, `Benelux`, `Oceania`, `North America`) or ids from Typeahead (`type: location`).
+    </ParamField>
+    <ParamField body="company_headcount" type="string[]">
+      Accepted: `1-10`, `11-50`, `51-200`, `201-500`, `501-1000`, `1001-5000`, `5001-10000`, `10001+`.
+    </ParamField>
+    <ParamField body="headcount_growth" type="object">
+      Company headcount growth in %, as `{ "min": 10, "max": 50 }`. Either bound can be omitted.
+    </ParamField>
+    <ParamField body="department_headcount" type="object">
+      Headcount of one department, as `{ "department": "Sales", "min": 5, "max": 50 }`. `department` takes the same names as `function` in [Search People Nav](/api-reference/v2/profiles/search-people-nav).
+    </ParamField>
+    <ParamField body="department_headcount_growth" type="object">
+      Headcount growth of one department in %, same shape as `department_headcount`.
+    </ParamField>
+    <ParamField body="annual_revenue" type="object">
+      Annual revenue in millions, as `{ "min": 1, "max": 100, "currency": "EUR" }`. Bounds must be one of `0`, `0.5`, `1`, `2.5`, `5`, `10`, `20`, `50`, `100`, `500`, `1000`, `1001` (= more than 1000). `currency` defaults to `USD`.
+    </ParamField>
+    <ParamField body="fortune" type="string[]">
+      Accepted: `50`, `51-100`, `101-250`, `251-500`.
+    </ParamField>
+    <ParamField body="followers" type="string[]">
+      Number of followers. Accepted: `1-50`, `51-100`, `101-1000`, `1001-5000`, `5000+`.
+    </ParamField>
+    <ParamField body="hiring_on_linkedin" type="boolean">
+      Only companies with open jobs on LinkedIn.
+    </ParamField>
+    <ParamField body="recent_funding" type="boolean">
+      Only companies with a funding event in the last 12 months.
+    </ParamField>
+    <ParamField body="leadership_changes" type="boolean">
+      Only companies with senior leadership changes in the last 3 months.
+    </ParamField>
+    <ParamField body="account_list" type="string[]">
+      Your saved account lists, by name or id from Typeahead (`type: account_list`).
+    </ParamField>
+    <ParamField body="exclude" type="object">
+      Companies to **exclude**, as `{ "industry": [...], "location": [...] }`. Sales Nav only supports exclusion on these two filters.
+    </ParamField>
+
+    <ParamField body="offset" type="integer" default={0}>
+      Index of the first company to return (0-based).
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of companies to return, starting at `offset`.
+    </ParamField>
+
+  </Expandable>
+</ParamField>
+
+<Warning>
+Sales Nav only lets a single search be browsed up to **2500 results**. An `offset` of 2500 or more returns `INVALID_PARAMS` (0 credits).
+</Warning>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="companies" type="array">
+      List of matching companies.
+      <Expandable title="company properties">
+        <ResponseField name="company_name" type="string">Company name.</ResponseField>
+        <ResponseField name="company_id" type="string">LinkedIn company id.</ResponseField>
+        <ResponseField name="company_url" type="string">Company page URL.</ResponseField>
+        <ResponseField name="sales_nav_url" type="string">Sales Nav account URL.</ResponseField>
+        <ResponseField name="entity_urn" type="string">`urn:li:fs_salesCompany:<id>`.</ResponseField>
+        <ResponseField name="industry" type="string">Industry.</ResponseField>
+        <ResponseField name="employee_count_range" type="string">Headcount bracket, e.g. `"51-200 employees"`.</ResponseField>
+        <ResponseField name="employee_display_count" type="string">Headcount as shown by Sales Nav, e.g. `"120"` or `"12K+"`.</ResponseField>
+        <ResponseField name="description" type="string">Company description.</ResponseField>
+        <ResponseField name="logo_url" type="string">Logo URL (largest size).</ResponseField>
+        <ResponseField name="saved" type="boolean">Whether the seat saved this account.</ResponseField>
+        <ResponseField name="list_count" type="integer">Number of your account lists it belongs to.</ResponseField>
+        <ResponseField name="spotlights" type="array">Sales Nav spotlights, each `{ "type", "text" }`, e.g. `HIRING_ON_LINKEDIN`, `RECENT_FUNDING_EVENT`, `SENIOR_LEADERSHIP_CHANGE`.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of companies returned.</ResponseField>
+    <ResponseField name="offset" type="integer">Echoes the requested `offset`. Add `total_results` to it for the next page.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of matching companies.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "total_results": 1,
+    "offset": 0,
+    "total_available_results": 73,
+    "companies": [
+      {
+        "company_name": "Certi-Trust",
+        "company_id": "7796325",
+        "company_url": "https://www.linkedin.com/company/7796325",
+        "sales_nav_url": "https://www.linkedin.com/sales/company/7796325",
+        "entity_urn": "urn:li:fs_salesCompany:7796325",
+        "industry": "IT System Testing and Evaluation",
+        "employee_count_range": "51-200 employees",
+        "employee_display_count": "120",
+        "description": "Cybersecurity audit and certification.",
+        "logo_url": "https://media.licdn.com/dms/image/...",
+        "saved": false,
+        "list_count": 0,
+        "spotlights": [
+          { "type": "HIRING_ON_LINKEDIN", "text": "Hiring on Linkedin" }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "action": "search_companies_nav",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-26T12:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Example
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "search_companies_nav",
+  "params": {
+    "keyword": "cyber",
+    "location": ["France"],
+    "company_headcount": ["51-200", "201-500"],
+    "annual_revenue": { "min": 1, "max": 100, "currency": "EUR" },
+    "hiring_on_linkedin": true,
+    "exclude": { "industry": ["Staffing and Recruiting"] },
+    "count": 25
+  }
+}
+```

@@ -83,6 +83,7 @@
                   "api-reference/v2/profiles/visit",
                   "api-reference/v2/profiles/search-people",
                   "api-reference/v2/profiles/search-people-nav",
+                  "api-reference/v2/profiles/search-companies-nav",
                   "api-reference/v2/profiles/search-people-recruiter",
                   "api-reference/v2/profiles/check-inmail",
                   "api-reference/v2/profiles/check-inmail-seat",
