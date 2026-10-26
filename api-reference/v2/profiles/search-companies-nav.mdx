@@ -42,13 +42,13 @@ Within a filter, values are combined with **OR**. Different filters are combined
       Free-text keyword.
     </ParamField>
     <ParamField body="industry" type="string[]">
-      Industry names (e.g. `["Software Development"]`) or ids from [Typeahead](/api-reference/v2/profiles/typeahead) (`category: sales_nav`, `type: industry`).
+      Industry names (e.g. `["Software Development"]`) or ids from [Typeahead](/api-reference/v2/profiles/typeahead) (`category: sales_nav`, `type: industry`). Sub-industries are included (e.g. `Software Development` also returns `Computer Games`).
     </ParamField>
     <ParamField body="location" type="string[]">
       Headquarters location. Place names, super-regions (`EMEA`, `APAC`, `DACH`, `Benelux`, `Oceania`, `North America`) or ids from Typeahead (`type: location`).
     </ParamField>
     <ParamField body="company_headcount" type="string[]">
-      Accepted: `1-10`, `11-50`, `51-200`, `201-500`, `501-1000`, `1001-5000`, `5001-10000`, `10001+`.
+      Accepted: `1-10`, `11-50`, `51-200`, `201-500`, `501-1000`, `1001-5000`, `5001-10000`, `10001+`. Matched on the number of LinkedIn members (`employee_display_count`), not on the size the company declares (`employee_count_range`).
     </ParamField>
     <ParamField body="headcount_growth" type="object">
       Company headcount growth in %, as `{ "min": 10, "max": 50 }`. Either bound can be omitted.
