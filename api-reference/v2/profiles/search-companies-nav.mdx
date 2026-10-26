@@ -191,3 +191,16 @@ Sales Nav only lets a single search be browsed up to **2500 results**. An `offse
   }
 }
 ```
+
+## Company page
+
+`get_company_nav` `{ company, include?, headcount_timespan? }` returns a company as Sales Nav shows it: `revenue_range`, `headquarters`, `website`, `year_founded`, `employee_count` and `employee_growth` (%, over `6_months`, `1_year`, `2_years`). `company` takes an id, a company page URL or a Sales Nav company URL. 1 credit per call.
+
+`include` adds sections, one LinkedIn request each:
+
+- `headcount` (default): monthly headcount, total and per department, over `headcount_timespan` (`6_months`, `1_year` default, `2_years`).
+- `decision_makers`: the leads Sales Nav recommends at the company, with spotlight counts.
+- `warm_paths`: your 1st and 2nd-degree connections there, TeamLink and alumni paths.
+- `news`: the company's recent posts and articles.
+
+A growth LinkedIn cannot compute (a company too young for the span) is `null`.
