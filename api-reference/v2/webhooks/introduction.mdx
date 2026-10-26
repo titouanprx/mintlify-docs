@@ -491,11 +491,11 @@ Opt-in like `message_read`: name `message_delivered` or `message_failed` in `eve
 }
 ```
 
-### Message Reaction / Edited / Deleted (LinkedIn)
+### Message Reaction / Edited / Deleted (LinkedIn, iMessage)
 
 Opt-in like `message_read`: name `message_reaction`, `message_edited` or `message_deleted` in `events`.
 
-- `message_reaction`: someone added or removed an emoji on a message of the account's threads. `action` is `added` or `removed`, `reaction_count` the count of this emoji after the change, `actor` who reacted. The account's own reactions are not sent.
+- `message_reaction`: someone added or removed an emoji on a message of the account's threads. `action` is `added` or `removed`, `reaction_count` the count of this emoji after the change, `actor` who reacted. The account's own reactions are not sent. On iMessage, `emoji` can be a tapback (`love`, `like`, `dislike`, `laugh`, `emphasize`, `question`) and `actor` carries `phone_number` or `email`; there is no `reaction_count`.
 - `message_edited`: a message was edited, `message_text` is the new text.
 - `message_deleted`: a message was unsent. Its text is gone, use `message_urn` to find it.
 

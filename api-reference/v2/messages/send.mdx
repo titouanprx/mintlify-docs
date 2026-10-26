@@ -106,7 +106,7 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
       **(LinkedIn + Email + WhatsApp)** Base64-encoded files to attach — same shape as `media_file` (`data`, `filename`).
     </ParamField>
     <ParamField body="voice_message" type="boolean" default={false}>
-      **(LinkedIn + WhatsApp)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension.
+      **(LinkedIn + WhatsApp + iMessage)** Force the attached media to be sent as a **voice note**. Only needed when the filename carries no usable extension. On iMessage, a voice note is one audio link (mp3, wav, m4a, caf, aac) with no `message_text`.
     </ParamField>
     <ParamField body="quoted_message_id" type="string">
       Reply to a specific message (quoted above yours, like the Reply action of the app). **LinkedIn:** the message's `entity_urn` from [Get Conversation](/api-reference/v2/messages/get-conversation) or `metadata.entity_urn` of a webhook event; the thread is resolved from `conversation_id` or `profile_url`, and the quoted message must be among the last 100 of the thread. **WhatsApp:** its `id` from Get Conversation. **iMessage:** its `message_id`.
@@ -293,6 +293,8 @@ Same endpoint, classic LinkedIn messages only, 1 credit each. `message_id` is th
 | `react_message` | `message_id`, `emoji`, `remove?` (`true` removes the reaction) |
 | `edit_message` | `message_id`, `message_text` |
 | `delete_message` | `message_id` (unsends it for everyone) |
+
+**iMessage:** `react_message` works too, with the `message_id` of the message: `emoji` is a tapback (`love`, `like`, `dislike`, `laugh`, `emphasize`, `question`) or any emoji. Not in group chats. `action: "typing"` with `conversation_id` (and `seconds`, 60 max) shows the typing indicator, in a conversation active in the last 5 minutes.
 
 ```json
 {

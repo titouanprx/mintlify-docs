@@ -44,7 +44,7 @@ Returns messages from a specific conversation, ordered from most recent to oldes
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page (most recent messages).
     </ParamField>
     <ParamField body="mark_as_read" type="boolean">
-      `true` marks the conversation as read on LinkedIn after fetching it, `false` marks it as unread. Omit to leave the read state unchanged. Not available with `sales_nav`.
+      `true` marks the conversation as read on LinkedIn after fetching it, `false` marks it as unread. Omit to leave the read state unchanged. Not available with `sales_nav`. On iMessage, the contact also sees "Read" when the conversation was active in the last 5 minutes.
     </ParamField>
     <ParamField body="sales_nav" type="boolean" default={false}>
       Read a **Sales Nav** thread instead of a classic conversation. See [Sales Nav conversations](#sales-nav-conversations) below.
