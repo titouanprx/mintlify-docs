@@ -50,11 +50,11 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
     </ParamField>
 
     {/* --- Role --- */}
-    <ParamField body="current_title" type="string">
-      Current job title (free text), e.g. `"CTO"`, `"Head of Growth"`.
+    <ParamField body="current_title" type="string | string[]">
+      Current job title: free text (`"Head of Growth"`) or Sales Nav title ids (`["592", "48"]`). Several values match any of them.
     </ParamField>
-    <ParamField body="past_title" type="string">
-      Past job title (free text).
+    <ParamField body="past_title" type="string | string[]">
+      Past job title, same format as `current_title`.
     </ParamField>
     <ParamField body="seniority_level" type="string[]">
       Seniority. Names or ids. Accepted names: `In Training`, `Entry Level`, `Senior`, `Strategic`, `Entry Level Manager`, `Experienced Manager`, `Director`, `Vice President` (`VP`), `CXO`, `Owner / Partner`.
