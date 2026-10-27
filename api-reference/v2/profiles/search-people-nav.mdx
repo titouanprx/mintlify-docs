@@ -79,8 +79,8 @@ Within a single filter, multiple values are combined with **OR** (e.g. `seniorit
     <ParamField body="past_company" type="string[]">
       Past company. Names or URLs.
     </ParamField>
-    <ParamField body="company_size" type="string">
-      Headcount range, e.g. `"51-200"`, `"1-10"`, `"51-1000"`. Expanded to the matching size brackets (OR).
+    <ParamField body="company_size" type="string | string[]">
+      Headcount range, e.g. `"51-200"`, `"1-10"`, `"51-1000"`, or a list of ranges (`["11-50", "201-500"]`). Expanded to the matching size brackets (OR).
     </ParamField>
     <ParamField body="company_type" type="string[]">
       Accepted: `Public Company`, `Privately Held`, `Non Profit`, `Educational Institution`, `Partnership`, `Self Employed`, `Self Owned`, `Government Agency`.
