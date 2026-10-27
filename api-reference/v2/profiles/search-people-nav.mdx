@@ -381,6 +381,10 @@ Same seat, same endpoint, 1 credit per call:
 - `list_lists_nav` `{ type?: "lead"|"account", ownership?: "all"|"owned"|"editable", offset?, count? }`: the seat's lists, each with `list_id`, `name`, `type` and `entity_count`.
 - `create_list_nav` `{ name, type: "lead"|"account", description? }`: creates an empty list and returns its `list_id`.
 - `add_to_list_nav` `{ list_id, profiles? | companies? }`: adds up to 25 profiles (URLs or ids) to a lead list, or up to 100 companies (ids or URLs) to an account list. Each input gets a `status`: `added`, `already_in_list`, or `failed` with an `error`. Costs 1 credit per 10 entities.
+- `remove_from_lists_nav` `{ profiles? | companies? }`: unsaves leads or companies. LinkedIn has no per-list removal, so they leave every list of the seat. Same limits, `status` (`removed` or `failed`) and pricing as `add_to_list_nav`.
+- `delete_list_nav` `{ list_id, unsave_entities?: false }`: deletes a list. Its leads stay saved in their other lists unless `unsave_entities` is `true`.
 - `get_profile_nav` `{ profile }`: a lead as Sales Nav shows it, with positions, education, the emails visible to the seat, `inmail_restriction`, `open_link`, `saved` and `list_count`.
 
 To read a list, pass it to this search as `lead_list` or as a `.../sales/lists/people/<id>` URL.
+
+`list_saved_searches_nav` `{ type?: "people"|"company", offset?, count? }` returns the seat's saved searches with `saved_search_id`, `name`, `last_viewed_at` and `new_results_count`. Run a saved people search again with `saved_search_id` on this search.
