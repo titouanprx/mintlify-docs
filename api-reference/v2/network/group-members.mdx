@@ -55,6 +55,13 @@ Returns the members of a LinkedIn group, paginated with `count` and `offset`. **
 
 If the account is not a member of the group (or the group does not exist), the call returns `CHANNEL_ERROR` with `sub_code: "NOT_GROUP_MEMBER"`.
 
+## Group details and posts
+
+Same endpoint, same `group_url` param:
+
+- `"get_group"`: the group's `name`, `description`, `rules`, `industries`, `member_count`, `created_at`, `is_public`, the account's `membership_status` (`MEMBER`, `MANAGER`, `OWNER`, `NON_MEMBER`), `owners`, `managers` and LinkedIn's `activity_insights` (e.g. `"+354 members in the last week"`). Works on groups the account hasn't joined. 1 credit.
+- `"get_group_posts"`: the group feed in LinkedIn's order, members only. Same post fields as [`get_posts`](/api-reference/v2/profiles/get-posts), plus `group_post_urn` and `actor_profile_urn`. `count` up to `100`; pass the returned `cursor` for the next page. 1 credit per 10 results.
+
 <RequestExample>
 ```json Request
 {
