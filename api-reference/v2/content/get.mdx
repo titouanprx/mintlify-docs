@@ -106,6 +106,10 @@ Returns the details of one post (author, text, media, reaction and comment count
   </Expandable>
 </ResponseField>
 
+## Post analytics
+
+`"action": "get_analytics"` with the same `post_url` returns the post's `impressions`, `members_reached`, `reactions`, `comments`, `reposts`, `saves`, `sends`, `profile_viewers`, `followers_gained` and `viewer_demographics`. Only the post's author can read them: any other account gets `CHANNEL_ERROR` with `sub_code: "NOT_POST_AUTHOR"`. 1 credit.
+
 <ResponseExample>
 ```json 200
 {

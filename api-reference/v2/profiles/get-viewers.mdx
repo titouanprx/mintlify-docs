@@ -77,6 +77,10 @@ Returns the list of users who recently viewed the authenticated account's profil
   </Expandable>
 </ResponseField>
 
+## Account analytics
+
+`"action": "get_analytics"` (no params) returns the account's own analytics over the past 7 days: `content` (`impressions`, `members_reached`, `daily_impressions`, `top_posts`) and `audience` (`total_followers`, `daily_new_followers`, `follower_demographics`). 1 credit.
+
 <ResponseExample>
 ```json 200
 {
