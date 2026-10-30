@@ -1,0 +1,111 @@
+---
+title: 'List Followers'
+api: 'POST /v2/network'
+description: 'People following the account, or followed by it.'
+---
+
+## Overview
+
+Returns the account's followers (`list_followers`) or the people it follows (`list_following`), in LinkedIn's order. Followed company pages are not included.
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  `"list_followers"` or `"list_following"`.
+</ParamField>
+
+<ParamField body="params" type="object">
+  <Expandable title="params properties">
+    <ParamField body="count" type="integer" default={20}>
+      Number of people to return. **Capped at `100`** per call — to retrieve more, paginate with `offset`.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Zero-indexed offset into the list. Use `pagination.next_offset` from a previous response to fetch the next page.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="followers" type="array">
+      `list_followers` only. `list_following` returns the same objects under `following`.
+      <Expandable title="person properties">
+        <ResponseField name="name" type="string">Display name.</ResponseField>
+        <ResponseField name="job_title" type="string">Headline.</ResponseField>
+        <ResponseField name="profile_url" type="string">Public profile URL.</ResponseField>
+        <ResponseField name="profile_urn" type="string">Member URN (`urn:li:fsd_profile:ACoA…`).</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_available_results" type="integer">
+      Total number of followers (or followed people). Returned when `offset` is `0`, `null` otherwise.
+    </ResponseField>
+    <ResponseField name="pagination" type="object">
+      Same object as [`list_connections`](/api-reference/v2/network/list-connections): `offset`, `count`, `next_offset`, `has_more`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "followers": [
+      {
+        "name": "Jane Doe",
+        "job_title": "Founder @ Acme Corp",
+        "profile_url": "https://www.linkedin.com/in/jane-doe-42",
+        "public_identifier": "jane-doe-42",
+        "profile_urn": "urn:li:fsd_profile:ACoAABxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1",
+        "profile_id": "ACoAABxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/.../profile.jpg"
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 1738,
+    "pagination": {
+      "offset": 0,
+      "count": 1,
+      "next_offset": 1,
+      "has_more": true,
+      "results_per_page": 1,
+      "pages_fetched": 1
+    }
+  },
+  "metadata": {
+    "action": "list_followers",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-10-30T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "message": "count is too large: 150 (max 100 per call, page with offset)"
+  },
+  "metadata": {
+    "action": "list_followers",
+    "account_id": "your-account-id",
+    "credits_consumed": 0,
+    "timestamp": "2026-10-30T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

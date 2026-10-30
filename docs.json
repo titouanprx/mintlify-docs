@@ -118,6 +118,7 @@
                   "api-reference/v2/network/list-connections",
                   "api-reference/v2/network/list-invitations",
                   "api-reference/v2/network/list-sent",
+                  "api-reference/v2/network/list-followers",
                   "api-reference/v2/network/withdraw",
                   "api-reference/v2/network/check-invitation",
                   "api-reference/v2/network/recommendations",
