@@ -6,7 +6,7 @@ description: 'Retrieve the profile information of the authenticated account.'
 
 ## Overview
 
-Returns the full profile data for the account associated with the provided `account_id`. No additional parameters are needed beyond the required `account_id` and `action`.
+Returns the full profile data for the account associated with the provided `account_id`.
 
 For a **WhatsApp** account, returns the linked number's profile instead: see the `200 (WhatsApp)` example. For an **iMessage** line, returns the line and its sending limits.
 
@@ -24,6 +24,10 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
 
 <ParamField body="action" type="string" required>
   Must be `"get_me"`.
+</ParamField>
+
+<ParamField body="params.include_subscription" type="boolean" default="false">
+  LinkedIn only. Adds `subscription` to the response: the member's exact LinkedIn plan, which `is_premium` alone can't tell apart (it is `true` for every paid plan). Adds about 2 seconds.
 </ParamField>
 
 
@@ -55,7 +59,10 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
     <ResponseField name="phone" type="string">Phone number (when available).</ResponseField>
     <ResponseField name="website" type="string">Website URL (when available).</ResponseField>
     <ResponseField name="connection_count" type="integer">Number of connections.</ResponseField>
-    <ResponseField name="is_premium" type="boolean">`true` if the account has a Premium subscription.</ResponseField>
+    <ResponseField name="is_premium" type="boolean">`true` if the account has any paid LinkedIn plan (Premium, Sales Navigator, Recruiter Lite…).</ResponseField>
+    <ResponseField name="subscription" type="object | null">
+      Only with `include_subscription: true`. `plan` is LinkedIn's own plan name (e.g. `"Sales Navigator Core"`, `"Recruiter Lite"`), `null` without a paid plan; `renewal` is LinkedIn's renewal line (e.g. `"Renews on November 23, 2026"`). `subscription` is `null` when LinkedIn's subscription page could not be read.
+    </ResponseField>
     <ResponseField name="profile_views" type="integer">Profile views in the last 90 days (Premium analytics; `0` when not exposed).</ResponseField>
     <ResponseField name="post_impressions" type="integer">Post impressions in the last 7 days (Premium analytics; `0` when not exposed).</ResponseField>
   </Expandable>
@@ -131,9 +138,13 @@ For a **WhatsApp** account, returns the linked number's profile instead: see the
     "phone": "",
     "website": "",
     "connection_count": 842,
-    "is_premium": false,
+    "is_premium": true,
     "profile_views": 0,
-    "post_impressions": 0
+    "post_impressions": 0,
+    "subscription": {
+      "plan": "Sales Navigator Core",
+      "renewal": "Renews on November 23, 2026"
+    }
   },
   "metadata": {
     "action": "get_me",
