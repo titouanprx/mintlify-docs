@@ -79,6 +79,10 @@ Links are single-use: generate a new one each time a user starts a connection.
   LinkedIn: `classic`, `sales_navigator`, `recruiter`. The page then asks the user what to connect, and which contract if there are several. Omit for classic only.
 </ParamField>
 
+<ParamField body="domain" type="string">
+  One of your active [custom domains](#custom-domain). The link opens there instead of app.linkupapi.com.
+</ParamField>
+
 ### Response
 
 <ResponseField name="data.link_id" type="string">
@@ -108,6 +112,10 @@ When the account is connected we POST this JSON to `notify_url`, with a `X-Linku
 ```
 
 `status` is `RECONNECTED` when the link was created with an `account_id`. The callback is not signed: confirm it with [Get Account](/api-reference/v2/accounts/get-account) before trusting it.
+
+### Custom domain
+
+To open the page on your own domain (for example `connect.yourapp.com`), add the domain under **Access → Custom domain** in the dashboard, or with `POST /v2/hosted/domains` and `{"domain": "connect.yourapp.com"}`. Then create a `CNAME` record from that hostname to `hosted.linkupapi.com`. The domain turns `active` once we've checked the record and issued its certificate, usually within a few minutes. `GET /v2/hosted/domains` shows the status. After that, pass `domain` when you create a link.
 
 ### Get Connection Link
 
