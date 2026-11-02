@@ -116,6 +116,8 @@ The top-level **`platform`** field (`"linkedin"`, `"email"`, `"whatsapp"` or `"i
 
 The top-level **`event_id`** is the stable identifier of the event: identical on every retry or replay, and the key to dedupe on (see [Delivery & retries](#delivery-retries-custom-mode)).
 
+A top-level **`catch_up: true`** marks messages that were not delivered live: those LinkupAPI catches up after an interruption of the real-time connection, and those imported by an [inbox sync](/api-reference/v2/accounts/sync-inbox) (which also carry `sync_id` and up to 25 messages under `events` instead of `event`). They can be old — skip them in automations that react to incoming messages.
+
 ```json
 {
   "event_id": "6ab13cf890294b92776b5343",

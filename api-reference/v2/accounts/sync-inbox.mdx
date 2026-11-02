@@ -1,0 +1,148 @@
+---
+title: 'Sync Inbox'
+api: 'POST /v2/accounts/{account_id}/sync'
+description: 'Import the existing LinkedIn inbox of an account into your webhooks'
+---
+
+Imports the messages already in an account's inbox into your webhooks — typically right after connecting it, to [build the inbox](/api-reference/v2/messages/build-inbox) in your product before real time takes over. Covers the classic inbox and the connected Sales Navigator / Recruiter seats.
+
+The sync runs in the background (~20 minutes for 100 conversations). Every message is delivered exactly like a real-time `message` webhook, grouped per conversation: each POST carries up to 25 messages under `events`, with `sync_id` and `catch_up: true` at the top level. Messages already delivered to your webhooks are skipped, and your webhook's `message_type` filter applies.
+
+<Note>
+  This endpoint is **free** — it does not consume any credits. One sync at a time per account, 10 per 24 hours.
+</Note>
+
+<Warning>
+  The account needs an active [webhook](/api-reference/v2/webhooks/introduction) subscribed to messages (`events`: `all` or `message_received`). Set `message_type: "all"` on it to also import the messages the account sent.
+</Warning>
+
+### Path Parameters
+
+<ParamField path="account_id" type="string" required>
+  A LinkedIn account of your API key
+</ParamField>
+
+### Header Parameters
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="since" type="integer">
+  Only conversations and messages from this point on, in epoch **milliseconds**. Omit it to import the whole inbox (within the limits below)
+</ParamField>
+
+<ParamField body="inbox" type="string" default="all">
+  `all`, `classic`, `sales_nav` or `recruiter`. `all` syncs every inbox connected on the account
+</ParamField>
+
+<ParamField body="max_conversations" type="integer" default={100}>
+  Most recent conversations to import, 1 to 500
+</ParamField>
+
+<ParamField body="messages_per_conversation" type="integer" default={200}>
+  Most recent messages per conversation, 1 to 200. Older ones: [`get_conversation`](/api-reference/v2/messages/get-conversation) with `cursor`
+</ParamField>
+
+### Response
+
+<ResponseField name="data" type="object">
+  <Expandable title="Properties">
+    <ResponseField name="sync_id" type="string">
+      Identifier of the sync, also present on every webhook it delivers
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      `queued`, `running`, `completed` or `failed`
+    </ResponseField>
+    <ResponseField name="inboxes" type="object">
+      Progress per inbox (`classic`, `sales_nav`, `recruiter`): `status`, `conversations_total`, `conversations_done`, `messages_delivered`, and `error` when that inbox failed
+    </ResponseField>
+    <ResponseField name="estimated_minutes" type="integer">
+      Typical duration of the sync
+    </ResponseField>
+    <ResponseField name="warnings" type="array">
+      Present when your webhooks only receive one direction of messages (`message_type`)
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "sync_id": "6ae89fc905a1e2341aadccda",
+    "account_id": "6a7705f479d5cb9de0687ae0",
+    "status": "queued",
+    "since": 0,
+    "inboxes": {
+      "classic": { "status": "queued", "conversations_total": null, "conversations_done": 0, "messages_delivered": 0 }
+    },
+    "max_conversations": 100,
+    "messages_per_conversation": 200,
+    "created_at": "2026-11-02T14:20:03.511000",
+    "started_at": null,
+    "finished_at": null,
+    "estimated_minutes": 20
+  },
+  "metadata": {
+    "action": "sync_account",
+    "credits_consumed": 0,
+    "timestamp": "2026-11-02T14:20:03.514201"
+  }
+}
+```
+
+```json 409 (sync already running)
+{
+  "success": false,
+  "error": {
+    "code": "RATE_LIMITED",
+    "message": "A sync is already running on this account (sync_id 6ae89fc905a1e2341aadccda)"
+  },
+  "metadata": {
+    "action": "sync_account",
+    "credits_consumed": 0,
+    "timestamp": "2026-11-02T14:21:40.002117"
+  }
+}
+```
+
+```json GET /v2/accounts/{account_id}/sync/{sync_id}
+{
+  "success": true,
+  "data": {
+    "sync_id": "6ae89fc905a1e2341aadccda",
+    "account_id": "6a7705f479d5cb9de0687ae0",
+    "status": "running",
+    "since": 0,
+    "inboxes": {
+      "classic": { "status": "running", "conversations_total": 100, "conversations_done": 37, "messages_delivered": 412 }
+    },
+    "max_conversations": 100,
+    "messages_per_conversation": 200,
+    "created_at": "2026-11-02T14:20:03.511000",
+    "started_at": "2026-11-02T14:20:05.108000",
+    "finished_at": null
+  },
+  "metadata": {
+    "action": "get_account_sync",
+    "credits_consumed": 0,
+    "timestamp": "2026-11-02T14:28:51.730415"
+  }
+}
+```
+</ResponseExample>
+
+### Follow a sync
+
+`GET /v2/accounts/{account_id}/sync/{sync_id}` returns the same object (without `estimated_minutes`), updated as the sync progresses. Free. `404` when the sync does not exist on this account.
+
+### Notes
+- A sync is `completed` when at least one of its inboxes succeeded; check `inboxes.<inbox>.status` for each one
+- Synced messages can be months old: skip those carrying `sync_id` / `catch_up: true` in automations that react to incoming messages
+- Each item of `events` is the `event` object of a real-time message webhook — see [Build an Inbox](/api-reference/v2/messages/build-inbox) for a parser handling both
+- `409` when a sync is already running on the account, `429` after 10 syncs in 24 hours
+- LinkedIn accounts only

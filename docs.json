@@ -70,6 +70,7 @@
                   "api-reference/v2/accounts/list-accounts",
                   "api-reference/v2/accounts/get-account",
                   "api-reference/v2/accounts/set-country",
+                  "api-reference/v2/accounts/sync-inbox",
                   "api-reference/v2/accounts/delete-account"
                 ]
               },
@@ -100,6 +101,7 @@
               {
                 "group": "Messaging",
                 "pages": [
+                  "api-reference/v2/messages/build-inbox",
                   "api-reference/v2/messages/send",
                   "api-reference/v2/messages/list-inbox",
                   "api-reference/v2/messages/get-conversation",

@@ -35,6 +35,9 @@ Returns a paginated list of conversations from the inbox. Filter by category and
     <ParamField body="cursor" type="string">
       Cursor returned by a previous response as `data.next_cursor`. Omit for the first page.
     </ParamField>
+    <ParamField body="since" type="integer">
+      **(LinkedIn)** Epoch timestamp in **milliseconds**. Only returns the conversations that moved since then, 100 per page, with `since` and `truncated` in `data`. When `truncated` is `true`, call again with the same `since` and the returned `next_cursor` as `cursor` (classic and Sales Nav) or `next_offset` as `offset` (Recruiter), until `truncated` is `false`. Works on the classic, Sales Nav and Recruiter inboxes — use your last refresh time to update a cached inbox.
+    </ParamField>
     <ParamField body="sales_nav" type="boolean" default={false}>
       Read the **Sales Nav** inbox instead of the classic one. See [Sales Nav inbox](#sales-nav-inbox) below.
     </ParamField>

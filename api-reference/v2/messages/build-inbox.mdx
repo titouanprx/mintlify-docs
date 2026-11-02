@@ -1,0 +1,92 @@
+---
+title: 'Build an Inbox'
+description: 'Show an account’s LinkedIn inbox in your product: two ways that both work'
+---
+
+You connect an account and want its LinkedIn inbox inside your product. Two approaches work. Pick the one that matches how your product stores data — both use the same real-time webhooks for new messages.
+
+| | On-demand + cache | Full sync (storage) |
+|---|---|---|
+| You store | What your users opened | Every message |
+| History comes from | `list_inbox` / `get_conversation`, when needed | One [`/sync`](/api-reference/v2/accounts/sync-inbox), pushed to your webhook |
+| New messages | Real-time webhooks | Real-time webhooks |
+| Best for | Showing an inbox, light integrations | Search, analytics, a CRM that owns its data |
+
+## 1. On-demand with a cache
+
+Nothing to import. You read LinkedIn when a user looks at something, and the webhook keeps what you cached up to date.
+
+1. **Inbox screen** — [`list_inbox`](/api-reference/v2/messages/list-inbox), paginated with `cursor`. To refresh it, pass `since` (your last refresh, in ms): you only get the conversations that moved.
+2. **Opening a conversation** — [`get_conversation`](/api-reference/v2/messages/get-conversation) with `count` (e.g. 25). When the user scrolls up, call it again with the returned `next_cursor` to load older messages.
+3. **New messages** — a [webhook](/api-reference/v2/webhooks/introduction) subscribed to messages, with `message_type: "all"` to also get what the account sends. Append each `message` event to the conversation you cached, keyed by `metadata.conversation_urn`.
+
+## 2. Full sync into your storage
+
+You keep every message in your database. Import the history once, then let real time take over — everything arrives through **the same webhook, in the same format**.
+
+1. **Create the webhook** (`events`: `all` or `message_received`, `message_type: "all"`).
+2. **Call [`POST /v2/accounts/{account_id}/sync`](/api-reference/v2/accounts/sync-inbox)** right after connecting the account. LinkupAPI reads the inbox in the background and posts every message to your webhook, conversation by conversation.
+3. **Real time** continues on the same webhook as soon as the account is connected. Messages delivered by real time are never sent again by the sync.
+
+A sync POST carries up to 25 messages of one conversation under `events`. **Each item is exactly the `event` object of a real-time message webhook**, so one parser handles both:
+
+```json Sync webhook (several messages)
+{
+  "event_id": "6ae8a00905a1e2341aadcce0",
+  "account_id": "6a7705f479d5cb9de0687ae0",
+  "account_name": "your.email@example.com",
+  "platform": "linkedin",
+  "sync_id": "6ae89fc905a1e2341aadccda",
+  "catch_up": true,
+  "events": [
+    {
+      "type": "message",
+      "inbox": "classic",
+      "message_text": "Hi John, thanks for connecting!",
+      "direction": "outbound",
+      "sender": { "name": "Your Name", "profile_url": "https://www.linkedin.com/in/ACoAAD…", "is_self_sent": true },
+      "conversation": { "participants": [ … ], "is_group_chat": false, "unread_count": 0 },
+      "metadata": { "entity_urn": "urn:li:msg_message:(…)", "conversation_urn": "urn:li:msg_conversation:(…)", "delivered_at": 1793518874708 },
+      "attachments": [], "has_attachments": false, "mentions": [], "message_type": "TEXT"
+    },
+    { "type": "message", "direction": "inbound", "message_text": "Hey! Glad to connect.", … }
+  ],
+  "timestamp": "2026-11-02T14:41:12.204118"
+}
+```
+
+```json Real-time webhook (one message)
+{
+  "event_id": "6ae8b12c43dbdad51c2e7b02",
+  "account_id": "6a7705f479d5cb9de0687ae0",
+  "platform": "linkedin",
+  "event": { "type": "message", "inbox": "classic", "message_text": "…", "direction": "inbound", … },
+  "timestamp": "2026-11-02T15:02:40.118230"
+}
+```
+
+One line normalizes both:
+
+<CodeGroup>
+```js Node.js
+app.post("/webhooks/linkup", (req, res) => {
+  const items = req.body.events ?? [req.body.event]; // sync = several, real time = one
+  for (const event of items) handleMessage(event, req.body);
+  res.sendStatus(200);
+});
+```
+
+```python Python
+items = body.get("events") or [body["event"]]  # sync = several, real time = one
+for event in items:
+    handle_message(event, body)
+```
+</CodeGroup>
+
+<Warning>
+  Synced messages can be months old. If you run automations on incoming messages (auto-replies, sequences stopping on a reply), skip the ones carrying `sync_id` or `catch_up: true`.
+</Warning>
+
+## Both approaches: nothing is lost
+
+If the real-time connection of an account is interrupted (network, proxy, reconnection), LinkupAPI catches up the messages of the gap automatically and delivers them to your webhook as normal `message` events with a top-level `catch_up: true`.
