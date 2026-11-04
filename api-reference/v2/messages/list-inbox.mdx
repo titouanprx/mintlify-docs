@@ -136,6 +136,7 @@ Each conversation also has `is_group`, `archived`, `pinned` and `muted_until` (U
 
 InMail threads live in a separate store and never appear in the classic inbox. Set `sales_nav: true` to read them. Same envelope and paging, with:
 
+- `category`: `INBOX` (default), `UNREAD`, `ARCHIVED`, or `SENT` (threads where the seat sent the last message, e.g. InMails awaiting a reply)
 - `conversation_id` = the Sales Nav **thread id**, also returned as `threadId` by [Send Message](/api-reference/v2/messages/send). Only usable with `sales_nav: true` — the two id spaces are not interchangeable.
 - `participant` / `last_message.sender` add `recipient_urn`, `sales_nav_url`, `connection_level`, `first_name`, `last_name`; no `headline`
 - extra: `total_message_count`, `archived`, `last_message.subject`
@@ -246,7 +247,7 @@ InMail threads live in a separate store and never appear in the classic inbox. S
 
 Recruiter InMails live in a third, separate store. Set `recruiter: true`. Same envelope, with:
 
-- `folder`: `INBOX` (default), `UNREAD`, `AWAITING_REPLY`, `ACCEPTED`, `ACCEPTED_BUT_NOT_RESPONDED`, `DECLINED`, `ARCHIVED`, `CANCELED`, `SCHEDULED`
+- `folder`: `INBOX` (default), `UNREAD`, `AWAITING_REPLY`, `ACCEPTED`, `ACCEPTED_BUT_NOT_RESPONDED`, `DECLINED`, `ARCHIVED`, `CANCELED`, `SCHEDULED`. Sent InMails are in `AWAITING_REPLY` (no answer yet), `ACCEPTED` or `DECLINED`; there is no `SENT` folder.
 - paging with `count` + `offset` (no cursor)
 - `conversation_id` = the Recruiter thread id, for [Get Conversation](/api-reference/v2/messages/get-conversation#recruiter-conversations) and replies
 - extra: `subject`, `request_state`, `can_reply`, `archived`, `total_message_count`
