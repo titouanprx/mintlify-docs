@@ -5,14 +5,27 @@ description: 'Show an account’s LinkedIn inbox in your product: three ways'
 
 You connect an account and want its LinkedIn inbox inside your product. Pick the approach that matches how your product stores data.
 
-| | On-demand + cache | Full sync (storage) | Managed inbox |
+| | Managed inbox | On-demand + cache | Full sync (storage) |
 |---|---|---|---|
-| You store | What your users opened | Every message | Nothing |
-| History comes from | `list_inbox` / `get_conversation`, when needed | One [`/sync`](/api-reference/v2/accounts/sync-inbox), pushed to your webhook | `list_inbox` / `get_conversation`, answered by LinkupAPI |
-| New messages | Real-time webhooks | Real-time webhooks | Already in `list_inbox` / `get_conversation` (webhooks optional) |
-| Best for | Showing an inbox, light integrations | Search, analytics, a CRM that owns its data | A unibox without its own message storage |
+| You store | Nothing | What your users opened | Every message |
+| History comes from | `list_inbox` / `get_conversation`, answered by LinkupAPI | `list_inbox` / `get_conversation`, when needed | One [`/sync`](/api-reference/v2/accounts/sync-inbox), pushed to your webhook |
+| New messages | Already in `list_inbox` / `get_conversation` (webhooks optional) | Real-time webhooks | Real-time webhooks |
+| Best for | A unibox without its own message storage | Showing an inbox, light integrations | Search, analytics, a CRM that owns its data |
 
-## 1. On-demand with a cache
+## 1. Managed inbox
+
+LinkupAPI keeps the account's inbox on its side. You store nothing: read it with [`list_inbox`](/api-reference/v2/messages/list-inbox) and [`get_conversation`](/api-reference/v2/messages/get-conversation) whenever you need it — same parameters, same response.
+
+- Holds the 100 most recent conversations with their latest messages, kept up to date in real time (new messages, read status, reactions, edits).
+- Older conversations and messages are read from LinkedIn transparently: paginate with `cursor` / `next_cursor` as usual.
+- Ready about 20 minutes after it is enabled.
+- Classic inbox only: Sales Nav and Recruiter inboxes are read from LinkedIn as before.
+
+<Note>
+  Enabled per account on request: [support@linkupapi.com](mailto:support@linkupapi.com).
+</Note>
+
+## 2. On-demand with a cache
 
 Nothing to import. You read LinkedIn when a user looks at something, and the webhook keeps what you cached up to date.
 
@@ -20,7 +33,7 @@ Nothing to import. You read LinkedIn when a user looks at something, and the web
 2. **Opening a conversation** — [`get_conversation`](/api-reference/v2/messages/get-conversation) with `count` (e.g. 25). When the user scrolls up, call it again with the returned `next_cursor` to load older messages.
 3. **New messages** — a [webhook](/api-reference/v2/webhooks/introduction) subscribed to messages, with `message_type: "all"` to also get what the account sends. Append each `message` event to the conversation you cached, keyed by `metadata.conversation_urn`.
 
-## 2. Full sync into your storage
+## 3. Full sync into your storage
 
 You keep every message in your database. Import the history once, then let real time take over — everything arrives through **the same webhook, in the same format**.
 
@@ -86,19 +99,6 @@ for event in items:
 <Warning>
   Synced messages can be months old. If you run automations on incoming messages (auto-replies, sequences stopping on a reply), skip the ones carrying `sync_id` or `catch_up: true`.
 </Warning>
-
-## 3. Managed inbox
-
-LinkupAPI keeps the account's inbox on its side. You store nothing: read it with [`list_inbox`](/api-reference/v2/messages/list-inbox) and [`get_conversation`](/api-reference/v2/messages/get-conversation) whenever you need it — same parameters, same response.
-
-- Holds the 100 most recent conversations with their latest messages, kept up to date in real time (new messages, read status, reactions, edits).
-- Older conversations and messages are read from LinkedIn transparently: paginate with `cursor` / `next_cursor` as usual.
-- Ready about 20 minutes after it is enabled.
-- Classic inbox only: Sales Nav and Recruiter inboxes are read from LinkedIn as before.
-
-<Note>
-  Enabled per account on request: [support@linkupapi.com](mailto:support@linkupapi.com).
-</Note>
 
 ## All approaches: nothing is lost
 
