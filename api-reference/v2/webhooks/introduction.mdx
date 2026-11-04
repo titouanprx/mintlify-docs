@@ -89,12 +89,13 @@ Everything we sent, or still owe, is visible for 30 days, and replayable, from t
 | `invitation_received` | `"invitation_received"` | The account received one or more new connection requests |
 | `email_bounced` *(email, via `all`)* | `"email_bounced"` | An email you sent bounced |
 | `message_read` *(LinkedIn, WhatsApp, opt-in)* | `"message_read"` | A participant has seen one of the account's messages. Not included in `all`: name it in `events` to receive it |
-| `message_reaction` *(LinkedIn, opt-in)* | `"message_reaction"` | Someone added or removed an emoji reaction on a message of the account |
-| `message_edited` *(LinkedIn, opt-in)* | `"message_edited"` | A message of the account's threads was edited |
-| `message_deleted` *(LinkedIn, opt-in)* | `"message_deleted"` | A message of the account's threads was unsent |
+| `message_reaction` *(LinkedIn, WhatsApp, opt-in)* | `"message_reaction"` | Someone added or removed an emoji reaction on a message of the account |
+| `message_edited` *(LinkedIn, WhatsApp, opt-in)* | `"message_edited"` | A message of the account's threads was edited |
+| `message_deleted` *(LinkedIn, WhatsApp, opt-in)* | `"message_deleted"` | A message of the account's threads was unsent |
 | `message_delivered` *(WhatsApp, iMessage, opt-in)* | `"message_delivered"` | A message the account sent reached the recipient's phone. Not included in `all` |
 | `message_failed` *(WhatsApp, iMessage, opt-in)* | `"message_failed"` | A message the account sent could not be delivered. Not included in `all` |
-| `all` | — | Subscribe to all event types (except opt-in types: `message_read`, `message_delivered`, `message_failed`, `message_reaction`, `message_edited`, `message_deleted`) |
+| `call` *(WhatsApp, opt-in)* | `"call"` | An incoming call: `state` is `ringing`, `missed`, `rejected`, `accepted` or `ended`, with `call_id`, `caller`, `is_video`. Decline it with `reject_call` |
+| `all` | — | Subscribe to all event types (except opt-in types: `message_read`, `message_delivered`, `message_failed`, `message_reaction`, `message_edited`, `message_deleted`, `call`) |
 
 <Note>
   By default, webhooks listen to **all** event types. In **custom mode**, you can filter specific events when creating the webhook by passing an `events` array. **Hosted** webhooks (SSE stream and `GET /events`) always receive every event type — only the `message_type` direction filter applies — so filter on `event.type` on your side.

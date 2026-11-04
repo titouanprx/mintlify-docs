@@ -139,6 +139,10 @@ Returns messages from a specific conversation, ordered from most recent to oldes
   </Expandable>
 </ResponseField>
 
+## WhatsApp conversations
+
+Each message also has `id` (the `message_id` for react / edit / delete / forward), `edited`, `deleted` and `reactions`: one entry per person, `{ "emoji": "👍", "timestamp": 1793787663121, "sender": { "name", "phone_number", "jid", "is_me" } }`.
+
 ## Sales Nav conversations
 
 Set `sales_nav: true` and pass the Sales Nav **thread id** — from [List Inbox](/api-reference/v2/messages/list-inbox) with `sales_nav: true`, or the `threadId` returned when the InMail was sent. `profile_url` is not supported, so `conversation_id` is required.

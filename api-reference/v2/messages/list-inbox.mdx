@@ -128,6 +128,10 @@ Returns a paginated list of conversations from the inbox. Filter by category and
   </Expandable>
 </ResponseField>
 
+## WhatsApp inbox
+
+Each conversation also has `is_group`, `archived`, `pinned` and `muted_until` (Unix ms, `-1` = always, `null` = not muted). Pass `archived: false` to leave archived chats out, `archived: true` to list only them.
+
 ## Sales Nav inbox
 
 InMail threads live in a separate store and never appear in the classic inbox. Set `sales_nav: true` to read them. Same envelope and paging, with:

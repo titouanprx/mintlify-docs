@@ -1,0 +1,43 @@
+---
+title: 'Manage WhatsApp'
+description: 'Chats, groups, history and calls for WhatsApp accounts'
+---
+
+All actions run on [`POST /v2/messages`](/api-reference/v2/messages/send) with a WhatsApp `account_id`, 1 credit each. `conversation_id` is the one from [List Inbox](/api-reference/v2/messages/list-inbox) (`…@s.whatsapp.net` for a contact, `…@g.us` for a group). Reactions, edit, delete and forward: see [Send](/api-reference/v2/messages/send#react-edit-or-delete-a-message).
+
+## Conversations
+
+Synced to the phone.
+
+| `action` | `params` |
+| --- | --- |
+| `archive_conversation` | `conversation_id`, `archived?` (`false` unarchives) |
+| `pin_conversation` | `conversation_id`, `pinned?` (`false` unpins) |
+| `mute_conversation` | `conversation_id`, `duration_hours?` (omitted: always), `muted?` (`false` unmutes) |
+| `delete_conversation` | `conversation_id` (removes it from the account's chat list only) |
+| `sync_history` | `conversation_id`, `count?` (max 50): fetches older messages from the phone; they show up in Get Conversation a few seconds later |
+
+```json 200
+{
+  "success": true,
+  "data": { "conversation_id": "33612345678@s.whatsapp.net", "archived": false, "pinned": false, "muted_until": -1 },
+  "metadata": { "action": "mute_conversation", "account_id": "your-whatsapp-account-id", "credits_consumed": 1, "timestamp": "2026-11-04T10:21:03Z" }
+}
+```
+
+## Groups
+
+| `action` | `params` |
+| --- | --- |
+| `create_group` | `name`, `participants` (phone numbers) |
+| `get_group` | `conversation_id` → name, description, `participants` (`phone_number`, `is_admin`, `is_me`) |
+| `update_group` | `conversation_id`, `name?`, `description?` |
+| `update_group_participants` | `conversation_id`, `participants`, `operation`: `add`, `remove`, `promote` or `demote` |
+| `get_group_invite_link` | `conversation_id`, `revoke?` (`true` resets the link) |
+| `leave_group` | `conversation_id` |
+
+`update_group_participants` returns one result per number (`success`, `reason`). Someone whose privacy settings block being added gets `reason: "privacy_settings"`: send them the invite link. Send to a group with `send` + `conversation_id`.
+
+## Calls
+
+Calls cannot be placed or answered. Subscribe to the `call` [webhook event](/api-reference/v2/webhooks/introduction#event-types) to see incoming calls, and decline one with `reject_call` + `call_id`.
