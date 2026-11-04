@@ -3,7 +3,7 @@ title: 'Manage WhatsApp Messaging'
 description: 'Chats, groups, history and calls for WhatsApp accounts'
 ---
 
-All actions run on [`POST /v2/messages`](/api-reference/v2/messages/send) with a WhatsApp `account_id`, 1 credit each. `conversation_id` is the one from [List Inbox](/api-reference/v2/messages/list-inbox) (`…@s.whatsapp.net` for a contact, `…@g.us` for a group). Reactions, edit, delete and forward: see [Send](/api-reference/v2/messages/send#react-edit-or-delete-a-message).
+All actions run on [`POST /v2/messages`](/api-reference/v2/messages/send) with a WhatsApp `account_id`, 1 credit each. `conversation_id` is the one from [List Inbox](/api-reference/v2/messages/list-inbox) (`…@s.whatsapp.net` for a contact, `…@g.us` for a group). `list_inbox` and `get_conversation` are served from LinkupAPI's copy of the account: call them as often as you need, without worrying about WhatsApp rate limits. Reactions, edit, delete and forward: see [Send](/api-reference/v2/messages/send#react-edit-or-delete-a-message).
 
 ## Conversations
 

@@ -12,7 +12,7 @@ You connect an account and want its LinkedIn inbox inside your product. Pick the
 | New messages | Already in `list_inbox` / `get_conversation` (webhooks optional) | Real-time webhooks | Real-time webhooks |
 | Best for | A unibox without its own message storage | Showing an inbox, light integrations | Search, analytics, a CRM that owns its data |
 
-## 1. Managed inbox (recommended)
+## 1. Managed inbox
 
 <Info>
   **Available on request.** Email [support@linkupapi.com](mailto:support@linkupapi.com) with your API key: we switch it to managed inbox.
@@ -20,6 +20,7 @@ You connect an account and want its LinkedIn inbox inside your product. Pick the
 
 LinkupAPI keeps the account's inbox on its side. You store nothing: read it with [`list_inbox`](/api-reference/v2/messages/list-inbox) and [`get_conversation`](/api-reference/v2/messages/get-conversation) whenever you need it — same parameters, same response.
 
+- Reads are served from LinkupAPI, not LinkedIn: call `list_inbox` and `get_conversation` as often as you need, without worrying about LinkedIn rate limits.
 - Holds the 100 most recent conversations with their latest messages, kept up to date in real time (new messages, read status, reactions, edits).
 - Older conversations and messages are read from LinkedIn transparently: paginate with `cursor` / `next_cursor` as usual.
 - Ready about 20 minutes after an account is switched on.
