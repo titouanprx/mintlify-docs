@@ -101,13 +101,13 @@
               {
                 "group": "Messaging",
                 "pages": [
-                  "api-reference/v2/messages/build-inbox",
                   "api-reference/v2/messages/send",
                   "api-reference/v2/messages/list-inbox",
                   "api-reference/v2/messages/get-conversation",
                   "api-reference/v2/messages/download-attachment",
                   "api-reference/v2/messages/balance",
                   "api-reference/v2/messages/check-numbers",
+                  "api-reference/v2/messages/build-inbox",
                   "api-reference/v2/messages/manage-emails",
                   "api-reference/v2/messages/manage-whatsapp"
                 ]
