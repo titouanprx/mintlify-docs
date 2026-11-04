@@ -143,6 +143,6 @@ The sync runs in the background (~20 minutes for 100 conversations). Every messa
 ### Notes
 - A sync is `completed` when at least one of its inboxes succeeded; check `inboxes.<inbox>.status` for each one
 - Synced messages can be months old: skip those carrying `sync_id` / `catch_up: true` in automations that react to incoming messages
-- Each item of `events` is the `event` object of a real-time message webhook — see [Build an Inbox](/api-reference/v2/messages/build-inbox) for a parser handling both
+- Each item of `events` is the `event` object of a real-time message webhook — see [Manage LinkedIn Messaging](/api-reference/v2/messages/build-inbox) for a parser handling both
 - `409` when a sync is already running on the account, `429` after 10 syncs in 24 hours
 - LinkedIn accounts only

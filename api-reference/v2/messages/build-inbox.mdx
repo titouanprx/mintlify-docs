@@ -1,16 +1,16 @@
 ---
-title: 'Build an Inbox'
-description: 'Show an account’s LinkedIn inbox in your product: two ways that both work'
+title: 'Manage LinkedIn Messaging'
+description: 'Show an account’s LinkedIn inbox in your product: three ways'
 ---
 
-You connect an account and want its LinkedIn inbox inside your product. Two approaches work. Pick the one that matches how your product stores data — both use the same real-time webhooks for new messages.
+You connect an account and want its LinkedIn inbox inside your product. Pick the approach that matches how your product stores data.
 
-| | On-demand + cache | Full sync (storage) |
-|---|---|---|
-| You store | What your users opened | Every message |
-| History comes from | `list_inbox` / `get_conversation`, when needed | One [`/sync`](/api-reference/v2/accounts/sync-inbox), pushed to your webhook |
-| New messages | Real-time webhooks | Real-time webhooks |
-| Best for | Showing an inbox, light integrations | Search, analytics, a CRM that owns its data |
+| | On-demand + cache | Full sync (storage) | Managed inbox |
+|---|---|---|---|
+| You store | What your users opened | Every message | Nothing |
+| History comes from | `list_inbox` / `get_conversation`, when needed | One [`/sync`](/api-reference/v2/accounts/sync-inbox), pushed to your webhook | `list_inbox` / `get_conversation`, answered by LinkupAPI |
+| New messages | Real-time webhooks | Real-time webhooks | Already in `list_inbox` / `get_conversation` (webhooks optional) |
+| Best for | Showing an inbox, light integrations | Search, analytics, a CRM that owns its data | A unibox without its own message storage |
 
 ## 1. On-demand with a cache
 
@@ -87,6 +87,19 @@ for event in items:
   Synced messages can be months old. If you run automations on incoming messages (auto-replies, sequences stopping on a reply), skip the ones carrying `sync_id` or `catch_up: true`.
 </Warning>
 
-## Both approaches: nothing is lost
+## 3. Managed inbox
+
+LinkupAPI keeps the account's inbox on its side. You store nothing: read it with [`list_inbox`](/api-reference/v2/messages/list-inbox) and [`get_conversation`](/api-reference/v2/messages/get-conversation) whenever you need it — same parameters, same response.
+
+- Holds the 100 most recent conversations with their latest messages, kept up to date in real time (new messages, read status, reactions, edits).
+- Older conversations and messages are read from LinkedIn transparently: paginate with `cursor` / `next_cursor` as usual.
+- Ready about 20 minutes after it is enabled.
+- Classic inbox only: Sales Nav and Recruiter inboxes are read from LinkedIn as before.
+
+<Note>
+  Enabled per account on request: [support@linkupapi.com](mailto:support@linkupapi.com).
+</Note>
+
+## All approaches: nothing is lost
 
 If the real-time connection of an account is interrupted (network, proxy, reconnection), LinkupAPI catches up the messages of the gap automatically and delivers them to your webhook as normal `message` events with a top-level `catch_up: true`.
