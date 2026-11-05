@@ -46,6 +46,9 @@ Sends a message from a connected account. For a **LinkedIn** account it's a dire
     <ParamField body="inmail" type="boolean" default={false}>
       **(LinkedIn)** Set to `true` to send an **InMail** (to a non-connection, via the premium seat) instead of a standard message. Consumes 1 InMail credit. Not needed when `recipient_urn` is a Sales Nav URN.
     </ParamField>
+    <ParamField body="premium_inmail" type="boolean" default={false}>
+      **(LinkedIn)** Send an InMail with the account's **Premium** credits, without a Sales Nav seat. See [Premium InMail](#premium-inmail).
+    </ParamField>
     <ParamField body="recipient_urn" type="string">
       **(LinkedIn InMail)** The lead's `urn:li:fs_salesProfile:(...)` from the [lead search](/api-reference/v2/profiles/search-people-nav). Passing it sends an InMail. Use this **or** `profile_url` + `inmail: true`.
     </ParamField>
@@ -323,6 +326,10 @@ Reaches someone you are not connected to, through the account's premium seat. Tr
 ```
 
 A profile that cannot be InMailed is rejected before any credit is spent. Credits come from the seat — see [Balance](/api-reference/v2/messages/balance).
+
+## Premium InMail
+
+`premium_inmail: true` with `profile_url`, `subject` and `message_text`: an InMail from the classic account, using its Premium credits (free to an Open Profile, even without Premium). Always opens a new conversation. Without credits, HTTP 422 with `sub_code: "NOT_ENOUGH_INMAIL_CREDIT"`; nothing is sent.
 
 ## Recruiter InMail
 
