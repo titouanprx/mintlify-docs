@@ -66,6 +66,15 @@ Create a post from the authenticated account. Supports plain text posts, single 
         </ParamField>
       </Expandable>
     </ParamField>
+    <ParamField body="phone_numbers" type="array">
+      WhatsApp only. Phone numbers that can see the Status. Defaults to your 500 most recent 1:1 chats.
+    </ParamField>
+    <ParamField body="background_color" type="string">
+      WhatsApp only. Background color of a text Status, in hex (e.g. `"#128C7E"`).
+    </ParamField>
+    <ParamField body="font" type="integer">
+      WhatsApp only. Font of a text Status, from `0` to `5`.
+    </ParamField>
   </Expandable>
 </ParamField>
 
