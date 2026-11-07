@@ -74,7 +74,7 @@ Returns messages from a specific conversation, ordered from most recent to oldes
       Read state applied when `mark_as_read` was sent. If LinkedIn refused the change, `mark_as_read_error` is returned instead and the messages are still delivered.
     </ResponseField>
     <ResponseField name="last_seen_message" type="boolean">
-      `true` when the most recent message in this batch has been read by the recipient.
+      `true` when the most recent message in this batch has been read by the recipient. Classic messages only: LinkedIn has no read receipts on Sales Nav or Recruiter, so their threads never say whether the recipient read a message.
     </ResponseField>
     <ResponseField name="last_seen_at" type="integer">
       Unix epoch timestamp in **milliseconds** when the recipient last read the conversation. Omitted if no read receipt is available.
