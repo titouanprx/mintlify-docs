@@ -193,7 +193,7 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
 
 ## Classic Premium account
 
-With `classic: true`, the check runs from the account's own Premium InMail (Career, Business…), without a Sales Nav seat. `profiles` takes up to **25** profile URLs, vanity slugs or member ids (`ACoAA…`). Each result carries:
+With `classic: true`, the check runs from the account's own Premium InMail (Career, Business…), without a Sales Nav seat. It checks **one profile per call**, as LinkedIn does: pass a single profile URL, vanity slug or member id (`ACoAA…`) in `profiles`. For batches, use a Sales Nav seat. The result carries:
 
 - `inmail_free` / `open_profile` — the member is an Open Profile, the InMail costs no credit
 - `can_send_inmail` — `false` when the InMail is not free and the account has no InMail credit left
@@ -207,7 +207,7 @@ The response carries `mode: "classic"`. Requires a Premium account: LinkedIn onl
   "action": "check_inmail",
   "params": {
     "classic": true,
-    "profiles": ["https://www.linkedin.com/in/jane-doe", "john-smith"]
+    "profiles": ["https://www.linkedin.com/in/jane-doe"]
   }
 }
 ```
