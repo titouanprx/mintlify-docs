@@ -59,6 +59,7 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
       Whether the seat that answered can see the Open Profile badge. `false` means the `open_profile` / `inmail_free` values below are not reliable (see the warning above). `null` when it could not be determined; results are then LinkedIn's raw values.
     </ResponseField>
     <ResponseField name="warning" type="string">Present only when `open_profile_badge_visible` is `false`.</ResponseField>
+    <ResponseField name="mode" type="string">`sales_nav`, or `classic` with [`classic: true`](#classic-premium-account).</ResponseField>
     <ResponseField name="results" type="array">
       One entry per requested profile, in the same order.
       <Expandable title="result properties">
@@ -199,7 +200,7 @@ With `classic: true`, the check runs from the account's own Premium InMail (Care
 - `can_send_inmail` — `false` when the InMail is not free and the account has no InMail credit left
 - `profile_urn` — send with [Send Message](/api-reference/v2/messages/send) and `premium_inmail: true`
 
-The response carries `mode: "classic"`. Requires a Premium account: LinkedIn only lets Premium members message Open Profiles.
+Same response shape as above, with `mode: "classic"`: fields only a Sales Nav seat can see (`degree`, `full_name`, `recipient_urn`…) and `open_profile_badge_visible` are `null`. Requires a Premium account: LinkedIn only lets Premium members message Open Profiles.
 
 ```json
 {
@@ -208,6 +209,35 @@ The response carries `mode: "classic"`. Requires a Premium account: LinkedIn onl
   "params": {
     "classic": true,
     "profiles": ["https://www.linkedin.com/in/jane-doe"]
+  }
+}
+```
+
+```json Response
+{
+  "success": true,
+  "data": {
+    "total_results": 1,
+    "inmail_free_count": 1,
+    "open_profile_badge_visible": null,
+    "mode": "classic",
+    "results": [
+      {
+        "profile": "https://www.linkedin.com/in/jane-doe",
+        "status": "success",
+        "inmail_free": true,
+        "open_profile": true,
+        "inmail_restriction": null,
+        "premium": null,
+        "full_name": null,
+        "degree": null,
+        "profile_url": null,
+        "recipient_urn": null,
+        "member_urn": null,
+        "can_send_inmail": true,
+        "profile_urn": "ACoAAA..."
+      }
+    ]
   }
 }
 ```
