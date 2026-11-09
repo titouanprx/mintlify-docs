@@ -2,14 +2,14 @@
 title: 'Check InMail'
 sidebarTitle: 'Check InMail'
 api: 'POST /v2/profiles'
-description: 'Find out, for up to 100 profiles at once, who can be InMailed for free (Open Profile).'
+description: 'Find out who can be InMailed for free (Open Profile), from a Sales Nav seat or a classic Premium account.'
 ---
 
 ## Overview
 
 An **Open Profile** member can be InMailed without spending an InMail credit, whatever the connection degree. This action checks a batch of profiles in one call and returns, for each one, whether the InMail is free, plus the `recipient_urn` needed to [send it](/api-reference/v2/messages/send).
 
-Uses the account's Sales Nav seat — see [Connect Account](/api-reference/v2/accounts/login) to activate it (it also auto-connects on first use).
+Uses the account's Sales Nav seat — see [Connect Account](/api-reference/v2/accounts/login) to activate it (it also auto-connects on first use). No Sales Nav? Use [`classic: true`](#classic-premium-account).
 
 <Note>This endpoint consumes **1 credit per 10 profiles** checked. Requires a Sales Nav seat on the account. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
@@ -35,6 +35,9 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
   <Expandable title="params properties">
     <ParamField body="profiles" type="string[]" required>
       Up to 100 profile references, in any mix of shapes: profile URL, vanity slug, member id (`ACoAA…`), `urn:li:fsd_profile:…`, Sales Nav lead URL, Sales Nav id (`ACwAA…`) or `urn:li:fs_salesProfile:(…)`. Each result echoes the reference you sent so you can match them back.
+    </ParamField>
+    <ParamField body="classic" type="boolean" default={false}>
+      Check from the account's **classic Premium** InMail instead, no Sales Nav seat needed. See [Classic Premium account](#classic-premium-account) below.
     </ParamField>
     <ParamField body="recruiter" type="boolean" default={false}>
       Check from the account's **Recruiter seat** instead (same `account_id`). See [Recruiter](#recruiter) below.
@@ -184,6 +187,27 @@ LinkedIn hides the Open Profile badge from some seats (typically a seat on its m
       "john-smith",
       "urn:li:fs_salesProfile:(ACwAAB...,name, )"
     ]
+  }
+}
+```
+
+## Classic Premium account
+
+With `classic: true`, the check runs from the account's own Premium InMail (Career, Business…), without a Sales Nav seat. `profiles` takes up to **25** profile URLs, vanity slugs or member ids (`ACoAA…`). Each result carries:
+
+- `inmail_free` / `open_profile` — the member is an Open Profile, the InMail costs no credit
+- `can_send_inmail` — `false` when the InMail is not free and the account has no InMail credit left
+- `profile_urn` — send with [Send Message](/api-reference/v2/messages/send) and `premium_inmail: true`
+
+The response carries `mode: "classic"`. Requires a Premium account: LinkedIn only lets Premium members message Open Profiles.
+
+```json
+{
+  "account_id": "your-account-id",
+  "action": "check_inmail",
+  "params": {
+    "classic": true,
+    "profiles": ["https://www.linkedin.com/in/jane-doe", "john-smith"]
   }
 }
 ```
