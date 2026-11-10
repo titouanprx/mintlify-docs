@@ -80,7 +80,8 @@ Returns a paginated list of conversations from the inbox. Filter by category and
         <ResponseField name="last_message" type="object">
           The most recent message in the conversation.
           <Expandable title="last_message properties">
-            <ResponseField name="text" type="string">Plain-text content of the message.</ResponseField>
+            <ResponseField name="text" type="string">Plain-text content of the message. Empty when the message is only an attachment.</ResponseField>
+            <ResponseField name="has_attachments" type="boolean">Present and `true` when the last message is only an attachment (image, file, voice note). Read it with [Get conversation](/api-reference/v2/messages/get-conversation).</ResponseField>
             <ResponseField name="time" type="integer">Unix epoch timestamp in **milliseconds** when the message was sent.</ResponseField>
             <ResponseField name="sender" type="object">
               Author of the last message.
