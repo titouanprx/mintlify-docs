@@ -68,7 +68,7 @@ Returns a paginated list of conversations from the inbox. Filter by category and
           Unique identifier of the conversation. Treat it as an opaque string and pass it back exactly as returned.
         </ResponseField>
         <ResponseField name="participant" type="object">
-          The other side of the conversation. Can be a member, a company page, or — for notes-to-self — your own profile.
+          The other side of the conversation. Can be a member, a company page, or — for notes-to-self — your own profile. In a group conversation, one of its members: read `participants` for all of them.
           <Expandable title="participant properties">
             <ResponseField name="name" type="string">Display name (member full name or company name).</ResponseField>
             <ResponseField name="headline" type="string">Headline (or company tagline if `is_organization`).</ResponseField>
@@ -100,6 +100,15 @@ Returns a paginated list of conversations from the inbox. Filter by category and
         </ResponseField>
         <ResponseField name="type" type="string">
           Conversation type. Common values: `"normal"`, `"inmail"`, `"Sponsored"`.
+        </ResponseField>
+        <ResponseField name="is_group_chat" type="boolean">
+          Present and `true` on a group conversation, together with `title` and `participants`. Absent on a one-to-one conversation.
+        </ResponseField>
+        <ResponseField name="title" type="string">
+          Name of the group, `null` when it has none. Group conversations only.
+        </ResponseField>
+        <ResponseField name="participants" type="array">
+          Every member of the group except the authenticated account, each with the same properties as `participant`. Group conversations only.
         </ResponseField>
       </Expandable>
     </ResponseField>
