@@ -28,10 +28,12 @@ Branch on `code` and `sub_code`, never on `message`: the text may change, the co
 | Case | What to do | When |
 |---|---|---|
 | **LinkedIn limited the account** | Pause this action on the account. When LinkedIn lifts the limit depends on the case. | `LINKEDIN_RATE_LIMITED`, `SALES_NAV_RATE_LIMITED`, `FUSE_LIMIT_EXCEEDED`, `QUOTA_EXCEEDED`, `INMAIL_MONTHLY_FUSE_LIMIT` |
-| **The account is disconnected** | Reconnect it with `POST /v2/login`. | `ACCOUNT_INACTIVE`, `ACCOUNT_DISCONNECTED`, the seat sub-codes |
+| **The account is disconnected** | Reconnect it with `POST /v2/login`. | `ACCOUNT_INACTIVE` (except `NOT_CONNECTED`), `ACCOUNT_DISCONNECTED`, the seat sub-codes |
 | **The target can't be reached** | Skip it and move on. | `PROFILE_NOT_FOUND`, `CANT_RESEND_YET`, `RECIPIENT_NOT_FIRST_DEGREE_CONNECTION`, other `CHANNEL_ERROR` refusals |
 | **The request is wrong** | Fix it, or top up on `INSUFFICIENT_CREDITS`. | Other `INVALID_PARAMS`, `INVALID_ACTION`, `INVALID_ACCOUNT`, `INSUFFICIENT_CREDITS` |
 | **Temporary failure on our side** | The request was fine. On `CONCURRENCY_LIMIT`, send fewer requests in parallel. | `INTERNAL_ERROR`, `UPSTREAM_ERROR`, `*_UNAVAILABLE`, `CONCURRENCY_LIMIT`, `NOT_CONNECTED` |
+
+**WhatsApp only:** `NOT_CONNECTED` means the connection to WhatsApp dropped and is being reopened automatically. Retry later and do not re-link the number. No webhook is sent when the connection drops or comes back; re-link only when you receive a [`disconnection`](/api-reference/v2/webhooks/introduction#disconnection) event.
 
 ## Codes
 

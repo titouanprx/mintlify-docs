@@ -651,6 +651,8 @@ Triggered when the account receives one or more new connection requests. Detecte
 
 Triggered when the account's platform session expires, the cookie is invalidated, or the user logs out. Sent to **every** webhook attached to the account regardless of subscription filters.
 
+**WhatsApp only:** when the linked device is removed from the phone, the event is sent about one hour later, once the removal is confirmed (`reason`: `"WhatsApp session logged out from the phone"`). Until then, sends answer `NOT_CONNECTED`.
+
 ```json
 {
   "account_id": "69ee261e41fc4cbecf9f34c9",
