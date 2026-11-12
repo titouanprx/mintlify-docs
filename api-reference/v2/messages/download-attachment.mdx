@@ -52,7 +52,7 @@ On failure, the standard V2 error envelope:
 | Code | Meaning |
 |---|---|
 | `INSUFFICIENT_CREDITS` | Not enough credits. |
-| `ACCOUNT_INACTIVE` | The account is disconnected — re-authenticate it. |
+| `ACCOUNT_INACTIVE` | The account is disconnected — re-authenticate it. On WhatsApp, `sub_code` `NOT_CONNECTED` is a reconnection: retry later. |
 | `INVALID_PARAMS` | Attachment not found: the message was deleted, or `conversation_id` / `message_id` / `asset_urn` is wrong. |
 
 <RequestExample>
