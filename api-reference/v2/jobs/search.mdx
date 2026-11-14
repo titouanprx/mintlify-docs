@@ -67,7 +67,7 @@ Search job postings with the filters of LinkedIn's Jobs tab, paginated with `cou
 <ResponseField name="data" type="object">
   <Expandable title="data properties">
     <ResponseField name="jobs" type="array">
-      The jobs: `linkedin_job_id`, `job_url`, `title`, `company_name`, `company_url`, `company_id`, `location`, `listed_at` (ms), `easy_apply`, `promoted`, `reposted`, and LinkedIn's own texts when shown: `salary_text`, `benefits_text`, `applicant_insight`, `network_insight`.
+      The jobs: `linkedin_job_id`, `job_url`, `title`, `company_name`, `company_url`, `company_id`, `location`, `listed_at` (ms), `easy_apply`, `promoted`, `reposted`, and LinkedIn's own texts when shown: `salary_text`, `benefits_text`, `applicant_insight`, `insight`.
     </ResponseField>
     <ResponseField name="total_results" type="integer">Number of jobs returned.</ResponseField>
     <ResponseField name="total_available_results" type="integer">Total number of jobs matching the search.</ResponseField>
@@ -122,7 +122,7 @@ Same endpoint, action `"get"` with `job_id` or `job_url`. 1 credit.
         "salary_text": "50K EUR/yr - 65K EUR/yr",
         "benefits_text": null,
         "applicant_insight": "Be an early applicant",
-        "network_insight": null
+        "insight": null
       }
     ],
     "total_results": 1,
