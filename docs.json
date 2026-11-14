@@ -147,6 +147,13 @@
                 ]
               },
               {
+                "group": "Jobs",
+                "pages": [
+                  "api-reference/v2/jobs/search",
+                  "api-reference/v2/jobs/get"
+                ]
+              },
+              {
                 "group": "Recruiting",
                 "pages": [
                   "api-reference/v2/recruiter/get-posts",

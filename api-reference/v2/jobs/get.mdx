@@ -1,0 +1,173 @@
+---
+title: 'Get Job'
+api: 'POST /v2/jobs'
+description: 'Read a job posting, including who posted it.'
+---
+
+## Overview
+
+Read any LinkedIn job posting: description, company, location, salary when the employer gave it, how to apply, and the hiring team (the person who posted the job) when LinkedIn shows it. For the jobs your own account posted, use [Get Job Posts](/api-reference/v2/recruiter/get-posts).
+
+<Note>This endpoint consumes **1 credit** per request. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"get"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  <Expandable title="params properties">
+    <ParamField body="job_id" type="string">
+      The `linkedin_job_id` of the posting. Required unless `job_url` is given.
+    </ParamField>
+    <ParamField body="job_url" type="string">
+      A job URL, e.g. `https://www.linkedin.com/jobs/view/4178681638/` or a search URL carrying `currentJobId`.
+    </ParamField>
+    <ParamField body="include_hiring_team" type="boolean" default={true}>
+      Set to `false` to skip the hiring team and get a faster answer.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="linkedin_job_id" type="string">Numeric job ID.</ResponseField>
+    <ResponseField name="job_url" type="string">Public job URL.</ResponseField>
+    <ResponseField name="title" type="string">Job title.</ResponseField>
+    <ResponseField name="description" type="string">Plain-text job description.</ResponseField>
+    <ResponseField name="job_state" type="string">Job state: `"LISTED"`, `"CLOSED"`, etc.</ResponseField>
+    <ResponseField name="company_name" type="string">Hiring company name.</ResponseField>
+    <ResponseField name="company_url" type="string">Company page URL.</ResponseField>
+    <ResponseField name="company_id" type="string">Numeric company ID.</ResponseField>
+    <ResponseField name="location" type="string">Job location.</ResponseField>
+    <ResponseField name="workplace_type" type="string">e.g. `"Remote"`, `"On-site"`, `"Hybrid"`.</ResponseField>
+    <ResponseField name="remote_allowed" type="boolean">Whether remote work is allowed.</ResponseField>
+    <ResponseField name="employment_status" type="string">e.g. `"Full-time"`, `"Part-time"`, `"Contract"`, `"Internship"`.</ResponseField>
+    <ResponseField name="experience_level" type="string">e.g. `"Entry level"`, `"Associate"`, `"Mid-Senior level"`. `null` when not set.</ResponseField>
+    <ResponseField name="industry" type="array">List of industry categories (strings).</ResponseField>
+    <ResponseField name="job_functions" type="array">List of job functions (strings).</ResponseField>
+    <ResponseField name="listed_at" type="integer">Unix epoch (ms) when the job was listed.</ResponseField>
+    <ResponseField name="original_listed_at" type="integer">Unix epoch (ms) of the first listing, for a reposted job.</ResponseField>
+    <ResponseField name="expire_at" type="integer">Unix epoch (ms) when the posting expires.</ResponseField>
+    <ResponseField name="salary" type="array">
+      Compensation given by the employer, `null` when there is none. Each item: `type` (e.g. `"BASE_SALARY"`), `min`, `max`, `currency`, `period` (e.g. `"YEARLY"`).
+    </ResponseField>
+    <ResponseField name="benefits" type="array">Benefits listed on the posting (strings), e.g. `["Medical insurance", "401(k)"]`. Empty when there are none.</ResponseField>
+    <ResponseField name="apply" type="object">
+      How to apply: `type` is `"easy_apply"` or `"external"`, `url` is where to apply (the Easy Apply link, or the employer's page for an external job), `company_apply_url` is the employer's application page when LinkedIn gives one.
+    </ResponseField>
+    <ResponseField name="closed" type="boolean">`true` if the job no longer takes applications.</ResponseField>
+    <ResponseField name="viewer" type="object">The account's own state on this job: `applied`, `saved`.</ResponseField>
+    <ResponseField name="hiring_team" type="array">
+      People LinkedIn shows under "Meet the hiring team". Empty when the posting shows nobody, which is the most common case. Absent with `include_hiring_team: false`.
+      <Expandable title="member properties">
+        <ResponseField name="name" type="string">Name as LinkedIn shows it to this account (it can be shortened, e.g. `"Jane D."`).</ResponseField>
+        <ResponseField name="role" type="string">Role on the posting, e.g. `"Job poster"`.</ResponseField>
+        <ResponseField name="insight" type="string">LinkedIn's note on the member, e.g. `"2 mutual connections"`. `null` when there is none.</ResponseField>
+        <ResponseField name="job_title" type="string">The member's headline.</ResponseField>
+        <ResponseField name="profile_url" type="string">Profile URL.</ResponseField>
+        <ResponseField name="profile_urn" type="string">Profile URN.</ResponseField>
+        <ResponseField name="profile_picture" type="string">Profile picture URL.</ResponseField>
+        <ResponseField name="connection_level" type="string">Degree, e.g. `"1st degree"`, `"2nd degree"`.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "linkedin_job_id": "4178681638",
+    "job_url": "https://www.linkedin.com/jobs/view/4178681638/",
+    "title": "Account Executive, Mid Market",
+    "description": "Acme Corp is hiring an Account Executive to grow its mid-market segment in France...",
+    "job_state": "LISTED",
+    "company_name": "Acme Corp",
+    "company_url": "https://www.linkedin.com/company/acme-corp",
+    "company_id": "1234567",
+    "location": "Paris, Île-de-France, France",
+    "workplace_type": "Hybrid",
+    "remote_allowed": false,
+    "employment_status": "Full-time",
+    "experience_level": "Associate",
+    "industry": ["Software Development"],
+    "job_functions": ["Sales", "Business Development"],
+    "listed_at": 1794582818000,
+    "original_listed_at": 1794582818000,
+    "expire_at": 1797174818000,
+    "salary": [
+      {
+        "type": "BASE_SALARY",
+        "min": 45000.0,
+        "max": 50000.0,
+        "currency": "EUR",
+        "period": "YEARLY"
+      }
+    ],
+    "benefits": ["Medical insurance"],
+    "apply": {
+      "type": "easy_apply",
+      "url": "https://www.linkedin.com/job-apply/4178681638",
+      "company_apply_url": null
+    },
+    "closed": false,
+    "viewer": {
+      "applied": false,
+      "saved": false
+    },
+    "hiring_team": [
+      {
+        "name": "Jane Doe",
+        "role": "Job poster",
+        "insight": "2 mutual connections",
+        "job_title": "Talent Acquisition Manager at Acme Corp",
+        "profile_url": "https://www.linkedin.com/in/jane-doe",
+        "profile_urn": "urn:li:fsd_profile:ACoAAA...",
+        "profile_picture": "https://media.licdn.com/dms/image/...",
+        "connection_level": "2nd degree"
+      }
+    ]
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-11-14T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "sub_code": "JOB_NOT_FOUND",
+    "message": "Job posting not found. Check the job id or URL."
+  },
+  "metadata": {
+    "action": "get",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-11-14T10:35:00Z"
+  }
+}
+```
+</ResponseExample>

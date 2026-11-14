@@ -1,0 +1,188 @@
+---
+title: 'Search Jobs'
+api: 'POST /v2/jobs'
+description: 'Search LinkedIn job postings with the filters of the Jobs tab.'
+---
+
+## Overview
+
+Search job postings as the connected account sees them, with the same filters as LinkedIn's Jobs tab. Any LinkedIn account works. To read one result in full, including who posted it, use [Get Job](/api-reference/v2/jobs/get).
+
+<Note>This endpoint consumes **1 credit per 10 results** returned. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
+
+## Request
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+<ParamField body="account_id" type="string" required>
+  The unique identifier of the account to use.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  Must be `"search"`.
+</ParamField>
+
+<ParamField body="params" type="object" required>
+  `keywords` or a location is required.
+  <Expandable title="params properties">
+    <ParamField body="keywords" type="string">
+      Job title, skill or company to search for.
+    </ParamField>
+    <ParamField body="location" type="string">
+      Location as text (e.g. `"Paris"`, `"Germany"`). The first LinkedIn match is used and returned as `location_id`.
+    </ParamField>
+    <ParamField body="location_id" type="string">
+      LinkedIn geo id, from [Typeahead](/api-reference/v2/profiles/typeahead) (`type: "location"`) or a previous response. Replaces `location` and is faster.
+    </ParamField>
+    <ParamField body="sort_by" type="string">
+      `"recent"` or `"relevant"`.
+    </ParamField>
+    <ParamField body="date_posted" type="string | integer">
+      `"24h"`, `"week"`, `"month"`, or a number of seconds (e.g. `3600` for the last hour).
+    </ParamField>
+    <ParamField body="experience" type="string | string[]">
+      `internship`, `entry`, `associate`, `mid_senior`, `director`, `executive`.
+    </ParamField>
+    <ParamField body="job_type" type="string | string[]">
+      `full_time`, `part_time`, `contract`, `temporary`, `volunteer`, `internship`, `other`.
+    </ParamField>
+    <ParamField body="workplace" type="string | string[]">
+      `on_site`, `remote`, `hybrid`.
+    </ParamField>
+    <ParamField body="company" type="string | string[]">
+      Company ids (the `company_id` of a result, or from Typeahead).
+    </ParamField>
+    <ParamField body="industry" type="string | string[]">
+      Industry ids.
+    </ParamField>
+    <ParamField body="function" type="string | string[]">
+      Job function codes (e.g. `"sale"`, `"eng"`, `"it"`).
+    </ParamField>
+    <ParamField body="title" type="string | string[]">
+      Standardized title ids.
+    </ParamField>
+    <ParamField body="easy_apply" type="boolean">
+      Only jobs with Easy Apply.
+    </ParamField>
+    <ParamField body="in_network" type="boolean">
+      Only jobs at companies where the account has connections.
+    </ParamField>
+    <ParamField body="under_10_applicants" type="boolean">
+      Only jobs with fewer than 10 applicants.
+    </ParamField>
+    <ParamField body="verified" type="boolean">
+      Only jobs with verifications.
+    </ParamField>
+    <ParamField body="count" type="integer" default={10}>
+      Number of results to return. **Capped at `100`** per call.
+    </ParamField>
+    <ParamField body="offset" type="integer" default={0}>
+      Zero-indexed offset. Use `pagination.next_offset` from a previous response. LinkedIn serves the first 1000 results of a search.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+## Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the request was successful.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  <Expandable title="data properties">
+    <ResponseField name="jobs" type="array">
+      List of job postings.
+      <Expandable title="job properties">
+        <ResponseField name="linkedin_job_id" type="string">Numeric job ID, to pass as `job_id` to Get Job.</ResponseField>
+        <ResponseField name="job_url" type="string">Public job URL.</ResponseField>
+        <ResponseField name="title" type="string">Job title.</ResponseField>
+        <ResponseField name="company_name" type="string">Hiring company name.</ResponseField>
+        <ResponseField name="company_url" type="string">Company page URL.</ResponseField>
+        <ResponseField name="company_id" type="string">Numeric company ID.</ResponseField>
+        <ResponseField name="location" type="string">Location as LinkedIn shows it, e.g. `"Paris, Île-de-France, France (Hybrid)"`.</ResponseField>
+        <ResponseField name="listed_at" type="integer">Unix epoch (ms) when the job was listed.</ResponseField>
+        <ResponseField name="easy_apply" type="boolean">`true` if the job takes Easy Apply applications.</ResponseField>
+        <ResponseField name="promoted" type="boolean">`true` if the result is a promoted posting.</ResponseField>
+        <ResponseField name="reposted" type="boolean">`true` if the job was reposted.</ResponseField>
+        <ResponseField name="salary_text" type="string">Pay as LinkedIn shows it on the result, e.g. `"$120K/yr - $165K/yr"`. `null` when the result shows none.</ResponseField>
+        <ResponseField name="benefits_text" type="string">Benefits as LinkedIn shows them on the result, e.g. `"401(k), +3 benefits"`. `null` when there are none.</ResponseField>
+        <ResponseField name="applicant_insight" type="string">LinkedIn's note on applicants, e.g. `"Be an early applicant"`. `null` when there is none.</ResponseField>
+        <ResponseField name="network_insight" type="string">LinkedIn's note on your network, e.g. `"1 connection works here"`. `null` when there is none.</ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="total_results" type="integer">Number of jobs returned in this response.</ResponseField>
+    <ResponseField name="total_available_results" type="integer">Total number of jobs matching the search.</ResponseField>
+    <ResponseField name="location_id" type="string">The geo id the search ran on. Pass it as `location_id` next time.</ResponseField>
+    <ResponseField name="pagination" type="object">
+      <Expandable title="pagination properties">
+        <ResponseField name="offset" type="integer">Offset of the first job in this response.</ResponseField>
+        <ResponseField name="count" type="integer">Number of jobs returned.</ResponseField>
+        <ResponseField name="next_offset" type="integer">Offset to send in the next request. `null` when exhausted.</ResponseField>
+        <ResponseField name="has_more" type="boolean">`true` if more jobs are available.</ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "success": true,
+  "data": {
+    "jobs": [
+      {
+        "linkedin_job_id": "4178681638",
+        "job_url": "https://www.linkedin.com/jobs/view/4178681638/",
+        "title": "Account Executive, Mid Market",
+        "company_name": "Acme Corp",
+        "company_url": "https://www.linkedin.com/company/acme-corp/",
+        "company_id": "1234567",
+        "location": "Paris, Île-de-France, France (Hybrid)",
+        "listed_at": 1794587880000,
+        "easy_apply": true,
+        "promoted": false,
+        "reposted": false,
+        "salary_text": "50K EUR/yr - 65K EUR/yr",
+        "benefits_text": null,
+        "applicant_insight": "Be an early applicant",
+        "network_insight": null
+      }
+    ],
+    "total_results": 1,
+    "total_available_results": 36,
+    "location_id": "106383538",
+    "pagination": {
+      "offset": 0,
+      "count": 1,
+      "next_offset": 1,
+      "has_more": true
+    }
+  },
+  "metadata": {
+    "action": "search",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-11-14T10:35:00Z"
+  }
+}
+```
+
+```json 400
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_PARAMS",
+    "sub_code": "LOCATION_NOT_FOUND",
+    "message": "LinkedIn knows no location named 'Atlantis'. Resolve it with POST /v2/typeahead (type: location) and pass location_id."
+  },
+  "metadata": {
+    "action": "search",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-11-14T10:35:00Z"
+  }
+}
+```
+</ResponseExample>
