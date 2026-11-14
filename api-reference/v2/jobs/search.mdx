@@ -85,6 +85,14 @@ Same endpoint, action `"get"` with `job_id` or `job_url`. 1 credit.
 - `hiring_team`: who posted the job, each with `name`, `role`, `job_title`, `profile_url`, `profile_urn`, `profile_picture`, `connection_level`. Empty when LinkedIn shows nobody.
 - An unknown job returns `INVALID_PARAMS` with `sub_code: "JOB_NOT_FOUND"`.
 
+## Apply to a job
+
+Easy Apply jobs only (`apply.type: "easy_apply"`), same endpoint. 1 credit each.
+
+- `"get_apply_form"` with `job_id` or `job_url`: the `questions` to answer, each with `question_id`, `label`, `type`, the `pattern` an answer must match and the `value` LinkedIn pre-fills (email, phone, resume on file). `can_apply` is `false` when the form holds a question type not supported yet (choice, checkbox, date, upload).
+- `"apply"` with `job_id` and `answers` (`{question_id: answer}`): submits the application. Pre-filled questions can be left out. Nothing is sent if an answer is missing or invalid (`MISSING_ANSWERS`, `INVALID_ANSWER`).
+- Other errors: `NOT_EASY_APPLY`, `ALREADY_APPLIED`, `UNSUPPORTED_FORM`.
+
 <RequestExample>
 ```json Request
 {
@@ -186,6 +194,44 @@ Same endpoint, action `"get"` with `job_id` or `job_url`. 1 credit.
     "account_id": "your-account-id",
     "credits_consumed": 1,
     "timestamp": "2026-11-14T12:29:35.723489"
+  }
+}
+```
+```json 200 (get_apply_form)
+{
+  "success": true,
+  "data": {
+    "linkedin_job_id": "4178681638",
+    "job_url": "https://www.linkedin.com/jobs/view/4178681638/",
+    "can_apply": true,
+    "already_applied": false,
+    "unsupported_questions": [],
+    "questions": [
+      {
+        "question_id": "ea.q::32647306348::EMAIL::email",
+        "category": "EMAIL",
+        "label": "Email address",
+        "type": "text",
+        "pattern": null,
+        "value": "jane@example.com",
+        "supported": true
+      },
+      {
+        "question_id": "ea.q::32647306372::UNKNOWN::value_0_0",
+        "category": "UNKNOWN",
+        "label": "How many years of experience do you have in sales?",
+        "type": "text",
+        "pattern": "^[0-9]+$",
+        "value": null,
+        "supported": true
+      }
+    ]
+  },
+  "metadata": {
+    "action": "get_apply_form",
+    "account_id": "your-account-id",
+    "credits_consumed": 1,
+    "timestamp": "2026-11-14T14:10:02.118402"
   }
 }
 ```
