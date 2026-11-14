@@ -1,12 +1,12 @@
 ---
 title: 'Search Jobs'
 api: 'POST /v2/jobs'
-description: 'Search LinkedIn job postings with the filters of the Jobs tab.'
+description: 'Search LinkedIn job postings and read one, including who posted it.'
 ---
 
 ## Overview
 
-Search job postings as the connected account sees them, with the same filters as LinkedIn's Jobs tab. Any LinkedIn account works. To read one result in full, including who posted it, use [Get Job](/api-reference/v2/jobs/get).
+Search job postings with the filters of LinkedIn's Jobs tab, paginated with `count` and `offset`. Works with any LinkedIn account.
 
 <Note>This endpoint consumes **1 credit per 10 results** returned. Ignore this if you're on per-seat pricing: usage is unlimited.</Note>
 
@@ -25,22 +25,18 @@ Search job postings as the connected account sees them, with the same filters as
 </ParamField>
 
 <ParamField body="params" type="object" required>
-  `keywords` or a location is required.
   <Expandable title="params properties">
     <ParamField body="keywords" type="string">
-      Job title, skill or company to search for.
+      Job title, skill or company. Required unless a location is given.
     </ParamField>
     <ParamField body="location" type="string">
-      Location as text (e.g. `"Paris"`, `"Germany"`). The first LinkedIn match is used and returned as `location_id`.
-    </ParamField>
-    <ParamField body="location_id" type="string">
-      LinkedIn geo id, from [Typeahead](/api-reference/v2/profiles/typeahead) (`type: "location"`) or a previous response. Replaces `location` and is faster.
+      Location as text (`"Paris"`, `"Germany"`). Or `location_id`: the geo id from [Typeahead](/api-reference/v2/profiles/typeahead) or from a previous response.
     </ParamField>
     <ParamField body="sort_by" type="string">
       `"recent"` or `"relevant"`.
     </ParamField>
     <ParamField body="date_posted" type="string | integer">
-      `"24h"`, `"week"`, `"month"`, or a number of seconds (e.g. `3600` for the last hour).
+      `"24h"`, `"week"`, `"month"`, or a number of seconds.
     </ParamField>
     <ParamField body="experience" type="string | string[]">
       `internship`, `entry`, `associate`, `mid_senior`, `director`, `executive`.
@@ -52,79 +48,58 @@ Search job postings as the connected account sees them, with the same filters as
       `on_site`, `remote`, `hybrid`.
     </ParamField>
     <ParamField body="company" type="string | string[]">
-      Company ids (the `company_id` of a result, or from Typeahead).
-    </ParamField>
-    <ParamField body="industry" type="string | string[]">
-      Industry ids.
-    </ParamField>
-    <ParamField body="function" type="string | string[]">
-      Job function codes (e.g. `"sale"`, `"eng"`, `"it"`).
-    </ParamField>
-    <ParamField body="title" type="string | string[]">
-      Standardized title ids.
+      Company ids. Same for `industry`, `function` and `title` ids.
     </ParamField>
     <ParamField body="easy_apply" type="boolean">
-      Only jobs with Easy Apply.
-    </ParamField>
-    <ParamField body="in_network" type="boolean">
-      Only jobs at companies where the account has connections.
-    </ParamField>
-    <ParamField body="under_10_applicants" type="boolean">
-      Only jobs with fewer than 10 applicants.
-    </ParamField>
-    <ParamField body="verified" type="boolean">
-      Only jobs with verifications.
+      Only Easy Apply jobs. Other flags: `in_network`, `under_10_applicants`, `verified`.
     </ParamField>
     <ParamField body="count" type="integer" default={10}>
-      Number of results to return. **Capped at `100`** per call.
+      Number of jobs to return. Capped at `100` per call; paginate with `offset`.
     </ParamField>
     <ParamField body="offset" type="integer" default={0}>
-      Zero-indexed offset. Use `pagination.next_offset` from a previous response. LinkedIn serves the first 1000 results of a search.
+      Use `pagination.next_offset` from the previous response. LinkedIn returns the first 1,000 results.
     </ParamField>
   </Expandable>
 </ParamField>
 
 ## Response
 
-<ResponseField name="success" type="boolean">
-  Indicates whether the request was successful.
-</ResponseField>
-
 <ResponseField name="data" type="object">
   <Expandable title="data properties">
     <ResponseField name="jobs" type="array">
-      List of job postings.
-      <Expandable title="job properties">
-        <ResponseField name="linkedin_job_id" type="string">Numeric job ID, to pass as `job_id` to Get Job.</ResponseField>
-        <ResponseField name="job_url" type="string">Public job URL.</ResponseField>
-        <ResponseField name="title" type="string">Job title.</ResponseField>
-        <ResponseField name="company_name" type="string">Hiring company name.</ResponseField>
-        <ResponseField name="company_url" type="string">Company page URL.</ResponseField>
-        <ResponseField name="company_id" type="string">Numeric company ID.</ResponseField>
-        <ResponseField name="location" type="string">Location as LinkedIn shows it, e.g. `"Paris, Île-de-France, France (Hybrid)"`.</ResponseField>
-        <ResponseField name="listed_at" type="integer">Unix epoch (ms) when the job was listed.</ResponseField>
-        <ResponseField name="easy_apply" type="boolean">`true` if the job takes Easy Apply applications.</ResponseField>
-        <ResponseField name="promoted" type="boolean">`true` if the result is a promoted posting.</ResponseField>
-        <ResponseField name="reposted" type="boolean">`true` if the job was reposted.</ResponseField>
-        <ResponseField name="salary_text" type="string">Pay as LinkedIn shows it on the result, e.g. `"$120K/yr - $165K/yr"`. `null` when the result shows none.</ResponseField>
-        <ResponseField name="benefits_text" type="string">Benefits as LinkedIn shows them on the result, e.g. `"401(k), +3 benefits"`. `null` when there are none.</ResponseField>
-        <ResponseField name="applicant_insight" type="string">LinkedIn's note on applicants, e.g. `"Be an early applicant"`. `null` when there is none.</ResponseField>
-        <ResponseField name="network_insight" type="string">LinkedIn's note on your network, e.g. `"1 connection works here"`. `null` when there is none.</ResponseField>
-      </Expandable>
+      The jobs: `linkedin_job_id`, `job_url`, `title`, `company_name`, `company_url`, `company_id`, `location`, `listed_at` (ms), `easy_apply`, `promoted`, `reposted`, and LinkedIn's own texts when shown: `salary_text`, `benefits_text`, `applicant_insight`, `network_insight`.
     </ResponseField>
-    <ResponseField name="total_results" type="integer">Number of jobs returned in this response.</ResponseField>
+    <ResponseField name="total_results" type="integer">Number of jobs returned.</ResponseField>
     <ResponseField name="total_available_results" type="integer">Total number of jobs matching the search.</ResponseField>
-    <ResponseField name="location_id" type="string">The geo id the search ran on. Pass it as `location_id` next time.</ResponseField>
-    <ResponseField name="pagination" type="object">
-      <Expandable title="pagination properties">
-        <ResponseField name="offset" type="integer">Offset of the first job in this response.</ResponseField>
-        <ResponseField name="count" type="integer">Number of jobs returned.</ResponseField>
-        <ResponseField name="next_offset" type="integer">Offset to send in the next request. `null` when exhausted.</ResponseField>
-        <ResponseField name="has_more" type="boolean">`true` if more jobs are available.</ResponseField>
-      </Expandable>
-    </ResponseField>
+    <ResponseField name="location_id" type="string">The geo id the search ran on.</ResponseField>
+    <ResponseField name="pagination" type="object">`offset`, `count`, `next_offset`, `has_more`.</ResponseField>
   </Expandable>
 </ResponseField>
+
+## Get a job
+
+Same endpoint, action `"get"` with `job_id` or `job_url`. 1 credit.
+
+- Returns `title`, `description`, `job_state`, `company_name`, `company_url`, `location`, `workplace_type`, `employment_status`, `experience_level`, `industry`, `job_functions`, `listed_at`, `expire_at`, `salary`, `benefits`, `closed` and `viewer` (`applied`, `saved`).
+- `apply`: `type` (`"easy_apply"` or `"external"`), `url`, and `company_apply_url` when the employer has its own page.
+- `hiring_team`: who posted the job, each with `name`, `role`, `job_title`, `profile_url`, `profile_urn`, `profile_picture`, `connection_level`. Empty when LinkedIn shows nobody.
+- An unknown job returns `INVALID_PARAMS` with `sub_code: "JOB_NOT_FOUND"`.
+
+<RequestExample>
+```json Request
+{
+  "account_id": "your-account-id",
+  "action": "search",
+  "params": {
+    "keywords": "account executive",
+    "location": "Paris",
+    "date_posted": "week",
+    "easy_apply": true,
+    "count": 10
+  }
+}
+```
+</RequestExample>
 
 <ResponseExample>
 ```json 200
@@ -164,24 +139,53 @@ Search job postings as the connected account sees them, with the same filters as
     "action": "search",
     "account_id": "your-account-id",
     "credits_consumed": 1,
-    "timestamp": "2026-11-14T10:35:00Z"
+    "timestamp": "2026-11-14T12:29:34.538517"
   }
 }
 ```
 
-```json 400
+```json 200 (get)
 {
-  "success": false,
-  "error": {
-    "code": "INVALID_PARAMS",
-    "sub_code": "LOCATION_NOT_FOUND",
-    "message": "LinkedIn knows no location named 'Atlantis'. Resolve it with POST /v2/typeahead (type: location) and pass location_id."
+  "success": true,
+  "data": {
+    "linkedin_job_id": "4178681638",
+    "job_url": "https://www.linkedin.com/jobs/view/4178681638/",
+    "title": "Account Executive, Mid Market",
+    "description": "Acme Corp is hiring an Account Executive...",
+    "job_state": "LISTED",
+    "company_name": "Acme Corp",
+    "company_url": "https://www.linkedin.com/company/acme-corp",
+    "location": "Paris, Île-de-France, France",
+    "workplace_type": "Hybrid",
+    "employment_status": "Full-time",
+    "experience_level": "Associate",
+    "industry": ["Software Development"],
+    "listed_at": 1794582818000,
+    "salary": [
+      { "type": "BASE_SALARY", "min": 50000.0, "max": 65000.0, "currency": "EUR", "period": "YEARLY" }
+    ],
+    "apply": {
+      "type": "easy_apply",
+      "url": "https://www.linkedin.com/job-apply/4178681638",
+      "company_apply_url": null
+    },
+    "hiring_team": [
+      {
+        "name": "Jane Doe",
+        "role": "Job poster",
+        "job_title": "Talent Acquisition Manager at Acme Corp",
+        "profile_url": "https://www.linkedin.com/in/jane-doe",
+        "profile_urn": "urn:li:fsd_profile:ACoAAB1x2y3z",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/.../800_800.jpg",
+        "connection_level": "2nd degree"
+      }
+    ]
   },
   "metadata": {
-    "action": "search",
+    "action": "get",
     "account_id": "your-account-id",
     "credits_consumed": 1,
-    "timestamp": "2026-11-14T10:35:00Z"
+    "timestamp": "2026-11-14T12:29:35.723489"
   }
 }
 ```

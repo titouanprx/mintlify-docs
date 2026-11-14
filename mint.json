@@ -148,17 +148,10 @@
       ]
     },
     {
-      "group": "Jobs",
-      "version": "v2.0",
-      "pages": [
-        "api-reference/v2/jobs/search",
-        "api-reference/v2/jobs/get"
-      ]
-    },
-    {
       "group": "Recruiting",
       "version": "v2.0",
       "pages": [
+        "api-reference/v2/jobs/search",
         "api-reference/v2/recruiter/get-posts",
         "api-reference/v2/recruiter/get-candidates",
         "api-reference/v2/recruiter/get-cv",
