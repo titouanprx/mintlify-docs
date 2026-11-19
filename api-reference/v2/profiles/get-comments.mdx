@@ -74,6 +74,9 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
         <ResponseField name="num_replies" type="integer">
           Replies to the comment.
         </ResponseField>
+        <ResponseField name="parent_comment_urn" type="string">
+          When the comment is a reply, the comment it replies to (`urn:li:comment:(activity:<post id>,<comment id>)`). `null` otherwise.
+        </ResponseField>
         <ResponseField name="commenter" type="object">
           The author of the comment (name, profile_url, profile_picture, entity_urn, headline).
         </ResponseField>
@@ -148,6 +151,7 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
         "created_time": 1769507730000,
         "num_likes": 3,
         "num_replies": 1,
+        "parent_comment_urn": null,
         "commenter": {
           "name": "Jane Doe",
           "profile_url": "https://www.linkedin.com/in/jane-doe-42",
