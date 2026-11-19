@@ -156,3 +156,7 @@ Create a job posting. The job is created in `DRAFT` state — use `publish_job` 
 }
 ```
 </ResponseExample>
+
+## Edit a job posting
+
+`action: "update_job"` with `job_id` and only the fields to change: `title`, `title_id`, `html_description`, `employment_status`, `workplace` (`ON_SITE`, `HYBRID`, `REMOTE`), `location_id`. Works on drafts and live postings, 1 credit. Returns `{"job_id", "updated": true, "fields": [...]}`.

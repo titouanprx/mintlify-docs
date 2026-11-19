@@ -59,7 +59,8 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
     <ResponseField name="candidates" type="array">
       List of candidates.
       <Expandable title="candidate properties">
-        <ResponseField name="application_id" type="string">Unique application ID — use it with `get_cv`.</ResponseField>
+        <ResponseField name="application_id" type="string">Unique application ID — use it with `get_cv` and `rate_applicant`.</ResponseField>
+        <ResponseField name="profile_urn" type="string">The applicant's profile URN — use it with `reject_applicant`.</ResponseField>
         <ResponseField name="rating" type="string">Recruiter rating: `"UNRATED"`, `"GOOD_FIT"`, `"MAYBE"`, `"NOT_A_FIT"`.</ResponseField>
         <ResponseField name="is_rejected" type="boolean">`true` when the candidate is in the Rejected stage. Keep `false` to get the candidates in review.</ResponseField>
         <ResponseField name="rejected_at" type="string">Rejection date (`YYYY-MM-DD HH:MM:SS`), `null` when not rejected.</ResponseField>
@@ -168,3 +169,20 @@ Returns the candidates who applied to a specific job posting. Pagination is **of
 }
 ```
 </ResponseExample>
+
+## Rate or reject an applicant
+
+Same endpoint, `POST /v2/recruiter`, 1 credit each, on the account's own job postings.
+
+| `action` | `params` |
+| --- | --- |
+| `rate_applicant` | `application_id` (or `application_ids`), `rating`: `GOOD_FIT`, `MAYBE` or `NOT_A_FIT`. Not shown to the applicant, unless the job auto-rejects applicants marked `NOT_A_FIT` (a LinkedIn job setting) |
+| `reject_applicant` | `job_id`, `profile_urn`, `message` — LinkedIn sends the message to the applicant with the rejection |
+
+```json 200
+{
+  "success": true,
+  "data": { "application_ids": ["33755581746"], "rating": "MAYBE", "rated": true },
+  "metadata": { "action": "rate_applicant", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-11-19T18:55:02Z" }
+}
+```
