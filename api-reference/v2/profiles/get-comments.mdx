@@ -75,7 +75,7 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
           Replies to the comment.
         </ResponseField>
         <ResponseField name="parent_comment_urn" type="string">
-          When the comment is a reply, the comment it replies to (`urn:li:comment:(activity:<post id>,<comment id>)`). `null` otherwise.
+          Only when the comment is a reply: the comment it replies to (`urn:li:comment:(activity:<post id>,<comment id>)`).
         </ResponseField>
         <ResponseField name="commenter" type="object">
           The author of the comment (name, profile_url, profile_picture, entity_urn, headline).
@@ -84,7 +84,7 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
           The post the comment was made on (urn, url, content, author).
         </ResponseField>
         <ResponseField name="reply_to" type="object">
-          When the comment is a reply, holds the parent comment's author info.
+          Only when the comment is a reply: `comment_id` (parent comment), `author_name`, `author_urn` (parent comment's author).
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -151,7 +151,7 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
         "created_time": 1769507730000,
         "num_likes": 3,
         "num_replies": 1,
-        "parent_comment_urn": null,
+        "parent_comment_urn": "urn:li:comment:(ugcPost:7421567698184323073,7421580011223344556)",
         "commenter": {
           "name": "Jane Doe",
           "profile_url": "https://www.linkedin.com/in/jane-doe-42",
@@ -168,6 +168,11 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
             "profile_url": "https://www.linkedin.com/in/john-smith-99",
             "entity_urn": "urn:li:fsd_profile:ACoAA..."
           }
+        },
+        "reply_to": {
+          "comment_id": "urn:li:fsd_comment:(7421580011223344556,urn:li:ugcPost:7421567698184323073)",
+          "author_name": "John Smith",
+          "author_urn": "urn:li:fsd_profile:ACoAA..."
         }
       }
     ],
