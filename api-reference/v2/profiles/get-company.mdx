@@ -27,7 +27,7 @@ Fetches detailed information about a company page (description, industry, employ
 <ParamField body="params" type="object">
   <Expandable title="params properties">
     <ParamField body="company_url" type="string" required>
-      URL of the company page on the connected platform (e.g., `https://www.linkedin.com/company/anthropicresearch/`).
+      URL of the company page on the connected platform (e.g., `https://www.linkedin.com/company/anthropicresearch/`). A numeric id URL also works (`https://www.linkedin.com/company/111891988`, e.g. from `company_urn` in [Get Profile](/api-reference/v2/profiles/get-profile)); `organizationType` and `defaultLocale` are then `null`.
     </ParamField>
   </Expandable>
 </ParamField>

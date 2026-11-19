@@ -55,6 +55,7 @@ Returns the users who reacted to a specific post. Pagination is **offset-based**
         <ResponseField name="subtitle" type="string">Headline / current role of the reactor.</ResponseField>
         <ResponseField name="profile_url" type="string">Public profile URL of the reactor.</ResponseField>
         <ResponseField name="actor_urn" type="string">Unique identifier of the reactor. Treat it as an opaque string and pass it back exactly as returned.</ResponseField>
+        <ResponseField name="profile_picture" type="string">Profile picture URL of the reactor, `null` if none.</ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="total_results" type="integer">Number of reactions returned in this response.</ResponseField>
@@ -92,7 +93,8 @@ Returns the users who reacted to a specific post. Pagination is **offset-based**
         "name": "Jane Doe",
         "subtitle": "Cofounder @ Acme Corp",
         "profile_url": "https://www.linkedin.com/in/jane-doe-42",
-        "actor_urn": "urn:li:fsd_profile:ACoAA..."
+        "actor_urn": "urn:li:fsd_profile:ACoAA...",
+        "profile_picture": "https://media.licdn.com/dms/image/v2/.../profile-displayphoto-shrink_800_800/..."
       }
     ],
     "total_results": 1,

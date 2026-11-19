@@ -62,6 +62,18 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
         <ResponseField name="comment_time_days" type="integer">
           Age of the comment expressed in days.
         </ResponseField>
+        <ResponseField name="comment_urn" type="string">
+          The comment itself (`urn:li:comment:(activity:<post id>,<comment id>)`).
+        </ResponseField>
+        <ResponseField name="created_time" type="integer">
+          Exact creation time, Unix epoch in milliseconds.
+        </ResponseField>
+        <ResponseField name="num_likes" type="integer">
+          Reactions on the comment.
+        </ResponseField>
+        <ResponseField name="num_replies" type="integer">
+          Replies to the comment.
+        </ResponseField>
         <ResponseField name="commenter" type="object">
           The author of the comment (name, profile_url, profile_picture, entity_urn, headline).
         </ResponseField>
@@ -132,6 +144,10 @@ Fetches the list of comments made by a specified user on posts and articles. Pag
         "comment_content": "Great insights! Completely agree.",
         "comment_time": "89d",
         "comment_time_days": 89,
+        "comment_urn": "urn:li:comment:(ugcPost:7421567698184323073,7421592106588172288)",
+        "created_time": 1769507730000,
+        "num_likes": 3,
+        "num_replies": 1,
         "commenter": {
           "name": "Jane Doe",
           "profile_url": "https://www.linkedin.com/in/jane-doe-42",

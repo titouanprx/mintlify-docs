@@ -60,8 +60,12 @@ Returns the comments on a specific post. Pagination is **offset-based** — set 
             <ResponseField name="profile_urn" type="string">Unique identifier of the commenter. Treat it as an opaque string and pass it back exactly as returned.</ResponseField>
             <ResponseField name="linkedin_url" type="string">Public profile URL.</ResponseField>
             <ResponseField name="occupation" type="string">Headline / current role.</ResponseField>
+            <ResponseField name="profile_picture" type="string">Profile picture URL, `null` if none.</ResponseField>
+            <ResponseField name="distance" type="string">Network distance from the connected account: `DISTANCE_1`, `DISTANCE_2`, `DISTANCE_3`, `OUT_OF_NETWORK` or `SELF`.</ResponseField>
           </Expandable>
         </ResponseField>
+        <ResponseField name="num_likes" type="integer">Reactions on the comment.</ResponseField>
+        <ResponseField name="num_replies" type="integer">Replies to the comment.</ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="total_results" type="integer">Number of comments returned in this response.</ResponseField>
@@ -103,8 +107,12 @@ Returns the comments on a specific post. Pagination is **offset-based** — set 
           "name": "Jane Doe",
           "profile_urn": "urn:li:fsd_profile:ACoAA...",
           "linkedin_url": "https://www.linkedin.com/in/jane-doe-42",
-          "occupation": "Product Manager at Acme Corp"
-        }
+          "occupation": "Product Manager at Acme Corp",
+          "profile_picture": "https://media.licdn.com/dms/image/v2/.../profile-displayphoto-shrink_800_800/...",
+          "distance": "DISTANCE_2"
+        },
+        "num_likes": 4,
+        "num_replies": 1
       }
     ],
     "total_results": 1,

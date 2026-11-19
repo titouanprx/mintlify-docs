@@ -66,10 +66,10 @@ Fetches detailed profile data for a specified user. You can identify the target 
     <ResponseField name="summary" type="string">About / bio section.</ResponseField>
     <ResponseField name="industry" type="string">Industry associated with the profile.</ResponseField>
     <ResponseField name="experience" type="array">
-      Work experience entries. Each item: `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"10/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`.
+      Work experience entries. Each item: `company`, `title`, `description`, `start_date` and `end_date` formatted as `M/YYYY` (e.g. `"10/2025"`; `end_date` is `""` for current roles), `company_url`, `company_logo_url`, `company_urn` (`urn:li:fsd_company:<id>`, `null` when the company has no LinkedIn page).
     </ResponseField>
     <ResponseField name="education" type="array">
-      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date` (years, e.g. `"2018"`), `school_logo_url`.
+      Education entries. Each item: `school`, `degree`, `field_of_study`, `start_date`, `end_date` (years, e.g. `"2018"`), `school_logo_url`, `grade` (`null` if none), `school_urn` (`urn:li:fsd_school:<id>`, `null` when the school has no LinkedIn page).
     </ResponseField>
     <ResponseField name="skills" type="array">List of skills (array of strings).</ResponseField>
     <ResponseField name="profile_picture_url" type="string">URL of the profile picture.</ResponseField>
@@ -78,6 +78,8 @@ Fetches detailed profile data for a specified user. You can identify the target 
     <ResponseField name="isPremium" type="boolean">The person has a LinkedIn Premium subscription.</ResponseField>
     <ResponseField name="isInfluencer" type="boolean">LinkedIn Influencer badge.</ResponseField>
     <ResponseField name="isCreator" type="boolean">Creator mode is on.</ResponseField>
+    <ResponseField name="object_urn" type="string">Numeric member identifier (`urn:li:member:<id>`).</ResponseField>
+    <ResponseField name="primary_locale" type="object">Profile language: `country` and `language` (e.g. `{"country": "FR", "language": "fr"}`).</ResponseField>
     <ResponseField name="relationship" type="string">
       Network distance between the connected account and this profile: `"1st degree"`, `"2nd degree"`, `"3rd+ degree"` or `"Out of network"`. Same vocabulary as `connection_level` in [Search People](/api-reference/v2/profiles/search-people).
     </ResponseField>
@@ -130,7 +132,8 @@ Fetches detailed profile data for a specified user. You can identify the target 
         "start_date": "10/2022",
         "end_date": "",
         "company_url": "https://linkedin.com/company/acme",
-        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/..."
+        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/...",
+        "company_urn": "urn:li:fsd_company:12345678"
       },
       {
         "company": "Beta Labs",
@@ -139,7 +142,8 @@ Fetches detailed profile data for a specified user. You can identify the target 
         "start_date": "5/2019",
         "end_date": "8/2022",
         "company_url": "https://linkedin.com/company/beta-labs",
-        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/..."
+        "company_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/...",
+        "company_urn": "urn:li:fsd_company:87654321"
       }
     ],
     "education": [
@@ -149,7 +153,9 @@ Fetches detailed profile data for a specified user. You can identify the target 
         "field_of_study": "Management",
         "start_date": "2008",
         "end_date": "2011",
-        "school_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/..."
+        "school_logo_url": "https://media.licdn.com/dms/image/v2/.../company-logo_400_400/...",
+        "grade": "Master of Science - Management",
+        "school_urn": "urn:li:fsd_school:12345"
       },
       {
         "school": "Example Institute",
@@ -157,7 +163,9 @@ Fetches detailed profile data for a specified user. You can identify the target 
         "field_of_study": "",
         "start_date": "",
         "end_date": "",
-        "school_logo_url": ""
+        "school_logo_url": "",
+        "grade": null,
+        "school_urn": null
       }
     ],
     "skills": ["Business Development", "Entrepreneurship", "Start-ups", "Team Management", "CRM"],
@@ -167,6 +175,8 @@ Fetches detailed profile data for a specified user. You can identify the target 
     "isPremium": true,
     "isInfluencer": false,
     "isCreator": false,
+    "object_urn": "urn:li:member:123456789",
+    "primary_locale": {"country": "FR", "language": "fr"},
     "email": "john.smith@example.com",
     "phone": "0600000000",
     "website": "https://www.acme.example",
