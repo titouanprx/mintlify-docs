@@ -309,6 +309,27 @@ Same endpoint, classic LinkedIn messages only, 1 credit each. `message_id` is th
 }
 ```
 
+## Manage a LinkedIn conversation
+
+Same endpoint, classic LinkedIn inbox, 1 credit each. `conversation_id` is the full URN from [List Inbox](/api-reference/v2/messages/list-inbox) or a webhook event. Same actions and params as on WhatsApp.
+
+| `action` | `params` |
+| --- | --- |
+| `archive_conversation` | `conversation_id`, `archived?` (`false` unarchives) |
+| `mute_conversation` | `conversation_id`, `muted?` (`false` unmutes). No duration: LinkedIn mutes until unmuted |
+| `delete_conversation` | `conversation_id` (removes it from this account's inbox only) |
+| `create_group` | `participants` (2 or more profile URLs, public ids or `ACoA…` ids), `message_text` (LinkedIn creates the group with its first message) |
+
+```json 200
+{
+  "success": true,
+  "data": { "conversation_id": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAAD...,2-YTg2...)", "muted": true },
+  "metadata": { "action": "mute_conversation", "account_id": "your-account-id", "credits_consumed": 1, "timestamp": "2026-11-19T17:02:11Z" }
+}
+```
+
+`create_group` answers like a sent message: `conversation_id` of the new group and the message `entityUrn`.
+
 ## InMail
 
 Reaches someone you are not connected to, through the account's premium seat. Triggered by `inmail: true` or a `recipient_urn` — a `subject` alone never turns a message into an InMail. Prefer `recipient_urn` from the [lead search](/api-reference/v2/profiles/search-people-nav) when you have it.

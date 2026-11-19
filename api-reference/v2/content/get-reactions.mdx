@@ -29,6 +29,9 @@ Returns the users who reacted to a specific post. Pagination is **offset-based**
     <ParamField body="post_url" type="string" required>
       The URL of the post to retrieve reactions from, as shown on the connected platform.
     </ParamField>
+    <ParamField body="comment_urn" type="string">
+      Optional. The `comment_urn` of a comment from [Get Comments](/api-reference/v2/content/get-comments): returns who reacted to that comment instead of the post (`post_url` is then not needed), same item shape. One page of up to 100 reactions; filter with `reaction_type`.
+    </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of reactions to return. Defaults to `10`. **Capped at `1000`** per call.
     </ParamField>

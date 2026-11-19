@@ -35,6 +35,9 @@ React to a post with a specific reaction type. You can also react as a company p
     <ParamField body="company_url" type="string">
       Optional. The URL of a company page to react as. You must be an admin of the company page.
     </ParamField>
+    <ParamField body="comment_urn" type="string">
+      Optional. The `comment_urn` of a comment from [Get Comments](/api-reference/v2/content/get-comments): reacts to that comment instead of the post (`post_url` is then not needed). Add `remove: true` to take the reaction back. Not available with `company_url`.
+    </ParamField>
   </Expandable>
 </ParamField>
 
