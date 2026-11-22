@@ -46,7 +46,12 @@ From then on:
 - **Every account keeps working from day one.** Requests on an account still at Unipile are relayed to your Unipile workspace and answered as before. `GET /accounts`, and `GET /chats`, `/messages`, `/chat_attendees` without `account_id`, list both sides.
 - **Your webhooks are copied** (same URL, source, events, headers, accounts). Webhooks you create or delete later are mirrored at Unipile while it is linked.
 
-Your Unipile key is stored encrypted and only sent to your Unipile DSN. `GET /api/v1/migration/unipile` shows the progress; `DELETE` removes the link.
+Your Unipile key is stored encrypted and only sent to your Unipile DSN. `GET /api/v1/migration/unipile` shows the progress and copies webhooks you created at Unipile since; `DELETE` removes the link.
+
+| Option | Default | |
+|---|---|---|
+| `new_accounts` | `"linkupapi"` | Where new accounts go. `"unipile"` keeps Unipile your default: new accounts and reconnections stay there, accounts move only when you say so. |
+| `delete_moved_accounts` | `true` | Delete an account from Unipile once it works on LinkupAPI. `false` keeps it there too (you then receive its webhooks from both). |
 
 ## 3. Move your accounts, at your pace
 
@@ -58,6 +63,17 @@ Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. 
 The account keeps its id. Once it works on LinkupAPI, it is deleted from your Unipile workspace (only if it is the same LinkedIn member, phone or mailbox), so nothing is sent twice. When every account has moved, unlink Unipile.
 
 A new account (`type: "create"` or `POST /api/v1/accounts`) is created on LinkupAPI with a new id, as on Unipile.
+
+## Keep Unipile alongside
+
+To move only some accounts and keep the rest on Unipile for good, link with `"new_accounts": "unipile"`. Your Unipile accounts keep working through LinkupAPI as they are, and you move the ones you choose:
+
+```bash
+curl -X POST https://api.linkupapi.com/compat/api/v1/migration/unipile/accounts/{Unipile account_id} \
+  -H "X-API-KEY: YOUR_LINKUPAPI_API_KEY" -H "Content-Type: application/json" -d '{}'
+```
+
+With an empty body you get a hosted link (`HostedAuthUrl`) to send to the account's owner; it takes `notify_url`, `name`, `expiresOn`, `success_redirect_url`, `failure_redirect_url`. With the Unipile native-auth body (`provider`, `username`, `password`…) the account is reconnected right away. Either way it keeps its id.
 
 ## Webhook events
 
