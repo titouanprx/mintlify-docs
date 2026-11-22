@@ -1,6 +1,6 @@
 ---
 title: 'Migrating from Unipile'
-description: 'Move a Unipile v1 integration to LinkupAPI by changing the base URL and the API key'
+description: 'Move a Unipile v1 integration to LinkupAPI by changing the base URL and the API key, one account at a time if you want'
 noindex: true
 ---
 
@@ -31,26 +31,37 @@ const client = new UnipileClient("https://api.linkupapi.com/compat", "YOUR_LINKU
 
 Your API key is in the [dashboard](https://app.linkupapi.com). Scoped API keys work the same way.
 
-## 2. Reconnect your accounts
+## 2. Link your Unipile workspace
 
-Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. Reconnect it **under its Unipile `account_id`** and every id you stored keeps working:
+One call, with your Unipile DSN and key:
+
+```bash
+curl -X POST https://api.linkupapi.com/compat/api/v1/migration/unipile \
+  -H "X-API-KEY: YOUR_LINKUPAPI_API_KEY" -H "Content-Type: application/json" \
+  -d '{"dsn": "api8.unipile.com:13851", "api_key": "<your Unipile API key>"}'
+```
+
+From then on:
+
+- **Every account keeps working from day one.** Requests on an account still at Unipile are relayed to your Unipile workspace and answered as before. `GET /accounts`, and `GET /chats`, `/messages`, `/chat_attendees` without `account_id`, list both sides.
+- **Your webhooks are copied** (same URL, source, events, headers, accounts). Webhooks you create or delete later are mirrored at Unipile while it is linked.
+
+Your Unipile key is stored encrypted and only sent to your Unipile DSN. `GET /api/v1/migration/unipile` shows the progress; `DELETE` removes the link.
+
+## 3. Move your accounts, at your pace
+
+Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. Reconnect it **under its Unipile `account_id`**:
 
 - Hosted link: `POST /api/v1/hosted/accounts/link` with `type: "reconnect"` and `reconnect_account: "<Unipile account_id>"`.
 - Native: `POST /api/v1/accounts/{Unipile account_id}` with the credentials, as for a Unipile reconnection.
 
-A new account (`type: "create"` or `POST /api/v1/accounts`) gets a new id, as on Unipile.
+The account keeps its id. Once it works on LinkupAPI, it is deleted from your Unipile workspace (only if it is the same LinkedIn member, phone or mailbox), so nothing is sent twice. When every account has moved, unlink Unipile.
 
-## 3. Import your webhooks
+A new account (`type: "create"` or `POST /api/v1/accounts`) is created on LinkupAPI with a new id, as on Unipile.
 
-One call copies every webhook of your Unipile workspace: same URL, source, events, headers and accounts. Your Unipile key is used for this call only and never stored.
+## Webhook events
 
-```bash
-curl -X POST https://api.linkupapi.com/compat/api/v1/webhooks/import \
-  -H "X-API-KEY: $LINKUPAPI_KEY" -H "Content-Type: application/json" \
-  -d '{"dsn": "api8.unipile.com:13851", "api_key": "<your Unipile API key>"}'
-```
-
-The response lists each webhook under `imported` or `skipped` (with the reason). Running it again creates nothing new. Payloads match Unipile's, field for field. Supported sources and events:
+Payloads match Unipile's, field for field. Supported sources and events:
 
 | Source | Events |
 |---|---|
@@ -61,7 +72,7 @@ The response lists each webhook under `imported` or `skipped` (with the reason).
 
 ## What differs
 
-- **Chat, message and attendee ids** are new: list chats again after the migration. Ids stored from Unipile do not resolve.
+- **Chat, message and attendee ids** change when an account moves: list its chats again. Ids stored from Unipile no longer resolve for that account.
 - **`GET /api/v1/messages`** (every message of an account) is available a few minutes after the account connects.
 - **Filters LinkedIn no longer applies** are accepted and have no effect: job `benefits`, `minimum_salary`, `commitments`, `fair_chance_employer`, `location_within_area`; people `open_to`; classic company `industry`, `has_job_offers`, `network_distance`; Sales Nav `technologies`, `mentionned_in_news`.
 - **Anything not supported** answers `501 errors/feature_not_implemented`, with the parameter or route in `detail`. A request is never run with a filter silently dropped.
@@ -81,4 +92,4 @@ The response lists each webhook under `imported` or `skipped` (with the reason).
 | Email | Emails, folders, drafts, attachments |
 | Webhooks | Sources above |
 
-**Not supported yet:** calendars, email tracking, Instagram, Telegram, X, Messenger, Recruiter job postings (`service: RECRUITER`), `addApplicantToPipeline`, skill endorsements, post targeted audience, paid job publishing and its checkpoint, Recruiter session sign-out, Recruiter Pro filters.
+**Not supported yet** (they keep working through Unipile for accounts not moved yet): calendars, email tracking, Instagram, Telegram, X, Messenger, Recruiter job postings (`service: RECRUITER`), `addApplicantToPipeline`, skill endorsements, post targeted audience, paid job publishing and its checkpoint, Recruiter session sign-out, Recruiter Pro filters.
