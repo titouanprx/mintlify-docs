@@ -1,0 +1,76 @@
+---
+title: 'Migrating from Unipile'
+description: 'Move a Unipile v1 integration to LinkupAPI by changing the base URL and the API key'
+noindex: true
+---
+
+LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors, pagination and webhook payloads. Your code keeps working; only the base URL and the key change.
+
+<Note>
+  The Unipile-compatible API is enabled per workspace. Ask [support@linkupapi.com](mailto:support@linkupapi.com) to turn it on. Until then, every call answers `403 errors/feature_not_subscribed`.
+</Note>
+
+## 1. Base URL and key
+
+| | Unipile | LinkupAPI |
+|---|---|---|
+| Base URL | `https://{YOUR_DSN}` | `https://api.linkupapi.com/compat` |
+| Routes | `/api/v1/...` | `/api/v1/...` (unchanged) |
+| Header | `X-API-KEY: <Unipile token>` | `X-API-KEY: <LinkupAPI API key>` |
+
+```bash
+curl https://api.linkupapi.com/compat/api/v1/accounts \
+  -H "X-API-KEY: YOUR_LINKUPAPI_API_KEY"
+```
+
+With the Unipile Node SDK, pass the LinkupAPI base URL as the DSN:
+
+```js
+const client = new UnipileClient("https://api.linkupapi.com/compat", "YOUR_LINKUPAPI_API_KEY");
+```
+
+Your API key is in the [dashboard](https://app.linkupapi.com). Scoped API keys work the same way.
+
+## 2. Reconnect your accounts
+
+Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. Reconnect it **under its Unipile `account_id`** and every id you stored keeps working:
+
+- Hosted link: `POST /api/v1/hosted/accounts/link` with `type: "reconnect"` and `reconnect_account: "<Unipile account_id>"`.
+- Native: `POST /api/v1/accounts/{Unipile account_id}` with the credentials, as for a Unipile reconnection.
+
+A new account (`type: "create"` or `POST /api/v1/accounts`) gets a new id, as on Unipile.
+
+## 3. Recreate your webhooks
+
+Create them again with `POST /api/v1/webhooks`. Payloads match Unipile's, field for field.
+
+| Source | Events |
+|---|---|
+| `messaging` | `message_received`, `message_read`, `message_reaction`, `message_edited`, `message_deleted`, `message_delivered` |
+| `users` | `new_relation` |
+| `account_status` | `ok`, `credentials`, `creation_success`, `reconnected`, `deleted` |
+| `email` | `mail_received`, `mail_sent` |
+
+## What differs
+
+- **Chat, message and attendee ids** are new: list chats again after the migration. Ids stored from Unipile do not resolve.
+- **`GET /api/v1/messages`** (every message of an account) is available a few minutes after the account connects.
+- **Filters LinkedIn no longer applies** are accepted and have no effect: job `benefits`, `minimum_salary`, `commitments`, `fair_chance_employer`, `location_within_area`; people `open_to`; classic company `industry`, `has_job_offers`, `network_distance`; Sales Nav `technologies`, `mentionned_in_news`.
+- **Anything not supported** answers `501 errors/feature_not_implemented`, with the parameter or route in `detail`. A request is never run with a filter silently dropped.
+
+## Coverage
+
+**Providers:** LinkedIn (classic, Sales Nav, Recruiter Lite), WhatsApp, Gmail, Outlook, IMAP.
+
+| Area | Supported |
+|---|---|
+| Accounts | Connect, reconnect, hosted links, checkpoints, list, get, delete, restart, proxy |
+| Messaging | Chats, messages, attachments, reactions, attendees, InMail (classic, Sales Nav, Recruiter), group chats, mute, archive, delete |
+| Users | Profiles, own profile and edit, relations, followers, invitations, posts, comments, reactions |
+| Posts | Create, get, comments and replies, reactions (posts and comments) |
+| LinkedIn search | Classic people, companies, jobs, posts; Sales Nav people and companies (saved and recent searches); Recruiter; search parameters |
+| LinkedIn | Companies, InMail balance, contracts, raw data, Sales Nav lists (`saveLead`), Recruiter projects and pipeline, job postings and applicants |
+| Email | Emails, folders, drafts, attachments |
+| Webhooks | Sources above |
+
+**Not supported yet:** calendars, email tracking, Instagram, Telegram, X, Messenger, Recruiter job postings (`service: RECRUITER`), `addApplicantToPipeline`, skill endorsements, post targeted audience, paid job publishing and its checkpoint, Recruiter session sign-out, Recruiter Pro filters.
