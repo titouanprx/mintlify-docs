@@ -40,9 +40,17 @@ Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. 
 
 A new account (`type: "create"` or `POST /api/v1/accounts`) gets a new id, as on Unipile.
 
-## 3. Recreate your webhooks
+## 3. Import your webhooks
 
-Create them again with `POST /api/v1/webhooks`. Payloads match Unipile's, field for field.
+One call copies every webhook of your Unipile workspace: same URL, source, events, headers and accounts. Your Unipile key is used for this call only and never stored.
+
+```bash
+curl -X POST https://api.linkupapi.com/compat/api/v1/webhooks/import \
+  -H "X-API-KEY: $LINKUPAPI_KEY" -H "Content-Type: application/json" \
+  -d '{"dsn": "api8.unipile.com:13851", "api_key": "<your Unipile API key>"}'
+```
+
+The response lists each webhook under `imported` or `skipped` (with the reason). Running it again creates nothing new. Payloads match Unipile's, field for field. Supported sources and events:
 
 | Source | Events |
 |---|---|
