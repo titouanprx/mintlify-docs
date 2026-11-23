@@ -109,7 +109,7 @@ Payloads match Unipile's, field for field. Supported sources and events:
 
 - **Message ids** change when an account moves (chat and attendee ids don't): a message id stored from Unipile no longer resolves. Messages received after the move have stable ids.
 - **`GET /api/v1/messages`** (every message of an account) is available a few minutes after the account connects.
-- **Filters LinkedIn no longer applies** are accepted and have no effect: job `benefits`, `minimum_salary`, `commitments`, `fair_chance_employer`, `location_within_area`; people `open_to`; classic company `industry`, `has_job_offers`, `network_distance`; Sales Nav `technologies`, `mentionned_in_news`.
+- **Filters LinkedIn has removed** are accepted and have no effect, as on Unipile, since LinkedIn itself no longer applies them. Your requests don't fail on them: job `benefits`, `minimum_salary`, `commitments`, `fair_chance_employer`, `location_within_area`; people `open_to`; classic company `industry`, `has_job_offers`, `network_distance`; Sales Nav `technologies`, `mentionned_in_news`.
 - **Anything not supported** answers `501 errors/feature_not_implemented`, with the parameter or route in `detail`. A request is never run with a filter silently dropped.
 
 ## Coverage
