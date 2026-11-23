@@ -4,23 +4,28 @@ description: 'Move a Unipile v1 integration to LinkupAPI by changing the base UR
 noindex: true
 ---
 
-LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors, pagination and webhook payloads. Your code keeps working; only the base URL and the key change.
+LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors, pagination and webhook payloads. You change the base URL and the API key; your code stays the same.
 
 <Note>
   The Unipile-compatible API is enabled per workspace. Ask [support@linkupapi.com](mailto:support@linkupapi.com) to turn it on. Until then, every call answers `403 errors/feature_not_subscribed`.
 </Note>
 
-## Pick your migration
+## How it works
 
-| Migration | How it works | Read |
+1. **Your code talks to LinkupAPI only.** You switch the base URL and the key once, for all accounts.
+2. **LinkupAPI is connected to your Unipile workspace.** Accounts you haven't moved yet are still served by Unipile, through LinkupAPI. Nothing stops on switch day.
+3. **Each account moves when it reconnects.** A LinkedIn session can't be copied from Unipile, so each account logs in once on LinkupAPI. It keeps its `account_id`, its chat ids and its attendee ids.
+4. **The Unipile copy is then deleted**, so no message or webhook is sent twice.
+
+## Choose your migration
+
+| Migration | What happens | Steps |
 |---|---|---|
-| **All accounts, at your pace** (recommended) | Link Unipile once. Every account keeps working from day one; each one moves when it reconnects, and is then removed from Unipile. Unlink when all have moved. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [3](#3-move-your-accounts-at-your-pace), [example](#example-a-full-migration-over-one-week) |
-| **Some accounts, keep Unipile** | Link Unipile with `new_accounts: "unipile"`. Unipile stays your default; you move only the accounts you choose. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [Keep Unipile alongside](#keep-unipile-alongside) |
-| **Fresh start** | Don't link Unipile. Change the base URL and key, then connect your accounts again on LinkupAPI. Accounts left at Unipile are not reachable here. | [1](#1-base-url-and-key) |
+| **All accounts, at your pace** (recommended) | Everything keeps working from day one. Accounts move one by one as their users reconnect. | [1](#step-1-point-your-code-at-linkupapi), [2](#step-2-link-your-unipile-workspace), [3](#step-3-move-your-accounts), [4](#step-4-finish), [example](#example-a-full-migration-in-one-week) |
+| **Some accounts, keep Unipile** | Unipile stays your default. You choose which accounts move. | [1](#step-1-point-your-code-at-linkupapi), [2](#step-2-link-your-unipile-workspace), [Keep Unipile alongside](#keep-unipile-alongside) |
+| **Fresh start** | No link to Unipile. All accounts connect again on LinkupAPI, with new ids. | [1](#step-1-point-your-code-at-linkupapi), then connect accounts as usual |
 
-In every case your code stays the same: same routes, payloads and webhooks.
-
-## 1. Base URL and key
+## Step 1: Point your code at LinkupAPI
 
 | | Unipile | LinkupAPI |
 |---|---|---|
@@ -41,7 +46,7 @@ const client = new UnipileClient("https://api.linkupapi.com/compat", "YOUR_LINKU
 
 Your API key is in the [dashboard](https://app.linkupapi.com). Scoped API keys work the same way.
 
-## 2. Link your Unipile workspace
+## Step 2: Link your Unipile workspace
 
 One call, with your Unipile DSN and key:
 
@@ -51,48 +56,66 @@ curl -X POST https://api.linkupapi.com/compat/api/v1/migration/unipile \
   -d '{"dsn": "api8.unipile.com:13851", "api_key": "<your Unipile API key>"}'
 ```
 
-From then on:
+What this does:
 
-- **Every account keeps working from day one.** Requests on an account still at Unipile are relayed to your Unipile workspace and answered as before. `GET /accounts`, and `GET /chats`, `/messages`, `/chat_attendees` without `account_id`, list both sides.
-- **Your webhooks are copied** (same URL, source, events, headers, accounts). Webhooks you create or delete later are mirrored at Unipile while it is linked.
+- **Accounts still at Unipile keep working.** Requests on them are sent on to your Unipile workspace and answered as before. `GET /accounts`, and `GET /chats`, `/messages`, `/chat_attendees` without `account_id`, list both sides.
+- **Your webhooks are copied** from Unipile (same URL, source, events, headers, accounts). Webhooks you create or delete afterwards are mirrored at Unipile while the link exists.
 
-Your Unipile key is stored encrypted and only sent to your Unipile DSN. `GET /api/v1/migration/unipile` shows the progress and copies webhooks you created at Unipile since; `DELETE` removes the link.
+Your Unipile key is stored encrypted and only sent to your Unipile DSN.
 
 | Option | Default | |
 |---|---|---|
 | `new_accounts` | `"linkupapi"` | Where new accounts go. `"unipile"` keeps Unipile your default: new accounts and reconnections stay there, accounts move only when you say so. |
 | `delete_moved_accounts` | `true` | Delete an account from Unipile once it works on LinkupAPI. `false` keeps it there too (you then receive its webhooks from both). |
 
-## 3. Move your accounts, at your pace
+## Step 3: Move your accounts
 
-Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. Reconnect it **under its Unipile `account_id`**:
+Reconnect each account **under its Unipile `account_id`**, exactly as you reconnect an account on Unipile:
 
 - Hosted link: `POST /api/v1/hosted/accounts/link` with `type: "reconnect"` and `reconnect_account: "<Unipile account_id>"`.
-- Native: `POST /api/v1/accounts/{Unipile account_id}` with the credentials, as for a Unipile reconnection.
+- Native: `POST /api/v1/accounts/{Unipile account_id}` with the credentials.
 
-The account keeps its id, and so do its chats and chat attendees: the `chat_id` and `attendee_id` you stored from Unipile keep working, in requests, responses and webhooks. Once it works on LinkupAPI, it is deleted from your Unipile workspace (only if it is the same LinkedIn member, phone or mailbox), so nothing is sent twice. When every account has moved, unlink Unipile.
+As soon as the account is connected on LinkupAPI:
+
+- it keeps its `account_id`;
+- its chats and chat attendees keep their ids: the `chat_id` and `attendee_id` you stored from Unipile keep working, in requests, responses and webhooks;
+- it is deleted from your Unipile workspace, only if it is the same LinkedIn member, phone number or mailbox.
 
 A new account (`type: "create"` or `POST /api/v1/accounts`) is created on LinkupAPI with a new id, as on Unipile.
 
-### Example: a full migration over one week
+## Step 4: Finish
 
-1. **Day 1.** Switch the base URL and key, and link Unipile. Nothing stops: campaigns, inboxes and webhooks keep running on every account, through Unipile.
-2. **Day 1.** Email your users a reconnect link (a hosted link with `type: "reconnect"` and their Unipile `account_id`), with a week to use it. Your existing reconnection flow works as is.
-3. **During the week.** Each account moves the moment its user reconnects: same `account_id`, same chat and attendee ids, campaigns continue on LinkupAPI, the Unipile copy is deleted so nothing runs twice. Accounts not reconnected yet keep running on Unipile.
-4. **End of the week.** `GET /api/v1/migration/unipile` shows how many accounts are still at Unipile. Remind those users; they keep working until they reconnect. Unlink Unipile once the list is empty.
+`GET /api/v1/migration/unipile` shows the progress: accounts moved, accounts still at Unipile. It also copies webhooks you created at Unipile in the meantime.
 
-Your users never lose their account, and no campaign stops.
+When no account is left at Unipile, remove the link:
+
+```bash
+curl -X DELETE https://api.linkupapi.com/compat/api/v1/migration/unipile \
+  -H "X-API-KEY: YOUR_LINKUPAPI_API_KEY"
+```
+
+## Example: a full migration in one week
+
+| When | You | Your users and campaigns |
+|---|---|---|
+| Day 1 | Switch the base URL and key, link Unipile. | Nothing changes: every account runs through Unipile. |
+| Day 1 | Email each user a reconnect link (hosted link, `type: "reconnect"`, their Unipile `account_id`), to use within the week. | |
+| During the week | Nothing. | Each account moves when its user reconnects, with the same ids. Campaigns keep running, on LinkupAPI for moved accounts and on Unipile for the others. |
+| End of the week | Check `GET /api/v1/migration/unipile`, remind users who haven't reconnected. | Accounts not moved keep running on Unipile until they reconnect. |
+| When all have moved | Unlink Unipile. | |
+
+No account is lost and no campaign stops.
 
 ## Keep Unipile alongside
 
-To move only some accounts and keep the rest on Unipile for good, link with `"new_accounts": "unipile"`. Your Unipile accounts keep working through LinkupAPI as they are, and you move the ones you choose:
+To move only some accounts and keep the rest on Unipile for good, link with `"new_accounts": "unipile"`. All your Unipile accounts keep working through LinkupAPI, and you move the ones you choose:
 
 ```bash
 curl -X POST https://api.linkupapi.com/compat/api/v1/migration/unipile/accounts/{Unipile account_id} \
   -H "X-API-KEY: YOUR_LINKUPAPI_API_KEY" -H "Content-Type: application/json" -d '{}'
 ```
 
-With an empty body you get a hosted link (`HostedAuthUrl`) to send to the account's owner; it takes `notify_url`, `name`, `expiresOn`, `success_redirect_url`, `failure_redirect_url`. With the Unipile native-auth body (`provider`, `username`, `password`…) the account is reconnected right away. Either way it keeps its id.
+With an empty body you get a hosted link (`HostedAuthUrl`) to send to the account's owner; it takes `notify_url`, `name`, `expiresOn`, `success_redirect_url`, `failure_redirect_url`. With the Unipile native-auth body (`provider`, `username`, `password`…) the account is reconnected right away. Either way it keeps its ids.
 
 ## Webhook events
 
@@ -107,7 +130,7 @@ Payloads match Unipile's, field for field. Supported sources and events:
 
 ## What differs
 
-- **Message ids** change when an account moves (chat and attendee ids don't): a message id stored from Unipile no longer resolves. Messages received after the move have stable ids.
+- **Message ids** of messages from before the move change (chat and attendee ids don't): a message id stored from Unipile no longer resolves. Messages received after the move have stable ids.
 - **`GET /api/v1/messages`** (every message of an account) is available a few minutes after the account connects.
 - **Filters LinkedIn has removed** are accepted and have no effect, as on Unipile, since LinkedIn itself no longer applies them. Your requests don't fail on them: job `benefits`, `minimum_salary`, `commitments`, `fair_chance_employer`, `location_within_area`; people `open_to`; classic company `industry`, `has_job_offers`, `network_distance`; Sales Nav `technologies`, `mentionned_in_news`.
 - **Anything not supported** answers `501 errors/feature_not_implemented`, with the parameter or route in `detail`. A request is never run with a filter silently dropped.
