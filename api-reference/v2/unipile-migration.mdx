@@ -12,6 +12,8 @@ LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors,
 
 ## How it works
 
+This is the full migration, where LinkupAPI handles the switch. To keep Unipile for good next to LinkupAPI, see [Keep Unipile alongside](#keep-unipile-alongside).
+
 1. **Your code talks to LinkupAPI only.** You switch the base URL and the key once, for all accounts.
 2. **LinkupAPI is connected to your Unipile workspace.** Accounts you haven't moved yet are still served by Unipile, through LinkupAPI. Nothing stops on switch day.
 3. **Each account moves when it reconnects.** A LinkedIn session can't be copied from Unipile, so each account logs in once on LinkupAPI. It keeps its `account_id`, its chat ids and its attendee ids.
@@ -22,7 +24,7 @@ LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors,
 | Migration | What happens | Steps |
 |---|---|---|
 | **All accounts, at your pace** (recommended) | Everything keeps working from day one. Accounts move one by one as their users reconnect. | [1](#step-1-point-your-code-at-linkupapi), [2](#step-2-link-your-unipile-workspace), [3](#step-3-move-your-accounts), [4](#step-4-finish), [example](#example-a-full-migration-in-one-week) |
-| **Some accounts, keep Unipile** | Unipile stays your default. You choose which accounts move. | [1](#step-1-point-your-code-at-linkupapi), [2](#step-2-link-your-unipile-workspace), [Keep Unipile alongside](#keep-unipile-alongside) |
+| **Keep Unipile alongside** | You use both APIs side by side, and choose for each account where it connects. No link between them. | [Keep Unipile alongside](#keep-unipile-alongside) |
 | **Fresh start** | No link to Unipile. All accounts connect again on LinkupAPI, with new ids. | [1](#step-1-point-your-code-at-linkupapi), then connect accounts as usual |
 
 ## Step 1: Point your code at LinkupAPI
@@ -61,12 +63,7 @@ What this does:
 - **Accounts still at Unipile keep working.** Requests on them are sent on to your Unipile workspace and answered as before. `GET /accounts`, and `GET /chats`, `/messages`, `/chat_attendees` without `account_id`, list both sides.
 - **Your webhooks are copied** from Unipile (same URL, source, events, headers, accounts). Webhooks you create or delete afterwards are mirrored at Unipile while the link exists.
 
-Your Unipile key is stored encrypted and only sent to your Unipile DSN.
-
-| Option | Default | |
-|---|---|---|
-| `new_accounts` | `"linkupapi"` | Where new accounts go. `"unipile"` keeps Unipile your default: new accounts and reconnections stay there, accounts move only when you say so. |
-| `delete_moved_accounts` | `true` | Delete an account from Unipile once it works on LinkupAPI. `false` keeps it there too (you then receive its webhooks from both). |
+Your Unipile key is stored encrypted and only sent to your Unipile DSN. New accounts are created on LinkupAPI.
 
 ## Step 3: Move your accounts
 
@@ -108,14 +105,17 @@ No account is lost and no campaign stops.
 
 ## Keep Unipile alongside
 
-To move only some accounts and keep the rest on Unipile for good, link with `"new_accounts": "unipile"`. All your Unipile accounts keep working through LinkupAPI, and you move the ones you choose:
+To keep some accounts on Unipile for good, use both APIs side by side. Nothing to link: keep your Unipile client for accounts on Unipile, and add a LinkupAPI client for accounts on LinkupAPI. The routes and payloads are the same, so the same code serves both.
 
-```bash
-curl -X POST https://api.linkupapi.com/compat/api/v1/migration/unipile/accounts/{Unipile account_id} \
-  -H "X-API-KEY: YOUR_LINKUPAPI_API_KEY" -H "Content-Type: application/json" -d '{}'
+```js
+const unipile = new UnipileClient("https://{YOUR_DSN}", "YOUR_UNIPILE_TOKEN");
+const linkup = new UnipileClient("https://api.linkupapi.com/compat", "YOUR_LINKUPAPI_API_KEY");
+const client = (account) => (account.provider === "linkupapi" ? linkup : unipile);
 ```
 
-With an empty body you get a hosted link (`HostedAuthUrl`) to send to the account's owner; it takes `notify_url`, `name`, `expiresOn`, `success_redirect_url`, `failure_redirect_url`. With the Unipile native-auth body (`provider`, `username`, `password`…) the account is reconnected right away. Either way it keeps its ids.
+- **You choose where each account connects**: create its hosted link (or native connection) with one client or the other, and store which one with the account.
+- **Webhooks**: create the same webhook on both sides. Payloads are identical, so one handler receives both.
+- **Moving an account later**: connect it on LinkupAPI (it gets a new `account_id`), then delete it on Unipile.
 
 ## Webhook events
 
