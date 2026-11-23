@@ -10,6 +10,16 @@ LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors,
   The Unipile-compatible API is enabled per workspace. Ask [support@linkupapi.com](mailto:support@linkupapi.com) to turn it on. Until then, every call answers `403 errors/feature_not_subscribed`.
 </Note>
 
+## Pick your migration
+
+| Migration | How it works | Read |
+|---|---|---|
+| **All accounts, at your pace** (recommended) | Link Unipile once. Every account keeps working from day one; each one moves when it reconnects, and is then removed from Unipile. Unlink when all have moved. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [3](#3-move-your-accounts-at-your-pace) |
+| **Some accounts, keep Unipile** | Link Unipile with `new_accounts: "unipile"`. Unipile stays your default; you move only the accounts you choose. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [Keep Unipile alongside](#keep-unipile-alongside) |
+| **Fresh start** | Don't link Unipile. Change the base URL and key, then connect your accounts again on LinkupAPI. Accounts left at Unipile are not reachable here. | [1](#1-base-url-and-key) |
+
+In every case your code stays the same: same routes, payloads and webhooks.
+
 ## 1. Base URL and key
 
 | | Unipile | LinkupAPI |
