@@ -14,7 +14,7 @@ LinkupAPI serves the Unipile v1 API: same routes, parameters, responses, errors,
 
 | Migration | How it works | Read |
 |---|---|---|
-| **All accounts, at your pace** (recommended) | Link Unipile once. Every account keeps working from day one; each one moves when it reconnects, and is then removed from Unipile. Unlink when all have moved. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [3](#3-move-your-accounts-at-your-pace) |
+| **All accounts, at your pace** (recommended) | Link Unipile once. Every account keeps working from day one; each one moves when it reconnects, and is then removed from Unipile. Unlink when all have moved. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [3](#3-move-your-accounts-at-your-pace), [example](#example-a-full-migration-over-one-week) |
 | **Some accounts, keep Unipile** | Link Unipile with `new_accounts: "unipile"`. Unipile stays your default; you move only the accounts you choose. | [1](#1-base-url-and-key), [2](#2-link-your-unipile-workspace), [Keep Unipile alongside](#keep-unipile-alongside) |
 | **Fresh start** | Don't link Unipile. Change the base URL and key, then connect your accounts again on LinkupAPI. Accounts left at Unipile are not reachable here. | [1](#1-base-url-and-key) |
 
@@ -73,6 +73,15 @@ Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. 
 The account keeps its id. Once it works on LinkupAPI, it is deleted from your Unipile workspace (only if it is the same LinkedIn member, phone or mailbox), so nothing is sent twice. When every account has moved, unlink Unipile.
 
 A new account (`type: "create"` or `POST /api/v1/accounts`) is created on LinkupAPI with a new id, as on Unipile.
+
+### Example: a full migration over one week
+
+1. **Day 1.** Switch the base URL and key, and link Unipile. Nothing stops: campaigns, inboxes and webhooks keep running on every account, through Unipile.
+2. **Day 1.** Email your users a reconnect link (a hosted link with `type: "reconnect"` and their Unipile `account_id`), with a week to use it. Your existing reconnection flow works as is.
+3. **During the week.** Each account moves the moment its user reconnects: same `account_id`, campaigns continue on LinkupAPI, the Unipile copy is deleted so nothing runs twice. Accounts not reconnected yet keep running on Unipile.
+4. **End of the week.** `GET /api/v1/migration/unipile` lists the accounts still at Unipile. Remind those users; they keep working until they reconnect. Unlink Unipile once the list is empty.
+
+Your users never lose their account, and no campaign stops. Only a moved account's chat and message ids change (see [What differs](#what-differs)).
 
 ## Keep Unipile alongside
 
