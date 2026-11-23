@@ -70,7 +70,7 @@ Sessions cannot be moved from Unipile: each account connects once on LinkupAPI. 
 - Hosted link: `POST /api/v1/hosted/accounts/link` with `type: "reconnect"` and `reconnect_account: "<Unipile account_id>"`.
 - Native: `POST /api/v1/accounts/{Unipile account_id}` with the credentials, as for a Unipile reconnection.
 
-The account keeps its id. Once it works on LinkupAPI, it is deleted from your Unipile workspace (only if it is the same LinkedIn member, phone or mailbox), so nothing is sent twice. When every account has moved, unlink Unipile.
+The account keeps its id, and so do its chats and chat attendees: the `chat_id` and `attendee_id` you stored from Unipile keep working, in requests, responses and webhooks. Once it works on LinkupAPI, it is deleted from your Unipile workspace (only if it is the same LinkedIn member, phone or mailbox), so nothing is sent twice. When every account has moved, unlink Unipile.
 
 A new account (`type: "create"` or `POST /api/v1/accounts`) is created on LinkupAPI with a new id, as on Unipile.
 
@@ -78,10 +78,10 @@ A new account (`type: "create"` or `POST /api/v1/accounts`) is created on Linkup
 
 1. **Day 1.** Switch the base URL and key, and link Unipile. Nothing stops: campaigns, inboxes and webhooks keep running on every account, through Unipile.
 2. **Day 1.** Email your users a reconnect link (a hosted link with `type: "reconnect"` and their Unipile `account_id`), with a week to use it. Your existing reconnection flow works as is.
-3. **During the week.** Each account moves the moment its user reconnects: same `account_id`, campaigns continue on LinkupAPI, the Unipile copy is deleted so nothing runs twice. Accounts not reconnected yet keep running on Unipile.
-4. **End of the week.** `GET /api/v1/migration/unipile` lists the accounts still at Unipile. Remind those users; they keep working until they reconnect. Unlink Unipile once the list is empty.
+3. **During the week.** Each account moves the moment its user reconnects: same `account_id`, same chat and attendee ids, campaigns continue on LinkupAPI, the Unipile copy is deleted so nothing runs twice. Accounts not reconnected yet keep running on Unipile.
+4. **End of the week.** `GET /api/v1/migration/unipile` shows how many accounts are still at Unipile. Remind those users; they keep working until they reconnect. Unlink Unipile once the list is empty.
 
-Your users never lose their account, and no campaign stops. Only a moved account's chat and message ids change (see [What differs](#what-differs)).
+Your users never lose their account, and no campaign stops.
 
 ## Keep Unipile alongside
 
@@ -107,7 +107,7 @@ Payloads match Unipile's, field for field. Supported sources and events:
 
 ## What differs
 
-- **Chat, message and attendee ids** change when an account moves: list its chats again. Ids stored from Unipile no longer resolve for that account.
+- **Message ids** change when an account moves (chat and attendee ids don't): a message id stored from Unipile no longer resolves. Messages received after the move have stable ids.
 - **`GET /api/v1/messages`** (every message of an account) is available a few minutes after the account connects.
 - **Filters LinkedIn no longer applies** are accepted and have no effect: job `benefits`, `minimum_salary`, `commitments`, `fair_chance_employer`, `location_within_area`; people `open_to`; classic company `industry`, `has_job_offers`, `network_distance`; Sales Nav `technologies`, `mentionned_in_news`.
 - **Anything not supported** answers `501 errors/feature_not_implemented`, with the parameter or route in `detail`. A request is never run with a filter silently dropped.
