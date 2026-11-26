@@ -27,7 +27,10 @@ Returns the comments on a specific post. Pagination is **offset-based** — set 
 <ParamField body="params" type="object" required>
   <Expandable title="params properties">
     <ParamField body="post_url" type="string" required>
-      The URL of the post to retrieve comments from, as shown on the connected platform.
+      The URL of the post to retrieve comments from, as shown on the connected platform. Not needed when `comment_urn` is set.
+    </ParamField>
+    <ParamField body="comment_urn" type="string">
+      Returns the replies to this comment instead of the post's comments, oldest first, in the same shape. Pass a `comment_urn` from a previous `get_comments` call; poll the parent's `num_replies` to detect new replies.
     </ParamField>
     <ParamField body="count" type="integer" default={10}>
       Number of comments to return. Defaults to `10`. **Capped at `1000`** per call.
